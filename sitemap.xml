@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/</loc>
+    <loc>https://rws8.tech/</loc>
     <lastmod>2024-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/fullstack.html</loc>
+    <loc>https://rws8.tech/fullstack.html</loc>
     <lastmod>2024-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/frontend.html</loc>
+    <loc>https://rws8.tech/frontend.html</loc>
     <lastmod>2024-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/backend.html</loc>
+    <loc>https://rws8.tech/backend.html</loc>
     <lastmod>2024-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/java-developer.html</loc>
+    <loc>https://rws8.tech/java-developer.html</loc>
     <lastmod>2025-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/javascript.html</loc>
+    <loc>https://rws8.tech/javascript.html</loc>
     <lastmod>2025-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/typescript.html</loc>
+    <loc>https://rws8.tech/typescript.html</loc>
     <lastmod>2025-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/react.html</loc>
+    <loc>https://rws8.tech/react.html</loc>
     <lastmod>2025-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/angular.html</loc>
+    <loc>https://rws8.tech/angular.html</loc>
     <lastmod>2025-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bohdaq.github.io/rws8.tech/spring-boot.html</loc>
+    <loc>https://rws8.tech/spring-boot.html</loc>
     <lastmod>2025-10-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
