@@ -1,0 +1,5 @@
+# ads.txt file for rws8.tech
+# This file declares authorized digital sellers for ad inventory on this site
+
+# Google AdSense
+google.com, pub-8592247573404879, DIRECT, f08c47fec0942fa0
