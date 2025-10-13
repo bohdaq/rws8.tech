@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bohdaq.github.io/rws8.tech/sitemap.xml
