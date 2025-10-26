@@ -36,7 +36,7 @@ git push -u origin main
    - Select folder: **/ (root)**
 5. Click **Save**
 
-Your site will be live at: **https://bohdaq.github.io/rws8.tech/**
+Your site will be live at: **https://rws8.tech/**
 
 ⏱️ It may take 2-5 minutes for the site to go live.
 
@@ -55,7 +55,7 @@ GitHub Pages will automatically rebuild and deploy your changes.
 ## ✅ Verify Deployment
 
 1. Wait a few minutes after pushing
-2. Visit: https://bohdaq.github.io/rws8.tech/
+2. Visit: https://rws8.tech/
 3. Check all pages load correctly:
    - Homepage: /
    - Fullstack: /fullstack.html

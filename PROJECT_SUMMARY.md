@@ -159,11 +159,11 @@ Based on your GitHub profile, the following projects are featured:
 
 - **GitHub Profile**: https://github.com/bohdaq
 - **ORCID**: https://orcid.org/0000-0002-5221-5607
-- **Future Site URL**: https://bohdaq.github.io/rws8.tech/
+- **Future Site URL**: https://rws8.tech/
 
 ## 💡 Customization Tips
 
-1. **Update URLs** - Change `bohdaq.github.io/rws8.tech` to your actual URL
+1. **Update URLs** - All URLs already configured for rws8.tech
 2. **Add images** - Consider adding project screenshots
 3. **Update projects** - Add new projects as you create them
 4. **Customize colors** - Edit CSS variables in styles.css

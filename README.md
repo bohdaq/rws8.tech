@@ -4,7 +4,7 @@ A modern, SEO-friendly static website showcasing my work as a Full-stack, Fronte
 
 ## 🌐 Live Site
 
-Visit the live site at: `https://bohdaq.github.io/rws8.tech/`
+Visit the live site at: `https://rws8.tech/`
 
 ## 📋 Overview
 
@@ -47,7 +47,7 @@ rws8.tech/
    - Click **Save**
 
 3. **Access your site:**
-   - Your site will be available at: `https://bohdaq.github.io/rws8.tech/`
+   - Your site will be available at: `https://rws8.tech/`
    - It may take a few minutes for the site to go live
 
 ### Option 2: Deploy from docs/ folder
@@ -152,11 +152,11 @@ Add project cards in the HTML files:
    <?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
      <url>
-       <loc>https://bohdaq.github.io/rws8.tech/</loc>
+       <loc>https://rws8.tech/</loc>
        <priority>1.0</priority>
      </url>
      <url>
-       <loc>https://bohdaq.github.io/rws8.tech/fullstack.html</loc>
+       <loc>https://rws8.tech/fullstack.html</loc>
        <priority>0.8</priority>
      </url>
      <!-- Add other pages -->
@@ -167,7 +167,7 @@ Add project cards in the HTML files:
    ```
    User-agent: *
    Allow: /
-   Sitemap: https://bohdaq.github.io/rws8.tech/sitemap.xml
+   Sitemap: https://rws8.tech/sitemap.xml
    ```
 
 3. **Submit to search engines:**

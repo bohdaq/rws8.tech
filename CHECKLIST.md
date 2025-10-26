@@ -53,7 +53,7 @@
 - [ ] Wait 2-5 minutes for deployment
 
 ### 7. Verify Deployment
-- [ ] Visit: https://bohdaq.github.io/rws8.tech/
+- [ ] Visit: https://rws8.tech/
 - [ ] Check all pages load
 - [ ] Verify CSS is applied
 - [ ] Test navigation
