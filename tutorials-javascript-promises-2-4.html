@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.4: Error Handling in Promises - Master error handling patterns and best practices.">
+    <meta name="keywords" content="JavaScript, Promises, Error Handling, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.4: Error Handling | bohdaq</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-2-4.html">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fullstack.html">Fullstack</a></li>
+                <li><a href="frontend.html">Frontend</a></li>
+                <li><a href="backend.html">Backend</a></li>
+                <li><a href="tutorials.html" class="active">Tutorials</a></li>
+                <li><a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.4: Error Handling in Promises</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 2: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Master error catching in Promise chains</li>
+                    <li>Understand error propagation</li>
+                    <li>Learn error recovery patterns</li>
+                    <li>Implement best practices for error handling</li>
+                </ul>
+            </div>
+
+            <h2>Why Error Handling Matters</h2>
+            <p>Unhandled Promise rejections can crash your application or lead to silent failures. Proper error handling ensures:</p>
+            <ul>
+                <li>✅ Application stability</li>
+                <li>✅ Better user experience</li>
+                <li>✅ Easier debugging</li>
+                <li>✅ Graceful degradation</li>
+            </ul>
+
+            <h2>Basic Error Catching</h2>
+
+            <h3>Using .catch()</h3>
+
+            <pre><code>fetchUser(1)
+  .then(user => console.log(user))
+  .catch(error => {
+    console.error('Failed to fetch user:', error.message);
+  });</code></pre>
+
+            <h3>Catching Errors in Chains</h3>
+
+            <pre><code>fetchUser(1)
+  .then(user => fetchPosts(user.id))
+  .then(posts => fetchComments(posts[0].id))
+  .catch(error => {
+    // Catches errors from ANY step above
+    console.error('Error in chain:', error);
+  });</code></pre>
+
+            <h2>Error Propagation</h2>
+
+            <p>Errors automatically propagate down the chain until caught:</p>
+
+            <pre><code>Promise.resolve(1)
+  .then(x => {
+    throw new Error('Step 1 failed');
+  })
+  .then(x => {
+    console.log('Step 2'); // Skipped
+  })
+  .then(x => {
+    console.log('Step 3'); // Skipped
+  })
+  .catch(error => {
+    console.error('Caught:', error.message); // "Step 1 failed"
+  });</code></pre>
+
+            <h2>Multiple .catch() Handlers</h2>
+
+            <p>You can have multiple <code>.catch()</code> handlers for different error scenarios:</p>
+
+            <pre><code>fetchUser(1)
+  .then(user => {
+    if (!user.isActive) {
+      throw new Error('User is inactive');
+    }
+    return user;
+  })
+  .catch(error => {
+    console.error('User fetch error:', error);
+    return { id: 1, name: 'Guest', isActive: true }; // Fallback
+  })
+  .then(user => fetchPosts(user.id))
+  .catch(error => {
+    console.error('Posts fetch error:', error);
+    return []; // Return empty array on error
+  })
+  .then(posts => {
+    console.log('Posts:', posts);
+  });</code></pre>
+
+            <h2>Error Recovery Patterns</h2>
+
+            <h3>1. Fallback Values</h3>
+
+            <pre><code>fetchUserFromPrimaryDB(userId)
+  .catch(error => {
+    console.log('Primary DB failed, trying backup');
+    return fetchUserFromBackupDB(userId);
+  })
+  .catch(error => {
+    console.log('Backup DB failed, using default');
+    return { id: userId, name: 'Unknown User' };
+  })
+  .then(user => {
+    console.log('User:', user);
+  });</code></pre>
+
+            <h3>2. Retry Logic</h3>
+
+            <pre><code>function fetchWithRetry(url, retries = 3) {
+  return fetch(url)
+    .then(response => response.json())
+    .catch(error => {
+      if (retries > 0) {
+        console.log(`Retrying... (${retries} left)`);
+        return fetchWithRetry(url, retries - 1);
+      }
+      throw error;
+    });
+}
+
+fetchWithRetry('/api/data')
+  .then(data => console.log(data))
+  .catch(error => console.error('All retries failed:', error));</code></pre>
+
+            <h3>3. Partial Success Handling</h3>
+
+            <pre><code>Promise.all([
+  fetchUser(1).catch(e => ({ error: e.message })),
+  fetchUser(2).catch(e => ({ error: e.message })),
+  fetchUser(3).catch(e => ({ error: e.message }))
+])
+.then(results => {
+  const successful = results.filter(r => !r.error);
+  const failed = results.filter(r => r.error);
+  
+  console.log('Successful:', successful.length);
+  console.log('Failed:', failed.length);
+});</code></pre>
+
+            <h2>Re-throwing Errors</h2>
+
+            <p>Sometimes you want to log an error but still propagate it:</p>
+
+            <pre><code>fetchUser(1)
+  .then(user => fetchPosts(user.id))
+  .catch(error => {
+    console.error('Error occurred:', error);
+    logErrorToService(error);
+    throw error; // Re-throw to propagate
+  })
+  .then(posts => {
+    console.log('This won\'t run if error was thrown');
+  })
+  .catch(error => {
+    console.error('Final handler:', error);
+  });</code></pre>
+
+            <h2>Custom Error Types</h2>
+
+            <pre><code>class NetworkError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.name = 'NetworkError';
+    this.statusCode = statusCode;
+  }
+}
+
+class ValidationError extends Error {
+  constructor(message, field) {
+    super(message);
+    this.name = 'ValidationError';
+    this.field = field;
+  }
+}
+
+function fetchUser(id) {
+  if (id <= 0) {
+    return Promise.reject(
+      new ValidationError('Invalid user ID', 'id')
+    );
+  }
+  
+  return fetch(`/api/users/${id}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new NetworkError(
+          'Failed to fetch user',
+          response.status
+        );
+      }
+      return response.json();
+    });
+}
+
+fetchUser(-1)
+  .catch(error => {
+    if (error instanceof ValidationError) {
+      console.error('Validation error:', error.field);
+    } else if (error instanceof NetworkError) {
+      console.error('Network error:', error.statusCode);
+    } else {
+      console.error('Unknown error:', error);
+    }
+  });</code></pre>
+
+            <h2>Unhandled Rejection Tracking</h2>
+
+            <div class="warning-box">
+                <p><strong>Warning:</strong> Always handle Promise rejections to avoid unhandled rejection warnings!</p>
+            </div>
+
+            <h3>Global Handlers</h3>
+
+            <pre><code>// Node.js
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise);
+  console.error('Reason:', reason);
+  // Log to error tracking service
+});
+
+// Browser
+window.addEventListener('unhandledrejection', event => {
+  console.error('Unhandled rejection:', event.reason);
+  // Log to error tracking service
+  event.preventDefault();
+});</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <h3>1. Always Add .catch()</h3>
+
+            <pre><code>// ❌ Bad: No error handling
+fetchUser(1).then(user => console.log(user));
+
+// ✅ Good: Error handling
+fetchUser(1)
+  .then(user => console.log(user))
+  .catch(error => console.error(error));</code></pre>
+
+            <h3>2. Catch at the Right Level</h3>
+
+            <pre><code>// Catch at the end of the chain
+fetchUser(1)
+  .then(user => fetchPosts(user.id))
+  .then(posts => processPosts(posts))
+  .catch(error => {
+    // Handles all errors in the chain
+    console.error('Error:', error);
+  });</code></pre>
+
+            <h3>3. Provide Meaningful Error Messages</h3>
+
+            <pre><code>function fetchUser(id) {
+  return fetch(`/api/users/${id}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch user ${id}: ${response.status}`
+        );
+      }
+      return response.json();
+    })
+    .catch(error => {
+      throw new Error(`User fetch error: ${error.message}`);
+    });
+}</code></pre>
+
+            <h3>4. Clean Up Resources</h3>
+
+            <pre><code>let connection;
+
+openDatabaseConnection()
+  .then(conn => {
+    connection = conn;
+    return queryDatabase(connection);
+  })
+  .then(results => {
+    return processResults(results);
+  })
+  .catch(error => {
+    console.error('Database error:', error);
+    throw error;
+  })
+  .finally(() => {
+    if (connection) {
+      connection.close();
+    }
+  });</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Always use <code>.catch()</code> to handle errors</li>
+                    <li>✅ Errors propagate down the chain until caught</li>
+                    <li>✅ Use <code>.catch()</code> for recovery with fallback values</li>
+                    <li>✅ Re-throw errors when needed to propagate them</li>
+                    <li>✅ Use custom error types for better error handling</li>
+                    <li>✅ Set up global handlers for unhandled rejections</li>
+                    <li>✅ Use <code>.finally()</code> for cleanup operations</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now that you've mastered Promise fundamentals, let's explore Promise static methods like Promise.all()!</p>
+
+            <div class="lesson-nav">
+                <a href="tutorials-javascript-promises-2-3.html" class="btn btn-secondary">← Previous: Promise Chaining</a>
+                <a href="tutorials-javascript-promises-3-1.html" class="btn btn-primary">Next: Promise.all() →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

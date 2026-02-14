@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.3: Introduction to Promises - Learn what Promises are and how they solve callback hell in JavaScript.">
+    <meta name="keywords" content="JavaScript, Promises, Async, Tutorial, Web Development">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.3: Introduction to Promises | bohdaq</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-1-3.html">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .diagram {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: var(--bg-secondary);
+            font-weight: 600;
+        }
+        .info-box {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fullstack.html">Fullstack</a></li>
+                <li><a href="frontend.html">Frontend</a></li>
+                <li><a href="backend.html">Backend</a></li>
+                <li><a href="tutorials.html" class="active">Tutorials</a></li>
+                <li><a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.3: Introduction to Promises</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 1: Introduction</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand what a Promise is</li>
+                    <li>Learn the three Promise states</li>
+                    <li>See how Promises solve callback hell</li>
+                    <li>Create your first Promise</li>
+                </ul>
+            </div>
+
+            <h2>What is a Promise?</h2>
+            <p>
+                A <strong>Promise</strong> is an object representing the eventual completion (or failure) of an asynchronous operation.
+            </p>
+
+            <p>Think of it like a <strong>receipt</strong> for an async operation:</p>
+            <ul>
+                <li>🎫 You order food (start async operation)</li>
+                <li>🧾 You get a receipt (Promise)</li>
+                <li>⏳ You wait for your order (pending state)</li>
+                <li>✅ Food arrives (fulfilled) OR ❌ Order cancelled (rejected)</li>
+            </ul>
+
+            <pre><code>const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Success!');
+  }, 1000);
+});
+
+console.log(promise); // Promise { &lt;pending&gt; }</code></pre>
+
+            <h2>The Three Promise States</h2>
+            <p>
+                A Promise is always in one of three states:
+            </p>
+
+            <h3>1. Pending ⏳</h3>
+            <p>Initial state, neither fulfilled nor rejected.</p>
+
+            <pre><code>const promise = new Promise((resolve, reject) => {
+  // Still waiting...
+});
+console.log(promise); // Promise { &lt;pending&gt; }</code></pre>
+
+            <h3>2. Fulfilled ✅</h3>
+            <p>Operation completed successfully.</p>
+
+            <pre><code>const promise = new Promise((resolve, reject) => {
+  resolve('Success!');
+});
+// Promise { 'Success!' }</code></pre>
+
+            <h3>3. Rejected ❌</h3>
+            <p>Operation failed.</p>
+
+            <pre><code>const promise = new Promise((resolve, reject) => {
+  reject(new Error('Failed!'));
+});
+// Promise { &lt;rejected&gt; Error: Failed! }</code></pre>
+
+            <h3>State Transition Diagram</h3>
+
+            <div class="diagram">    ┌─────────┐
+    │ Pending │
+    └────┬────┘
+         │
+    ┌────┴────┐
+    │         │
+    ▼         ▼
+┌─────────┐ ┌──────────┐
+│Fulfilled│ │ Rejected │
+└─────────┘ └──────────┘</div>
+
+            <div class="info-box">
+                <p><strong>Important:</strong> Once a Promise is fulfilled or rejected, it <strong>cannot change state</strong> (it's immutable).</p>
+            </div>
+
+            <h2>Creating Your First Promise</h2>
+
+            <h3>Basic Syntax</h3>
+
+            <pre><code>const myPromise = new Promise((resolve, reject) => {
+  // Do async work here
+  
+  if (/* success */) {
+    resolve(value); // Fulfill the promise
+  } else {
+    reject(error);  // Reject the promise
+  }
+});</code></pre>
+
+            <h3>Example: Simulating an API Call</h3>
+
+            <pre><code>function fetchUser(id) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (id > 0) {
+        resolve({ id: id, name: 'John Doe' });
+      } else {
+        reject(new Error('Invalid user ID'));
+      }
+    }, 1000);
+  });
+}
+
+const userPromise = fetchUser(1);
+console.log(userPromise); // Promise { &lt;pending&gt; }</code></pre>
+
+            <h2>Consuming Promises</h2>
+            <p>
+                Use <code>.then()</code> to handle success and <code>.catch()</code> to handle errors:
+            </p>
+
+            <pre><code>fetchUser(1)
+  .then(user => {
+    console.log('User:', user);
+  })
+  .catch(error => {
+    console.error('Error:', error.message);
+  });</code></pre>
+
+            <h2>How Promises Solve Callback Hell</h2>
+
+            <h3>Before (Callbacks):</h3>
+
+            <pre><code>getUser(1, (error, user) => {
+  if (error) return console.error(error);
+  
+  getOrders(user.id, (error, orders) => {
+    if (error) return console.error(error);
+    
+    getDetails(orders[0].id, (error, details) => {
+      if (error) return console.error(error);
+      
+      console.log(details);
+    });
+  });
+});</code></pre>
+
+            <h3>After (Promises):</h3>
+
+            <pre><code>getUser(1)
+  .then(user => getOrders(user.id))
+  .then(orders => getDetails(orders[0].id))
+  .then(details => console.log(details))
+  .catch(error => console.error(error));</code></pre>
+
+            <p><strong>Benefits:</strong></p>
+            <ul>
+                <li>✅ Flat structure (no nesting)</li>
+                <li>✅ Single error handler</li>
+                <li>✅ Easy to read top-to-bottom</li>
+                <li>✅ Easy to add/remove steps</li>
+            </ul>
+
+            <h2>Promise vs Callback Comparison</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Callbacks</th>
+                        <th>Promises</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Readability</strong></td>
+                        <td>Nested, hard to read</td>
+                        <td>Flat, chainable</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Error Handling</strong></td>
+                        <td>Repeated in each callback</td>
+                        <td>Single .catch()</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Composition</strong></td>
+                        <td>Difficult</td>
+                        <td>Easy with .then()</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Return Values</strong></td>
+                        <td>Cannot return</td>
+                        <td>Returns new Promise</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Standard API</strong></td>
+                        <td>No standard</td>
+                        <td>Standardized</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Key Promise Concepts</h2>
+
+            <h3>1. Promises are Eager</h3>
+            <p>They start executing immediately when created:</p>
+
+            <pre><code>const promise = new Promise((resolve) => {
+  console.log('Executing now!'); // Runs immediately
+  resolve();
+});</code></pre>
+
+            <h3>2. Promises are Immutable</h3>
+            <p>Once settled (fulfilled/rejected), they cannot change:</p>
+
+            <pre><code>const promise = new Promise((resolve, reject) => {
+  resolve('First');
+  resolve('Second'); // Ignored!
+  reject('Error');   // Ignored!
+});</code></pre>
+
+            <h3>3. Promises Always Return Promises</h3>
+            <p><code>.then()</code> always returns a new Promise:</p>
+
+            <pre><code>const promise1 = Promise.resolve(1);
+const promise2 = promise1.then(x => x + 1);
+const promise3 = promise2.then(x => x + 1);
+
+promise3.then(result => console.log(result)); // 3</code></pre>
+
+            <h2>Real-World Example</h2>
+
+            <pre><code>function checkInventory(item) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const inStock = Math.random() > 0.3;
+      if (inStock) {
+        resolve({ item, quantity: 10 });
+      } else {
+        reject(new Error(`${item} is out of stock`));
+      }
+    }, 1000);
+  });
+}
+
+checkInventory('laptop')
+  .then(inventory => {
+    console.log('In stock:', inventory);
+    return inventory;
+  })
+  .catch(error => {
+    console.error('Error:', error.message);
+  });</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ A <strong>Promise</strong> represents a future value</li>
+                    <li>✅ Three states: <strong>pending</strong>, <strong>fulfilled</strong>, <strong>rejected</strong></li>
+                    <li>✅ Use <code>.then()</code> for success, <code>.catch()</code> for errors</li>
+                    <li>✅ Promises solve <strong>callback hell</strong> with flat chains</li>
+                    <li>✅ Promises are <strong>immutable</strong> once settled</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>
+                In the next section, we'll dive deeper into:
+            </p>
+            <ul>
+                <li>Creating custom Promises</li>
+                <li>Promise chaining</li>
+                <li>Error handling strategies</li>
+                <li>The .finally() method</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="tutorials-javascript-promises-1-2.html" class="btn btn-secondary">← Previous: Callbacks</a>
+                <a href="tutorials-javascript.html" class="btn btn-primary">Back to Course →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

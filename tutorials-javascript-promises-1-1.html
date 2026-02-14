@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.1: Understanding Synchronous vs Asynchronous Code - Learn the difference between blocking and non-blocking code in JavaScript.">
+    <meta name="keywords" content="JavaScript, Synchronous, Asynchronous, Event Loop, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.1: Synchronous vs Asynchronous Code | bohdaq</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-1-1.html">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .diagram {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fullstack.html">Fullstack</a></li>
+                <li><a href="frontend.html">Frontend</a></li>
+                <li><a href="backend.html">Backend</a></li>
+                <li><a href="tutorials.html" class="active">Tutorials</a></li>
+                <li><a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.1: Understanding Synchronous vs Asynchronous Code</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 1: Introduction</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the difference between synchronous and asynchronous code</li>
+                    <li>Learn why asynchronous programming is essential in JavaScript</li>
+                    <li>Grasp the basics of the JavaScript event loop</li>
+                </ul>
+            </div>
+
+            <h2>What is Synchronous Code?</h2>
+            <p>
+                Synchronous code executes <strong>line by line</strong>, in order. Each operation must complete before the next one starts.
+            </p>
+
+            <pre><code>console.log('First');
+console.log('Second');
+console.log('Third');
+
+// Output:
+// First
+// Second
+// Third</code></pre>
+
+            <h3>The Problem with Synchronous Code</h3>
+            <p>
+                When an operation takes time (like reading a file or making a network request), synchronous code <strong>blocks</strong> everything else:
+            </p>
+
+            <pre><code>// This blocks for 3 seconds!
+function blockFor3Seconds() {
+  const start = Date.now();
+  while (Date.now() - start < 3000) {
+    // Do nothing, just wait
+  }
+}
+
+console.log('Start');
+blockFor3Seconds();
+console.log('End'); // This waits 3 seconds!</code></pre>
+
+            <p>
+                <strong>Problem:</strong> During those 3 seconds, your entire application is frozen. No user interactions, no other code can run.
+            </p>
+
+            <h2>What is Asynchronous Code?</h2>
+            <p>
+                Asynchronous code allows operations to run <strong>in the background</strong> without blocking the main thread.
+            </p>
+
+            <pre><code>console.log('Start');
+
+setTimeout(() => {
+  console.log('Async operation');
+}, 2000);
+
+console.log('End');
+
+// Output:
+// Start
+// End
+// Async operation (after 2 seconds)</code></pre>
+
+            <p>Notice how "End" prints before "Async operation"!</p>
+
+            <h2>Why Asynchronous Programming Matters</h2>
+
+            <h3>1. User Experience</h3>
+            <ul>
+                <li>Keep UI responsive while loading data</li>
+                <li>Don't freeze the browser during long operations</li>
+            </ul>
+
+            <h3>2. Performance</h3>
+            <ul>
+                <li>Handle multiple operations simultaneously</li>
+                <li>Make efficient use of system resources</li>
+            </ul>
+
+            <h3>3. Real-World Scenarios</h3>
+            <ul>
+                <li>Fetching data from APIs</li>
+                <li>Reading/writing files</li>
+                <li>Database queries</li>
+                <li>Timers and animations</li>
+            </ul>
+
+            <h2>The JavaScript Event Loop (Simplified)</h2>
+            <p>
+                JavaScript is <strong>single-threaded</strong> but can handle async operations through the event loop:
+            </p>
+
+            <div class="diagram">┌─────────────────────────┐
+│   Call Stack            │ ← Executes synchronous code
+└─────────────────────────┘
+           ↓
+┌─────────────────────────┐
+│   Web APIs              │ ← Handles async operations
+│   (setTimeout, fetch)   │
+└─────────────────────────┘
+           ↓
+┌─────────────────────────┐
+│   Callback Queue        │ ← Waits for call stack to be empty
+└─────────────────────────┘
+           ↓
+    Back to Call Stack</div>
+
+            <p><strong>How it works:</strong></p>
+            <ol>
+                <li>Synchronous code runs on the call stack</li>
+                <li>Async operations are handed to Web APIs</li>
+                <li>When async operations complete, callbacks go to the queue</li>
+                <li>Event loop moves callbacks to call stack when it's empty</li>
+            </ol>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <strong>Synchronous</strong> = Sequential, blocking execution</li>
+                    <li>✅ <strong>Asynchronous</strong> = Non-blocking, concurrent execution</li>
+                    <li>✅ JavaScript uses an <strong>event loop</strong> to handle async operations</li>
+                    <li>✅ Async code is essential for <strong>responsive applications</strong></li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>
+                In the next lesson, we'll explore <strong>callback functions</strong> - the original way JavaScript handled asynchronous operations.
+            </p>
+
+            <div class="lesson-nav">
+                <a href="tutorials-javascript.html" class="btn btn-secondary">← Back to Course</a>
+                <a href="tutorials-javascript-promises-1-2.html" class="btn btn-primary">Next Lesson: Callbacks →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

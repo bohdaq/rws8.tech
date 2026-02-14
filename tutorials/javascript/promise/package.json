@@ -1,0 +1,33 @@
+{
+  "name": "javascript-promises-course",
+  "version": "1.0.0",
+  "description": "JavaScript Promises: From Newbie to Advanced - Complete Udemy Course",
+  "main": "index.js",
+  "scripts": {
+    "demo:1.1": "node section-1-introduction/demos/demo-1.1-blocking-vs-nonblocking.js",
+    "demo:1.2": "node section-1-introduction/demos/demo-1.2-callbacks.js",
+    "demo:1.3": "node section-1-introduction/demos/demo-1.3-first-promise.js",
+    "demo:2.1": "node section-2-fundamentals/demos/demo-2.1-creating-promises.js",
+    "demo:2.2": "node section-2-fundamentals/demos/demo-2.2-consuming-promises.js",
+    "demo:3.1": "node section-3-static-methods/demos/demo-3.1-promise-all.js",
+    "demo:4.1": "node section-4-async-await/demos/demo-4.1-async-await.js",
+    "demo:6.1": "node section-6-real-world/demos/demo-6.1-api-client.js",
+    "solution:1": "node solutions/beginner/solution-1-basic-promises.js",
+    "test": "echo \"Tests coming soon!\" && exit 0"
+  },
+  "keywords": [
+    "javascript",
+    "promises",
+    "async",
+    "await",
+    "asynchronous",
+    "tutorial",
+    "course",
+    "udemy"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.2: Callback Functions - Learn about callbacks and the callback hell problem in JavaScript.">
+    <meta name="keywords" content="JavaScript, Callbacks, Callback Hell, Asynchronous, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.2: Callback Functions | bohdaq</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-1-2.html">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: var(--bg-secondary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fullstack.html">Fullstack</a></li>
+                <li><a href="frontend.html">Frontend</a></li>
+                <li><a href="backend.html">Backend</a></li>
+                <li><a href="tutorials.html" class="active">Tutorials</a></li>
+                <li><a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.2: Callback Functions - The Old Way</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 1: Introduction</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand what callback functions are</li>
+                    <li>Learn common callback patterns</li>
+                    <li>Recognize the "callback hell" problem</li>
+                    <li>See why we needed a better solution</li>
+                </ul>
+            </div>
+
+            <h2>What is a Callback Function?</h2>
+            <p>
+                A <strong>callback</strong> is a function passed as an argument to another function, to be executed later.
+            </p>
+
+            <pre><code>function greet(name, callback) {
+  console.log('Hello ' + name);
+  callback();
+}
+
+greet('Alice', function() {
+  console.log('Callback executed!');
+});
+
+// Output:
+// Hello Alice
+// Callback executed!</code></pre>
+
+            <h2>Callbacks for Asynchronous Operations</h2>
+            <p>
+                Callbacks were the original way to handle async operations in JavaScript:
+            </p>
+
+            <pre><code>setTimeout(function() {
+  console.log('This runs after 2 seconds');
+}, 2000);</code></pre>
+
+            <h3>Real-World Example: Reading a File</h3>
+
+            <pre><code>const fs = require('fs');
+
+fs.readFile('data.txt', 'utf8', function(error, data) {
+  if (error) {
+    console.error('Error reading file:', error);
+    return;
+  }
+  console.log('File contents:', data);
+});</code></pre>
+
+            <p>
+                <strong>Pattern:</strong> <code>function(error, result)</code>
+            </p>
+            <ul>
+                <li>First parameter: error (null if successful)</li>
+                <li>Second parameter: result data</li>
+            </ul>
+
+            <h2>Common Callback Patterns</h2>
+
+            <h3>1. Error-First Callbacks (Node.js Convention)</h3>
+
+            <pre><code>function fetchUser(id, callback) {
+  setTimeout(() => {
+    if (id < 0) {
+      callback(new Error('Invalid ID'), null);
+    } else {
+      callback(null, { id: id, name: 'User ' + id });
+    }
+  }, 1000);
+}
+
+fetchUser(1, (error, user) => {
+  if (error) {
+    console.error('Error:', error.message);
+    return;
+  }
+  console.log('User:', user);
+});</code></pre>
+
+            <h3>2. Success/Failure Callbacks</h3>
+
+            <pre><code>function loadImage(url, onSuccess, onFailure) {
+  const img = new Image();
+  img.onload = () => onSuccess(img);
+  img.onerror = () => onFailure(new Error('Failed to load'));
+  img.src = url;
+}
+
+loadImage(
+  'photo.jpg',
+  (img) => console.log('Loaded:', img),
+  (error) => console.error('Error:', error)
+);</code></pre>
+
+            <h2>The Problem: Callback Hell</h2>
+            <p>
+                When you need to perform multiple async operations in sequence, callbacks get <strong>nested</strong>:
+            </p>
+
+            <pre><code>getUserData(userId, (error, user) => {
+  if (error) {
+    console.error(error);
+    return;
+  }
+  
+  getOrders(user.id, (error, orders) => {
+    if (error) {
+      console.error(error);
+      return;
+    }
+    
+    getOrderDetails(orders[0].id, (error, details) => {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      
+      getShippingInfo(details.shippingId, (error, shipping) => {
+        if (error) {
+          console.error(error);
+          return;
+        }
+        
+        console.log('Finally got shipping info:', shipping);
+      });
+    });
+  });
+});</code></pre>
+
+            <div class="warning-box">
+                <h3>Problems with Callback Hell:</h3>
+                <ul>
+                    <li>❌ <strong>Hard to read</strong> - Code grows horizontally</li>
+                    <li>❌ <strong>Hard to maintain</strong> - Difficult to add/remove steps</li>
+                    <li>❌ <strong>Error handling</strong> - Must repeat error checks</li>
+                    <li>❌ <strong>Hard to debug</strong> - Stack traces are confusing</li>
+                    <li>❌ <strong>Difficult to reason about</strong> - Flow is not clear</li>
+                </ul>
+            </div>
+
+            <h2>Why Callbacks Are Limited</h2>
+
+            <h3>1. No Standard Error Handling</h3>
+            <p>Different libraries use different patterns:</p>
+            <ul>
+                <li>Error-first callbacks</li>
+                <li>Success/failure callbacks</li>
+                <li>Event emitters</li>
+            </ul>
+
+            <h3>2. Cannot Return Values</h3>
+            <pre><code>function getData(callback) {
+  setTimeout(() => {
+    callback('data');
+  }, 1000);
+}
+
+const result = getData((data) => {
+  return data; // This return goes nowhere!
+});
+
+console.log(result); // undefined</code></pre>
+
+            <h3>3. Difficult to Compose</h3>
+            <p>Hard to combine multiple async operations:</p>
+            <ul>
+                <li>Run in parallel</li>
+                <li>Race conditions</li>
+                <li>Wait for all to complete</li>
+            </ul>
+
+            <h3>4. Inversion of Control</h3>
+            <p>You give your callback to another function and trust it will:</p>
+            <ul>
+                <li>Call it exactly once</li>
+                <li>Call it with the right arguments</li>
+                <li>Handle errors properly</li>
+            </ul>
+
+            <h2>The Solution: Promises</h2>
+            <p>
+                Promises were introduced to solve these problems:
+            </p>
+
+            <pre><code>getUserData(userId)
+  .then(user => getOrders(user.id))
+  .then(orders => getOrderDetails(orders[0].id))
+  .then(details => getShippingInfo(details.shippingId))
+  .then(shipping => console.log('Shipping info:', shipping))
+  .catch(error => console.error('Error:', error));</code></pre>
+
+            <p><strong>Benefits:</strong></p>
+            <ul>
+                <li>✅ Flat, readable structure</li>
+                <li>✅ Single error handler</li>
+                <li>✅ Easy to compose</li>
+                <li>✅ Standardized API</li>
+            </ul>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <strong>Callbacks</strong> are functions passed to be executed later</li>
+                    <li>✅ <strong>Error-first callbacks</strong> are a common Node.js pattern</li>
+                    <li>✅ <strong>Callback hell</strong> makes code hard to read and maintain</li>
+                    <li>✅ <strong>Promises</strong> provide a better alternative</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>
+                In the next lesson, we'll introduce <strong>Promises</strong> - the modern solution to callback hell!
+            </p>
+
+            <div class="lesson-nav">
+                <a href="tutorials-javascript-promises-1-1.html" class="btn btn-secondary">← Previous: Sync vs Async</a>
+                <a href="tutorials-javascript-promises-1-3.html" class="btn btn-primary">Next: Intro to Promises →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

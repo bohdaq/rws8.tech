@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 8.2: Project Implementation Part 1 - Build the foundation of the data aggregator.">
+    <meta name="keywords" content="JavaScript, Promises, Project, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 8.2: Implementation Part 1 | bohdaq</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-8-2.html">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fullstack.html">Fullstack</a></li>
+                <li><a href="frontend.html">Frontend</a></li>
+                <li><a href="backend.html">Backend</a></li>
+                <li><a href="tutorials.html" class="active">Tutorials</a></li>
+                <li><a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 8.2: Implementation Part 1</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 8: Course Project</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Set up the project structure</li>
+                    <li>Build core Promise utilities</li>
+                    <li>Implement API integration layer</li>
+                    <li>Create the base aggregator class</li>
+                </ul>
+            </div>
+
+            <h2>Project Setup</h2>
+
+            <h3>Initialize Project</h3>
+
+            <pre><code>mkdir data-aggregator
+cd data-aggregator
+npm init -y</code></pre>
+
+            <h3>Install Dependencies</h3>
+
+            <pre><code>npm install --save-dev jest</code></pre>
+
+            <h3>Update package.json</h3>
+
+            <pre><code>{
+  "name": "data-aggregator",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "start": "node src/index.js"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}</code></pre>
+
+            <h2>Core Utilities</h2>
+
+            <h3>src/utils/delay.js</h3>
+
+            <pre><code>/**
+ * Create a Promise that resolves after specified milliseconds
+ */
+export function delay(ms, value) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(value), ms);
+  });
+}
+
+/**
+ * Create a delay with cancellation support
+ */
+export function cancellableDelay(ms, signal) {
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => resolve(), ms);
+    
+    if (signal) {
+      signal.addEventListener('abort', () => {
+        clearTimeout(timeoutId);
+        reject(new Error('Cancelled'));
+      });
+    }
+  });
+}</code></pre>
+
+            <h3>src/utils/timeout.js</h3>
+
+            <pre><code>/**
+ * Add timeout to any Promise
+ */
+export function timeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms);
+    })
+  ]);
+}
+
+/**
+ * Timeout with custom error
+ */
+export function timeoutWithError(promise, ms, errorMessage) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(errorMessage)), ms);
+    })
+  ]);
+}</code></pre>
+
+            <h3>src/utils/retry.js</h3>
+
+            <pre><code>import { delay } from './delay.js';
+
+/**
+ * Retry failed operations with exponential backoff
+ */
+export async function retry(
+  fn,
+  options = {}
+) {
+  const {
+    retries = 3,
+    baseDelay = 1000,
+    maxDelay = 30000,
+    onRetry = null
+  } = options;
+  
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === retries - 1) {
+        throw error;
+      }
+      
+      const delayTime = Math.min(
+        baseDelay * Math.pow(2, attempt),
+        maxDelay
+      );
+      
+      if (onRetry) {
+        onRetry(attempt + 1, retries, error);
+      }
+      
+      await delay(delayTime);
+    }
+  }
+}
+
+/**
+ * Retry with jitter
+ */
+export async function retryWithJitter(fn, options = {}) {
+  const {
+    retries = 3,
+    baseDelay = 1000,
+    maxDelay = 30000
+  } = options;
+  
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === retries - 1) {
+        throw error;
+      }
+      
+      const exponentialDelay = baseDelay * Math.pow(2, attempt);
+      const jitter = Math.random() * exponentialDelay;
+      const delayTime = Math.min(exponentialDelay + jitter, maxDelay);
+      
+      await delay(delayTime);
+    }
+  }
+}</code></pre>
+
+            <h2>API Client Base</h2>
+
+            <h3>src/api/client.js</h3>
+
+            <pre><code>import { timeout } from '../utils/timeout.js';
+import { retry } from '../utils/retry.js';
+
+export class APIClient {
+  constructor(baseURL, options = {}) {
+    this.baseURL = baseURL;
+    this.timeout = options.timeout || 5000;
+    this.retries = options.retries || 3;
+    this.headers = options.headers || {};
+  }
+  
+  async request(endpoint, options = {}) {
+    const url = `${this.baseURL}${endpoint}`;
+    
+    const fetchWithTimeout = timeout(
+      fetch(url, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.headers,
+          ...options.headers
+        }
+      }),
+      this.timeout
+    );
+    
+    return await retry(
+      async () => {
+        const response = await fetchWithTimeout;
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        return await response.json();
+      },
+      {
+        retries: this.retries,
+        onRetry: (attempt, total, error) => {
+          console.log(`Retry ${attempt}/${total}: ${error.message}`);
+        }
+      }
+    );
+  }
+  
+  async get(endpoint, options = {}) {
+    return await this.request(endpoint, {
+      ...options,
+      method: 'GET'
+    });
+  }
+  
+  async post(endpoint, data, options = {}) {
+    return await this.request(endpoint, {
+      ...options,
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+}</code></pre>
+
+            <h2>Mock API Implementations</h2>
+
+            <h3>src/api/weatherAPI.js</h3>
+
+            <pre><code>import { APIClient } from './client.js';
+import { delay } from '../utils/delay.js';
+
+export class WeatherAPI extends APIClient {
+  constructor() {
+    super('https://api.weather.example.com', {
+      timeout: 3000,
+      retries: 2
+    });
+  }
+  
+  async getWeather(city) {
+    // Simulate API call
+    await delay(Math.random() * 1000);
+    
+    return {
+      city,
+      temperature: Math.round(Math.random() * 30 + 10),
+      condition: ['Sunny', 'Cloudy', 'Rainy'][Math.floor(Math.random() * 3)],
+      humidity: Math.round(Math.random() * 100),
+      timestamp: new Date().toISOString()
+    };
+  }
+}</code></pre>
+
+            <h3>src/api/newsAPI.js</h3>
+
+            <pre><code>import { APIClient } from './client.js';
+import { delay } from '../utils/delay.js';
+
+export class NewsAPI extends APIClient {
+  constructor() {
+    super('https://api.news.example.com', {
+      timeout: 3000,
+      retries: 2
+    });
+  }
+  
+  async getHeadlines(category = 'general') {
+    // Simulate API call
+    await delay(Math.random() * 1000);
+    
+    return {
+      category,
+      articles: [
+        {
+          title: 'Breaking News 1',
+          source: 'News Source',
+          publishedAt: new Date().toISOString()
+        },
+        {
+          title: 'Breaking News 2',
+          source: 'News Source',
+          publishedAt: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+  }
+}</code></pre>
+
+            <h3>src/api/stocksAPI.js</h3>
+
+            <pre><code>import { APIClient } from './client.js';
+import { delay } from '../utils/delay.js';
+
+export class StocksAPI extends APIClient {
+  constructor() {
+    super('https://api.stocks.example.com', {
+      timeout: 3000,
+      retries: 2
+    });
+  }
+  
+  async getQuote(symbol) {
+    // Simulate API call
+    await delay(Math.random() * 1000);
+    
+    const basePrice = 100;
+    const change = (Math.random() - 0.5) * 10;
+    
+    return {
+      symbol,
+      price: (basePrice + change).toFixed(2),
+      change: change.toFixed(2),
+      changePercent: ((change / basePrice) * 100).toFixed(2),
+      volume: Math.floor(Math.random() * 1000000),
+      timestamp: new Date().toISOString()
+    };
+  }
+}</code></pre>
+
+            <h2>Base Aggregator</h2>
+
+            <h3>src/aggregator/index.js</h3>
+
+            <pre><code>import { WeatherAPI } from '../api/weatherAPI.js';
+import { NewsAPI } from '../api/newsAPI.js';
+import { StocksAPI } from '../api/stocksAPI.js';
+
+export class DataAggregator {
+  constructor() {
+    this.weatherAPI = new WeatherAPI();
+    this.newsAPI = new NewsAPI();
+    this.stocksAPI = new StocksAPI();
+  }
+  
+  async fetchAll(config) {
+    const { city, newsCategory, stockSymbol } = config;
+    
+    try {
+      const [weather, news, stocks] = await Promise.all([
+        this.weatherAPI.getWeather(city),
+        this.newsAPI.getHeadlines(newsCategory),
+        this.stocksAPI.getQuote(stockSymbol)
+      ]);
+      
+      return {
+        success: true,
+        data: {
+          weather,
+          news,
+          stocks
+        },
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        timestamp: new Date().toISOString()
+      };
+    }
+  }
+  
+  async fetchWithFallback(config) {
+    const results = await Promise.allSettled([
+      this.weatherAPI.getWeather(config.city),
+      this.newsAPI.getHeadlines(config.newsCategory),
+      this.stocksAPI.getQuote(config.stockSymbol)
+    ]);
+    
+    return {
+      weather: results[0].status === 'fulfilled' ? results[0].value : null,
+      news: results[1].status === 'fulfilled' ? results[1].value : null,
+      stocks: results[2].status === 'fulfilled' ? results[2].value : null,
+      timestamp: new Date().toISOString()
+    };
+  }
+}</code></pre>
+
+            <h2>Main Entry Point</h2>
+
+            <h3>src/index.js</h3>
+
+            <pre><code>import { DataAggregator } from './aggregator/index.js';
+
+async function main() {
+  const aggregator = new DataAggregator();
+  
+  const config = {
+    city: 'London',
+    newsCategory: 'technology',
+    stockSymbol: 'AAPL'
+  };
+  
+  console.log('Fetching data...\n');
+  
+  const result = await aggregator.fetchAll(config);
+  
+  if (result.success) {
+    console.log('✅ Data fetched successfully!\n');
+    console.log('Weather:', result.data.weather);
+    console.log('\nNews:', result.data.news);
+    console.log('\nStocks:', result.data.stocks);
+  } else {
+    console.error('❌ Failed to fetch data:', result.error);
+  }
+}
+
+main().catch(console.error);</code></pre>
+
+            <h2>Testing Setup</h2>
+
+            <h3>tests/utils/delay.test.js</h3>
+
+            <pre><code>import { delay } from '../../src/utils/delay.js';
+
+describe('delay', () => {
+  test('resolves after specified time', async () => {
+    const start = Date.now();
+    await delay(100);
+    const elapsed = Date.now() - start;
+    
+    expect(elapsed).toBeGreaterThanOrEqual(100);
+    expect(elapsed).toBeLessThan(150);
+  });
+  
+  test('resolves with value', async () => {
+    const value = await delay(10, 'test');
+    expect(value).toBe('test');
+  });
+});</code></pre>
+
+            <h2>Running the Project</h2>
+
+            <pre><code># Run the application
+npm start
+
+# Run tests
+npm test</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Project structure organized by functionality</li>
+                    <li>✅ Core utilities for delay, timeout, and retry</li>
+                    <li>✅ Base API client with error handling</li>
+                    <li>✅ Mock API implementations for testing</li>
+                    <li>✅ Data aggregator with parallel fetching</li>
+                    <li>✅ Test setup with Jest</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>In Part 2, we'll add caching, rate limiting, and advanced error handling!</p>
+
+            <div class="lesson-nav">
+                <a href="tutorials-javascript-promises-8-1.html" class="btn btn-secondary">← Previous: Project Overview</a>
+                <a href="tutorials-javascript-promises-8-3.html" class="btn btn-primary">Next: Implementation Part 2 →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

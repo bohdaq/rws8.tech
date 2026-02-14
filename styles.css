@@ -42,7 +42,12 @@ body {
 }
 
 /* ===== Typography ===== */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 1rem;
@@ -163,19 +168,21 @@ a:hover {
 }
 
 .highlight {
-    color: var(--accent-color);
+    color: #fbbf24;
 }
 
 .hero-subtitle {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     font-weight: 600;
+    color: white;
 }
 
 .hero-description {
     font-size: 1.125rem;
     margin-bottom: 2rem;
-    opacity: 0.95;
+    color: white;
+    opacity: 1;
 }
 
 /* ===== Page Header ===== */
@@ -192,7 +199,8 @@ a:hover {
 
 .page-subtitle {
     font-size: 1.25rem;
-    opacity: 0.95;
+    color: white;
+    opacity: 1;
 }
 
 /* ===== Buttons ===== */
@@ -215,6 +223,7 @@ a:hover {
 
 .btn-primary:hover {
     background-color: var(--primary-dark);
+    color: white;
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
@@ -650,6 +659,7 @@ footer p {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -683,6 +693,7 @@ button:focus,
 
 /* ===== Print Styles ===== */
 @media print {
+
     .navbar,
     .cta-section,
     footer {

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.3: Promise.allSettled() - Wait for all Promises regardless of outcome.">
+    <meta name="keywords" content="JavaScript, Promises, Promise.allSettled, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.3: Promise.allSettled() | bohdaq</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-3-3.html">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fullstack.html">Fullstack</a></li>
+                <li><a href="frontend.html">Frontend</a></li>
+                <li><a href="backend.html">Backend</a></li>
+                <li><a href="tutorials.html" class="active">Tutorials</a></li>
+                <li><a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.3: Promise.allSettled()</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 3: Static Methods</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand Promise.allSettled() behavior</li>
+                    <li>Learn the difference from Promise.all()</li>
+                    <li>Handle mixed success/failure results</li>
+                    <li>Implement batch operations with reporting</li>
+                </ul>
+            </div>
+
+            <h2>What is Promise.allSettled()?</h2>
+            <p><code>Promise.allSettled()</code> waits for <strong>all</strong> Promises to settle (either fulfill or reject), and returns an array describing the outcome of each Promise.</p>
+
+            <pre><code>Promise.allSettled([promise1, promise2, promise3])
+  .then(results => {
+    // Always an array of result objects
+    results.forEach(result => {
+      if (result.status === 'fulfilled') {
+        console.log('Success:', result.value);
+      } else {
+        console.log('Failed:', result.reason);
+      }
+    });
+  });</code></pre>
+
+            <h2>Result Format</h2>
+
+            <p>Each result object has a <code>status</code> property:</p>
+
+            <pre><code>// Fulfilled Promise
+{ status: 'fulfilled', value: result }
+
+// Rejected Promise
+{ status: 'rejected', reason: error }</code></pre>
+
+            <h2>Basic Example</h2>
+
+            <pre><code>const promises = [
+  Promise.resolve('Success 1'),
+  Promise.reject(new Error('Failed')),
+  Promise.resolve('Success 2')
+];
+
+Promise.allSettled(promises)
+  .then(results => {
+    console.log(results);
+    // [
+    //   { status: 'fulfilled', value: 'Success 1' },
+    //   { status: 'rejected', reason: Error: Failed },
+    //   { status: 'fulfilled', value: 'Success 2' }
+    // ]
+  });</code></pre>
+
+            <h2>Promise.allSettled() vs Promise.all()</h2>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+                <thead>
+                    <tr style="background-color: var(--bg-secondary);">
+                        <th style="border: 1px solid var(--border-color); padding: 1rem;">Feature</th>
+                        <th style="border: 1px solid var(--border-color); padding: 1rem;">Promise.allSettled()</th>
+                        <th style="border: 1px solid var(--border-color); padding: 1rem;">Promise.all()</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;"><strong>Waits for</strong></td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">All to settle</td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">All to fulfill</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;"><strong>Rejects when</strong></td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Never</td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Any rejects</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;"><strong>Result</strong></td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Array of result objects</td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Array of values</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;"><strong>Use case</strong></td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Partial success OK</td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">All must succeed</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Common Use Cases</h2>
+
+            <h3>1. Batch Operations with Reporting</h3>
+
+            <pre><code>async function batchDeleteUsers(userIds) {
+  const deletePromises = userIds.map(id => 
+    deleteUser(id).catch(error => error)
+  );
+  
+  const results = await Promise.allSettled(deletePromises);
+  
+  const successful = results.filter(r => r.status === 'fulfilled');
+  const failed = results.filter(r => r.status === 'rejected');
+  
+  console.log(`Deleted: ${successful.length}`);
+  console.log(`Failed: ${failed.length}`);
+  
+  return {
+    successful: successful.map(r => r.value),
+    failed: failed.map(r => r.reason)
+  };
+}</code></pre>
+
+            <h3>2. Multiple API Calls with Fallbacks</h3>
+
+            <pre><code>async function fetchAllData() {
+  const results = await Promise.allSettled([
+    fetchWeather(),
+    fetchNews(),
+    fetchStocks()
+  ]);
+  
+  return {
+    weather: results[0].status === 'fulfilled' 
+      ? results[0].value 
+      : null,
+    news: results[1].status === 'fulfilled' 
+      ? results[1].value 
+      : [],
+    stocks: results[2].status === 'fulfilled' 
+      ? results[2].value 
+      : []
+  };
+}</code></pre>
+
+            <h3>3. Validation with Multiple Checks</h3>
+
+            <pre><code>async function validateUser(userData) {
+  const validations = await Promise.allSettled([
+    validateEmail(userData.email),
+    validateUsername(userData.username),
+    validatePassword(userData.password),
+    checkUsernameAvailability(userData.username)
+  ]);
+  
+  const errors = validations
+    .filter(r => r.status === 'rejected')
+    .map(r => r.reason.message);
+  
+  if (errors.length > 0) {
+    throw new Error(`Validation failed: ${errors.join(', ')}`);
+  }
+  
+  return true;
+}</code></pre>
+
+            <h2>Processing Results</h2>
+
+            <h3>Separating Success and Failure</h3>
+
+            <pre><code>const results = await Promise.allSettled(promises);
+
+const successful = results
+  .filter(r => r.status === 'fulfilled')
+  .map(r => r.value);
+
+const failed = results
+  .filter(r => r.status === 'rejected')
+  .map(r => r.reason);
+
+console.log('Successful:', successful);
+console.log('Failed:', failed);</code></pre>
+
+            <h3>Creating a Summary Report</h3>
+
+            <pre><code>async function processWithReport(items, processor) {
+  const promises = items.map(item => processor(item));
+  const results = await Promise.allSettled(promises);
+  
+  return {
+    total: results.length,
+    successful: results.filter(r => r.status === 'fulfilled').length,
+    failed: results.filter(r => r.status === 'rejected').length,
+    results: results
+  };
+}
+
+const report = await processWithReport(userIds, fetchUser);
+console.log(`Processed ${report.successful}/${report.total} successfully`);</code></pre>
+
+            <h2>Real-World Example: Image Gallery Loader</h2>
+
+            <pre><code>async function loadImageGallery(imageUrls) {
+  const loadPromises = imageUrls.map(url => 
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve({ url, img, loaded: true });
+      img.onerror = () => reject({ url, loaded: false, error: 'Failed to load' });
+      img.src = url;
+    })
+  );
+  
+  const results = await Promise.allSettled(loadPromises);
+  
+  const loaded = results
+    .filter(r => r.status === 'fulfilled')
+    .map(r => r.value);
+  
+  const failed = results
+    .filter(r => r.status === 'rejected')
+    .map(r => r.reason);
+  
+  // Display loaded images
+  loaded.forEach(({ img }) => {
+    document.getElementById('gallery').appendChild(img);
+  });
+  
+  // Show error for failed images
+  if (failed.length > 0) {
+    console.warn(`Failed to load ${failed.length} images`);
+  }
+  
+  return {
+    loaded: loaded.length,
+    failed: failed.length,
+    total: imageUrls.length
+  };
+}</code></pre>
+
+            <h2>Polyfill for Older Browsers</h2>
+
+            <pre><code>if (!Promise.allSettled) {
+  Promise.allSettled = function(promises) {
+    return Promise.all(
+      promises.map(p =>
+        Promise.resolve(p)
+          .then(value => ({ status: 'fulfilled', value }))
+          .catch(reason => ({ status: 'rejected', reason }))
+      )
+    );
+  };
+}</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <ol>
+                <li><strong>Use when partial success is acceptable</strong> - Don't fail the entire operation if some items fail</li>
+                <li><strong>Always check status</strong> - Don't assume all succeeded</li>
+                <li><strong>Provide meaningful feedback</strong> - Report both successes and failures</li>
+                <li><strong>Handle failures gracefully</strong> - Have fallback strategies</li>
+            </ol>
+
+            <h2>When to Use Each Method</h2>
+
+            <pre><code>// Use Promise.all() when:
+// - All operations MUST succeed
+// - Fail-fast behavior is desired
+const [user, posts, comments] = await Promise.all([
+  fetchUser(id),
+  fetchPosts(id),
+  fetchComments(id)
+]);
+
+// Use Promise.allSettled() when:
+// - Partial success is acceptable
+// - Need to know which succeeded/failed
+const results = await Promise.allSettled([
+  sendEmail(user1),
+  sendEmail(user2),
+  sendEmail(user3)
+]);
+
+// Use Promise.race() when:
+// - Only need the fastest result
+// - Implementing timeouts
+const data = await Promise.race([
+  fetchData(),
+  timeout(5000)
+]);</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <code>Promise.allSettled()</code> <strong>never rejects</strong></li>
+                    <li>✅ Returns array of result objects with <code>status</code> property</li>
+                    <li>✅ Perfect for <strong>batch operations</strong> where partial success is OK</li>
+                    <li>✅ Always check <code>status</code> before accessing <code>value</code> or <code>reason</code></li>
+                    <li>✅ Use for operations that should complete independently</li>
+                    <li>✅ Great for reporting and analytics</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Next, we'll learn about Promise.any() for getting the first successful result!</p>
+
+            <div class="lesson-nav">
+                <a href="tutorials-javascript-promises-3-2.html" class="btn btn-secondary">← Previous: Promise.race()</a>
+                <a href="tutorials-javascript-promises-3-4.html" class="btn btn-primary">Next: Promise.any() →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

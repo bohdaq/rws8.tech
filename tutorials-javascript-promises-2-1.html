@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.1: Creating Promises - Master the Promise constructor and learn to create custom Promises.">
+    <meta name="keywords" content="JavaScript, Promises, Constructor, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.1: Creating Promises | bohdaq</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-2-1.html">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fullstack.html">Fullstack</a></li>
+                <li><a href="frontend.html">Frontend</a></li>
+                <li><a href="backend.html">Backend</a></li>
+                <li><a href="tutorials.html" class="active">Tutorials</a></li>
+                <li><a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.1: Creating Promises</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 2: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Master the Promise constructor syntax</li>
+                    <li>Understand resolve and reject functions</li>
+                    <li>Learn about the executor function</li>
+                    <li>Create custom Promises for various scenarios</li>
+                </ul>
+            </div>
+
+            <h2>Promise Constructor Syntax</h2>
+
+            <pre><code>const promise = new Promise((resolve, reject) => {
+  // Executor function body
+});</code></pre>
+
+            <h3>Components:</h3>
+            <ol>
+                <li><strong><code>new Promise()</code></strong> - Creates a new Promise object</li>
+                <li><strong>Executor function</strong> - <code>(resolve, reject) => { }</code></li>
+                <li><strong><code>resolve(value)</code></strong> - Fulfills the promise with a value</li>
+                <li><strong><code>reject(reason)</code></strong> - Rejects the promise with a reason</li>
+            </ol>
+
+            <h2>The Executor Function</h2>
+            <p>The executor function runs <strong>immediately</strong> when the Promise is created:</p>
+
+            <pre><code>console.log('Before');
+
+const promise = new Promise((resolve, reject) => {
+  console.log('Executor runs immediately!');
+  resolve();
+});
+
+console.log('After');
+
+// Output:
+// Before
+// Executor runs immediately!
+// After</code></pre>
+
+            <p><strong>Key Points:</strong></p>
+            <ul>
+                <li>Runs synchronously</li>
+                <li>Receives two functions: <code>resolve</code> and <code>reject</code></li>
+                <li>Should call one of them (but not both)</li>
+            </ul>
+
+            <h2>Using resolve()</h2>
+            <p>Call <code>resolve(value)</code> when the async operation succeeds:</p>
+
+            <pre><code>const successPromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const data = { id: 1, name: 'Success' };
+    resolve(data); // Fulfill with data
+  }, 1000);
+});
+
+successPromise.then(data => {
+  console.log('Received:', data);
+});</code></pre>
+
+            <h3>What Can You Resolve With?</h3>
+
+            <pre><code>// Primitive values
+resolve(42);
+resolve('Hello');
+resolve(true);
+
+// Objects
+resolve({ key: 'value' });
+resolve([1, 2, 3]);
+
+// Even another Promise!
+resolve(anotherPromise);
+
+// Undefined (no value)
+resolve();</code></pre>
+
+            <h2>Using reject()</h2>
+            <p>Call <code>reject(reason)</code> when the async operation fails:</p>
+
+            <pre><code>const failurePromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject(new Error('Something went wrong'));
+  }, 1000);
+});
+
+failurePromise.catch(error => {
+  console.error('Error:', error.message);
+});</code></pre>
+
+            <h3>Best Practice: Always Reject with Error Objects</h3>
+
+            <pre><code>// ✅ Good - Error object with stack trace
+reject(new Error('Database connection failed'));
+
+// ❌ Bad - String (no stack trace)
+reject('Database connection failed');
+
+// ❌ Bad - Undefined
+reject();</code></pre>
+
+            <h2>Common Patterns</h2>
+
+            <h3>1. Wrapping setTimeout</h3>
+
+            <pre><code>function delay(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+delay(2000).then(() => {
+  console.log('2 seconds later');
+});</code></pre>
+
+            <h3>2. Wrapping Callback-Based APIs</h3>
+
+            <pre><code>const fs = require('fs');
+
+function readFilePromise(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf8', (error, data) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+
+readFilePromise('file.txt')
+  .then(content => console.log(content))
+  .catch(error => console.error(error));</code></pre>
+
+            <h3>3. Conditional Logic</h3>
+
+            <pre><code>function checkStock(itemId) {
+  return new Promise((resolve, reject) => {
+    const inStock = Math.random() > 0.5;
+    
+    setTimeout(() => {
+      if (inStock) {
+        resolve({ itemId, quantity: 10 });
+      } else {
+        reject(new Error('Out of stock'));
+      }
+    }, 1000);
+  });
+}</code></pre>
+
+            <h2>Important Rules</h2>
+
+            <h3>1. Call resolve() or reject() Only Once</h3>
+
+            <pre><code>new Promise((resolve, reject) => {
+  resolve('First');
+  resolve('Second'); // Ignored!
+  reject('Error');   // Ignored!
+});</code></pre>
+
+            <p>The first call wins, all subsequent calls are ignored.</p>
+
+            <h3>2. Executor Errors Auto-Reject</h3>
+            <p>If the executor throws an error, the Promise is automatically rejected:</p>
+
+            <pre><code>const promise = new Promise((resolve, reject) => {
+  throw new Error('Oops!');
+  // Equivalent to: reject(new Error('Oops!'));
+});
+
+promise.catch(error => {
+  console.error(error.message); // 'Oops!'
+});</code></pre>
+
+            <h2>Real-World Example: API Request Simulation</h2>
+
+            <pre><code>function fetchUser(userId) {
+  return new Promise((resolve, reject) => {
+    console.log(`Fetching user ${userId}...`);
+    
+    setTimeout(() => {
+      if (userId <= 0) {
+        reject(new Error('Invalid user ID'));
+        return;
+      }
+      
+      const user = {
+        id: userId,
+        name: `User ${userId}`,
+        email: `user${userId}@example.com`
+      };
+      
+      resolve(user);
+    }, 1500);
+  });
+}
+
+fetchUser(5)
+  .then(user => console.log('User:', user))
+  .catch(error => console.error('Error:', error.message));</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Use <code>new Promise((resolve, reject) => {})</code> to create Promises</li>
+                    <li>✅ Executor function runs <strong>immediately</strong></li>
+                    <li>✅ Call <code>resolve(value)</code> for success, <code>reject(error)</code> for failure</li>
+                    <li>✅ Only the <strong>first</strong> resolve/reject call matters</li>
+                    <li>✅ Always reject with <strong>Error objects</strong></li>
+                    <li>✅ Executor errors <strong>auto-reject</strong> the Promise</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Next, we'll learn how to <strong>consume Promises</strong> using <code>.then()</code>, <code>.catch()</code>, and <code>.finally()</code>.</p>
+
+            <div class="lesson-nav">
+                <a href="tutorials-javascript-promises-1-3.html" class="btn btn-secondary">← Previous: Intro to Promises</a>
+                <a href="tutorials-javascript-promises-2-2.html" class="btn btn-primary">Next: Consuming Promises →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

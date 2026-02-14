@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 5.5: Promise Memoization and Caching - Optimize async operations with intelligent caching.">
+    <meta name="keywords" content="JavaScript, Promises, Memoization, Caching, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 5.5: Memoization | bohdaq</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-5-5.html">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fullstack.html">Fullstack</a></li>
+                <li><a href="frontend.html">Frontend</a></li>
+                <li><a href="backend.html">Backend</a></li>
+                <li><a href="tutorials.html" class="active">Tutorials</a></li>
+                <li><a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 5.5: Promise Memoization and Caching</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 5: Advanced Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Implement Promise memoization</li>
+                    <li>Build intelligent caching strategies</li>
+                    <li>Handle cache invalidation</li>
+                    <li>Optimize async performance</li>
+                </ul>
+            </div>
+
+            <h2>Why Memoize Promises?</h2>
+            <p>Memoization prevents:</p>
+            <ul>
+                <li>Duplicate API requests</li>
+                <li>Unnecessary computations</li>
+                <li>Wasted bandwidth</li>
+                <li>Slow user experience</li>
+            </ul>
+
+            <h2>Basic Promise Memoization</h2>
+
+            <pre><code>function memoize(fn) {
+  const cache = new Map();
+  
+  return function(...args) {
+    const key = JSON.stringify(args);
+    
+    if (cache.has(key)) {
+      console.log('Cache hit');
+      return cache.get(key);
+    }
+    
+    console.log('Cache miss');
+    const promise = fn(...args);
+    cache.set(key, promise);
+    return promise;
+  };
+}
+
+// Usage
+const fetchUser = memoize(async (id) => {
+  const response = await fetch(`/api/users/${id}`);
+  return await response.json();
+});
+
+// First call: fetches from API
+await fetchUser(1);
+
+// Second call: returns cached Promise
+await fetchUser(1);</code></pre>
+
+            <h2>Memoization with TTL (Time To Live)</h2>
+
+            <pre><code>function memoizeWithTTL(fn, ttl = 60000) {
+  const cache = new Map();
+  
+  return function(...args) {
+    const key = JSON.stringify(args);
+    const cached = cache.get(key);
+    
+    if (cached && Date.now() - cached.timestamp < ttl) {
+      console.log('Cache hit');
+      return cached.promise;
+    }
+    
+    console.log('Cache miss or expired');
+    const promise = fn(...args);
+    
+    cache.set(key, {
+      promise,
+      timestamp: Date.now()
+    });
+    
+    return promise;
+  };
+}
+
+// Usage: Cache for 5 minutes
+const fetchUser = memoizeWithTTL(
+  async (id) => {
+    const response = await fetch(`/api/users/${id}`);
+    return await response.json();
+  },
+  300000
+);</code></pre>
+
+            <h2>LRU (Least Recently Used) Cache</h2>
+
+            <pre><code>class LRUCache {
+  constructor(maxSize = 100) {
+    this.maxSize = maxSize;
+    this.cache = new Map();
+  }
+  
+  get(key) {
+    if (!this.cache.has(key)) {
+      return undefined;
+    }
+    
+    // Move to end (most recently used)
+    const value = this.cache.get(key);
+    this.cache.delete(key);
+    this.cache.set(key, value);
+    
+    return value;
+  }
+  
+  set(key, value) {
+    // Remove if exists
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    }
+    
+    // Remove oldest if at capacity
+    if (this.cache.size >= this.maxSize) {
+      const firstKey = this.cache.keys().next().value;
+      this.cache.delete(firstKey);
+    }
+    
+    this.cache.set(key, value);
+  }
+  
+  clear() {
+    this.cache.clear();
+  }
+}
+
+function memoizeWithLRU(fn, maxSize = 100) {
+  const cache = new LRUCache(maxSize);
+  
+  return function(...args) {
+    const key = JSON.stringify(args);
+    const cached = cache.get(key);
+    
+    if (cached) {
+      return cached;
+    }
+    
+    const promise = fn(...args);
+    cache.set(key, promise);
+    return promise;
+  };
+}
+
+// Usage
+const fetchUser = memoizeWithLRU(
+  async (id) => {
+    const response = await fetch(`/api/users/${id}`);
+    return await response.json();
+  },
+  50 // Max 50 cached users
+);</code></pre>
+
+            <h2>Preventing Duplicate In-Flight Requests</h2>
+
+            <pre><code>class RequestDeduplicator {
+  constructor() {
+    this.pending = new Map();
+  }
+  
+  async execute(key, fn) {
+    // Return existing promise if in flight
+    if (this.pending.has(key)) {
+      console.log('Reusing in-flight request');
+      return await this.pending.get(key);
+    }
+    
+    // Create new promise
+    const promise = fn().finally(() => {
+      this.pending.delete(key);
+    });
+    
+    this.pending.set(key, promise);
+    return await promise;
+  }
+}
+
+// Usage
+const deduplicator = new RequestDeduplicator();
+
+async function fetchUser(id) {
+  return await deduplicator.execute(
+    `user-${id}`,
+    async () => {
+      const response = await fetch(`/api/users/${id}`);
+      return await response.json();
+    }
+  );
+}
+
+// Multiple simultaneous calls share same request
+Promise.all([
+  fetchUser(1),
+  fetchUser(1),
+  fetchUser(1)
+]); // Only 1 actual API call</code></pre>
+
+            <h2>Advanced Cache with Invalidation</h2>
+
+            <pre><code>class SmartCache {
+  constructor(options = {}) {
+    this.cache = new Map();
+    this.ttl = options.ttl || 60000;
+    this.maxSize = options.maxSize || 100;
+  }
+  
+  get(key) {
+    const entry = this.cache.get(key);
+    
+    if (!entry) {
+      return null;
+    }
+    
+    // Check if expired
+    if (Date.now() - entry.timestamp > this.ttl) {
+      this.cache.delete(key);
+      return null;
+    }
+    
+    // Update access time
+    entry.lastAccess = Date.now();
+    return entry.value;
+  }
+  
+  set(key, value) {
+    // Evict if at capacity
+    if (this.cache.size >= this.maxSize) {
+      this.evictLRU();
+    }
+    
+    this.cache.set(key, {
+      value,
+      timestamp: Date.now(),
+      lastAccess: Date.now()
+    });
+  }
+  
+  evictLRU() {
+    let oldestKey = null;
+    let oldestTime = Infinity;
+    
+    for (const [key, entry] of this.cache.entries()) {
+      if (entry.lastAccess < oldestTime) {
+        oldestTime = entry.lastAccess;
+        oldestKey = key;
+      }
+    }
+    
+    if (oldestKey) {
+      this.cache.delete(oldestKey);
+    }
+  }
+  
+  invalidate(pattern) {
+    if (typeof pattern === 'string') {
+      this.cache.delete(pattern);
+    } else if (pattern instanceof RegExp) {
+      for (const key of this.cache.keys()) {
+        if (pattern.test(key)) {
+          this.cache.delete(key);
+        }
+      }
+    }
+  }
+  
+  clear() {
+    this.cache.clear();
+  }
+}
+
+// Usage
+const cache = new SmartCache({ ttl: 300000, maxSize: 50 });
+
+async function fetchUser(id) {
+  const key = `user-${id}`;
+  const cached = cache.get(key);
+  
+  if (cached) {
+    return cached;
+  }
+  
+  const response = await fetch(`/api/users/${id}`);
+  const data = await response.json();
+  
+  cache.set(key, data);
+  return data;
+}
+
+// Invalidate specific user
+cache.invalidate('user-1');
+
+// Invalidate all users
+cache.invalidate(/^user-/);</code></pre>
+
+            <h2>Cached API Client</h2>
+
+            <pre><code>class CachedAPIClient {
+  constructor(baseURL, cacheOptions = {}) {
+    this.baseURL = baseURL;
+    this.cache = new SmartCache(cacheOptions);
+    this.deduplicator = new RequestDeduplicator();
+  }
+  
+  async request(endpoint, options = {}) {
+    const method = options.method || 'GET';
+    const cacheKey = `${method}-${endpoint}`;
+    
+    // Only cache GET requests
+    if (method !== 'GET') {
+      return await this.fetchData(endpoint, options);
+    }
+    
+    // Check cache
+    const cached = this.cache.get(cacheKey);
+    if (cached) {
+      console.log('Cache hit:', endpoint);
+      return cached;
+    }
+    
+    // Deduplicate in-flight requests
+    return await this.deduplicator.execute(
+      cacheKey,
+      async () => {
+        const data = await this.fetchData(endpoint, options);
+        this.cache.set(cacheKey, data);
+        return data;
+      }
+    );
+  }
+  
+  async fetchData(endpoint, options) {
+    const url = `${this.baseURL}${endpoint}`;
+    const response = await fetch(url, options);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    return await response.json();
+  }
+  
+  invalidate(pattern) {
+    this.cache.invalidate(pattern);
+  }
+  
+  clearCache() {
+    this.cache.clear();
+  }
+}
+
+// Usage
+const api = new CachedAPIClient('https://api.example.com', {
+  ttl: 300000,  // 5 minutes
+  maxSize: 100
+});
+
+// First call: fetches from API
+const user1 = await api.request('/users/1');
+
+// Second call: returns from cache
+const user2 = await api.request('/users/1');
+
+// Invalidate after update
+await api.request('/users/1', { method: 'PUT', body: data });
+api.invalidate('GET-/users/1');</code></pre>
+
+            <h2>Stale-While-Revalidate Pattern</h2>
+
+            <pre><code>class StaleWhileRevalidate {
+  constructor(ttl = 60000, staleTime = 300000) {
+    this.cache = new Map();
+    this.ttl = ttl;
+    this.staleTime = staleTime;
+  }
+  
+  async fetch(key, fetchFn) {
+    const cached = this.cache.get(key);
+    const now = Date.now();
+    
+    if (cached) {
+      const age = now - cached.timestamp;
+      
+      // Fresh: return immediately
+      if (age < this.ttl) {
+        return cached.data;
+      }
+      
+      // Stale but acceptable: return and revalidate in background
+      if (age < this.staleTime) {
+        this.revalidate(key, fetchFn);
+        return cached.data;
+      }
+    }
+    
+    // No cache or too stale: fetch fresh
+    const data = await fetchFn();
+    this.cache.set(key, { data, timestamp: now });
+    return data;
+  }
+  
+  async revalidate(key, fetchFn) {
+    try {
+      const data = await fetchFn();
+      this.cache.set(key, { data, timestamp: Date.now() });
+    } catch (error) {
+      console.error('Revalidation failed:', error);
+    }
+  }
+}
+
+// Usage
+const swr = new StaleWhileRevalidate(60000, 300000);
+
+async function getUser(id) {
+  return await swr.fetch(
+    `user-${id}`,
+    async () => {
+      const response = await fetch(`/api/users/${id}`);
+      return await response.json();
+    }
+  );
+}
+
+// Returns cached data immediately, revalidates in background
+const user = await getUser(1);</code></pre>
+
+            <h2>Cache Warming</h2>
+
+            <pre><code>class CacheWarmer {
+  constructor(cache) {
+    this.cache = cache;
+  }
+  
+  async warmUp(entries) {
+    console.log(`Warming cache with ${entries.length} entries...`);
+    
+    await Promise.all(
+      entries.map(async ({ key, fetchFn }) => {
+        try {
+          const data = await fetchFn();
+          this.cache.set(key, data);
+        } catch (error) {
+          console.error(`Failed to warm ${key}:`, error);
+        }
+      })
+    );
+    
+    console.log('Cache warmed');
+  }
+}
+
+// Usage
+const cache = new SmartCache();
+const warmer = new CacheWarmer(cache);
+
+// Warm cache on app start
+await warmer.warmUp([
+  { key: 'user-1', fetchFn: () => fetchUser(1) },
+  { key: 'user-2', fetchFn: () => fetchUser(2) },
+  { key: 'config', fetchFn: () => fetchConfig() }
+]);</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <ol>
+                <li><strong>Cache GET requests only</strong> - Don't cache mutations</li>
+                <li><strong>Set appropriate TTL</strong> - Balance freshness vs performance</li>
+                <li><strong>Implement cache invalidation</strong> - Clear stale data</li>
+                <li><strong>Use LRU eviction</strong> - Prevent unlimited growth</li>
+                <li><strong>Deduplicate in-flight requests</strong> - Prevent duplicate calls</li>
+                <li><strong>Consider stale-while-revalidate</strong> - Best UX</li>
+                <li><strong>Warm critical caches</strong> - Preload important data</li>
+                <li><strong>Monitor cache hit rates</strong> - Optimize strategy</li>
+            </ol>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Memoization prevents <strong>duplicate requests</strong></li>
+                    <li>✅ Use <strong>TTL</strong> for automatic expiration</li>
+                    <li>✅ <strong>LRU cache</strong> prevents unlimited growth</li>
+                    <li>✅ <strong>Deduplicate</strong> in-flight requests</li>
+                    <li>✅ <strong>Stale-while-revalidate</strong> for best UX</li>
+                    <li>✅ Implement <strong>cache invalidation</strong> strategies</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now that you've mastered advanced patterns, let's explore real-world applications!</p>
+
+            <div class="lesson-nav">
+                <a href="tutorials-javascript-promises-5-4.html" class="btn btn-secondary">← Previous: Cancellable Promises</a>
+                <a href="tutorials-javascript-promises-7-1.html" class="btn btn-primary">Next: Testing Async →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
