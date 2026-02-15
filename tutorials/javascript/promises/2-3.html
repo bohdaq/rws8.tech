@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.3: Promise Chaining - Learn how to chain multiple async operations elegantly.">
+    <meta name="keywords" content="JavaScript, Promises, Chaining, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.3: Promise Chaining | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-2-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.3: Promise Chaining</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 2: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Master Promise chaining techniques</li>
+                    <li>Understand how to return values in .then()</li>
+                    <li>Learn to return Promises in .then()</li>
+                    <li>Build multi-step async workflows</li>
+                </ul>
+            </div>
+
+            <h2>What is Promise Chaining?</h2>
+            <p>Promise chaining allows you to execute multiple asynchronous operations in sequence, where each operation starts when the previous one succeeds.</p>
+
+            <pre><code class="language-javascript">fetchUser(1)
+  .then(user => fetchPosts(user.id))
+  .then(posts => fetchComments(posts[0].id))
+  .then(comments => console.log(comments))
+  .catch(error => console.error(error));</code></pre>
+
+            <h2>How Chaining Works</h2>
+            <p>Every <code>.then()</code> returns a new Promise, allowing you to chain multiple operations:</p>
+
+            <pre><code class="language-javascript">const promise1 = fetchUser(1);
+const promise2 = promise1.then(user => user.name);
+const promise3 = promise2.then(name => name.toUpperCase());
+
+promise3.then(result => console.log(result)); // "JOHN DOE"</code></pre>
+
+            <h2>Returning Values in .then()</h2>
+
+            <h3>1. Return a Regular Value</h3>
+            <p>The value becomes the resolved value of the returned Promise:</p>
+
+            <pre><code class="language-javascript">Promise.resolve(5)
+  .then(x => x * 2)        // Returns 10
+  .then(x => x + 3)        // Returns 13
+  .then(x => x.toString()) // Returns "13"
+  .then(result => console.log(result)); // "13"</code></pre>
+
+            <h3>2. Return a Promise</h3>
+            <p>The next <code>.then()</code> waits for that Promise to resolve:</p>
+
+            <pre><code class="language-javascript">fetchUser(1)
+  .then(user => {
+    console.log('Got user:', user.name);
+    return fetchPosts(user.id); // Returns a Promise
+  })
+  .then(posts => {
+    console.log('Got posts:', posts.length);
+    return posts;
+  });</code></pre>
+
+            <h3>3. Return Nothing (undefined)</h3>
+            <p>The next <code>.then()</code> receives undefined:</p>
+
+            <pre><code class="language-javascript">Promise.resolve('data')
+  .then(data => {
+    console.log(data);
+    // No return statement
+  })
+  .then(result => {
+    console.log(result); // undefined
+  });</code></pre>
+
+            <h2>Multi-Step API Calls</h2>
+
+            <h3>Example: User Profile with Posts and Comments</h3>
+
+            <pre><code class="language-javascript">function getUserProfile(userId) {
+  return fetchUser(userId)
+    .then(user => {
+      console.log('Fetched user:', user.name);
+      return fetchPosts(user.id);
+    })
+    .then(posts => {
+      console.log('Fetched posts:', posts.length);
+      return fetchComments(posts[0].id);
+    })
+    .then(comments => {
+      console.log('Fetched comments:', comments.length);
+      return comments;
+    })
+    .catch(error => {
+      console.error('Error in chain:', error);
+      throw error;
+    });
+}
+
+getUserProfile(1)
+  .then(comments => console.log('Final result:', comments));</code></pre>
+
+            <h2>Passing Data Through the Chain</h2>
+
+            <h3>Problem: Losing Previous Values</h3>
+
+            <pre><code class="language-javascript">// ❌ Lost access to user
+fetchUser(1)
+  .then(user => fetchPosts(user.id))
+  .then(posts => {
+    // Can't access user here!
+    return posts;
+  });</code></pre>
+
+            <h3>Solution 1: Nested Objects</h3>
+
+            <pre><code class="language-javascript">fetchUser(1)
+  .then(user => {
+    return fetchPosts(user.id)
+      .then(posts => ({ user, posts }));
+  })
+  .then(({ user, posts }) => {
+    console.log(user.name, 'has', posts.length, 'posts');
+  });</code></pre>
+
+            <h3>Solution 2: Promise.all()</h3>
+
+            <pre><code class="language-javascript">fetchUser(1)
+  .then(user => {
+    return Promise.all([
+      user,
+      fetchPosts(user.id)
+    ]);
+  })
+  .then(([user, posts]) => {
+    console.log(user.name, 'has', posts.length, 'posts');
+  });</code></pre>
+
+            <h2>Real-World Example: E-commerce Checkout</h2>
+
+            <pre><code class="language-javascript">function processCheckout(userId, cartId) {
+  let order;
+  
+  return validateCart(cartId)
+    .then(cart => {
+      console.log('Cart validated');
+      return calculateTotal(cart);
+    })
+    .then(total => {
+      console.log('Total calculated:', total);
+      return processPayment(userId, total);
+    })
+    .then(payment => {
+      console.log('Payment processed:', payment.id);
+      return createOrder(userId, cartId, payment.id);
+    })
+    .then(createdOrder => {
+      order = createdOrder;
+      return sendConfirmationEmail(order);
+    })
+    .then(() => {
+      console.log('Email sent');
+      return updateInventory(order.items);
+    })
+    .then(() => {
+      console.log('Inventory updated');
+      return order;
+    })
+    .catch(error => {
+      console.error('Checkout failed:', error);
+      // Rollback logic here
+      throw error;
+    });
+}</code></pre>
+
+            <h2>Chaining Best Practices</h2>
+
+            <h3>1. Keep Chains Flat</h3>
+
+            <pre><code class="language-javascript">// ❌ Bad: Nested
+promise.then(result => {
+  doSomething(result).then(newResult => {
+    doMore(newResult).then(finalResult => {
+      console.log(finalResult);
+    });
+  });
+});
+
+// ✅ Good: Flat
+promise
+  .then(result => doSomething(result))
+  .then(newResult => doMore(newResult))
+  .then(finalResult => console.log(finalResult));</code></pre>
+
+            <h3>2. Always Return</h3>
+
+            <pre><code class="language-javascript">// ❌ Bad: Forgot to return
+promise
+  .then(result => {
+    doSomething(result); // Not returned!
+  })
+  .then(result => {
+    console.log(result); // undefined
+  });
+
+// ✅ Good: Return the Promise
+promise
+  .then(result => {
+    return doSomething(result);
+  })
+  .then(result => {
+    console.log(result); // Correct value
+  });</code></pre>
+
+            <h3>3. Handle Errors at the End</h3>
+
+            <pre><code class="language-javascript">promise
+  .then(step1)
+  .then(step2)
+  .then(step3)
+  .catch(error => {
+    // Catches errors from any step
+    console.error('Error:', error);
+  });</code></pre>
+
+            <h2>Transforming Data in Chains</h2>
+
+            <pre><code class="language-javascript">fetchUser(1)
+  .then(user => user.name)
+  .then(name => name.toUpperCase())
+  .then(upperName => `Hello, ${upperName}!`)
+  .then(greeting => {
+    console.log(greeting); // "Hello, JOHN DOE!"
+  });</code></pre>
+
+            <h2>Conditional Chaining</h2>
+
+            <pre><code class="language-javascript">function getUserData(userId, includeDetails = false) {
+  return fetchUser(userId)
+    .then(user => {
+      if (includeDetails) {
+        return fetchUserDetails(user.id)
+          .then(details => ({ ...user, details }));
+      }
+      return user;
+    })
+    .then(userData => {
+      console.log('User data:', userData);
+      return userData;
+    });
+}</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <code>.then()</code> always returns a new Promise</li>
+                    <li>✅ Return values to pass data to the next <code>.then()</code></li>
+                    <li>✅ Return Promises to chain async operations</li>
+                    <li>✅ Keep chains flat, avoid nesting</li>
+                    <li>✅ Always return from <code>.then()</code> handlers</li>
+                    <li>✅ Use <code>.catch()</code> at the end to handle all errors</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Next, we'll dive deeper into error handling patterns in Promise chains!</p>
+
+            <div class="lesson-nav">
+                <a href="2-2.html" class="btn btn-secondary">← Previous: Consuming Promises</a>
+                <a href="2-4.html" class="btn btn-primary">Next: Error Handling →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

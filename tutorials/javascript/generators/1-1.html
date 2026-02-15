@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.1: What are Generators? - Introduction to JavaScript generator functions.">
+    <meta name="keywords" content="JavaScript, Generators, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.1: What are Generators? | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-1-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.1: What are Generators?</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 1: Introduction</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand what generator functions are</li>
+                    <li>Learn the difference between regular and generator functions</li>
+                    <li>Explore basic generator syntax</li>
+                    <li>Understand when to use generators</li>
+                </ul>
+            </div>
+
+            <h2>What is a Generator?</h2>
+            <p>A <strong>generator</strong> is a special type of function that can pause its execution and resume later. Unlike regular functions that run to completion, generators can yield multiple values over time.</p>
+
+            <h3>Regular Function vs Generator</h3>
+
+            <pre><code class="language-javascript">// Regular function - runs to completion
+function regularFunction() {
+  console.log('Start');
+  console.log('Middle');
+  console.log('End');
+  return 'Done';
+}
+
+regularFunction(); // Logs all three, returns 'Done'
+
+// Generator function - can pause and resume
+function* generatorFunction() {
+  console.log('Start');
+  yield 1;
+  console.log('Middle');
+  yield 2;
+  console.log('End');
+  return 'Done';
+}
+
+const gen = generatorFunction();
+gen.next(); // Logs 'Start', returns { value: 1, done: false }
+gen.next(); // Logs 'Middle', returns { value: 2, done: false }
+gen.next(); // Logs 'End', returns { value: 'Done', done: true }</code></pre>
+
+            <h2>Generator Syntax</h2>
+
+            <p>Generators are defined using the <code>function*</code> syntax (note the asterisk):</p>
+
+            <pre><code class="language-javascript">// Function declaration
+function* myGenerator() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+// Function expression
+const myGen = function* () {
+  yield 1;
+  yield 2;
+};
+
+// Method in object
+const obj = {
+  *myGenerator() {
+    yield 1;
+    yield 2;
+  }
+};
+
+// Class method
+class MyClass {
+  *myGenerator() {
+    yield 1;
+    yield 2;
+  }
+}</code></pre>
+
+            <h2>How Generators Work</h2>
+
+            <p>When you call a generator function, it doesn't execute immediately. Instead, it returns a <strong>generator object</strong>:</p>
+
+            <pre><code class="language-javascript">function* simpleGenerator() {
+  yield 'First';
+  yield 'Second';
+  yield 'Third';
+}
+
+const gen = simpleGenerator();
+console.log(gen); // Object [Generator] {}
+
+// Generator object has a next() method
+console.log(gen.next()); // { value: 'First', done: false }
+console.log(gen.next()); // { value: 'Second', done: false }
+console.log(gen.next()); // { value: 'Third', done: false }
+console.log(gen.next()); // { value: undefined, done: true }</code></pre>
+
+            <h2>The yield Keyword</h2>
+
+            <p>The <code>yield</code> keyword pauses the generator and returns a value:</p>
+
+            <pre><code class="language-javascript">function* counter() {
+  let count = 0;
+  
+  while (true) {
+    yield count;
+    count++;
+  }
+}
+
+const gen = counter();
+console.log(gen.next().value); // 0
+console.log(gen.next().value); // 1
+console.log(gen.next().value); // 2
+console.log(gen.next().value); // 3</code></pre>
+
+            <h2>Generator Return Values</h2>
+
+            <p>Each call to <code>next()</code> returns an object with two properties:</p>
+
+            <ul>
+                <li><code>value</code>: The yielded value</li>
+                <li><code>done</code>: Boolean indicating if the generator is finished</li>
+            </ul>
+
+            <pre><code class="language-javascript">function* example() {
+  yield 1;
+  yield 2;
+  return 3;
+}
+
+const gen = example();
+
+console.log(gen.next()); // { value: 1, done: false }
+console.log(gen.next()); // { value: 2, done: false }
+console.log(gen.next()); // { value: 3, done: true }
+console.log(gen.next()); // { value: undefined, done: true }</code></pre>
+
+            <h2>Generators are Iterable</h2>
+
+            <p>Generators implement the iterator protocol, making them compatible with <code>for...of</code> loops:</p>
+
+            <pre><code class="language-javascript">function* colors() {
+  yield 'red';
+  yield 'green';
+  yield 'blue';
+}
+
+// Using for...of
+for (const color of colors()) {
+  console.log(color);
+}
+// Output:
+// red
+// green
+// blue
+
+// Using spread operator
+const colorArray = [...colors()];
+console.log(colorArray); // ['red', 'green', 'blue']
+
+// Using Array.from()
+const colorArray2 = Array.from(colors());
+console.log(colorArray2); // ['red', 'green', 'blue']</code></pre>
+
+            <h2>When to Use Generators</h2>
+
+            <h3>1. Lazy Evaluation</h3>
+            <pre><code class="language-javascript">// Generate values on demand
+function* fibonacci() {
+  let [a, b] = [0, 1];
+  
+  while (true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+const fib = fibonacci();
+console.log(fib.next().value); // 0
+console.log(fib.next().value); // 1
+console.log(fib.next().value); // 1
+console.log(fib.next().value); // 2
+console.log(fib.next().value); // 3</code></pre>
+
+            <h3>2. Memory Efficiency</h3>
+            <pre><code class="language-javascript">// Instead of creating a large array
+function createLargeArray(n) {
+  const arr = [];
+  for (let i = 0; i < n; i++) {
+    arr.push(i);
+  }
+  return arr; // Uses lots of memory
+}
+
+// Use a generator
+function* generateNumbers(n) {
+  for (let i = 0; i < n; i++) {
+    yield i; // One value at a time
+  }
+}
+
+// Process one million numbers without storing them all
+for (const num of generateNumbers(1000000)) {
+  if (num > 10) break; // Can stop early
+}</code></pre>
+
+            <h3>3. Custom Iteration</h3>
+            <pre><code class="language-javascript">class Range {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+  
+  *[Symbol.iterator]() {
+    for (let i = this.start; i <= this.end; i++) {
+      yield i;
+    }
+  }
+}
+
+const range = new Range(1, 5);
+console.log([...range]); // [1, 2, 3, 4, 5]
+
+for (const num of range) {
+  console.log(num); // 1, 2, 3, 4, 5
+}</code></pre>
+
+            <h2>Real-World Example: Pagination</h2>
+
+            <pre><code class="language-javascript">function* paginate(items, pageSize) {
+  for (let i = 0; i < items.length; i += pageSize) {
+    yield items.slice(i, i + pageSize);
+  }
+}
+
+const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const pages = paginate(data, 3);
+
+console.log(pages.next().value); // [1, 2, 3]
+console.log(pages.next().value); // [4, 5, 6]
+console.log(pages.next().value); // [7, 8, 9]
+console.log(pages.next().value); // [10]</code></pre>
+
+            <h2>Advantages of Generators</h2>
+
+            <ul>
+                <li><strong>Lazy evaluation</strong> - Values computed only when needed</li>
+                <li><strong>Memory efficient</strong> - Don't need to store all values</li>
+                <li><strong>Infinite sequences</strong> - Can represent endless data</li>
+                <li><strong>Pausable execution</strong> - Control flow can be suspended</li>
+                <li><strong>Cleaner iteration</strong> - Simplify complex iteration logic</li>
+            </ul>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Generators are functions that can <strong>pause and resume</strong></li>
+                    <li>✅ Defined with <code>function*</code> syntax</li>
+                    <li>✅ Use <code>yield</code> to return values</li>
+                    <li>✅ Return <strong>generator objects</strong> with <code>next()</code> method</li>
+                    <li>✅ Implement the <strong>iterator protocol</strong></li>
+                    <li>✅ Perfect for <strong>lazy evaluation</strong> and infinite sequences</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now that you understand what generators are, let's dive deeper into the iterator protocol!</p>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Course</a>
+                <a href="1-2.html" class="btn btn-primary">Next: Iterator Protocol →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

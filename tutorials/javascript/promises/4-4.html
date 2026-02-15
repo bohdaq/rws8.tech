@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 4.4: Parallel vs Sequential Execution - Master performance optimization with async/await.">
+    <meta name="keywords" content="JavaScript, Async, Parallel, Sequential, Performance, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 4.4: Parallel vs Sequential | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-4-4.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: var(--bg-secondary);
+            font-weight: 600;
+        }
+        .warning-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .success-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 4.4: Parallel vs Sequential Execution</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 4: Async/Await</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand sequential vs parallel execution</li>
+                    <li>Learn when to use each approach</li>
+                    <li>Master performance optimization techniques</li>
+                    <li>Implement hybrid execution strategies</li>
+                </ul>
+            </div>
+
+            <h2>Sequential Execution</h2>
+            <p>Operations run one after another, each waiting for the previous to complete.</p>
+
+            <div class="warning-box">
+                <p><strong>Sequential (Slow):</strong></p>
+                <pre><code class="language-javascript">async function sequential() {
+  const user = await fetchUser(1);      // Wait 1s
+  const posts = await fetchPosts(1);    // Wait 1s
+  const comments = await fetchComments(1); // Wait 1s
+  return { user, posts, comments };
+}
+// Total time: 3 seconds</code></pre>
+            </div>
+
+            <h2>Parallel Execution</h2>
+            <p>Operations run simultaneously, all starting at once.</p>
+
+            <div class="success-box">
+                <p><strong>Parallel (Fast):</strong></p>
+                <pre><code class="language-javascript">async function parallel() {
+  const [user, posts, comments] = await Promise.all([
+    fetchUser(1),
+    fetchPosts(1),
+    fetchComments(1)
+  ]);
+  return { user, posts, comments };
+}
+// Total time: 1 second (fastest operation)</code></pre>
+            </div>
+
+            <h2>Performance Comparison</h2>
+
+            <pre><code class="language-javascript">// Measure sequential
+console.time('Sequential');
+await sequential();
+console.timeEnd('Sequential'); // ~3000ms
+
+// Measure parallel
+console.time('Parallel');
+await parallel();
+console.timeEnd('Parallel'); // ~1000ms
+
+// 3x faster! 🚀</code></pre>
+
+            <h2>When to Use Sequential</h2>
+
+            <h3>1. Dependencies Between Operations</h3>
+
+            <pre><code class="language-javascript">async function processOrder(orderId) {
+  // Must be sequential - each depends on previous
+  const order = await fetchOrder(orderId);
+  const validated = await validateOrder(order);
+  const payment = await processPayment(validated);
+  const confirmation = await sendConfirmation(payment);
+  return confirmation;
+}</code></pre>
+
+            <h3>2. Rate Limiting</h3>
+
+            <pre><code class="language-javascript">async function processItemsSequentially(items) {
+  const results = [];
+  
+  for (const item of items) {
+    const result = await processItem(item);
+    results.push(result);
+    await delay(100); // Rate limit: 10 per second
+  }
+  
+  return results;
+}</code></pre>
+
+            <h3>3. Resource Constraints</h3>
+
+            <pre><code class="language-javascript">async function processLargeFiles(files) {
+  // Process one at a time to avoid memory issues
+  for (const file of files) {
+    await processFile(file);
+    // File is processed and memory freed before next
+  }
+}</code></pre>
+
+            <h2>When to Use Parallel</h2>
+
+            <h3>1. Independent Operations</h3>
+
+            <pre><code class="language-javascript">async function loadDashboard(userId) {
+  // All independent - can run in parallel
+  const [user, notifications, settings, activity] = await Promise.all([
+    fetchUser(userId),
+    fetchNotifications(userId),
+    fetchSettings(userId),
+    fetchActivity(userId)
+  ]);
+  
+  return { user, notifications, settings, activity };
+}</code></pre>
+
+            <h3>2. Batch Processing</h3>
+
+            <pre><code class="language-javascript">async function fetchMultipleUsers(userIds) {
+  return await Promise.all(
+    userIds.map(id => fetchUser(id))
+  );
+}</code></pre>
+
+            <h3>3. Maximum Performance</h3>
+
+            <pre><code class="language-javascript">async function preloadResources() {
+  await Promise.all([
+    loadImages(),
+    loadFonts(),
+    loadScripts(),
+    fetchInitialData()
+  ]);
+}</code></pre>
+
+            <h2>Comparison Table</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Sequential</th>
+                        <th>Parallel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Speed</strong></td>
+                        <td>Slower (sum of all times)</td>
+                        <td>Faster (longest operation)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resource Usage</strong></td>
+                        <td>Lower (one at a time)</td>
+                        <td>Higher (all at once)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dependencies</strong></td>
+                        <td>Handles dependencies</td>
+                        <td>Operations must be independent</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Error Handling</strong></td>
+                        <td>Stops at first error</td>
+                        <td>All run, fails if any fails</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Use Case</strong></td>
+                        <td>Dependent operations</td>
+                        <td>Independent operations</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Hybrid Approaches</h2>
+
+            <h3>1. Partial Parallelization</h3>
+
+            <pre><code class="language-javascript">async function getUserProfile(userId) {
+  // Step 1: Fetch user (required first)
+  const user = await fetchUser(userId);
+  
+  // Step 2: Fetch related data in parallel
+  const [posts, followers, following] = await Promise.all([
+    fetchPosts(user.id),
+    fetchFollowers(user.id),
+    fetchFollowing(user.id)
+  ]);
+  
+  return { user, posts, followers, following };
+}</code></pre>
+
+            <h3>2. Batched Parallel Processing</h3>
+
+            <pre><code class="language-javascript">async function processBatches(items, batchSize = 5) {
+  const results = [];
+  
+  for (let i = 0; i < items.length; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    
+    // Process batch in parallel
+    const batchResults = await Promise.all(
+      batch.map(item => processItem(item))
+    );
+    
+    results.push(...batchResults);
+  }
+  
+  return results;
+}
+
+// Process 100 items in batches of 10
+await processBatches(items, 10);</code></pre>
+
+            <h3>3. Race with Fallback</h3>
+
+            <pre><code class="language-javascript">async function fetchWithFallback() {
+  try {
+    // Try primary and backup in parallel
+    return await Promise.race([
+      fetchFromPrimary(),
+      delay(2000).then(() => fetchFromBackup())
+    ]);
+  } catch (error) {
+    return getDefaultData();
+  }
+}</code></pre>
+
+            <h2>Advanced Patterns</h2>
+
+            <h3>Controlled Concurrency</h3>
+
+            <pre><code class="language-javascript">async function mapWithConcurrency(items, fn, concurrency = 3) {
+  const results = [];
+  const executing = [];
+  
+  for (const item of items) {
+    const promise = Promise.resolve().then(() => fn(item));
+    results.push(promise);
+    
+    if (concurrency <= items.length) {
+      const e = promise.then(() => {
+        executing.splice(executing.indexOf(e), 1);
+      });
+      executing.push(e);
+      
+      if (executing.length >= concurrency) {
+        await Promise.race(executing);
+      }
+    }
+  }
+  
+  return Promise.all(results);
+}
+
+// Process with max 3 concurrent operations
+await mapWithConcurrency(userIds, fetchUser, 3);</code></pre>
+
+            <h3>Progressive Loading</h3>
+
+            <pre><code class="language-javascript">async function loadProgressively(items, onProgress) {
+  const results = [];
+  let completed = 0;
+  
+  const promises = items.map(async (item, index) => {
+    const result = await processItem(item);
+    completed++;
+    onProgress(completed, items.length);
+    return result;
+  });
+  
+  return await Promise.all(promises);
+}
+
+// Usage
+await loadProgressively(items, (completed, total) => {
+  console.log(`Progress: ${completed}/${total}`);
+});</code></pre>
+
+            <h2>Real-World Example: E-commerce Checkout</h2>
+
+            <pre><code class="language-javascript">async function processCheckout(cart, user) {
+  // Step 1: Validate in parallel
+  const [cartValid, userValid, inventoryValid] = await Promise.all([
+    validateCart(cart),
+    validateUser(user),
+    checkInventory(cart.items)
+  ]);
+  
+  if (!cartValid || !userValid || !inventoryValid) {
+    throw new Error('Validation failed');
+  }
+  
+  // Step 2: Sequential payment processing
+  const paymentIntent = await createPaymentIntent(cart.total);
+  const payment = await processPayment(paymentIntent);
+  
+  // Step 3: Parallel post-payment operations
+  const [order, receipt, inventory] = await Promise.all([
+    createOrder(cart, payment),
+    generateReceipt(payment),
+    updateInventory(cart.items)
+  ]);
+  
+  // Step 4: Send notifications (don't wait)
+  sendConfirmationEmail(user.email, order).catch(console.error);
+  
+  return { order, receipt };
+}</code></pre>
+
+            <h2>Performance Tips</h2>
+
+            <ol>
+                <li><strong>Identify independent operations</strong> - Run them in parallel</li>
+                <li><strong>Measure actual performance</strong> - Don't assume</li>
+                <li><strong>Consider network/server limits</strong> - Don't overwhelm</li>
+                <li><strong>Use batching for large datasets</strong> - Control concurrency</li>
+                <li><strong>Balance speed vs resources</strong> - More parallel isn't always better</li>
+            </ol>
+
+            <h2>Common Mistakes</h2>
+
+            <h3>❌ Unnecessary Sequential Execution</h3>
+
+            <pre><code class="language-javascript">// Bad: Sequential when parallel is possible
+async function bad() {
+  const a = await fetchA(); // 1s
+  const b = await fetchB(); // 1s
+  const c = await fetchC(); // 1s
+  return [a, b, c]; // 3s total
+}
+
+// Good: Parallel execution
+async function good() {
+  return await Promise.all([
+    fetchA(),
+    fetchB(),
+    fetchC()
+  ]); // 1s total
+}</code></pre>
+
+            <h3>❌ Too Much Parallelization</h3>
+
+            <pre><code class="language-javascript">// Bad: Overwhelming the server
+async function bad(userIds) {
+  return await Promise.all(
+    userIds.map(id => fetchUser(id)) // 1000 requests at once!
+  );
+}
+
+// Good: Controlled batching
+async function good(userIds) {
+  return await processBatches(userIds, 10);
+}</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Use <strong>parallel</strong> for independent operations</li>
+                    <li>✅ Use <strong>sequential</strong> for dependent operations</li>
+                    <li>✅ Parallel execution is <strong>much faster</strong></li>
+                    <li>✅ Consider <strong>resource constraints</strong></li>
+                    <li>✅ Use <strong>batching</strong> for large datasets</li>
+                    <li>✅ Measure performance to verify improvements</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now that you've mastered async/await, let's explore advanced Promise patterns!</p>
+
+            <div class="lesson-nav">
+                <a href="4-3.html" class="btn btn-secondary">← Previous: Async Functions Deep Dive</a>
+                <a href="5-1.html" class="btn btn-primary">Next: Promise Utilities →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.2: Promise.race() - Learn to race Promises and implement timeout patterns.">
+    <meta name="keywords" content="JavaScript, Promises, Promise.race, Timeout, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.2: Promise.race() | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-3-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.2: Promise.race()</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 3: Static Methods</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand how Promise.race() works</li>
+                    <li>Learn when to use Promise.race()</li>
+                    <li>Implement timeout patterns</li>
+                    <li>Master racing strategies</li>
+                </ul>
+            </div>
+
+            <h2>What is Promise.race()?</h2>
+            <p><code>Promise.race()</code> returns a Promise that settles as soon as <strong>any</strong> of the input Promises settles (either fulfills or rejects).</p>
+
+            <pre><code class="language-javascript">Promise.race([promise1, promise2, promise3])
+  .then(result => {
+    // Result from the FIRST settled Promise
+  })
+  .catch(error => {
+    // Error from the FIRST rejected Promise
+  });</code></pre>
+
+            <h2>Basic Example</h2>
+
+            <pre><code class="language-javascript">const slow = new Promise(resolve => 
+  setTimeout(() => resolve('Slow'), 3000)
+);
+
+const fast = new Promise(resolve => 
+  setTimeout(() => resolve('Fast'), 1000)
+);
+
+Promise.race([slow, fast])
+  .then(result => {
+    console.log(result); // "Fast" (after 1 second)
+  });</code></pre>
+
+            <h2>Common Use Cases</h2>
+
+            <h3>1. Request Timeout</h3>
+
+            <pre><code class="language-javascript">function timeout(ms) {
+  return new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('Timeout')), ms);
+  });
+}
+
+function fetchWithTimeout(url, ms) {
+  return Promise.race([
+    fetch(url),
+    timeout(ms)
+  ]);
+}
+
+fetchWithTimeout('/api/data', 5000)
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Request failed or timed out:', error));</code></pre>
+
+            <h3>2. Fastest Server Wins</h3>
+
+            <pre><code class="language-javascript">const servers = [
+  'https://api1.example.com/data',
+  'https://api2.example.com/data',
+  'https://api3.example.com/data'
+];
+
+Promise.race(servers.map(url => fetch(url)))
+  .then(response => response.json())
+  .then(data => console.log('Got data from fastest server:', data))
+  .catch(error => console.error('All servers failed:', error));</code></pre>
+
+            <h3>3. User Action vs Auto-Save</h3>
+
+            <pre><code class="language-javascript">function waitForUserAction() {
+  return new Promise(resolve => {
+    document.getElementById('saveBtn').onclick = () => {
+      resolve('manual');
+    };
+  });
+}
+
+function autoSave(delay) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve('auto'), delay);
+  });
+}
+
+Promise.race([
+  waitForUserAction(),
+  autoSave(30000) // 30 seconds
+])
+  .then(saveType => {
+    console.log(`Saving (${saveType})...`);
+    saveData();
+  });</code></pre>
+
+            <h2>Promise.race() vs Promise.all()</h2>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+                <thead>
+                    <tr style="background-color: var(--bg-secondary);">
+                        <th style="border: 1px solid var(--border-color); padding: 1rem;">Feature</th>
+                        <th style="border: 1px solid var(--border-color); padding: 1rem;">Promise.race()</th>
+                        <th style="border: 1px solid var(--border-color); padding: 1rem;">Promise.all()</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;"><strong>Resolves when</strong></td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">First Promise settles</td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">All Promises fulfill</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;"><strong>Rejects when</strong></td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">First Promise rejects</td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Any Promise rejects</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;"><strong>Result</strong></td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Single value</td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Array of values</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;"><strong>Use case</strong></td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Timeouts, fastest wins</td>
+                        <td style="border: 1px solid var(--border-color); padding: 1rem;">Parallel operations</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Advanced Patterns</h2>
+
+            <h3>Retry with Timeout</h3>
+
+            <pre><code class="language-javascript">async function fetchWithRetryAndTimeout(url, retries = 3, timeout = 5000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const result = await Promise.race([
+        fetch(url),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), timeout)
+        )
+      ]);
+      return await result.json();
+    } catch (error) {
+      console.log(`Attempt ${i + 1} failed:`, error.message);
+      if (i === retries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+}
+
+fetchWithRetryAndTimeout('/api/data')
+  .then(data => console.log(data))
+  .catch(error => console.error('All attempts failed:', error));</code></pre>
+
+            <h3>Cache Race Pattern</h3>
+
+            <pre><code class="language-javascript">function fetchWithCache(url) {
+  const cachePromise = caches.match(url);
+  const networkPromise = fetch(url).then(response => {
+    // Update cache in background
+    caches.open('v1').then(cache => cache.put(url, response.clone()));
+    return response;
+  });
+  
+  return Promise.race([cachePromise, networkPromise])
+    .then(response => {
+      if (!response) return networkPromise;
+      return response;
+    });
+}</code></pre>
+
+            <h3>First Success Pattern</h3>
+
+            <pre><code class="language-javascript">function raceUntilSuccess(promises) {
+  return Promise.race(
+    promises.map(p => 
+      p.then(
+        value => Promise.resolve(value),
+        error => new Promise(() => {}) // Never resolves on error
+      )
+    )
+  );
+}
+
+raceUntilSuccess([
+  fetchFromServer1(),
+  fetchFromServer2(),
+  fetchFromServer3()
+])
+  .then(data => console.log('First successful result:', data));</code></pre>
+
+            <h2>Important Considerations</h2>
+
+            <h3>1. Other Promises Still Run</h3>
+
+            <pre><code class="language-javascript">// Even though race settles after 1 second,
+// the slow promise still completes after 3 seconds
+Promise.race([
+  new Promise(resolve => {
+    setTimeout(() => {
+      console.log('Fast done');
+      resolve('Fast');
+    }, 1000);
+  }),
+  new Promise(resolve => {
+    setTimeout(() => {
+      console.log('Slow done'); // Still logs!
+      resolve('Slow');
+    }, 3000);
+  })
+])
+.then(result => console.log('Winner:', result));
+
+// Output:
+// Winner: Fast (after 1s)
+// Slow done (after 3s)</code></pre>
+
+            <h3>2. Empty Array Behavior</h3>
+
+            <pre><code class="language-javascript">// Promise.race([]) never settles!
+Promise.race([])
+  .then(() => console.log('This never runs'))
+  .catch(() => console.log('This never runs either'));</code></pre>
+
+            <h3>3. Rejection Wins Too</h3>
+
+            <pre><code class="language-javascript">Promise.race([
+  new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Fast fail')), 100)
+  ),
+  new Promise(resolve => 
+    setTimeout(() => resolve('Slow success'), 1000)
+  )
+])
+.then(result => console.log(result))
+.catch(error => console.error(error.message)); // "Fast fail"</code></pre>
+
+            <h2>Real-World Example: Image Loading</h2>
+
+            <pre><code class="language-javascript">function loadImageWithTimeout(url, timeout = 5000) {
+  return Promise.race([
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = url;
+    }),
+    new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Image load timeout')), timeout)
+    )
+  ]);
+}
+
+loadImageWithTimeout('photo.jpg', 3000)
+  .then(img => document.body.appendChild(img))
+  .catch(error => console.error('Image load failed:', error.message));</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <code>Promise.race()</code> settles with the <strong>first</strong> settled Promise</li>
+                    <li>✅ Perfect for implementing <strong>timeouts</strong></li>
+                    <li>✅ Use for <strong>fastest wins</strong> scenarios</li>
+                    <li>✅ Other Promises continue running even after race settles</li>
+                    <li>✅ Can reject if the fastest Promise rejects</li>
+                    <li>✅ Empty array never settles</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Next, we'll learn about Promise.allSettled() for handling mixed results!</p>
+
+            <div class="lesson-nav">
+                <a href="3-1.html" class="btn btn-secondary">← Previous: Promise.all()</a>
+                <a href="3-3.html" class="btn btn-primary">Next: Promise.allSettled() →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

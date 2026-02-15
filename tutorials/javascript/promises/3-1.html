@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.1: Promise.all() - Learn parallel Promise execution and batch processing.">
+    <meta name="keywords" content="JavaScript, Promises, Promise.all, Parallel, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.1: Promise.all() | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-3-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .success-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.1: Promise.all()</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 3: Static Methods</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand how Promise.all() works</li>
+                    <li>Learn when to use parallel Promise execution</li>
+                    <li>Handle failures in Promise.all()</li>
+                    <li>Master common patterns and use cases</li>
+                </ul>
+            </div>
+
+            <h2>What is Promise.all()?</h2>
+            <p><code>Promise.all()</code> takes an array of Promises and returns a single Promise that:</p>
+            <ul>
+                <li>✅ <strong>Fulfills</strong> when ALL Promises fulfill</li>
+                <li>❌ <strong>Rejects</strong> when ANY Promise rejects</li>
+            </ul>
+
+            <pre><code class="language-javascript">Promise.all([promise1, promise2, promise3])
+  .then(results => {
+    // results is an array: [result1, result2, result3]
+  })
+  .catch(error => {
+    // First rejection
+  });</code></pre>
+
+            <h2>Basic Usage</h2>
+
+            <h3>Example: Fetching Multiple Users</h3>
+
+            <pre><code class="language-javascript">const user1 = fetchUser(1);
+const user2 = fetchUser(2);
+const user3 = fetchUser(3);
+
+Promise.all([user1, user2, user3])
+  .then(users => {
+    console.log('All users:', users);
+    // users = [userData1, userData2, userData3]
+  })
+  .catch(error => {
+    console.error('Failed to fetch users:', error);
+  });</code></pre>
+
+            <h3>Results Order</h3>
+            <p>Results array matches the order of input Promises:</p>
+
+            <pre><code class="language-javascript">Promise.all([
+  delay(1000, 'third'),   // Takes longest
+  delay(100, 'first'),    // Finishes first
+  delay(500, 'second')    // Finishes second
+])
+.then(results => {
+  console.log(results); // ['third', 'first', 'second']
+  // Order matches input, not completion time!
+});</code></pre>
+
+            <h2>Why Use Promise.all()?</h2>
+
+            <h3>Sequential vs Parallel Execution</h3>
+
+            <p><strong>Sequential (Slow):</strong></p>
+            <pre><code class="language-javascript">const user = await fetchUser(1);      // Wait 1s
+const posts = await fetchPosts(1);    // Wait 1s
+const comments = await fetchComments(1); // Wait 1s
+// Total: 3 seconds</code></pre>
+
+            <p><strong>Parallel (Fast):</strong></p>
+            <pre><code class="language-javascript">const [user, posts, comments] = await Promise.all([
+  fetchUser(1),
+  fetchPosts(1),
+  fetchComments(1)
+]);
+// Total: 1 second (all run simultaneously)</code></pre>
+
+            <div class="success-box">
+                <p><strong>Performance Gain:</strong> 3x faster! 🚀</p>
+            </div>
+
+            <h2>Handling Failures</h2>
+
+            <h3>Fail-Fast Behavior</h3>
+            <p>Promise.all() rejects immediately when ANY Promise rejects:</p>
+
+            <pre><code class="language-javascript">Promise.all([
+  Promise.resolve('Success 1'),
+  Promise.reject(new Error('Failed!')),
+  Promise.resolve('Success 2')
+])
+.then(results => {
+  console.log('All succeeded'); // Never runs
+})
+.catch(error => {
+  console.error('One failed:', error.message);
+  // Rejects immediately with first error
+});</code></pre>
+
+            <h2>Common Patterns</h2>
+
+            <h3>Pattern 1: Fetching Multiple Resources</h3>
+
+            <pre><code class="language-javascript">async function loadDashboard(userId) {
+  const [user, notifications, settings, activity] = await Promise.all([
+    fetchUser(userId),
+    fetchNotifications(userId),
+    fetchSettings(userId),
+    fetchActivity(userId)
+  ]);
+
+  return {
+    user,
+    notifications,
+    settings,
+    activity
+  };
+}</code></pre>
+
+            <h3>Pattern 2: Batch Processing</h3>
+
+            <pre><code class="language-javascript">async function processUsers(userIds) {
+  const users = await Promise.all(
+    userIds.map(id => fetchUser(id))
+  );
+  
+  return users;
+}
+
+processUsers([1, 2, 3, 4, 5])
+  .then(users => console.log('Processed:', users.length));</code></pre>
+
+            <h3>Pattern 3: Multiple API Endpoints</h3>
+
+            <pre><code class="language-javascript">async function aggregateData() {
+  const [weather, news, stocks] = await Promise.all([
+    fetch('https://api.weather.com/current').then(r => r.json()),
+    fetch('https://api.news.com/headlines').then(r => r.json()),
+    fetch('https://api.stocks.com/prices').then(r => r.json())
+  ]);
+
+  return { weather, news, stocks };
+}</code></pre>
+
+            <h2>Real-World Example: Image Preloader</h2>
+
+            <pre><code class="language-javascript">function preloadImages(urls) {
+  const promises = urls.map(url => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error(`Failed to load ${url}`));
+      img.src = url;
+    });
+  });
+
+  return Promise.all(promises);
+}
+
+preloadImages([
+  'image1.jpg',
+  'image2.jpg',
+  'image3.jpg'
+])
+.then(images => {
+  console.log('All images loaded:', images.length);
+})
+.catch(error => {
+  console.error('Failed to load images:', error);
+});</code></pre>
+
+            <h2>Performance Considerations</h2>
+
+            <h3>Limiting Concurrency</h3>
+            <p>Too many parallel requests can overwhelm servers:</p>
+
+            <pre><code class="language-javascript">// Bad: 1000 simultaneous requests
+const results = await Promise.all(
+  userIds.map(id => fetchUser(id))
+);
+
+// Good: Process in batches
+async function batchProcess(items, batchSize, processor) {
+  const results = [];
+  
+  for (let i = 0; i < items.length; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    const batchResults = await Promise.all(
+      batch.map(processor)
+    );
+    results.push(...batchResults);
+  }
+  
+  return results;
+}
+
+const results = await batchProcess(userIds, 10, fetchUser);</code></pre>
+
+            <h2>Common Mistakes</h2>
+
+            <h3>❌ Sequential Instead of Parallel</h3>
+
+            <pre><code class="language-javascript">// Bad - runs sequentially
+const results = [];
+for (const id of userIds) {
+  results.push(await fetchUser(id));
+}
+
+// Good - runs in parallel
+const results = await Promise.all(
+  userIds.map(id => fetchUser(id))
+);</code></pre>
+
+            <h3>❌ Forgetting to Return Promises</h3>
+
+            <pre><code class="language-javascript">// Bad - returns undefined
+Promise.all([
+  fetchUser(1).then(user => {
+    console.log(user);
+  })
+]);
+
+// Good - returns the value
+Promise.all([
+  fetchUser(1).then(user => {
+    console.log(user);
+    return user;
+  })
+]);</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <code>Promise.all()</code> runs Promises <strong>in parallel</strong></li>
+                    <li>✅ Returns results in <strong>same order</strong> as input</li>
+                    <li>✅ <strong>Rejects immediately</strong> if any Promise fails (fail-fast)</li>
+                    <li>✅ Perfect for <strong>independent operations</strong> that can run simultaneously</li>
+                    <li>✅ Significantly <strong>improves performance</strong> vs sequential execution</li>
+                    <li>✅ Consider <strong>batching</strong> for large numbers of operations</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Next, we'll learn about <strong>async/await</strong> - the modern syntax that makes async code even more readable!</p>
+
+            <div class="lesson-nav">
+                <a href="2-2.html" class="btn btn-secondary">← Previous: Consuming Promises</a>
+                <a href="4-1.html" class="btn btn-primary">Next: Async/Await →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

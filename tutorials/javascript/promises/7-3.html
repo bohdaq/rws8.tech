@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 7.3: Performance Optimization - Measure and optimize async code performance.">
+    <meta name="keywords" content="JavaScript, Promises, Performance, Optimization, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 7.3: Performance Optimization | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-7-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 7.3: Performance Optimization</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 7: Testing and Debugging</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Measure async performance accurately</li>
+                    <li>Identify and fix performance bottlenecks</li>
+                    <li>Optimize Promise-based code</li>
+                    <li>Avoid common anti-patterns</li>
+                </ul>
+            </div>
+
+            <h2>Measuring Performance</h2>
+
+            <h3>Using console.time()</h3>
+
+            <pre><code class="language-javascript">console.time('fetchUsers');
+const users = await fetchUsers();
+console.timeEnd('fetchUsers');
+// fetchUsers: 1234.56ms</code></pre>
+
+            <h3>Using Performance API</h3>
+
+            <pre><code class="language-javascript">const start = performance.now();
+await fetchUsers();
+const end = performance.now();
+console.log(`Execution time: ${end - start}ms`);</code></pre>
+
+            <h3>Performance Profiler</h3>
+
+            <pre><code class="language-javascript">class PerformanceProfiler {
+  constructor() {
+    this.metrics = new Map();
+  }
+  
+  async measure(name, fn) {
+    const start = performance.now();
+    
+    try {
+      const result = await fn();
+      const duration = performance.now() - start;
+      
+      this.recordMetric(name, duration, true);
+      return result;
+    } catch (error) {
+      const duration = performance.now() - start;
+      this.recordMetric(name, duration, false);
+      throw error;
+    }
+  }
+  
+  recordMetric(name, duration, success) {
+    if (!this.metrics.has(name)) {
+      this.metrics.set(name, {
+        count: 0,
+        totalTime: 0,
+        minTime: Infinity,
+        maxTime: 0,
+        failures: 0
+      });
+    }
+    
+    const metric = this.metrics.get(name);
+    metric.count++;
+    metric.totalTime += duration;
+    metric.minTime = Math.min(metric.minTime, duration);
+    metric.maxTime = Math.max(metric.maxTime, duration);
+    
+    if (!success) {
+      metric.failures++;
+    }
+  }
+  
+  getReport() {
+    const report = [];
+    
+    for (const [name, metric] of this.metrics.entries()) {
+      report.push({
+        name,
+        calls: metric.count,
+        avgTime: (metric.totalTime / metric.count).toFixed(2),
+        minTime: metric.minTime.toFixed(2),
+        maxTime: metric.maxTime.toFixed(2),
+        totalTime: metric.totalTime.toFixed(2),
+        failureRate: ((metric.failures / metric.count) * 100).toFixed(1)
+      });
+    }
+    
+    return report;
+  }
+  
+  printReport() {
+    console.table(this.getReport());
+  }
+}
+
+// Usage
+const profiler = new PerformanceProfiler();
+
+await profiler.measure('fetchUser', () => fetchUser(1));
+await profiler.measure('fetchPosts', () => fetchPosts(1));
+
+profiler.printReport();</code></pre>
+
+            <h2>Common Performance Anti-Patterns</h2>
+
+            <h3>❌ Anti-Pattern 1: Unnecessary Awaits</h3>
+
+            <pre><code class="language-javascript">// Bad: Unnecessary await
+async function bad() {
+  return await fetchData(); // Redundant await
+}
+
+// Good: Return Promise directly
+async function good() {
+  return fetchData();
+}
+
+// Exception: Use await in try/catch
+async function withErrorHandling() {
+  try {
+    return await fetchData(); // Needed to catch errors
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}</code></pre>
+
+            <h3>❌ Anti-Pattern 2: Sequential When Parallel is Possible</h3>
+
+            <pre><code class="language-javascript">// Bad: Sequential (3 seconds)
+async function bad() {
+  const user = await fetchUser(1);     // 1s
+  const posts = await fetchPosts(1);   // 1s
+  const comments = await fetchComments(1); // 1s
+  return { user, posts, comments };
+}
+
+// Good: Parallel (1 second)
+async function good() {
+  const [user, posts, comments] = await Promise.all([
+    fetchUser(1),
+    fetchPosts(1),
+    fetchComments(1)
+  ]);
+  return { user, posts, comments };
+}</code></pre>
+
+            <h3>❌ Anti-Pattern 3: Creating Promises in Loops</h3>
+
+            <pre><code class="language-javascript">// Bad: Creates Promises sequentially
+async function bad(ids) {
+  const results = [];
+  for (const id of ids) {
+    results.push(await fetchUser(id)); // Waits for each
+  }
+  return results;
+}
+
+// Good: Create all Promises, then await
+async function good(ids) {
+  return await Promise.all(
+    ids.map(id => fetchUser(id))
+  );
+}</code></pre>
+
+            <h3>❌ Anti-Pattern 4: Not Reusing Promises</h3>
+
+            <pre><code class="language-javascript">// Bad: Multiple calls to same Promise
+async function bad() {
+  const user1 = await fetchUser(1);
+  const user2 = await fetchUser(1); // Duplicate request!
+  return [user1, user2];
+}
+
+// Good: Reuse Promise
+async function good() {
+  const userPromise = fetchUser(1);
+  const [user1, user2] = await Promise.all([
+    userPromise,
+    userPromise
+  ]);
+  return [user1, user2];
+}</code></pre>
+
+            <h2>Optimization Techniques</h2>
+
+            <h3>1. Batch Requests</h3>
+
+            <pre><code class="language-javascript">// Instead of individual requests
+async function fetchUsersIndividually(ids) {
+  return await Promise.all(
+    ids.map(id => fetch(`/api/users/${id}`))
+  );
+}
+
+// Batch into single request
+async function fetchUsersBatch(ids) {
+  const response = await fetch('/api/users/batch', {
+    method: 'POST',
+    body: JSON.stringify({ ids })
+  });
+  return await response.json();
+}</code></pre>
+
+            <h3>2. Request Deduplication</h3>
+
+            <pre><code class="language-javascript">const pendingRequests = new Map();
+
+async function fetchWithDedup(url) {
+  if (pendingRequests.has(url)) {
+    return await pendingRequests.get(url);
+  }
+  
+  const promise = fetch(url).then(r => r.json());
+  pendingRequests.set(url, promise);
+  
+  try {
+    const result = await promise;
+    return result;
+  } finally {
+    pendingRequests.delete(url);
+  }
+}</code></pre>
+
+            <h3>3. Lazy Loading</h3>
+
+            <pre><code class="language-javascript">class LazyData {
+  constructor(fetchFn) {
+    this.fetchFn = fetchFn;
+    this.promise = null;
+  }
+  
+  async get() {
+    if (!this.promise) {
+      this.promise = this.fetchFn();
+    }
+    return await this.promise;
+  }
+}
+
+// Usage
+const userData = new LazyData(() => fetchUser(1));
+
+// Only fetches when first accessed
+const user = await userData.get();
+
+// Subsequent calls reuse same Promise
+const sameUser = await userData.get();</code></pre>
+
+            <h3>4. Streaming Responses</h3>
+
+            <pre><code class="language-javascript">async function* streamUsers(ids) {
+  for (const id of ids) {
+    yield await fetchUser(id);
+  }
+}
+
+// Process as data arrives
+for await (const user of streamUsers(userIds)) {
+  displayUser(user); // Show immediately
+}</code></pre>
+
+            <h3>5. Prefetching</h3>
+
+            <pre><code class="language-javascript">class Prefetcher {
+  constructor() {
+    this.cache = new Map();
+  }
+  
+  prefetch(key, fetchFn) {
+    if (!this.cache.has(key)) {
+      this.cache.set(key, fetchFn());
+    }
+  }
+  
+  async get(key) {
+    if (!this.cache.has(key)) {
+      throw new Error('Not prefetched');
+    }
+    return await this.cache.get(key);
+  }
+}
+
+// Usage
+const prefetcher = new Prefetcher();
+
+// Prefetch on page load
+prefetcher.prefetch('user', () => fetchUser(1));
+prefetcher.prefetch('posts', () => fetchPosts(1));
+
+// Later: instant access
+const user = await prefetcher.get('user');</code></pre>
+
+            <h2>Memory Optimization</h2>
+
+            <h3>Avoid Memory Leaks</h3>
+
+            <pre><code class="language-javascript">// Bad: Accumulates Promises indefinitely
+const promises = [];
+setInterval(() => {
+  promises.push(fetchData()); // Memory leak!
+}, 1000);
+
+// Good: Limit array size
+const MAX_PROMISES = 100;
+const promises = [];
+
+setInterval(() => {
+  if (promises.length >= MAX_PROMISES) {
+    promises.shift(); // Remove oldest
+  }
+  promises.push(fetchData());
+}, 1000);</code></pre>
+
+            <h3>Clean Up Cancelled Operations</h3>
+
+            <pre><code class="language-javascript">async function fetchWithCleanup(signal) {
+  const resources = [];
+  
+  try {
+    const data = await fetch('/api/data', { signal });
+    resources.push(data);
+    return await data.json();
+  } finally {
+    // Clean up even if cancelled
+    resources.forEach(r => r.close?.());
+  }
+}</code></pre>
+
+            <h2>Real-World Optimization Example</h2>
+
+            <pre><code class="language-javascript">class OptimizedDashboard {
+  constructor() {
+    this.cache = new Map();
+    this.profiler = new PerformanceProfiler();
+  }
+  
+  async loadDashboard(userId) {
+    return await this.profiler.measure('loadDashboard', async () => {
+      // Critical data: fetch immediately
+      const criticalData = await this.profiler.measure(
+        'criticalData',
+        () => this.fetchCriticalData(userId)
+      );
+      
+      // Non-critical: fetch in parallel
+      const [analytics, notifications] = await Promise.all([
+        this.profiler.measure('analytics', 
+          () => this.fetchAnalytics(userId)
+        ).catch(() => null), // Don't fail on optional data
+        
+        this.profiler.measure('notifications',
+          () => this.fetchNotifications(userId)
+        ).catch(() => [])
+      ]);
+      
+      // Prefetch for next page
+      this.prefetchNextPage(userId);
+      
+      return {
+        ...criticalData,
+        analytics,
+        notifications
+      };
+    });
+  }
+  
+  async fetchCriticalData(userId) {
+    const cacheKey = `critical-${userId}`;
+    
+    if (this.cache.has(cacheKey)) {
+      return this.cache.get(cacheKey);
+    }
+    
+    const data = await fetch(`/api/users/${userId}/critical`)
+      .then(r => r.json());
+    
+    this.cache.set(cacheKey, data);
+    return data;
+  }
+  
+  async fetchAnalytics(userId) {
+    // Use stale data while revalidating
+    const cached = this.cache.get(`analytics-${userId}`);
+    
+    if (cached && Date.now() - cached.timestamp < 60000) {
+      // Revalidate in background
+      this.revalidateAnalytics(userId);
+      return cached.data;
+    }
+    
+    return await this.revalidateAnalytics(userId);
+  }
+  
+  async revalidateAnalytics(userId) {
+    const data = await fetch(`/api/users/${userId}/analytics`)
+      .then(r => r.json());
+    
+    this.cache.set(`analytics-${userId}`, {
+      data,
+      timestamp: Date.now()
+    });
+    
+    return data;
+  }
+  
+  async fetchNotifications(userId) {
+    return await fetch(`/api/users/${userId}/notifications`)
+      .then(r => r.json());
+  }
+  
+  prefetchNextPage(userId) {
+    // Don't await - fire and forget
+    fetch(`/api/users/${userId}/settings`)
+      .then(r => r.json())
+      .then(data => {
+        this.cache.set(`settings-${userId}`, data);
+      })
+      .catch(() => {}); // Ignore errors
+  }
+  
+  getPerformanceReport() {
+    return this.profiler.getReport();
+  }
+}
+
+// Usage
+const dashboard = new OptimizedDashboard();
+const data = await dashboard.loadDashboard(1);
+
+// Check performance
+console.table(dashboard.getPerformanceReport());</code></pre>
+
+            <h2>Performance Checklist</h2>
+
+            <ol>
+                <li>✅ Use parallel execution for independent operations</li>
+                <li>✅ Implement caching with appropriate TTL</li>
+                <li>✅ Deduplicate in-flight requests</li>
+                <li>✅ Batch API requests when possible</li>
+                <li>✅ Use lazy loading for non-critical data</li>
+                <li>✅ Prefetch predictable next requests</li>
+                <li>✅ Implement request cancellation</li>
+                <li>✅ Monitor and profile performance</li>
+                <li>✅ Avoid memory leaks</li>
+                <li>✅ Use streaming for large datasets</li>
+            </ol>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <strong>Measure first</strong> before optimizing</li>
+                    <li>✅ Use <strong>parallel execution</strong> for independent operations</li>
+                    <li>✅ <strong>Cache</strong> expensive operations</li>
+                    <li>✅ <strong>Deduplicate</strong> redundant requests</li>
+                    <li>✅ <strong>Batch</strong> multiple requests</li>
+                    <li>✅ <strong>Profile</strong> to identify bottlenecks</li>
+                    <li>✅ Avoid common <strong>anti-patterns</strong></li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Ready to put everything together? Check out the course project to build a complete application!</p>
+
+            <div class="lesson-nav">
+                <a href="7-2.html" class="btn btn-secondary">← Previous: Debugging</a>
+                <a href="8-1.html" class="btn btn-primary">Next: Course Project →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

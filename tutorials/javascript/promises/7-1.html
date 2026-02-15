@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 7.1: Testing Async Code - Learn how to test Promises and async/await with Jest.">
+    <meta name="keywords" content="JavaScript, Testing, Jest, Async, Promises, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 7.1: Testing Async Code | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-7-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 7.1: Testing Async Code</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 7: Testing and Debugging</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Learn how to test Promises with Jest</li>
+                    <li>Master async/await in tests</li>
+                    <li>Mock async functions effectively</li>
+                    <li>Write comprehensive async test suites</li>
+                </ul>
+            </div>
+
+            <h2>Why Test Async Code?</h2>
+            <p>Async code is prone to:</p>
+            <ul>
+                <li>Race conditions</li>
+                <li>Timing issues</li>
+                <li>Unhandled rejections</li>
+                <li>Flaky tests</li>
+            </ul>
+            <p><strong>Proper testing ensures reliability and catches edge cases.</strong></p>
+
+            <h2>Testing with Jest</h2>
+            <p>Jest is the most popular JavaScript testing framework with built-in async support.</p>
+
+            <h3>Setup</h3>
+            <pre><code class="language-javascript">npm install --save-dev jest</code></pre>
+
+            <pre><code class="language-javascript">// package.json
+{
+  "scripts": {
+    "test": "jest"
+  }
+}</code></pre>
+
+            <h2>Testing Promises with .then()</h2>
+
+            <h3>Basic Promise Test</h3>
+            <pre><code class="language-javascript">// fetchUser.js
+function fetchUser(id) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (id > 0) {
+        resolve({ id, name: `User ${id}` });
+      } else {
+        reject(new Error('Invalid ID'));
+      }
+    }, 100);
+  });
+}
+
+// fetchUser.test.js
+test('fetches user successfully', () => {
+  return fetchUser(1).then(user => {
+    expect(user.id).toBe(1);
+    expect(user.name).toBe('User 1');
+  });
+});</code></pre>
+
+            <div class="warning-box">
+                <p><strong>Important:</strong> Return the Promise so Jest waits for it!</p>
+            </div>
+
+            <h3>Testing Rejections</h3>
+            <pre><code class="language-javascript">test('rejects with invalid ID', () => {
+  return fetchUser(-1).catch(error => {
+    expect(error.message).toBe('Invalid ID');
+  });
+});
+
+// Or use expect().rejects
+test('rejects with invalid ID', () => {
+  return expect(fetchUser(-1)).rejects.toThrow('Invalid ID');
+});</code></pre>
+
+            <h2>Testing with Async/Await</h2>
+
+            <h3>Basic Async Test</h3>
+            <pre><code class="language-javascript">test('fetches user successfully', async () => {
+  const user = await fetchUser(1);
+  expect(user.id).toBe(1);
+  expect(user.name).toBe('User 1');
+});</code></pre>
+
+            <h3>Testing Rejections with Try/Catch</h3>
+            <pre><code class="language-javascript">test('rejects with invalid ID', async () => {
+  try {
+    await fetchUser(-1);
+    // Fail if no error thrown
+    expect(true).toBe(false);
+  } catch (error) {
+    expect(error.message).toBe('Invalid ID');
+  }
+});
+
+// Better: use expect().rejects
+test('rejects with invalid ID', async () => {
+  await expect(fetchUser(-1)).rejects.toThrow('Invalid ID');
+});</code></pre>
+
+            <h2>Mocking Async Functions</h2>
+
+            <h3>Mock with jest.fn()</h3>
+            <pre><code class="language-javascript">const mockFetch = jest.fn();
+
+test('calls fetch with correct URL', async () => {
+  mockFetch.mockResolvedValue({ data: 'test' });
+  
+  const result = await mockFetch('/api/users');
+  
+  expect(mockFetch).toHaveBeenCalledWith('/api/users');
+  expect(result).toEqual({ data: 'test' });
+});</code></pre>
+
+            <h3>Mock Resolved/Rejected Values</h3>
+            <pre><code class="language-javascript">// Mock successful response
+mockFetch.mockResolvedValue({ id: 1, name: 'John' });
+
+// Mock error
+mockFetch.mockRejectedValue(new Error('Network error'));
+
+// Mock different responses for multiple calls
+mockFetch
+  .mockResolvedValueOnce({ id: 1 })
+  .mockResolvedValueOnce({ id: 2 })
+  .mockRejectedValueOnce(new Error('Failed'));</code></pre>
+
+            <h2>Testing Promise.all()</h2>
+            <pre><code class="language-javascript">test('fetches multiple users in parallel', async () => {
+  const users = await Promise.all([
+    fetchUser(1),
+    fetchUser(2),
+    fetchUser(3)
+  ]);
+  
+  expect(users).toHaveLength(3);
+  expect(users[0].id).toBe(1);
+  expect(users[1].id).toBe(2);
+  expect(users[2].id).toBe(3);
+});</code></pre>
+
+            <h2>Testing Timeouts</h2>
+            <pre><code class="language-javascript">test('times out after 5 seconds', async () => {
+  const slowPromise = new Promise(resolve => {
+    setTimeout(() => resolve('done'), 10000);
+  });
+  
+  await expect(
+    timeout(slowPromise, 5000)
+  ).rejects.toThrow('Timeout');
+}, 6000); // Increase Jest timeout</code></pre>
+
+            <h2>Testing Retry Logic</h2>
+            <pre><code class="language-javascript">test('retries failed requests', async () => {
+  const mockFn = jest.fn()
+    .mockRejectedValueOnce(new Error('Fail 1'))
+    .mockRejectedValueOnce(new Error('Fail 2'))
+    .mockResolvedValueOnce('Success');
+  
+  const result = await retry(mockFn, 3);
+  
+  expect(mockFn).toHaveBeenCalledTimes(3);
+  expect(result).toBe('Success');
+});</code></pre>
+
+            <h2>Complete Test Suite Example</h2>
+            <pre><code class="language-javascript">// userService.test.js
+describe('UserService', () => {
+  let userService;
+  let mockAPI;
+  
+  beforeEach(() => {
+    mockAPI = {
+      get: jest.fn(),
+      post: jest.fn()
+    };
+    userService = new UserService(mockAPI);
+  });
+  
+  describe('getUser', () => {
+    test('fetches user successfully', async () => {
+      mockAPI.get.mockResolvedValue({ id: 1, name: 'John' });
+      
+      const user = await userService.getUser(1);
+      
+      expect(mockAPI.get).toHaveBeenCalledWith('/users/1');
+      expect(user).toEqual({ id: 1, name: 'John' });
+    });
+    
+    test('handles errors', async () => {
+      mockAPI.get.mockRejectedValue(new Error('Not found'));
+      
+      await expect(userService.getUser(999))
+        .rejects.toThrow('Not found');
+    });
+  });
+  
+  describe('createUser', () => {
+    test('creates user successfully', async () => {
+      const newUser = { name: 'Jane' };
+      mockAPI.post.mockResolvedValue({ id: 2, ...newUser });
+      
+      const user = await userService.createUser(newUser);
+      
+      expect(mockAPI.post).toHaveBeenCalledWith('/users', newUser);
+      expect(user.id).toBe(2);
+    });
+  });
+});</code></pre>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li><strong>Always return or await</strong> Promises in tests</li>
+                <li><strong>Use async/await</strong> for cleaner test code</li>
+                <li><strong>Mock external dependencies</strong> to isolate units</li>
+                <li><strong>Test both success and failure</strong> cases</li>
+                <li><strong>Set appropriate timeouts</strong> for slow operations</li>
+                <li><strong>Use beforeEach/afterEach</strong> for setup/cleanup</li>
+            </ul>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Always return or await Promises in Jest tests</li>
+                    <li>✅ Use <code>async/await</code> for cleaner test syntax</li>
+                    <li>✅ Mock async functions with <code>mockResolvedValue</code>/<code>mockRejectedValue</code></li>
+                    <li>✅ Test both success and error cases</li>
+                    <li>✅ Use <code>expect().rejects</code> for rejection testing</li>
+                    <li>✅ Set appropriate test timeouts for slow operations</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Next, we'll learn about debugging Promises and common pitfalls to avoid!</p>
+
+            <div class="lesson-nav">
+                <a href="5-1.html" class="btn btn-secondary">← Previous: Promise Utilities</a>
+                <a href="7-2.html" class="btn btn-primary">Next: Debugging →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.4: Performance Optimization - Optimize generator performance and memory usage.">
+    <meta name="keywords" content="JavaScript, Generators, Performance, Optimization, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.4: Performance Optimization | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-3-4.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .success-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.4: Performance Optimization</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 3: Advanced Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand generator performance characteristics</li>
+                    <li>Optimize memory usage with generators</li>
+                    <li>Measure and improve generator performance</li>
+                    <li>Apply best practices for efficient generators</li>
+                </ul>
+            </div>
+
+            <h2>Memory Efficiency</h2>
+
+            <h3>Array vs Generator</h3>
+
+            <pre><code class="language-javascript">// Array approach - stores all values in memory
+function createArray(n) {
+  const arr = [];
+  for (let i = 0; i < n; i++) {
+    arr.push(i * i);
+  }
+  return arr;
+}
+
+// Generator approach - computes on demand
+function* createGenerator(n) {
+  for (let i = 0; i < n; i++) {
+    yield i * i;
+  }
+}
+
+// Memory comparison
+const arr = createArray(1000000);    // ~8MB memory
+const gen = createGenerator(1000000); // ~100 bytes
+
+// Process only what you need
+for (const value of gen) {
+  if (value > 100) break; // Can stop early
+}</code></pre>
+
+            <h2>Lazy Evaluation Benefits</h2>
+
+            <pre><code class="language-javascript">// Eager evaluation - processes everything
+function eagerPipeline(data) {
+  return data
+    .map(x => x * 2)        // Creates new array
+    .filter(x => x > 10)    // Creates new array
+    .map(x => x + 1)        // Creates new array
+    .slice(0, 5);           // Creates new array
+}
+
+// Lazy evaluation - processes only what's needed
+function* lazyPipeline(data) {
+  let count = 0;
+  
+  for (const x of data) {
+    const doubled = x * 2;
+    if (doubled > 10) {
+      const result = doubled + 1;
+      yield result;
+      if (++count >= 5) break;
+    }
+  }
+}
+
+const data = Array.from({ length: 1000000 }, (_, i) => i);
+
+console.time('eager');
+eagerPipeline(data);
+console.timeEnd('eager'); // ~200ms
+
+console.time('lazy');
+[...lazyPipeline(data)];
+console.timeEnd('lazy'); // ~5ms</code></pre>
+
+            <h2>Avoiding Unnecessary Work</h2>
+
+            <pre><code class="language-javascript">// Bad: Processes all items even if not needed
+function* inefficient(items) {
+  const processed = items.map(expensiveOperation);
+  for (const item of processed) {
+    yield item;
+  }
+}
+
+// Good: Processes items on demand
+function* efficient(items) {
+  for (const item of items) {
+    yield expensiveOperation(item);
+  }
+}
+
+function expensiveOperation(x) {
+  // Simulate expensive computation
+  return x * x;
+}</code></pre>
+
+            <h2>Early Termination</h2>
+
+            <pre><code class="language-javascript">function* search(items, predicate) {
+  for (const item of items) {
+    if (predicate(item)) {
+      yield item;
+      return; // Stop after first match
+    }
+  }
+}
+
+const numbers = Array.from({ length: 1000000 }, (_, i) => i);
+const result = search(numbers, n => n > 500000);
+
+console.log(result.next().value); // 500001
+// Generator stops, doesn't process remaining 499,999 items</code></pre>
+
+            <h2>Caching Generator Results</h2>
+
+            <pre><code class="language-javascript">function memoizeGenerator(generatorFn) {
+  const cache = new Map();
+  
+  return function* (...args) {
+    const key = JSON.stringify(args);
+    
+    if (cache.has(key)) {
+      yield* cache.get(key);
+      return;
+    }
+    
+    const results = [];
+    for (const value of generatorFn(...args)) {
+      results.push(value);
+      yield value;
+    }
+    
+    cache.set(key, results);
+  };
+}
+
+const fibonacci = memoizeGenerator(function* (n) {
+  let [a, b] = [0, 1];
+  for (let i = 0; i < n; i++) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+});
+
+// First call: computes and caches
+console.log([...fibonacci(10)]);
+
+// Second call: returns from cache
+console.log([...fibonacci(10)]);</code></pre>
+
+            <h2>Batch Processing for Performance</h2>
+
+            <pre><code class="language-javascript">// Process items in batches for better performance
+async function* batchProcess(items, batchSize = 100) {
+  for (let i = 0; i < items.length; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    
+    // Process batch in parallel
+    const results = await Promise.all(
+      batch.map(item => processItem(item))
+    );
+    
+    yield* results;
+  }
+}
+
+async function processItem(item) {
+  // Simulate async processing
+  await new Promise(resolve => setTimeout(resolve, 10));
+  return item * 2;
+}
+
+// Usage
+(async () => {
+  const items = Array.from({ length: 1000 }, (_, i) => i);
+  
+  for await (const result of batchProcess(items, 50)) {
+    console.log(result);
+  }
+})();</code></pre>
+
+            <h2>Avoiding Generator Overhead</h2>
+
+            <pre><code class="language-javascript">// When NOT to use generators
+function simpleLoop(n) {
+  const results = [];
+  for (let i = 0; i < n; i++) {
+    results.push(i);
+  }
+  return results;
+}
+
+// Generator has overhead for simple cases
+function* generatorLoop(n) {
+  for (let i = 0; i < n; i++) {
+    yield i;
+  }
+}
+
+// Benchmark
+console.time('simple');
+simpleLoop(1000000);
+console.timeEnd('simple'); // ~10ms
+
+console.time('generator');
+[...generatorLoop(1000000)];
+console.timeEnd('generator'); // ~50ms
+
+// Use generators when:
+// - Working with large datasets
+// - Need lazy evaluation
+// - Want to stop early
+// - Processing infinite sequences</code></pre>
+
+            <h2>Performance Monitoring</h2>
+
+            <pre><code class="language-javascript">function* monitoredGenerator(iterable) {
+  let count = 0;
+  const start = performance.now();
+  
+  for (const item of iterable) {
+    count++;
+    yield item;
+    
+    if (count % 1000 === 0) {
+      const elapsed = performance.now() - start;
+      console.log(`Processed ${count} items in ${elapsed.toFixed(2)}ms`);
+    }
+  }
+  
+  const total = performance.now() - start;
+  console.log(`Total: ${count} items in ${total.toFixed(2)}ms`);
+}
+
+const data = Array.from({ length: 10000 }, (_, i) => i);
+for (const item of monitoredGenerator(data)) {
+  // Process items
+}</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <ol>
+                <li><strong>Use generators for large datasets</strong> - Avoid loading everything into memory</li>
+                <li><strong>Leverage lazy evaluation</strong> - Process only what you need</li>
+                <li><strong>Enable early termination</strong> - Stop when you find what you need</li>
+                <li><strong>Batch async operations</strong> - Process in chunks for better performance</li>
+                <li><strong>Cache when appropriate</strong> - Memoize expensive computations</li>
+                <li><strong>Avoid generator overhead</strong> - Use simple loops for small datasets</li>
+                <li><strong>Monitor performance</strong> - Measure to verify improvements</li>
+            </ol>
+
+            <h2>Real-World Example: Optimized Data Pipeline</h2>
+
+            <pre><code class="language-javascript">class DataPipeline {
+  constructor(source) {
+    this.source = source;
+  }
+  
+  *filter(predicate) {
+    for (const item of this.source) {
+      if (predicate(item)) {
+        yield item;
+      }
+    }
+  }
+  
+  *map(transform) {
+    for (const item of this.source) {
+      yield transform(item);
+    }
+  }
+  
+  *take(n) {
+    let count = 0;
+    for (const item of this.source) {
+      if (count++ >= n) break;
+      yield item;
+    }
+  }
+  
+  *batch(size) {
+    let batch = [];
+    
+    for (const item of this.source) {
+      batch.push(item);
+      
+      if (batch.length === size) {
+        yield batch;
+        batch = [];
+      }
+    }
+    
+    if (batch.length > 0) {
+      yield batch;
+    }
+  }
+  
+  toArray() {
+    return [...this.source];
+  }
+  
+  forEach(fn) {
+    for (const item of this.source) {
+      fn(item);
+    }
+  }
+}
+
+// Usage - memory efficient, lazy evaluation
+const data = Array.from({ length: 1000000 }, (_, i) => i);
+
+const pipeline = new DataPipeline(data);
+const result = pipeline
+  .filter(n => n % 2 === 0)
+  .map(n => n * n)
+  .take(10)
+  .toArray();
+
+console.log(result); // [0, 4, 16, 36, 64, 100, 144, 196, 256, 324]
+// Processed only 20 items instead of 1,000,000!</code></pre>
+
+            <div class="success-box">
+                <h3>🎉 Congratulations!</h3>
+                <p>You've completed the JavaScript Generators tutorial! You now have the skills to build efficient, memory-optimized applications using generators.</p>
+            </div>
+
+            <h2>What You've Learned</h2>
+
+            <ul>
+                <li>✅ Generator function syntax and basics</li>
+                <li>✅ Iterator protocol and iterable objects</li>
+                <li>✅ Yield expressions and delegation</li>
+                <li>✅ Two-way communication patterns</li>
+                <li>✅ Async generators and for-await-of</li>
+                <li>✅ Infinite sequences and lazy evaluation</li>
+                <li>✅ Practical use cases and patterns</li>
+                <li>✅ Performance optimization techniques</li>
+            </ul>
+
+            <h2>Next Steps</h2>
+
+            <ul>
+                <li>🚀 Apply generators to your projects</li>
+                <li>📚 Explore async iterators in depth</li>
+                <li>🔧 Build generator-based libraries</li>
+                <li>💼 Use generators for data processing</li>
+                <li>🎓 Share your knowledge with others</li>
+            </ul>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Generators provide <strong>memory efficiency</strong></li>
+                    <li>✅ <strong>Lazy evaluation</strong> processes only what's needed</li>
+                    <li>✅ <strong>Early termination</strong> saves computation</li>
+                    <li>✅ Use for <strong>large datasets</strong> and streams</li>
+                    <li>✅ Combine with async for <strong>powerful patterns</strong></li>
+                    <li>✅ Measure performance to verify benefits</li>
+                </ul>
+            </div>
+
+            <h2>Thank You!</h2>
+            <p>Thank you for completing this JavaScript Generators tutorial. You now have powerful tools for building efficient, scalable applications. Keep practicing and happy coding! 🎉</p>
+
+            <div class="lesson-nav">
+                <a href="3-3.html" class="btn btn-secondary">← Previous: Practical Use Cases</a>
+                <a href="index.html" class="btn btn-primary">Back to Course →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

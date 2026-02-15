@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.3: Yield Delegation - Learn to compose generators with yield*.">
+    <meta name="keywords" content="JavaScript, Generators, Yield Delegation, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.3: Yield Delegation | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-2-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.3: Yield Delegation</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 2: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand yield* syntax</li>
+                    <li>Learn to compose generators</li>
+                    <li>Master delegation patterns</li>
+                    <li>Build modular generator systems</li>
+                </ul>
+            </div>
+
+            <h2>What is Yield Delegation?</h2>
+            <p>The <code>yield*</code> expression delegates to another generator or iterable, yielding all its values.</p>
+
+            <pre><code class="language-javascript">function* inner() {
+  yield 1;
+  yield 2;
+}
+
+function* outer() {
+  yield 'start';
+  yield* inner(); // Delegate to inner generator
+  yield 'end';
+}
+
+console.log([...outer()]); // ['start', 1, 2, 'end']</code></pre>
+
+            <h2>Without vs With Delegation</h2>
+
+            <pre><code class="language-javascript">// Without yield* - yields the generator object
+function* withoutDelegation() {
+  yield inner(); // Yields generator object
+}
+
+console.log([...withoutDelegation()]); 
+// [Object [Generator] {}]
+
+// With yield* - yields all values
+function* withDelegation() {
+  yield* inner(); // Yields 1, then 2
+}
+
+console.log([...withDelegation()]); // [1, 2]</code></pre>
+
+            <h2>Delegating to Arrays</h2>
+
+            <pre><code class="language-javascript">function* arrayDelegation() {
+  yield* [1, 2, 3];
+  yield* 'hello';
+  yield* new Set([4, 5, 6]);
+}
+
+console.log([...arrayDelegation()]); 
+// [1, 2, 3, 'h', 'e', 'l', 'l', 'o', 4, 5, 6]</code></pre>
+
+            <h2>Composing Generators</h2>
+
+            <pre><code class="language-javascript">function* numbers() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+function* letters() {
+  yield 'a';
+  yield 'b';
+  yield 'c';
+}
+
+function* combined() {
+  yield* numbers();
+  yield* letters();
+}
+
+console.log([...combined()]); // [1, 2, 3, 'a', 'b', 'c']</code></pre>
+
+            <h2>Recursive Generators</h2>
+
+            <pre><code class="language-javascript">function* flatten(array) {
+  for (const item of array) {
+    if (Array.isArray(item)) {
+      yield* flatten(item); // Recursive delegation
+    } else {
+      yield item;
+    }
+  }
+}
+
+const nested = [1, [2, [3, [4]], 5], 6];
+console.log([...flatten(nested)]); // [1, 2, 3, 4, 5, 6]</code></pre>
+
+            <h2>Tree Traversal</h2>
+
+            <pre><code class="language-javascript">class TreeNode {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
+  
+  *traverse() {
+    yield this.value;
+    for (const child of this.children) {
+      yield* child.traverse(); // Delegate to child
+    }
+  }
+}
+
+const tree = new TreeNode(1, [
+  new TreeNode(2, [
+    new TreeNode(4),
+    new TreeNode(5)
+  ]),
+  new TreeNode(3, [
+    new TreeNode(6)
+  ])
+]);
+
+console.log([...tree.traverse()]); // [1, 2, 4, 5, 3, 6]</code></pre>
+
+            <h2>Return Values with Delegation</h2>
+
+            <pre><code class="language-javascript">function* inner() {
+  yield 1;
+  yield 2;
+  return 'inner done';
+}
+
+function* outer() {
+  const result = yield* inner();
+  console.log('Inner returned:', result);
+  yield 3;
+}
+
+console.log([...outer()]);
+// Logs: Inner returned: inner done
+// Returns: [1, 2, 3]</code></pre>
+
+            <h2>Real-World: File System Walker</h2>
+
+            <pre><code class="language-javascript">class Directory {
+  constructor(name, items = []) {
+    this.name = name;
+    this.items = items;
+  }
+  
+  *walk() {
+    yield this.name;
+    
+    for (const item of this.items) {
+      if (item instanceof Directory) {
+        yield* item.walk(); // Recurse into subdirectories
+      } else {
+        yield item;
+      }
+    }
+  }
+}
+
+const root = new Directory('root', [
+  'file1.txt',
+  new Directory('subdir1', [
+    'file2.txt',
+    'file3.txt'
+  ]),
+  new Directory('subdir2', [
+    'file4.txt'
+  ])
+]);
+
+for (const item of root.walk()) {
+  console.log(item);
+}
+// root
+// file1.txt
+// subdir1
+// file2.txt
+// file3.txt
+// subdir2
+// file4.txt</code></pre>
+
+            <h2>Modular Pipeline</h2>
+
+            <pre><code class="language-javascript">function* source() {
+  yield 1;
+  yield 2;
+  yield 3;
+  yield 4;
+  yield 5;
+}
+
+function* filter(iterable, predicate) {
+  for (const item of iterable) {
+    if (predicate(item)) {
+      yield item;
+    }
+  }
+}
+
+function* map(iterable, transform) {
+  for (const item of iterable) {
+    yield transform(item);
+  }
+}
+
+function* pipeline() {
+  yield* map(
+    filter(source(), x => x % 2 === 0),
+    x => x * 2
+  );
+}
+
+console.log([...pipeline()]); // [4, 8]</code></pre>
+
+            <h2>Generator Composition Pattern</h2>
+
+            <pre><code class="language-javascript">function* compose(...generators) {
+  for (const gen of generators) {
+    yield* gen;
+  }
+}
+
+function* gen1() { yield 1; yield 2; }
+function* gen2() { yield 3; yield 4; }
+function* gen3() { yield 5; yield 6; }
+
+const combined = compose(gen1(), gen2(), gen3());
+console.log([...combined]); // [1, 2, 3, 4, 5, 6]</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <code>yield*</code> delegates to another iterable</li>
+                    <li>✅ Enables <strong>generator composition</strong></li>
+                    <li>✅ Perfect for <strong>recursive</strong> structures</li>
+                    <li>✅ Captures return values from delegated generators</li>
+                    <li>✅ Works with any iterable (arrays, strings, etc.)</li>
+                    <li>✅ Builds <strong>modular</strong> generator systems</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now let's explore two-way communication patterns in depth!</p>
+
+            <div class="lesson-nav">
+                <a href="2-2.html" class="btn btn-secondary">← Previous: Generator Methods</a>
+                <a href="2-4.html" class="btn btn-primary">Next: Two-Way Communication →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

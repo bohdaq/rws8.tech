@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.3: Basic Generator Syntax - Master generator function syntax and patterns.">
+    <meta name="keywords" content="JavaScript, Generators, Syntax, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.3: Basic Generator Syntax | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-1-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.3: Basic Generator Syntax</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 1: Introduction</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Master different generator declaration styles</li>
+                    <li>Understand yield expressions</li>
+                    <li>Learn generator execution flow</li>
+                    <li>Practice common generator patterns</li>
+                </ul>
+            </div>
+
+            <h2>Generator Declaration Styles</h2>
+
+            <h3>1. Function Declaration</h3>
+
+            <pre><code class="language-javascript">function* myGenerator() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const gen = myGenerator();
+console.log(gen.next()); // { value: 1, done: false }</code></pre>
+
+            <h3>2. Function Expression</h3>
+
+            <pre><code class="language-javascript">const myGenerator = function* () {
+  yield 'a';
+  yield 'b';
+  yield 'c';
+};
+
+const gen = myGenerator();
+console.log([...gen]); // ['a', 'b', 'c']</code></pre>
+
+            <h3>3. Object Method</h3>
+
+            <pre><code class="language-javascript">const obj = {
+  *myGenerator() {
+    yield 1;
+    yield 2;
+  },
+  
+  // Alternative syntax
+  myGenerator2: function* () {
+    yield 3;
+    yield 4;
+  }
+};
+
+console.log([...obj.myGenerator()]); // [1, 2]
+console.log([...obj.myGenerator2()]); // [3, 4]</code></pre>
+
+            <h3>4. Class Method</h3>
+
+            <pre><code class="language-javascript">class MyClass {
+  *instanceGenerator() {
+    yield 'instance';
+  }
+  
+  static *staticGenerator() {
+    yield 'static';
+  }
+}
+
+const instance = new MyClass();
+console.log([...instance.instanceGenerator()]); // ['instance']
+console.log([...MyClass.staticGenerator()]); // ['static']</code></pre>
+
+            <h2>Yield Expressions</h2>
+
+            <h3>Basic Yield</h3>
+
+            <pre><code class="language-javascript">function* basicYield() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const gen = basicYield();
+console.log(gen.next().value); // 1
+console.log(gen.next().value); // 2
+console.log(gen.next().value); // 3</code></pre>
+
+            <h3>Yield with Expressions</h3>
+
+            <pre><code class="language-javascript">function* yieldExpressions() {
+  yield 1 + 1;
+  yield Math.random();
+  yield 'Hello' + ' ' + 'World';
+  yield [1, 2, 3];
+  yield { name: 'John', age: 30 };
+}
+
+for (const value of yieldExpressions()) {
+  console.log(value);
+}
+// 2
+// 0.123... (random)
+// Hello World
+// [1, 2, 3]
+// { name: 'John', age: 30 }</code></pre>
+
+            <h3>Conditional Yield</h3>
+
+            <pre><code class="language-javascript">function* conditionalYield(n) {
+  for (let i = 0; i < n; i++) {
+    if (i % 2 === 0) {
+      yield i;
+    }
+  }
+}
+
+console.log([...conditionalYield(10)]); // [0, 2, 4, 6, 8]</code></pre>
+
+            <h2>Generator Execution Flow</h2>
+
+            <pre><code class="language-javascript">function* executionFlow() {
+  console.log('Start');
+  
+  yield 1;
+  console.log('After first yield');
+  
+  yield 2;
+  console.log('After second yield');
+  
+  yield 3;
+  console.log('After third yield');
+  
+  return 'Done';
+}
+
+const gen = executionFlow();
+
+console.log('Created generator');
+console.log(gen.next()); // Logs: Start, Returns: { value: 1, done: false }
+console.log(gen.next()); // Logs: After first yield, Returns: { value: 2, done: false }
+console.log(gen.next()); // Logs: After second yield, Returns: { value: 3, done: false }
+console.log(gen.next()); // Logs: After third yield, Returns: { value: 'Done', done: true }</code></pre>
+
+            <h2>Return in Generators</h2>
+
+            <pre><code class="language-javascript">function* withReturn() {
+  yield 1;
+  yield 2;
+  return 3; // Final value
+  yield 4;  // Never reached
+}
+
+const gen = withReturn();
+console.log(gen.next()); // { value: 1, done: false }
+console.log(gen.next()); // { value: 2, done: false }
+console.log(gen.next()); // { value: 3, done: true }
+console.log(gen.next()); // { value: undefined, done: true }
+
+// Note: for...of doesn't include return value
+console.log([...withReturn()]); // [1, 2]</code></pre>
+
+            <h2>Common Patterns</h2>
+
+            <h3>1. Range Generator</h3>
+
+            <pre><code class="language-javascript">function* range(start, end, step = 1) {
+  for (let i = start; i <= end; i += step) {
+    yield i;
+  }
+}
+
+console.log([...range(1, 10)]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+console.log([...range(0, 20, 5)]); // [0, 5, 10, 15, 20]</code></pre>
+
+            <h3>2. Repeat Generator</h3>
+
+            <pre><code class="language-javascript">function* repeat(value, times) {
+  for (let i = 0; i < times; i++) {
+    yield value;
+  }
+}
+
+console.log([...repeat('hello', 3)]); // ['hello', 'hello', 'hello']
+console.log([...repeat(0, 5)]); // [0, 0, 0, 0, 0]</code></pre>
+
+            <h3>3. Cycle Generator</h3>
+
+            <pre><code class="language-javascript">function* cycle(array) {
+  while (true) {
+    for (const item of array) {
+      yield item;
+    }
+  }
+}
+
+const colors = cycle(['red', 'green', 'blue']);
+console.log(colors.next().value); // red
+console.log(colors.next().value); // green
+console.log(colors.next().value); // blue
+console.log(colors.next().value); // red (cycles back)</code></pre>
+
+            <h3>4. Filter Generator</h3>
+
+            <pre><code class="language-javascript">function* filter(iterable, predicate) {
+  for (const item of iterable) {
+    if (predicate(item)) {
+      yield item;
+    }
+  }
+}
+
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const evens = filter(numbers, n => n % 2 === 0);
+
+console.log([...evens]); // [2, 4, 6, 8, 10]</code></pre>
+
+            <h3>5. Map Generator</h3>
+
+            <pre><code class="language-javascript">function* map(iterable, transform) {
+  for (const item of iterable) {
+    yield transform(item);
+  }
+}
+
+const numbers = [1, 2, 3, 4, 5];
+const doubled = map(numbers, n => n * 2);
+
+console.log([...doubled]); // [2, 4, 6, 8, 10]</code></pre>
+
+            <h2>Combining Generators</h2>
+
+            <pre><code class="language-javascript">function* numbers() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+function* letters() {
+  yield 'a';
+  yield 'b';
+  yield 'c';
+}
+
+function* combined() {
+  yield* numbers();
+  yield* letters();
+}
+
+console.log([...combined()]); // [1, 2, 3, 'a', 'b', 'c']</code></pre>
+
+            <h2>Real-World Example: ID Generator</h2>
+
+            <pre><code class="language-javascript">function* idGenerator(prefix = 'ID') {
+  let id = 1;
+  
+  while (true) {
+    yield `${prefix}-${String(id).padStart(5, '0')}`;
+    id++;
+  }
+}
+
+const userIds = idGenerator('USER');
+console.log(userIds.next().value); // USER-00001
+console.log(userIds.next().value); // USER-00002
+console.log(userIds.next().value); // USER-00003
+
+const orderIds = idGenerator('ORDER');
+console.log(orderIds.next().value); // ORDER-00001
+console.log(orderIds.next().value); // ORDER-00002</code></pre>
+
+            <h2>Real-World Example: Pagination</h2>
+
+            <pre><code class="language-javascript">function* paginate(items, pageSize) {
+  for (let i = 0; i < items.length; i += pageSize) {
+    yield items.slice(i, i + pageSize);
+  }
+}
+
+const data = Array.from({ length: 25 }, (_, i) => i + 1);
+const pages = paginate(data, 10);
+
+console.log(pages.next().value); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+console.log(pages.next().value); // [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+console.log(pages.next().value); // [21, 22, 23, 24, 25]</code></pre>
+
+            <h2>Generator State</h2>
+
+            <pre><code class="language-javascript">function* statefulGenerator() {
+  let state = 0;
+  
+  while (true) {
+    const input = yield state;
+    
+    if (input === 'increment') {
+      state++;
+    } else if (input === 'decrement') {
+      state--;
+    } else if (input === 'reset') {
+      state = 0;
+    }
+  }
+}
+
+const gen = statefulGenerator();
+console.log(gen.next().value); // 0
+console.log(gen.next('increment').value); // 1
+console.log(gen.next('increment').value); // 2
+console.log(gen.next('decrement').value); // 1
+console.log(gen.next('reset').value); // 0</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <ol>
+                <li><strong>Use descriptive names</strong> - Make generator purpose clear</li>
+                <li><strong>Document infinite generators</strong> - Warn about endless loops</li>
+                <li><strong>Keep generators focused</strong> - One responsibility per generator</li>
+                <li><strong>Use yield* for delegation</strong> - Compose generators</li>
+                <li><strong>Handle cleanup</strong> - Use try/finally if needed</li>
+            </ol>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Generators use <code>function*</code> syntax</li>
+                    <li>✅ <code>yield</code> pauses execution and returns values</li>
+                    <li>✅ <code>return</code> ends generator (value not in iteration)</li>
+                    <li>✅ Generators maintain <strong>state</strong> between calls</li>
+                    <li>✅ Common patterns: range, filter, map, cycle</li>
+                    <li>✅ Perfect for <strong>lazy evaluation</strong> and infinite sequences</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now that you understand basic syntax, let's explore yield expressions in depth!</p>
+
+            <div class="lesson-nav">
+                <a href="1-2.html" class="btn btn-secondary">← Previous: Iterator Protocol</a>
+                <a href="2-1.html" class="btn btn-primary">Next: Yield Expressions →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

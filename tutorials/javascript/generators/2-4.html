@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.4: Two-Way Communication - Master bidirectional data flow with generators.">
+    <meta name="keywords" content="JavaScript, Generators, Communication, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.4: Two-Way Communication | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-2-4.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.4: Two-Way Communication</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 2: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Master bidirectional data flow</li>
+                    <li>Build interactive generator systems</li>
+                    <li>Implement coroutine patterns</li>
+                    <li>Create stateful generators</li>
+                </ul>
+            </div>
+
+            <h2>Bidirectional Communication</h2>
+            <p>Generators enable two-way communication: they can yield values out and receive values in.</p>
+
+            <pre><code class="language-javascript">function* conversation() {
+  const name = yield 'What is your name?';
+  const age = yield `Hello ${name}, how old are you?`;
+  return `${name} is ${age} years old`;
+}
+
+const chat = conversation();
+console.log(chat.next().value);        // What is your name?
+console.log(chat.next('Alice').value); // Hello Alice, how old are you?
+console.log(chat.next(30).value);      // Alice is 30 years old</code></pre>
+
+            <h2>Real-World: Interactive CLI</h2>
+
+            <pre><code class="language-javascript">function* cliWizard() {
+  console.log('Welcome to the setup wizard!');
+  
+  const projectName = yield 'Enter project name:';
+  const framework = yield 'Choose framework (react/vue/angular):';
+  const typescript = yield 'Use TypeScript? (yes/no):';
+  
+  return {
+    projectName,
+    framework,
+    typescript: typescript === 'yes',
+    created: new Date()
+  };
+}
+
+const wizard = cliWizard();
+wizard.next();                    // Welcome message
+wizard.next('my-app');            // Enter project name
+wizard.next('react');             // Choose framework
+const config = wizard.next('yes').value; // Final config</code></pre>
+
+            <h2>Coroutine Pattern</h2>
+
+            <pre><code class="language-javascript">function* producer() {
+  let id = 1;
+  while (true) {
+    const command = yield { id: id++, status: 'ready' };
+    if (command === 'stop') break;
+  }
+}
+
+function* consumer(gen) {
+  let result = gen.next();
+  
+  while (!result.done) {
+    console.log('Processing:', result.value);
+    result = gen.next(Math.random() > 0.8 ? 'stop' : 'continue');
+  }
+}
+
+const prod = producer();
+const cons = consumer(prod);
+[...cons]; // Processes until random stop</code></pre>
+
+            <h2>State Machine with Communication</h2>
+
+            <pre><code class="language-javascript">function* stateMachine() {
+  let state = 'idle';
+  
+  while (true) {
+    const action = yield state;
+    
+    switch (state) {
+      case 'idle':
+        if (action === 'start') state = 'running';
+        break;
+      case 'running':
+        if (action === 'pause') state = 'paused';
+        if (action === 'stop') state = 'idle';
+        break;
+      case 'paused':
+        if (action === 'resume') state = 'running';
+        if (action === 'stop') state = 'idle';
+        break;
+    }
+  }
+}
+
+const machine = stateMachine();
+console.log(machine.next().value);          // idle
+console.log(machine.next('start').value);   // running
+console.log(machine.next('pause').value);   // paused
+console.log(machine.next('resume').value);  // running
+console.log(machine.next('stop').value);    // idle</code></pre>
+
+            <h2>Data Pipeline with Feedback</h2>
+
+            <pre><code class="language-javascript">function* dataProcessor() {
+  let processed = 0;
+  let errors = 0;
+  
+  while (true) {
+    const data = yield { processed, errors };
+    
+    try {
+      // Simulate processing
+      if (data && data.value > 0) {
+        processed++;
+      } else {
+        throw new Error('Invalid data');
+      }
+    } catch (error) {
+      errors++;
+    }
+  }
+}
+
+const processor = dataProcessor();
+processor.next();                      // Initialize
+console.log(processor.next({ value: 10 }).value); // { processed: 1, errors: 0 }
+console.log(processor.next({ value: -1 }).value); // { processed: 1, errors: 1 }
+console.log(processor.next({ value: 20 }).value); // { processed: 2, errors: 1 }</code></pre>
+
+            <h2>Real-World: Game Loop</h2>
+
+            <pre><code class="language-javascript">function* gameLoop() {
+  let player = { x: 0, y: 0, health: 100 };
+  
+  while (player.health > 0) {
+    const input = yield { player, message: 'Your move' };
+    
+    // Process input
+    if (input === 'up') player.y++;
+    if (input === 'down') player.y--;
+    if (input === 'left') player.x--;
+    if (input === 'right') player.x++;
+    if (input === 'damage') player.health -= 10;
+  }
+  
+  return { player, message: 'Game Over' };
+}
+
+const game = gameLoop();
+game.next();                  // Start
+game.next('right');           // Move right
+game.next('up');              // Move up
+game.next('damage');          // Take damage
+// Continue until health reaches 0</code></pre>
+
+            <h2>Request-Response Pattern</h2>
+
+            <pre><code class="language-javascript">function* apiHandler() {
+  while (true) {
+    const request = yield 'waiting';
+    
+    if (request.method === 'GET') {
+      yield { status: 200, data: { id: 1, name: 'Item' } };
+    } else if (request.method === 'POST') {
+      yield { status: 201, data: { created: true } };
+    } else {
+      yield { status: 405, error: 'Method not allowed' };
+    }
+  }
+}
+
+const api = apiHandler();
+api.next();                                    // Start
+console.log(api.next({ method: 'GET' }).value);  // { status: 200, ... }
+api.next();                                    // Continue
+console.log(api.next({ method: 'POST' }).value); // { status: 201, ... }</code></pre>
+
+            <h2>Async Task Coordinator</h2>
+
+            <pre><code class="language-javascript">function* taskCoordinator() {
+  const tasks = [];
+  
+  while (true) {
+    const command = yield { 
+      pending: tasks.filter(t => !t.done).length,
+      completed: tasks.filter(t => t.done).length
+    };
+    
+    if (command.action === 'add') {
+      tasks.push({ id: tasks.length + 1, done: false });
+    } else if (command.action === 'complete') {
+      const task = tasks.find(t => t.id === command.id);
+      if (task) task.done = true;
+    } else if (command.action === 'clear') {
+      tasks.length = 0;
+    }
+  }
+}
+
+const coordinator = taskCoordinator();
+coordinator.next();                                    // Initialize
+coordinator.next({ action: 'add' });                   // Add task 1
+coordinator.next({ action: 'add' });                   // Add task 2
+console.log(coordinator.next({ action: 'complete', id: 1 }).value);
+// { pending: 1, completed: 1 }</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Generators enable <strong>bidirectional</strong> communication</li>
+                    <li>✅ Perfect for <strong>interactive</strong> systems</li>
+                    <li>✅ Implement <strong>state machines</strong> naturally</li>
+                    <li>✅ Build <strong>coroutines</strong> and pipelines</li>
+                    <li>✅ Great for <strong>game loops</strong> and wizards</li>
+                    <li>✅ Maintain state between interactions</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now let's explore advanced patterns like infinite sequences and async generators!</p>
+
+            <div class="lesson-nav">
+                <a href="2-3.html" class="btn btn-secondary">← Previous: Yield Delegation</a>
+                <a href="3-1.html" class="btn btn-primary">Next: Infinite Sequences →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.2: Async Generators - Master asynchronous iteration with async generators.">
+    <meta name="keywords" content="JavaScript, Async Generators, Async Iteration, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.2: Async Generators | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-3-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.2: Async Generators</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 3: Advanced Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand async generator syntax</li>
+                    <li>Master for-await-of loops</li>
+                    <li>Build async data streams</li>
+                    <li>Handle async iteration patterns</li>
+                </ul>
+            </div>
+
+            <h2>What are Async Generators?</h2>
+            <p>Async generators combine generators with async/await, allowing you to yield Promises and handle asynchronous data streams.</p>
+
+            <pre><code class="language-javascript">async function* asyncGenerator() {
+  yield await Promise.resolve(1);
+  yield await Promise.resolve(2);
+  yield await Promise.resolve(3);
+}
+
+// Consume with for-await-of
+(async () => {
+  for await (const value of asyncGenerator()) {
+    console.log(value); // 1, 2, 3
+  }
+})();</code></pre>
+
+            <h2>Async Generator Syntax</h2>
+
+            <pre><code class="language-javascript">// Function declaration
+async function* myAsyncGen() {
+  yield 1;
+  yield await fetchData();
+}
+
+// Function expression
+const myAsyncGen = async function* () {
+  yield 1;
+  yield await fetchData();
+};
+
+// Arrow function (not supported)
+// const myAsyncGen = async* () => {}; // ❌ Syntax error
+
+// Object method
+const obj = {
+  async *myAsyncGen() {
+    yield 1;
+    yield await fetchData();
+  }
+};
+
+// Class method
+class MyClass {
+  async *myAsyncGen() {
+    yield 1;
+    yield await fetchData();
+  }
+}</code></pre>
+
+            <h2>for-await-of Loop</h2>
+
+            <pre><code class="language-javascript">async function* numbers() {
+  for (let i = 1; i <= 3; i++) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    yield i;
+  }
+}
+
+(async () => {
+  for await (const num of numbers()) {
+    console.log(num); // 1 (after 1s), 2 (after 2s), 3 (after 3s)
+  }
+})();</code></pre>
+
+            <h2>Real-World: Paginated API</h2>
+
+            <pre><code class="language-javascript">async function* fetchPages(url) {
+  let page = 1;
+  let hasMore = true;
+  
+  while (hasMore) {
+    const response = await fetch(`${url}?page=${page}`);
+    const data = await response.json();
+    
+    yield data.items;
+    
+    hasMore = data.hasMore;
+    page++;
+  }
+}
+
+// Usage
+(async () => {
+  for await (const items of fetchPages('/api/users')) {
+    console.log('Page:', items);
+    // Process each page as it arrives
+  }
+})();</code></pre>
+
+            <h2>Real-World: File Reader</h2>
+
+            <pre><code class="language-javascript">async function* readFileInChunks(file, chunkSize = 1024) {
+  let offset = 0;
+  
+  while (offset < file.size) {
+    const chunk = file.slice(offset, offset + chunkSize);
+    const text = await chunk.text();
+    yield text;
+    offset += chunkSize;
+  }
+}
+
+// Usage
+(async () => {
+  const file = new File(['Hello World...'], 'test.txt');
+  
+  for await (const chunk of readFileInChunks(file, 5)) {
+    console.log('Chunk:', chunk);
+  }
+})();</code></pre>
+
+            <h2>Real-World: Event Stream</h2>
+
+            <pre><code class="language-javascript">async function* eventStream(eventTarget, eventName) {
+  const queue = [];
+  let resolve;
+  
+  const listener = event => {
+    if (resolve) {
+      resolve(event);
+      resolve = null;
+    } else {
+      queue.push(event);
+    }
+  };
+  
+  eventTarget.addEventListener(eventName, listener);
+  
+  try {
+    while (true) {
+      if (queue.length > 0) {
+        yield queue.shift();
+      } else {
+        yield await new Promise(r => resolve = r);
+      }
+    }
+  } finally {
+    eventTarget.removeEventListener(eventName, listener);
+  }
+}
+
+// Usage
+(async () => {
+  const button = document.querySelector('#myButton');
+  
+  for await (const event of eventStream(button, 'click')) {
+    console.log('Button clicked!', event);
+    if (event.detail === 3) break; // Stop after 3 clicks
+  }
+})();</code></pre>
+
+            <h2>Async Generator Pipeline</h2>
+
+            <pre><code class="language-javascript">async function* fetchUsers() {
+  const response = await fetch('/api/users');
+  const users = await response.json();
+  
+  for (const user of users) {
+    yield user;
+  }
+}
+
+async function* enrichUsers(userStream) {
+  for await (const user of userStream) {
+    const details = await fetch(`/api/users/${user.id}/details`);
+    const enriched = await details.json();
+    yield { ...user, ...enriched };
+  }
+}
+
+async function* filterActiveUsers(userStream) {
+  for await (const user of userStream) {
+    if (user.active) {
+      yield user;
+    }
+  }
+}
+
+// Compose pipeline
+(async () => {
+  const users = fetchUsers();
+  const enriched = enrichUsers(users);
+  const active = filterActiveUsers(enriched);
+  
+  for await (const user of active) {
+    console.log('Active user:', user);
+  }
+})();</code></pre>
+
+            <h2>Real-World: Database Cursor</h2>
+
+            <pre><code class="language-javascript">async function* queryDatabase(query) {
+  const cursor = await db.collection('users').find(query);
+  
+  while (await cursor.hasNext()) {
+    yield await cursor.next();
+  }
+  
+  await cursor.close();
+}
+
+// Usage
+(async () => {
+  for await (const user of queryDatabase({ age: { $gt: 18 } })) {
+    console.log(user);
+  }
+})();</code></pre>
+
+            <h2>Error Handling</h2>
+
+            <pre><code class="language-javascript">async function* withErrorHandling() {
+  try {
+    yield await fetch('/api/data1');
+    yield await fetch('/api/data2');
+    yield await fetch('/api/data3');
+  } catch (error) {
+    console.error('Error:', error);
+    yield { error: true, message: error.message };
+  } finally {
+    console.log('Cleanup');
+  }
+}
+
+(async () => {
+  for await (const data of withErrorHandling()) {
+    console.log(data);
+  }
+})();</code></pre>
+
+            <h2>Combining Async and Sync Generators</h2>
+
+            <pre><code class="language-javascript">function* syncGen() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+async function* asyncWrapper(syncGenerator) {
+  for (const value of syncGenerator) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    yield value;
+  }
+}
+
+(async () => {
+  for await (const value of asyncWrapper(syncGen())) {
+    console.log(value); // 1, 2, 3 (with delays)
+  }
+})();</code></pre>
+
+            <h2>Real-World: WebSocket Stream</h2>
+
+            <pre><code class="language-javascript">async function* websocketStream(url) {
+  const ws = new WebSocket(url);
+  const queue = [];
+  let resolve;
+  
+  ws.onmessage = event => {
+    if (resolve) {
+      resolve(event.data);
+      resolve = null;
+    } else {
+      queue.push(event.data);
+    }
+  };
+  
+  await new Promise(r => ws.onopen = r);
+  
+  try {
+    while (ws.readyState === WebSocket.OPEN) {
+      if (queue.length > 0) {
+        yield queue.shift();
+      } else {
+        yield await new Promise(r => resolve = r);
+      }
+    }
+  } finally {
+    ws.close();
+  }
+}
+
+// Usage
+(async () => {
+  for await (const message of websocketStream('ws://localhost:8080')) {
+    console.log('Received:', message);
+  }
+})();</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Use <code>async function*</code> for async generators</li>
+                    <li>✅ Consume with <code>for-await-of</code> loops</li>
+                    <li>✅ Perfect for <strong>async data streams</strong></li>
+                    <li>✅ Great for <strong>paginated APIs</strong></li>
+                    <li>✅ Handle <strong>real-time data</strong> (WebSockets, events)</li>
+                    <li>✅ Combine with regular generators for pipelines</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now let's explore practical use cases for generators in real applications!</p>
+
+            <div class="lesson-nav">
+                <a href="3-1.html" class="btn btn-secondary">← Previous: Infinite Sequences</a>
+                <a href="3-3.html" class="btn btn-primary">Next: Practical Use Cases →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

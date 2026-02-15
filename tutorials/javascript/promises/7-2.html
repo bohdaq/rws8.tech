@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 7.2: Debugging Promises - Learn to identify and fix common Promise pitfalls.">
+    <meta name="keywords" content="JavaScript, Debugging, Promises, Pitfalls, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 7.2: Debugging Promises | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-7-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .error-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .success-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 7.2: Debugging Promises</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 7: Testing and Debugging</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Identify common Promise pitfalls</li>
+                    <li>Use debugging tools effectively</li>
+                    <li>Handle unhandled Promise rejections</li>
+                    <li>Debug async/await code</li>
+                </ul>
+            </div>
+
+            <h2>Common Promise Pitfalls</h2>
+
+            <h3>1. Forgetting to Return</h3>
+
+            <div class="error-box">
+                <p><strong>Problem:</strong></p>
+                <pre><code class="language-javascript">function getData() {
+  fetchUser(1).then(user => {
+    return user.name; // This return goes to .then(), not getData()
+  });
+  // getData() returns undefined!
+}</code></pre>
+            </div>
+
+            <div class="success-box">
+                <p><strong>Solution:</strong></p>
+                <pre><code class="language-javascript">function getData() {
+  return fetchUser(1).then(user => {
+    return user.name;
+  });
+}</code></pre>
+            </div>
+
+            <h3>2. Nesting Promises (Promise Hell)</h3>
+
+            <div class="error-box">
+                <p><strong>Problem:</strong></p>
+                <pre><code class="language-javascript">fetchUser(1).then(user => {
+  fetchPosts(user.id).then(posts => {
+    fetchComments(posts[0].id).then(comments => {
+      console.log(comments);
+    });
+  });
+});</code></pre>
+            </div>
+
+            <div class="success-box">
+                <p><strong>Solution:</strong></p>
+                <pre><code class="language-javascript">fetchUser(1)
+  .then(user => fetchPosts(user.id))
+  .then(posts => fetchComments(posts[0].id))
+  .then(comments => console.log(comments));</code></pre>
+            </div>
+
+            <h3>3. Not Handling Errors</h3>
+
+            <div class="error-box">
+                <p><strong>Problem:</strong></p>
+                <pre><code class="language-javascript">fetchUser(1).then(user => {
+  console.log(user);
+});
+// Unhandled rejection if fetchUser fails!</code></pre>
+            </div>
+
+            <div class="success-box">
+                <p><strong>Solution:</strong></p>
+                <pre><code class="language-javascript">fetchUser(1)
+  .then(user => console.log(user))
+  .catch(error => console.error('Error:', error));</code></pre>
+            </div>
+
+            <h3>4. Creating Unnecessary Promises</h3>
+
+            <div class="error-box">
+                <p><strong>Problem:</strong></p>
+                <pre><code class="language-javascript">function getUser(id) {
+  return new Promise((resolve, reject) => {
+    fetchUser(id)
+      .then(user => resolve(user))
+      .catch(error => reject(error));
+  });
+}</code></pre>
+            </div>
+
+            <div class="success-box">
+                <p><strong>Solution:</strong></p>
+                <pre><code class="language-javascript">function getUser(id) {
+  return fetchUser(id); // Already returns a Promise!
+}</code></pre>
+            </div>
+
+            <h3>5. Sequential When Parallel is Possible</h3>
+
+            <div class="error-box">
+                <p><strong>Problem (Slow):</strong></p>
+                <pre><code class="language-javascript">const user = await fetchUser(1);      // 1s
+const posts = await fetchPosts(1);    // 1s
+const comments = await fetchComments(1); // 1s
+// Total: 3 seconds</code></pre>
+            </div>
+
+            <div class="success-box">
+                <p><strong>Solution (Fast):</strong></p>
+                <pre><code class="language-javascript">const [user, posts, comments] = await Promise.all([
+  fetchUser(1),
+  fetchPosts(1),
+  fetchComments(1)
+]);
+// Total: 1 second</code></pre>
+            </div>
+
+            <h2>Debugging Tools and Techniques</h2>
+
+            <h3>1. Console Logging</h3>
+            <pre><code class="language-javascript">fetchUser(1)
+  .then(user => {
+    console.log('User fetched:', user);
+    return user;
+  })
+  .then(user => fetchPosts(user.id))
+  .then(posts => {
+    console.log('Posts fetched:', posts);
+    return posts;
+  })
+  .catch(error => {
+    console.error('Error occurred:', error);
+  });</code></pre>
+
+            <h3>2. Debugger Statement</h3>
+            <pre><code class="language-javascript">async function getData() {
+  const user = await fetchUser(1);
+  debugger; // Pause execution here
+  const posts = await fetchPosts(user.id);
+  return posts;
+}</code></pre>
+
+            <h3>3. Chrome DevTools</h3>
+            <ul>
+                <li>Use breakpoints in async functions</li>
+                <li>Step through async code with "Step Over" (F10)</li>
+                <li>View Promise state in console</li>
+                <li>Check call stack for async operations</li>
+            </ul>
+
+            <h3>4. Unhandled Rejection Tracking</h3>
+            <pre><code class="language-javascript">// Node.js
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise);
+  console.error('Reason:', reason);
+});
+
+// Browser
+window.addEventListener('unhandledrejection', event => {
+  console.error('Unhandled rejection:', event.reason);
+  event.preventDefault();
+});</code></pre>
+
+            <h2>Debugging Async/Await</h2>
+
+            <h3>Common Async/Await Mistakes</h3>
+
+            <h4>1. Forgetting async Keyword</h4>
+            <div class="error-box">
+                <pre><code class="language-javascript">// ❌ Error: await outside async function
+function getData() {
+  const user = await fetchUser(1);
+}</code></pre>
+            </div>
+
+            <div class="success-box">
+                <pre><code class="language-javascript">// ✅ Correct
+async function getData() {
+  const user = await fetchUser(1);
+}</code></pre>
+            </div>
+
+            <h4>2. Not Catching Errors</h4>
+            <div class="error-box">
+                <pre><code class="language-javascript">// ❌ Unhandled rejection
+async function getData() {
+  const user = await fetchUser(1);
+  return user;
+}</code></pre>
+            </div>
+
+            <div class="success-box">
+                <pre><code class="language-javascript">// ✅ Proper error handling
+async function getData() {
+  try {
+    const user = await fetchUser(1);
+    return user;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}</code></pre>
+            </div>
+
+            <h2>Performance Debugging</h2>
+
+            <h3>Measuring Execution Time</h3>
+            <pre><code class="language-javascript">async function measurePerformance() {
+  console.time('Sequential');
+  const user1 = await fetchUser(1);
+  const user2 = await fetchUser(2);
+  const user3 = await fetchUser(3);
+  console.timeEnd('Sequential'); // ~3000ms
+  
+  console.time('Parallel');
+  const [u1, u2, u3] = await Promise.all([
+    fetchUser(1),
+    fetchUser(2),
+    fetchUser(3)
+  ]);
+  console.timeEnd('Parallel'); // ~1000ms
+}</code></pre>
+
+            <h3>Memory Leak Detection</h3>
+            <pre><code class="language-javascript">// Bad: Creates memory leak
+const promises = [];
+setInterval(() => {
+  promises.push(fetchData()); // Never cleaned up!
+}, 1000);
+
+// Good: Limit array size
+const MAX_PROMISES = 100;
+const promises = [];
+setInterval(() => {
+  if (promises.length >= MAX_PROMISES) {
+    promises.shift(); // Remove oldest
+  }
+  promises.push(fetchData());
+}, 1000);</code></pre>
+
+            <h2>Best Practices for Debugging</h2>
+            <ol>
+                <li><strong>Always handle errors</strong> - Use .catch() or try/catch</li>
+                <li><strong>Return Promises</strong> - Don't forget to return in functions</li>
+                <li><strong>Avoid nesting</strong> - Keep chains flat</li>
+                <li><strong>Use async/await</strong> - More readable and easier to debug</li>
+                <li><strong>Add logging</strong> - Track Promise flow</li>
+                <li><strong>Use debugger</strong> - Leverage browser DevTools</li>
+                <li><strong>Test edge cases</strong> - Test both success and failure</li>
+                <li><strong>Monitor unhandled rejections</strong> - Set up global handlers</li>
+            </ol>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Always return Promises from functions</li>
+                    <li>✅ Avoid nesting - use flat chains</li>
+                    <li>✅ Always handle errors with .catch() or try/catch</li>
+                    <li>✅ Use Promise.all() for parallel operations</li>
+                    <li>✅ Track unhandled rejections in production</li>
+                    <li>✅ Use browser DevTools for debugging</li>
+                    <li>✅ Measure performance to identify bottlenecks</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Ready to put it all together? Check out the course project in Section 8!</p>
+
+            <div class="lesson-nav">
+                <a href="7-1.html" class="btn btn-secondary">← Previous: Testing Async</a>
+                <a href="8-1.html" class="btn btn-primary">Next: Course Project →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

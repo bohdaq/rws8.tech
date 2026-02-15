@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 4.1: Introduction to Async/Await - Learn modern async syntax in JavaScript.">
+    <meta name="keywords" content="JavaScript, Async, Await, Promises, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 4.1: Async/Await | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-4-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: var(--bg-secondary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 4.1: Introduction to Async/Await</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 4: Async/Await</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand what async/await is</li>
+                    <li>Learn the async keyword</li>
+                    <li>Master the await keyword</li>
+                    <li>Convert Promises to async/await syntax</li>
+                </ul>
+            </div>
+
+            <h2>What is Async/Await?</h2>
+            <p><strong>Async/await</strong> is syntactic sugar over Promises that makes asynchronous code look and behave like synchronous code.</p>
+
+            <h3>Before (Promises):</h3>
+            <pre><code class="language-javascript">fetchUser(1)
+  .then(user => fetchPosts(user.id))
+  .then(posts => console.log(posts))
+  .catch(error => console.error(error));</code></pre>
+
+            <h3>After (Async/Await):</h3>
+            <pre><code class="language-javascript">async function getPosts() {
+  try {
+    const user = await fetchUser(1);
+    const posts = await fetchPosts(user.id);
+    console.log(posts);
+  } catch (error) {
+    console.error(error);
+  }
+}</code></pre>
+
+            <p><strong>Benefits:</strong></p>
+            <ul>
+                <li>✅ More readable - looks like synchronous code</li>
+                <li>✅ Easier to debug - better stack traces</li>
+                <li>✅ Simpler error handling - use try/catch</li>
+                <li>✅ Less nesting - flat structure</li>
+            </ul>
+
+            <h2>The async Keyword</h2>
+            <p>The <code>async</code> keyword makes a function return a Promise:</p>
+
+            <pre><code class="language-javascript">async function myFunction() {
+  return 'Hello';
+}
+
+// Equivalent to:
+function myFunction() {
+  return Promise.resolve('Hello');
+}
+
+myFunction().then(value => console.log(value)); // 'Hello'</code></pre>
+
+            <h3>Key Points:</h3>
+
+            <p><strong>1. Always returns a Promise</strong></p>
+            <pre><code class="language-javascript">async function getValue() {
+  return 42;
+}
+
+console.log(getValue()); // Promise { 42 }</code></pre>
+
+            <p><strong>2. Can use await inside</strong></p>
+            <pre><code class="language-javascript">async function fetchData() {
+  const data = await fetch('/api/data');
+  return data;
+}</code></pre>
+
+            <p><strong>3. Works with all function types</strong></p>
+            <pre><code class="language-javascript">// Function declaration
+async function func1() {}
+
+// Function expression
+const func2 = async function() {};
+
+// Arrow function
+const func3 = async () => {};
+
+// Method
+const obj = {
+  async method() {}
+};</code></pre>
+
+            <h2>The await Keyword</h2>
+            <p>The <code>await</code> keyword pauses execution until a Promise settles:</p>
+
+            <pre><code class="language-javascript">async function example() {
+  console.log('Before await');
+  
+  const result = await Promise.resolve('value');
+  
+  console.log('After await');
+  console.log(result); // 'value'
+}</code></pre>
+
+            <h3>Rules for await:</h3>
+
+            <p><strong>1. Only works inside async functions</strong></p>
+            <pre><code class="language-javascript">// ❌ Error: await outside async function
+const result = await fetchData();
+
+// ✅ Correct
+async function getData() {
+  const result = await fetchData();
+}</code></pre>
+
+            <p><strong>2. Pauses execution, but doesn't block</strong></p>
+            <pre><code class="language-javascript">async function demo() {
+  console.log('1');
+  await delay(1000);
+  console.log('2'); // Runs after 1 second
+}
+
+demo();
+console.log('3'); // Runs immediately
+
+// Output: 1, 3, 2</code></pre>
+
+            <h2>Converting Promises to Async/Await</h2>
+
+            <h3>Example 1: Simple Chain</h3>
+
+            <p><strong>Before:</strong></p>
+            <pre><code class="language-javascript">function getUser() {
+  return fetchUser(1)
+    .then(user => {
+      console.log('User:', user);
+      return user;
+    });
+}</code></pre>
+
+            <p><strong>After:</strong></p>
+            <pre><code class="language-javascript">async function getUser() {
+  const user = await fetchUser(1);
+  console.log('User:', user);
+  return user;
+}</code></pre>
+
+            <h3>Example 2: Multiple Steps</h3>
+
+            <p><strong>Before:</strong></p>
+            <pre><code class="language-javascript">function processOrder(orderId) {
+  return fetchOrder(orderId)
+    .then(order => validateOrder(order))
+    .then(validOrder => processPayment(validOrder))
+    .then(payment => sendConfirmation(payment));
+}</code></pre>
+
+            <p><strong>After:</strong></p>
+            <pre><code class="language-javascript">async function processOrder(orderId) {
+  const order = await fetchOrder(orderId);
+  const validOrder = await validateOrder(order);
+  const payment = await processPayment(validOrder);
+  const confirmation = await sendConfirmation(payment);
+  return confirmation;
+}</code></pre>
+
+            <h3>Example 3: With Error Handling</h3>
+
+            <p><strong>Before:</strong></p>
+            <pre><code class="language-javascript">function getData() {
+  return fetchData()
+    .then(data => processData(data))
+    .catch(error => {
+      console.error('Error:', error);
+      throw error;
+    });
+}</code></pre>
+
+            <p><strong>After:</strong></p>
+            <pre><code class="language-javascript">async function getData() {
+  try {
+    const data = await fetchData();
+    return await processData(data);
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}</code></pre>
+
+            <h2>Real-World Example: Fetching User Profile</h2>
+
+            <pre><code class="language-javascript">async function getUserProfile(userId) {
+  const user = await fetch(`/api/users/${userId}`).then(r => r.json());
+  const posts = await fetch(`/api/users/${userId}/posts`).then(r => r.json());
+  
+  return {
+    user,
+    posts,
+    postCount: posts.length
+  };
+}
+
+getUserProfile(1)
+  .then(profile => console.log(profile))
+  .catch(error => console.error(error));</code></pre>
+
+            <h2>Async/Await vs Promises</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Promises</th>
+                        <th>Async/Await</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Syntax</strong></td>
+                        <td><code>.then()</code> chains</td>
+                        <td><code>await</code> keyword</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Readability</strong></td>
+                        <td>Can get nested</td>
+                        <td>Linear, like sync code</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Error Handling</strong></td>
+                        <td><code>.catch()</code></td>
+                        <td><code>try/catch</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Debugging</strong></td>
+                        <td>Harder</td>
+                        <td>Easier</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Compatibility</strong></td>
+                        <td>ES6 (2015)</td>
+                        <td>ES8 (2017)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Important Notes</h2>
+
+            <h3>1. Async Functions Are Non-Blocking</h3>
+
+            <pre><code class="language-javascript">async function slowFunction() {
+  await delay(3000);
+  console.log('Done');
+}
+
+slowFunction(); // Doesn't block
+console.log('This runs immediately');</code></pre>
+
+            <h3>2. Async/Await Is Still Promises</h3>
+            <p>Under the hood, async/await uses Promises:</p>
+
+            <pre><code class="language-javascript">async function example() {
+  return 'value';
+}
+
+// Same as:
+function example() {
+  return Promise.resolve('value');
+}</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <code>async</code> makes a function return a Promise</li>
+                    <li>✅ <code>await</code> pauses execution until Promise settles</li>
+                    <li>✅ Only use <code>await</code> inside <code>async</code> functions</li>
+                    <li>✅ Makes async code <strong>look synchronous</strong></li>
+                    <li>✅ Better <strong>readability</strong> and <strong>debugging</strong></li>
+                    <li>✅ Use <code>try/catch</code> for error handling</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>You've completed the core lessons! Continue exploring advanced topics and real-world patterns in the remaining sections.</p>
+
+            <div class="lesson-nav">
+                <a href="3-1.html" class="btn btn-secondary">← Previous: Promise.all()</a>
+                <a href="index.html" class="btn btn-primary">Back to Course →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

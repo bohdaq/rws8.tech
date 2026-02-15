@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.2: Iterator Protocol - Understanding iterators and iterables in JavaScript.">
+    <meta name="keywords" content="JavaScript, Generators, Iterators, Protocol, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.2: Iterator Protocol | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-1-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.2: Iterator Protocol</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 1: Introduction</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the iterator protocol</li>
+                    <li>Learn about iterable objects</li>
+                    <li>Create custom iterators</li>
+                    <li>Use Symbol.iterator</li>
+                </ul>
+            </div>
+
+            <h2>What is the Iterator Protocol?</h2>
+            <p>The <strong>iterator protocol</strong> defines a standard way to produce a sequence of values. An object is an iterator when it implements a <code>next()</code> method that returns an object with <code>value</code> and <code>done</code> properties.</p>
+
+            <h3>Iterator Interface</h3>
+
+            <pre><code class="language-javascript">// Iterator must have a next() method
+const iterator = {
+  next() {
+    return {
+      value: any,    // The current value
+      done: boolean  // true when iteration is complete
+    };
+  }
+};</code></pre>
+
+            <h2>Creating a Custom Iterator</h2>
+
+            <pre><code class="language-javascript">function createRangeIterator(start, end) {
+  let current = start;
+  
+  return {
+    next() {
+      if (current <= end) {
+        return {
+          value: current++,
+          done: false
+        };
+      } else {
+        return {
+          done: true
+        };
+      }
+    }
+  };
+}
+
+const iterator = createRangeIterator(1, 3);
+console.log(iterator.next()); // { value: 1, done: false }
+console.log(iterator.next()); // { value: 2, done: false }
+console.log(iterator.next()); // { value: 3, done: false }
+console.log(iterator.next()); // { done: true }</code></pre>
+
+            <h2>The Iterable Protocol</h2>
+
+            <p>An object is <strong>iterable</strong> if it implements the <code>@@iterator</code> method (accessible via <code>Symbol.iterator</code>), which returns an iterator.</p>
+
+            <pre><code class="language-javascript">const iterable = {
+  [Symbol.iterator]() {
+    return iterator; // Returns an iterator
+  }
+};</code></pre>
+
+            <h3>Built-in Iterables</h3>
+
+            <p>Many JavaScript objects are iterable by default:</p>
+
+            <pre><code class="language-javascript">// Arrays
+const arr = [1, 2, 3];
+for (const value of arr) {
+  console.log(value); // 1, 2, 3
+}
+
+// Strings
+const str = 'hello';
+for (const char of str) {
+  console.log(char); // h, e, l, l, o
+}
+
+// Maps
+const map = new Map([['a', 1], ['b', 2]]);
+for (const [key, value] of map) {
+  console.log(key, value); // a 1, b 2
+}
+
+// Sets
+const set = new Set([1, 2, 3]);
+for (const value of set) {
+  console.log(value); // 1, 2, 3
+}</code></pre>
+
+            <h2>Creating a Custom Iterable</h2>
+
+            <pre><code class="language-javascript">class Range {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+  
+  [Symbol.iterator]() {
+    let current = this.start;
+    const end = this.end;
+    
+    return {
+      next() {
+        if (current <= end) {
+          return {
+            value: current++,
+            done: false
+          };
+        }
+        return { done: true };
+      }
+    };
+  }
+}
+
+const range = new Range(1, 5);
+
+// Works with for...of
+for (const num of range) {
+  console.log(num); // 1, 2, 3, 4, 5
+}
+
+// Works with spread operator
+console.log([...range]); // [1, 2, 3, 4, 5]
+
+// Works with Array.from()
+console.log(Array.from(range)); // [1, 2, 3, 4, 5]</code></pre>
+
+            <h2>Generators Simplify Iterators</h2>
+
+            <p>Generators automatically implement the iterator protocol:</p>
+
+            <pre><code class="language-javascript">// Without generator (manual iterator)
+class RangeManual {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+  
+  [Symbol.iterator]() {
+    let current = this.start;
+    const end = this.end;
+    
+    return {
+      next() {
+        if (current <= end) {
+          return { value: current++, done: false };
+        }
+        return { done: true };
+      }
+    };
+  }
+}
+
+// With generator (much simpler!)
+class RangeGenerator {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+  
+  *[Symbol.iterator]() {
+    for (let i = this.start; i <= this.end; i++) {
+      yield i;
+    }
+  }
+}
+
+const range1 = new RangeManual(1, 3);
+const range2 = new RangeGenerator(1, 3);
+
+console.log([...range1]); // [1, 2, 3]
+console.log([...range2]); // [1, 2, 3]</code></pre>
+
+            <h2>Iterator Consumption</h2>
+
+            <h3>for...of Loop</h3>
+
+            <pre><code class="language-javascript">const iterable = {
+  *[Symbol.iterator]() {
+    yield 1;
+    yield 2;
+    yield 3;
+  }
+};
+
+for (const value of iterable) {
+  console.log(value); // 1, 2, 3
+}</code></pre>
+
+            <h3>Spread Operator</h3>
+
+            <pre><code class="language-javascript">function* numbers() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const arr = [...numbers()];
+console.log(arr); // [1, 2, 3]
+
+const [a, b, c] = numbers();
+console.log(a, b, c); // 1 2 3</code></pre>
+
+            <h3>Array Methods</h3>
+
+            <pre><code class="language-javascript">function* range(start, end) {
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
+}
+
+const arr = Array.from(range(1, 5));
+console.log(arr); // [1, 2, 3, 4, 5]
+
+// Map, filter, reduce work on arrays created from iterables
+const doubled = Array.from(range(1, 5)).map(x => x * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]</code></pre>
+
+            <h2>Real-World Example: Custom Collection</h2>
+
+            <pre><code class="language-javascript">class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+  
+  add(value) {
+    const node = { value, next: null };
+    
+    if (!this.head) {
+      this.head = node;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = node;
+    }
+  }
+  
+  *[Symbol.iterator]() {
+    let current = this.head;
+    
+    while (current) {
+      yield current.value;
+      current = current.next;
+    }
+  }
+}
+
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+
+// Now iterable!
+for (const value of list) {
+  console.log(value); // 1, 2, 3
+}
+
+console.log([...list]); // [1, 2, 3]</code></pre>
+
+            <h2>Iterator Return and Throw</h2>
+
+            <p>Iterators can optionally implement <code>return()</code> and <code>throw()</code> methods:</p>
+
+            <pre><code class="language-javascript">function* generatorWithCleanup() {
+  try {
+    yield 1;
+    yield 2;
+    yield 3;
+  } finally {
+    console.log('Cleanup!');
+  }
+}
+
+const gen = generatorWithCleanup();
+console.log(gen.next()); // { value: 1, done: false }
+console.log(gen.return('early exit')); 
+// Logs: Cleanup!
+// Returns: { value: 'early exit', done: true }</code></pre>
+
+            <h2>Infinite Iterators</h2>
+
+            <pre><code class="language-javascript">function* infiniteSequence() {
+  let i = 0;
+  while (true) {
+    yield i++;
+  }
+}
+
+const seq = infiniteSequence();
+console.log(seq.next().value); // 0
+console.log(seq.next().value); // 1
+console.log(seq.next().value); // 2
+
+// Take first 5 values
+function* take(iterable, n) {
+  let count = 0;
+  for (const value of iterable) {
+    if (count++ >= n) break;
+    yield value;
+  }
+}
+
+console.log([...take(infiniteSequence(), 5)]); // [0, 1, 2, 3, 4]</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <strong>Iterator protocol</strong>: Objects with <code>next()</code> method</li>
+                    <li>✅ <strong>Iterable protocol</strong>: Objects with <code>Symbol.iterator</code></li>
+                    <li>✅ Generators <strong>automatically</strong> implement both protocols</li>
+                    <li>✅ Custom iterables work with <code>for...of</code>, spread, etc.</li>
+                    <li>✅ Iterators can be <strong>infinite</strong></li>
+                    <li>✅ Generators <strong>simplify</strong> iterator creation</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now let's explore the basic generator syntax in detail!</p>
+
+            <div class="lesson-nav">
+                <a href="1-1.html" class="btn btn-secondary">← Previous: What are Generators?</a>
+                <a href="1-3.html" class="btn btn-primary">Next: Basic Syntax →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

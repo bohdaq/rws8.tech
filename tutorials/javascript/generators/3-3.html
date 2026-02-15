@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.3: Practical Use Cases - Real-world generator applications and patterns.">
+    <meta name="keywords" content="JavaScript, Generators, Use Cases, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.3: Practical Use Cases | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-3-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.3: Practical Use Cases</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 3: Advanced Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Apply generators to real-world problems</li>
+                    <li>Build practical generator-based solutions</li>
+                    <li>Understand when to use generators</li>
+                    <li>Master common generator patterns</li>
+                </ul>
+            </div>
+
+            <h2>1. Data Processing Pipelines</h2>
+
+            <pre><code class="language-javascript">function* readCSV(text) {
+  const lines = text.split('\n');
+  for (const line of lines) {
+    yield line.split(',');
+  }
+}
+
+function* parseRecords(rows) {
+  const headers = rows.next().value;
+  
+  for (const row of rows) {
+    const record = {};
+    headers.forEach((header, i) => {
+      record[header] = row[i];
+    });
+    yield record;
+  }
+}
+
+function* filterRecords(records, predicate) {
+  for (const record of records) {
+    if (predicate(record)) {
+      yield record;
+    }
+  }
+}
+
+// Usage
+const csvData = 'name,age,city\nAlice,30,NYC\nBob,25,LA\nCharlie,35,NYC';
+const rows = readCSV(csvData);
+const records = parseRecords(rows);
+const nycResidents = filterRecords(records, r => r.city === 'NYC');
+
+for (const person of nycResidents) {
+  console.log(person); // { name: 'Alice', age: '30', city: 'NYC' }, ...
+}</code></pre>
+
+            <h2>2. Lazy Data Loading</h2>
+
+            <pre><code class="language-javascript">class LazyCollection {
+  constructor(data) {
+    this.data = data;
+  }
+  
+  *[Symbol.iterator]() {
+    for (const item of this.data) {
+      yield item;
+    }
+  }
+  
+  *map(fn) {
+    for (const item of this) {
+      yield fn(item);
+    }
+  }
+  
+  *filter(predicate) {
+    for (const item of this) {
+      if (predicate(item)) {
+        yield item;
+      }
+    }
+  }
+  
+  *take(n) {
+    let count = 0;
+    for (const item of this) {
+      if (count++ >= n) break;
+      yield item;
+    }
+  }
+  
+  toArray() {
+    return [...this];
+  }
+}
+
+// Usage - processes only what's needed
+const numbers = new LazyCollection([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+const result = numbers
+  .filter(n => n % 2 === 0)
+  .map(n => n * n)
+  .take(3)
+  .toArray();
+
+console.log(result); // [4, 16, 36]</code></pre>
+
+            <h2>3. ID Generator</h2>
+
+            <pre><code class="language-javascript">class IDGenerator {
+  constructor(prefix = 'ID', start = 1) {
+    this.prefix = prefix;
+    this.current = start;
+  }
+  
+  *[Symbol.iterator]() {
+    while (true) {
+      yield `${this.prefix}-${String(this.current++).padStart(6, '0')}`;
+    }
+  }
+  
+  next() {
+    return this[Symbol.iterator]().next().value;
+  }
+}
+
+const userIDs = new IDGenerator('USER', 1000);
+console.log(userIDs.next()); // USER-001000
+console.log(userIDs.next()); // USER-001001
+console.log(userIDs.next()); // USER-001002</code></pre>
+
+            <h2>4. Tree Traversal</h2>
+
+            <pre><code class="language-javascript">class TreeNode {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
+  
+  // Depth-first traversal
+  *depthFirst() {
+    yield this.value;
+    for (const child of this.children) {
+      yield* child.depthFirst();
+    }
+  }
+  
+  // Breadth-first traversal
+  *breadthFirst() {
+    const queue = [this];
+    
+    while (queue.length > 0) {
+      const node = queue.shift();
+      yield node.value;
+      queue.push(...node.children);
+    }
+  }
+}
+
+const tree = new TreeNode(1, [
+  new TreeNode(2, [
+    new TreeNode(4),
+    new TreeNode(5)
+  ]),
+  new TreeNode(3, [
+    new TreeNode(6),
+    new TreeNode(7)
+  ])
+]);
+
+console.log([...tree.depthFirst()]);   // [1, 2, 4, 5, 3, 6, 7]
+console.log([...tree.breadthFirst()]); // [1, 2, 3, 4, 5, 6, 7]</code></pre>
+
+            <h2>5. Batch Processing</h2>
+
+            <pre><code class="language-javascript">function* batch(iterable, size) {
+  let batch = [];
+  
+  for (const item of iterable) {
+    batch.push(item);
+    
+    if (batch.length === size) {
+      yield batch;
+      batch = [];
+    }
+  }
+  
+  if (batch.length > 0) {
+    yield batch;
+  }
+}
+
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+for (const group of batch(numbers, 3)) {
+  console.log(group);
+}
+// [1, 2, 3]
+// [4, 5, 6]
+// [7, 8, 9]
+// [10]</code></pre>
+
+            <h2>6. Permutations Generator</h2>
+
+            <pre><code class="language-javascript">function* permutations(array) {
+  if (array.length <= 1) {
+    yield array;
+    return;
+  }
+  
+  for (let i = 0; i < array.length; i++) {
+    const rest = [...array.slice(0, i), ...array.slice(i + 1)];
+    
+    for (const perm of permutations(rest)) {
+      yield [array[i], ...perm];
+    }
+  }
+}
+
+console.log([...permutations([1, 2, 3])]);
+// [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]</code></pre>
+
+            <h2>7. Retry with Backoff</h2>
+
+            <pre><code class="language-javascript">function* retryBackoff(maxRetries = 3, baseDelay = 1000) {
+  for (let i = 0; i < maxRetries; i++) {
+    const delay = baseDelay * Math.pow(2, i);
+    yield { attempt: i + 1, delay };
+  }
+}
+
+async function fetchWithRetry(url) {
+  for (const { attempt, delay } of retryBackoff(3, 1000)) {
+    try {
+      console.log(`Attempt ${attempt}`);
+      const response = await fetch(url);
+      return await response.json();
+    } catch (error) {
+      console.log(`Failed, waiting ${delay}ms`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error('All retries failed');
+}</code></pre>
+
+            <h2>8. Sliding Window</h2>
+
+            <pre><code class="language-javascript">function* slidingWindow(iterable, size) {
+  const window = [];
+  
+  for (const item of iterable) {
+    window.push(item);
+    
+    if (window.length === size) {
+      yield [...window];
+      window.shift();
+    }
+  }
+}
+
+const numbers = [1, 2, 3, 4, 5];
+for (const window of slidingWindow(numbers, 3)) {
+  console.log(window);
+}
+// [1, 2, 3]
+// [2, 3, 4]
+// [3, 4, 5]</code></pre>
+
+            <h2>9. Unique Values</h2>
+
+            <pre><code class="language-javascript">function* unique(iterable) {
+  const seen = new Set();
+  
+  for (const item of iterable) {
+    if (!seen.has(item)) {
+      seen.add(item);
+      yield item;
+    }
+  }
+}
+
+const numbers = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5];
+console.log([...unique(numbers)]); // [1, 2, 3, 4, 5]</code></pre>
+
+            <h2>10. Merge Sorted Sequences</h2>
+
+            <pre><code class="language-javascript">function* mergeSorted(...iterables) {
+  const iterators = iterables.map(it => it[Symbol.iterator]());
+  const values = iterators.map(it => it.next());
+  
+  while (values.some(v => !v.done)) {
+    let minIndex = -1;
+    let minValue = Infinity;
+    
+    values.forEach((v, i) => {
+      if (!v.done && v.value < minValue) {
+        minValue = v.value;
+        minIndex = i;
+      }
+    });
+    
+    if (minIndex !== -1) {
+      yield minValue;
+      values[minIndex] = iterators[minIndex].next();
+    }
+  }
+}
+
+const seq1 = [1, 3, 5, 7];
+const seq2 = [2, 4, 6, 8];
+const seq3 = [0, 9, 10];
+
+console.log([...mergeSorted(seq1, seq2, seq3)]);
+// [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Generators excel at <strong>data pipelines</strong></li>
+                    <li>✅ Perfect for <strong>lazy evaluation</strong></li>
+                    <li>✅ Great for <strong>tree/graph traversal</strong></li>
+                    <li>✅ Ideal for <strong>batch processing</strong></li>
+                    <li>✅ Simplify <strong>complex iterations</strong></li>
+                    <li>✅ Memory efficient for <strong>large datasets</strong></li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Finally, let's explore performance optimization techniques with generators!</p>
+
+            <div class="lesson-nav">
+                <a href="3-2.html" class="btn btn-secondary">← Previous: Async Generators</a>
+                <a href="3-4.html" class="btn btn-primary">Next: Performance Optimization →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

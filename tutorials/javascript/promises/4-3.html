@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 4.3: Async Functions Deep Dive - Advanced async function patterns and behaviors.">
+    <meta name="keywords" content="JavaScript, Async Functions, Await, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 4.3: Async Functions Deep Dive | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-promises-4-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .info-box {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Promises</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 4.3: Async Functions Deep Dive</h1>
+            <p class="page-subtitle">JavaScript Promises Tutorial - Section 4: Async/Await</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand that async functions always return Promises</li>
+                    <li>Learn about awaiting non-Promise values</li>
+                    <li>Master top-level await</li>
+                    <li>Explore various async function patterns</li>
+                </ul>
+            </div>
+
+            <h2>Async Functions Always Return Promises</h2>
+
+            <p>Every async function automatically wraps its return value in a Promise:</p>
+
+            <pre><code class="language-javascript">async function getValue() {
+  return 42;
+}
+
+// Equivalent to:
+function getValue() {
+  return Promise.resolve(42);
+}
+
+getValue().then(value => console.log(value)); // 42</code></pre>
+
+            <h3>Returning Different Values</h3>
+
+            <pre><code class="language-javascript">// Return a value
+async function returnValue() {
+  return 'Hello';
+}
+returnValue(); // Promise { 'Hello' }
+
+// Return a Promise
+async function returnPromise() {
+  return Promise.resolve('World');
+}
+returnPromise(); // Promise { 'World' }
+
+// Return nothing (undefined)
+async function returnNothing() {
+  // No return
+}
+returnNothing(); // Promise { undefined }
+
+// Throw an error
+async function throwError() {
+  throw new Error('Oops');
+}
+throwError(); // Promise { <rejected> Error: Oops }</code></pre>
+
+            <h2>Awaiting Non-Promise Values</h2>
+
+            <p>You can await any value, not just Promises. Non-Promise values are automatically wrapped:</p>
+
+            <pre><code class="language-javascript">async function example() {
+  const value1 = await 42;           // Wrapped in Promise.resolve()
+  const value2 = await 'Hello';      // Wrapped in Promise.resolve()
+  const value3 = await [1, 2, 3];    // Wrapped in Promise.resolve()
+  
+  console.log(value1); // 42
+  console.log(value2); // 'Hello'
+  console.log(value3); // [1, 2, 3]
+}</code></pre>
+
+            <h2>Async Function Types</h2>
+
+            <h3>1. Function Declaration</h3>
+
+            <pre><code class="language-javascript">async function fetchData() {
+  return await fetch('/api/data');
+}</code></pre>
+
+            <h3>2. Function Expression</h3>
+
+            <pre><code class="language-javascript">const fetchData = async function() {
+  return await fetch('/api/data');
+};</code></pre>
+
+            <h3>3. Arrow Function</h3>
+
+            <pre><code class="language-javascript">const fetchData = async () => {
+  return await fetch('/api/data');
+};
+
+// Concise body
+const getValue = async () => await fetch('/api/data');</code></pre>
+
+            <h3>4. Object Method</h3>
+
+            <pre><code class="language-javascript">const api = {
+  async fetchData() {
+    return await fetch('/api/data');
+  },
+  
+  // Arrow function property
+  getData: async () => {
+    return await fetch('/api/data');
+  }
+};</code></pre>
+
+            <h3>5. Class Method</h3>
+
+            <pre><code class="language-javascript">class API {
+  async fetchData() {
+    return await fetch('/api/data');
+  }
+  
+  static async getConfig() {
+    return await fetch('/api/config');
+  }
+}</code></pre>
+
+            <h2>Top-Level Await (ES2022)</h2>
+
+            <p>In modules, you can use await at the top level without wrapping in an async function:</p>
+
+            <pre><code class="language-javascript">// In a module file
+const data = await fetch('/api/data');
+const json = await data.json();
+
+console.log(json);
+
+export default json;</code></pre>
+
+            <div class="info-box">
+                <p><strong>Note:</strong> Top-level await only works in ES modules (files with <code>type="module"</code> or <code>.mjs</code> extension).</p>
+            </div>
+
+            <h3>Top-Level Await Use Cases</h3>
+
+            <pre><code class="language-javascript">// Dynamic imports
+const module = await import('./utils.js');
+
+// Resource initialization
+const connection = await database.connect();
+
+// Dependency fallbacks
+let translations;
+try {
+  translations = await import(`./i18n/${language}.js`);
+} catch {
+  translations = await import('./i18n/en.js');
+}</code></pre>
+
+            <h2>Async Function Execution Flow</h2>
+
+            <pre><code class="language-javascript">console.log('1: Before');
+
+async function example() {
+  console.log('2: Function start');
+  
+  const result = await Promise.resolve('data');
+  
+  console.log('4: After await');
+  return result;
+}
+
+console.log('3: After function call');
+example().then(result => console.log('5: Result:', result));
+
+// Output order:
+// 1: Before
+// 2: Function start
+// 3: After function call
+// 4: After await
+// 5: Result: data</code></pre>
+
+            <h2>Async IIFE (Immediately Invoked Function Expression)</h2>
+
+            <pre><code class="language-javascript">// Execute async code immediately
+(async () => {
+  const data = await fetchData();
+  console.log(data);
+})();
+
+// With error handling
+(async () => {
+  try {
+    const data = await fetchData();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+})();</code></pre>
+
+            <h2>Conditional Await</h2>
+
+            <pre><code class="language-javascript">async function getData(useCache) {
+  if (useCache) {
+    return await getCachedData();
+  } else {
+    return await fetchFreshData();
+  }
+}
+
+// Ternary operator
+async function getData(useCache) {
+  return await (useCache ? getCachedData() : fetchFreshData());
+}</code></pre>
+
+            <h2>Await in Loops</h2>
+
+            <h3>Sequential Execution</h3>
+
+            <pre><code class="language-javascript">async function processItems(items) {
+  for (const item of items) {
+    await processItem(item); // Waits for each
+  }
+}
+
+// Using for...of
+async function processUsers(userIds) {
+  for (const id of userIds) {
+    const user = await fetchUser(id);
+    console.log(user);
+  }
+}</code></pre>
+
+            <h3>Parallel Execution</h3>
+
+            <pre><code class="language-javascript">async function processItems(items) {
+  const promises = items.map(item => processItem(item));
+  const results = await Promise.all(promises);
+  return results;
+}
+
+// Or more concisely
+async function processItems(items) {
+  return await Promise.all(items.map(processItem));
+}</code></pre>
+
+            <h2>Async Generators</h2>
+
+            <pre><code class="language-javascript">async function* generateNumbers() {
+  for (let i = 0; i < 5; i++) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    yield i;
+  }
+}
+
+// Using async generator
+(async () => {
+  for await (const num of generateNumbers()) {
+    console.log(num); // 0, 1, 2, 3, 4 (one per second)
+  }
+})();</code></pre>
+
+            <h2>Async Function Composition</h2>
+
+            <pre><code class="language-javascript">async function fetchUser(id) {
+  const response = await fetch(`/api/users/${id}`);
+  return await response.json();
+}
+
+async function fetchUserPosts(userId) {
+  const response = await fetch(`/api/users/${userId}/posts`);
+  return await response.json();
+}
+
+async function getUserWithPosts(userId) {
+  const user = await fetchUser(userId);
+  const posts = await fetchUserPosts(userId);
+  return { ...user, posts };
+}
+
+// Or in parallel
+async function getUserWithPosts(userId) {
+  const [user, posts] = await Promise.all([
+    fetchUser(userId),
+    fetchUserPosts(userId)
+  ]);
+  return { ...user, posts };
+}</code></pre>
+
+            <h2>Return Await Pattern</h2>
+
+            <pre><code class="language-javascript">// These are different!
+
+// Pattern 1: Return await (in try/catch)
+async function pattern1() {
+  try {
+    return await fetchData(); // Caught by this try/catch
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// Pattern 2: Return without await
+async function pattern2() {
+  try {
+    return fetchData(); // NOT caught by this try/catch!
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}</code></pre>
+
+            <div class="info-box">
+                <p><strong>Rule:</strong> Use <code>return await</code> inside try/catch blocks to ensure errors are caught.</p>
+            </div>
+
+            <h2>Async Function Performance</h2>
+
+            <pre><code class="language-javascript">// Slow: Sequential (3 seconds total)
+async function slow() {
+  const a = await delay(1000, 'A');
+  const b = await delay(1000, 'B');
+  const c = await delay(1000, 'C');
+  return [a, b, c];
+}
+
+// Fast: Parallel (1 second total)
+async function fast() {
+  const [a, b, c] = await Promise.all([
+    delay(1000, 'A'),
+    delay(1000, 'B'),
+    delay(1000, 'C')
+  ]);
+  return [a, b, c];
+}</code></pre>
+
+            <h2>Real-World Example: API Client</h2>
+
+            <pre><code class="language-javascript">class APIClient {
+  constructor(baseURL) {
+    this.baseURL = baseURL;
+  }
+  
+  async request(endpoint, options = {}) {
+    const url = `${this.baseURL}${endpoint}`;
+    
+    try {
+      const response = await fetch(url, options);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error(`Request failed: ${endpoint}`, error);
+      throw error;
+    }
+  }
+  
+  async get(endpoint) {
+    return await this.request(endpoint);
+  }
+  
+  async post(endpoint, data) {
+    return await this.request(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  }
+  
+  async batchGet(endpoints) {
+    return await Promise.all(
+      endpoints.map(endpoint => this.get(endpoint))
+    );
+  }
+}
+
+// Usage
+const api = new APIClient('https://api.example.com');
+
+(async () => {
+  try {
+    const [users, posts] = await api.batchGet([
+      '/users',
+      '/posts'
+    ]);
+    console.log({ users, posts });
+  } catch (error) {
+    console.error('Failed to load data:', error);
+  }
+})();</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Async functions <strong>always return Promises</strong></li>
+                    <li>✅ Can await <strong>any value</strong>, not just Promises</li>
+                    <li>✅ Top-level await works in <strong>ES modules</strong></li>
+                    <li>✅ Use <code>return await</code> in <strong>try/catch blocks</strong></li>
+                    <li>✅ Async functions work with all function types</li>
+                    <li>✅ Consider parallel vs sequential execution</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Next, we'll explore parallel vs sequential execution patterns in detail!</p>
+
+            <div class="lesson-nav">
+                <a href="4-2.html" class="btn btn-secondary">← Previous: Error Handling</a>
+                <a href="4-4.html" class="btn btn-primary">Next: Parallel vs Sequential →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

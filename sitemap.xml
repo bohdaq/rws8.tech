@@ -73,163 +73,247 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-1-1.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/promises/</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/promises/1-1.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-1-2.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/1-2.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-1-3.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/1-3.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-2-1.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/2-1.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-2-2.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/2-2.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-2-3.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/2-3.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-2-4.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/2-4.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-3-1.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/3-1.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-3-2.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/3-2.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-3-3.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/3-3.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-3-4.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/3-4.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-4-1.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/4-1.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-4-2.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/4-2.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-4-3.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/4-3.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-4-4.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/4-4.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-5-1.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/5-1.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-5-2.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/5-2.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-5-3.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/5-3.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-5-4.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/5-4.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-5-5.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/5-5.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-7-1.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/7-1.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-7-2.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/7-2.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-7-3.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/7-3.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-8-1.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/8-1.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-8-2.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/8-2.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-8-3.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/8-3.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rws8.tech/tutorials-javascript-promises-8-4.html</loc>
+    <loc>https://rws8.tech/tutorials/javascript/promises/8-4.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/1-1.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/1-2.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/1-3.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/2-1.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/2-2.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/2-3.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/2-4.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/3-1.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/3-2.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/3-3.html</loc>
+    <lastmod>2025-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rws8.tech/tutorials/javascript/generators/3-4.html</loc>
     <lastmod>2025-02-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

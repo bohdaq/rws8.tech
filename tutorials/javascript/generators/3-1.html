@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.1: Infinite Sequences - Master lazy evaluation with infinite generators.">
+    <meta name="keywords" content="JavaScript, Generators, Infinite Sequences, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.1: Infinite Sequences | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-3-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.1: Infinite Sequences</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 3: Advanced Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Create infinite sequences safely</li>
+                    <li>Master lazy evaluation patterns</li>
+                    <li>Build utility functions for infinite generators</li>
+                    <li>Understand memory efficiency</li>
+                </ul>
+            </div>
+
+            <h2>Infinite Generators</h2>
+            <p>Generators can represent infinite sequences without consuming infinite memory.</p>
+
+            <pre><code class="language-javascript">function* infiniteNumbers() {
+  let n = 0;
+  while (true) {
+    yield n++;
+  }
+}
+
+const numbers = infiniteNumbers();
+console.log(numbers.next().value); // 0
+console.log(numbers.next().value); // 1
+console.log(numbers.next().value); // 2
+// Can continue forever!</code></pre>
+
+            <h2>Classic Infinite Sequences</h2>
+
+            <h3>Fibonacci Sequence</h3>
+
+            <pre><code class="language-javascript">function* fibonacci() {
+  let [a, b] = [0, 1];
+  while (true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+const fib = fibonacci();
+console.log(fib.next().value); // 0
+console.log(fib.next().value); // 1
+console.log(fib.next().value); // 1
+console.log(fib.next().value); // 2
+console.log(fib.next().value); // 3
+console.log(fib.next().value); // 5</code></pre>
+
+            <h3>Prime Numbers</h3>
+
+            <pre><code class="language-javascript">function* primes() {
+  yield 2;
+  const found = [2];
+  let candidate = 3;
+  
+  while (true) {
+    let isPrime = true;
+    
+    for (const prime of found) {
+      if (prime * prime > candidate) break;
+      if (candidate % prime === 0) {
+        isPrime = false;
+        break;
+      }
+    }
+    
+    if (isPrime) {
+      yield candidate;
+      found.push(candidate);
+    }
+    
+    candidate += 2;
+  }
+}
+
+const primeGen = primes();
+console.log([...take(primeGen, 10)]);
+// [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]</code></pre>
+
+            <h2>Utility Functions</h2>
+
+            <h3>Take - Limit Values</h3>
+
+            <pre><code class="language-javascript">function* take(iterable, n) {
+  let count = 0;
+  for (const value of iterable) {
+    if (count++ >= n) break;
+    yield value;
+  }
+}
+
+const nums = infiniteNumbers();
+console.log([...take(nums, 5)]); // [0, 1, 2, 3, 4]</code></pre>
+
+            <h3>Skip - Skip Values</h3>
+
+            <pre><code class="language-javascript">function* skip(iterable, n) {
+  let count = 0;
+  for (const value of iterable) {
+    if (count++ < n) continue;
+    yield value;
+  }
+}
+
+const nums = infiniteNumbers();
+console.log([...take(skip(nums, 5), 3)]); // [5, 6, 7]</code></pre>
+
+            <h3>Filter - Conditional Values</h3>
+
+            <pre><code class="language-javascript">function* filter(iterable, predicate) {
+  for (const value of iterable) {
+    if (predicate(value)) {
+      yield value;
+    }
+  }
+}
+
+const nums = infiniteNumbers();
+const evens = filter(nums, n => n % 2 === 0);
+console.log([...take(evens, 5)]); // [0, 2, 4, 6, 8]</code></pre>
+
+            <h3>Map - Transform Values</h3>
+
+            <pre><code class="language-javascript">function* map(iterable, transform) {
+  for (const value of iterable) {
+    yield transform(value);
+  }
+}
+
+const nums = infiniteNumbers();
+const squared = map(nums, n => n * n);
+console.log([...take(squared, 5)]); // [0, 1, 4, 9, 16]</code></pre>
+
+            <h2>Combining Utilities</h2>
+
+            <pre><code class="language-javascript">const nums = infiniteNumbers();
+const result = take(
+  map(
+    filter(nums, n => n % 2 === 0),
+    n => n * n
+  ),
+  5
+);
+
+console.log([...result]); // [0, 4, 16, 36, 64]</code></pre>
+
+            <h2>Real-World: Random Data Generator</h2>
+
+            <pre><code class="language-javascript">function* randomNumbers(min = 0, max = 100) {
+  while (true) {
+    yield Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+}
+
+function* randomDates(startYear = 2020, endYear = 2025) {
+  while (true) {
+    const year = Math.floor(Math.random() * (endYear - startYear + 1)) + startYear;
+    const month = Math.floor(Math.random() * 12);
+    const day = Math.floor(Math.random() * 28) + 1;
+    yield new Date(year, month, day);
+  }
+}
+
+const randomNums = randomNumbers(1, 10);
+console.log([...take(randomNums, 5)]); // [7, 3, 9, 1, 5] (random)
+
+const randomDts = randomDates(2020, 2025);
+console.log([...take(randomDts, 3)]); // [Date, Date, Date]</code></pre>
+
+            <h2>Cycle Pattern</h2>
+
+            <pre><code class="language-javascript">function* cycle(array) {
+  while (true) {
+    for (const item of array) {
+      yield item;
+    }
+  }
+}
+
+const colors = cycle(['red', 'green', 'blue']);
+console.log([...take(colors, 7)]);
+// ['red', 'green', 'blue', 'red', 'green', 'blue', 'red']</code></pre>
+
+            <h2>Repeat Pattern</h2>
+
+            <pre><code class="language-javascript">function* repeat(value) {
+  while (true) {
+    yield value;
+  }
+}
+
+const zeros = repeat(0);
+console.log([...take(zeros, 5)]); // [0, 0, 0, 0, 0]</code></pre>
+
+            <h2>Range with Step</h2>
+
+            <pre><code class="language-javascript">function* range(start = 0, end = Infinity, step = 1) {
+  for (let i = start; i < end; i += step) {
+    yield i;
+  }
+}
+
+console.log([...take(range(0, Infinity, 5), 5)]);
+// [0, 5, 10, 15, 20]</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ Infinite generators use <strong>constant memory</strong></li>
+                    <li>✅ Values computed <strong>on demand</strong> (lazy)</li>
+                    <li>✅ Use <code>take()</code> to limit infinite sequences</li>
+                    <li>✅ Combine with <code>filter()</code>, <code>map()</code> for pipelines</li>
+                    <li>✅ Perfect for <strong>mathematical sequences</strong></li>
+                    <li>✅ Great for <strong>random data generation</strong></li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now let's explore async generators for handling asynchronous data streams!</p>
+
+            <div class="lesson-nav">
+                <a href="2-4.html" class="btn btn-secondary">← Previous: Two-Way Communication</a>
+                <a href="3-2.html" class="btn btn-primary">Next: Async Generators →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

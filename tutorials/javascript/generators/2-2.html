@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.2: Generator Methods - Master next(), return(), and throw() methods.">
+    <meta name="keywords" content="JavaScript, Generators, Methods, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.2: Generator Methods | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials-javascript-generators-2-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .lesson-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Generators</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.2: Generator Methods</h1>
+            <p class="page-subtitle">JavaScript Generators Tutorial - Section 2: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Master the next() method</li>
+                    <li>Learn to use return() for early termination</li>
+                    <li>Understand throw() for error injection</li>
+                    <li>Implement cleanup with finally blocks</li>
+                </ul>
+            </div>
+
+            <h2>The next() Method</h2>
+            <p>The <code>next()</code> method advances the generator and optionally passes a value.</p>
+
+            <pre><code class="language-javascript">function* example() {
+  const a = yield 1;
+  const b = yield 2;
+  return a + b;
+}
+
+const gen = example();
+console.log(gen.next());      // { value: 1, done: false }
+console.log(gen.next(10));    // { value: 2, done: false }
+console.log(gen.next(20));    // { value: 30, done: true }</code></pre>
+
+            <h2>The return() Method</h2>
+            <p>The <code>return()</code> method terminates the generator early and returns a value.</p>
+
+            <pre><code class="language-javascript">function* numbers() {
+  yield 1;
+  yield 2;
+  yield 3;
+  yield 4;
+  yield 5;
+}
+
+const gen = numbers();
+console.log(gen.next());        // { value: 1, done: false }
+console.log(gen.next());        // { value: 2, done: false }
+console.log(gen.return('stopped')); // { value: 'stopped', done: true }
+console.log(gen.next());        // { value: undefined, done: true }</code></pre>
+
+            <h3>return() with Cleanup</h3>
+
+            <pre><code class="language-javascript">function* withCleanup() {
+  try {
+    yield 1;
+    yield 2;
+    yield 3;
+  } finally {
+    console.log('Cleanup!');
+  }
+}
+
+const gen = withCleanup();
+console.log(gen.next());        // { value: 1, done: false }
+console.log(gen.return('done')); // Logs: Cleanup!
+                                // { value: 'done', done: true }</code></pre>
+
+            <h2>The throw() Method</h2>
+            <p>The <code>throw()</code> method injects an error into the generator.</p>
+
+            <pre><code class="language-javascript">function* errorHandler() {
+  try {
+    yield 1;
+    yield 2;
+    yield 3;
+  } catch (error) {
+    console.log('Caught:', error.message);
+    yield 'recovered';
+  }
+}
+
+const gen = errorHandler();
+console.log(gen.next());                    // { value: 1, done: false }
+console.log(gen.throw(new Error('Oops!'))); // Logs: Caught: Oops!
+                                            // { value: 'recovered', done: false }
+console.log(gen.next());                    // { value: undefined, done: true }</code></pre>
+
+            <h3>Uncaught Errors</h3>
+
+            <pre><code class="language-javascript">function* noErrorHandler() {
+  yield 1;
+  yield 2;
+}
+
+const gen = noErrorHandler();
+gen.next();                    // { value: 1, done: false }
+
+try {
+  gen.throw(new Error('Boom!')); // Throws error (not caught in generator)
+} catch (error) {
+  console.log('Caught outside:', error.message);
+}</code></pre>
+
+            <h2>Real-World: Resource Management</h2>
+
+            <pre><code class="language-javascript">function* fileProcessor(filename) {
+  console.log(`Opening ${filename}`);
+  
+  try {
+    yield 'reading';
+    yield 'processing';
+    yield 'writing';
+  } finally {
+    console.log(`Closing ${filename}`);
+  }
+}
+
+const processor = fileProcessor('data.txt');
+console.log(processor.next().value);   // Opening data.txt, returns: reading
+console.log(processor.next().value);   // returns: processing
+processor.return('cancelled');         // Closing data.txt</code></pre>
+
+            <h2>Error Recovery Pattern</h2>
+
+            <pre><code class="language-javascript">function* resilientTask() {
+  let retries = 3;
+  
+  while (retries > 0) {
+    try {
+      yield 'attempting';
+      yield 'success';
+      return 'completed';
+    } catch (error) {
+      retries--;
+      console.log(`Error: ${error.message}, retries left: ${retries}`);
+      
+      if (retries === 0) {
+        throw error;
+      }
+      
+      yield 'retrying';
+    }
+  }
+}
+
+const task = resilientTask();
+task.next();                           // attempting
+task.throw(new Error('Failed'));       // Error: Failed, retries left: 2
+task.next();                           // attempting
+task.throw(new Error('Failed again')); // Error: Failed again, retries left: 1
+task.next();                           // attempting
+task.next();                           // success</code></pre>
+
+            <h2>Combining All Methods</h2>
+
+            <pre><code class="language-javascript">function* lifecycle() {
+  console.log('Start');
+  
+  try {
+    const a = yield 'step1';
+    console.log('Got:', a);
+    
+    const b = yield 'step2';
+    console.log('Got:', b);
+    
+    yield 'step3';
+  } catch (error) {
+    console.log('Error:', error.message);
+    yield 'error-recovery';
+  } finally {
+    console.log('Cleanup');
+  }
+}
+
+// Example 1: Normal flow
+const gen1 = lifecycle();
+gen1.next();           // Start
+gen1.next('value1');   // Got: value1
+gen1.next('value2');   // Got: value2
+gen1.next();           // Cleanup
+
+// Example 2: With error
+const gen2 = lifecycle();
+gen2.next();                          // Start
+gen2.throw(new Error('Something wrong')); // Error: Something wrong, Cleanup
+
+// Example 3: Early return
+const gen3 = lifecycle();
+gen3.next();           // Start
+gen3.return('early');  // Cleanup</code></pre>
+
+            <div class="key-takeaways">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>✅ <code>next(value)</code> - Advances generator, passes value</li>
+                    <li>✅ <code>return(value)</code> - Terminates early, runs finally</li>
+                    <li>✅ <code>throw(error)</code> - Injects error into generator</li>
+                    <li>✅ Use <code>try/catch</code> for error handling</li>
+                    <li>✅ Use <code>finally</code> for cleanup</li>
+                    <li>✅ Perfect for <strong>resource management</strong></li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now let's explore yield delegation with yield*!</p>
+
+            <div class="lesson-nav">
+                <a href="2-1.html" class="btn btn-secondary">← Previous: Yield Expressions</a>
+                <a href="2-3.html" class="btn btn-primary">Next: Yield Delegation →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>
