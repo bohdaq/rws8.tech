@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.4: Memoization and Caching - Optimize performance using closures for caching.">
+    <meta name="keywords" content="JavaScript, Closures, Memoization, Caching, Performance">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.4: Memoization and Caching | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/3-4.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.4: Memoization and Caching</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 3: Common Use Cases</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand memoization and its benefits</li>
+                        <li>Implement caching using closures</li>
+                        <li>Create advanced memoization utilities</li>
+                        <li>Manage cache size and expiration</li>
+                    </ul>
+                </div>
+
+                <h2>What Is Memoization?</h2>
+                <p>
+                    <strong>Memoization</strong> is an optimization technique that stores the results of expensive function calls and returns the cached result when the same inputs occur again. Closures make this elegant and efficient.
+                </p>
+
+                <pre><code class="language-javascript">// Without memoization
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.time('fib');
+console.log(fibonacci(40)); // Very slow!
+console.timeEnd('fib');
+
+// With memoization
+function memoize(fn) {
+    const cache = {};
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        
+        if (key in cache) {
+            return cache[key];
+        }
+        
+        const result = fn.apply(this, args);
+        cache[key] = result;
+        return result;
+    };
+}
+
+const memoizedFib = memoize(function(n) {
+    if (n <= 1) return n;
+    return memoizedFib(n - 1) + memoizedFib(n - 2);
+});
+
+console.time('memoFib');
+console.log(memoizedFib(40)); // Much faster!
+console.timeEnd('memoFib');</code></pre>
+
+                <h2>Basic Memoization Pattern</h2>
+                <pre><code class="language-javascript">function createMemoizedFunction(fn) {
+    const cache = new Map();
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        
+        if (cache.has(key)) {
+            console.log('Cache hit for:', args);
+            return cache.get(key);
+        }
+        
+        console.log('Computing for:', args);
+        const result = fn(...args);
+        cache.set(key, result);
+        return result;
+    };
+}
+
+// Expensive calculation
+function expensiveCalculation(a, b) {
+    let result = 0;
+    for (let i = 0; i < 1000000; i++) {
+        result += a * b;
+    }
+    return result;
+}
+
+const memoized = createMemoizedFunction(expensiveCalculation);
+
+memoized(5, 10); // Computing...
+memoized(5, 10); // Cache hit!
+memoized(3, 7);  // Computing...
+memoized(5, 10); // Cache hit!</code></pre>
+
+                <h2>Memoization with Cache Size Limit</h2>
+                <pre><code class="language-javascript">function memoizeWithLimit(fn, maxSize = 100) {
+    const cache = new Map();
+    const keys = [];
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        
+        if (cache.has(key)) {
+            return cache.get(key);
+        }
+        
+        const result = fn.apply(this, args);
+        
+        // Add to cache
+        cache.set(key, result);
+        keys.push(key);
+        
+        // Remove oldest if over limit
+        if (keys.length > maxSize) {
+            const oldestKey = keys.shift();
+            cache.delete(oldestKey);
+        }
+        
+        return result;
+    };
+}
+
+const limitedMemo = memoizeWithLimit(expensiveCalculation, 3);
+
+limitedMemo(1, 1);
+limitedMemo(2, 2);
+limitedMemo(3, 3);
+limitedMemo(4, 4); // This will evict (1, 1)</code></pre>
+
+                <h2>Memoization with TTL (Time To Live)</h2>
+                <pre><code class="language-javascript">function memoizeWithTTL(fn, ttl = 5000) {
+    const cache = new Map();
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        const now = Date.now();
+        
+        if (cache.has(key)) {
+            const cached = cache.get(key);
+            if (now - cached.timestamp < ttl) {
+                console.log('Cache hit (fresh)');
+                return cached.value;
+            } else {
+                console.log('Cache expired');
+                cache.delete(key);
+            }
+        }
+        
+        console.log('Computing...');
+        const result = fn.apply(this, args);
+        cache.set(key, {
+            value: result,
+            timestamp: now
+        });
+        
+        return result;
+    };
+}
+
+const ttlMemo = memoizeWithTTL(expensiveCalculation, 2000);
+
+ttlMemo(5, 10); // Computing...
+ttlMemo(5, 10); // Cache hit (fresh)
+
+setTimeout(() => {
+    ttlMemo(5, 10); // Cache expired, Computing...
+}, 2500);</code></pre>
+
+                <h2>Practical Example: API Response Cache</h2>
+                <pre><code class="language-javascript">function createAPICache(ttl = 60000) {
+    const cache = new Map();
+    
+    return {
+        get: async function(url, options = {}) {
+            const key = JSON.stringify({ url, options });
+            const now = Date.now();
+            
+            // Check cache
+            if (cache.has(key)) {
+                const cached = cache.get(key);
+                if (now - cached.timestamp < ttl) {
+                    console.log('Returning cached response');
+                    return cached.data;
+                }
+                cache.delete(key);
+            }
+            
+            // Fetch fresh data
+            console.log('Fetching from API');
+            const response = await fetch(url, options);
+            const data = await response.json();
+            
+            // Cache it
+            cache.set(key, {
+                data,
+                timestamp: now
+            });
+            
+            return data;
+        },
+        
+        clear: function() {
+            cache.clear();
+        },
+        
+        delete: function(url) {
+            const keysToDelete = [];
+            for (const key of cache.keys()) {
+                if (key.includes(url)) {
+                    keysToDelete.push(key);
+                }
+            }
+            keysToDelete.forEach(key => cache.delete(key));
+        }
+    };
+}
+
+const apiCache = createAPICache(30000); // 30 second TTL
+
+// Usage
+apiCache.get('/api/users/1').then(user => console.log(user));
+apiCache.get('/api/users/1').then(user => console.log(user)); // Cached!</code></pre>
+
+                <h2>Practical Example: Computed Property Cache</h2>
+                <pre><code class="language-javascript">function createComputedCache() {
+    const cache = new Map();
+    const dependencies = new Map();
+    
+    return {
+        compute: function(key, computeFn, deps = []) {
+            // Check if dependencies changed
+            if (cache.has(key)) {
+                const oldDeps = dependencies.get(key);
+                const depsChanged = !oldDeps || 
+                    deps.some((dep, i) => dep !== oldDeps[i]);
+                
+                if (!depsChanged) {
+                    console.log(`Using cached: ${key}`);
+                    return cache.get(key);
+                }
+            }
+            
+            // Compute new value
+            console.log(`Computing: ${key}`);
+            const value = computeFn();
+            cache.set(key, value);
+            dependencies.set(key, deps);
+            return value;
+        },
+        
+        invalidate: function(key) {
+            cache.delete(key);
+            dependencies.delete(key);
+        },
+        
+        clear: function() {
+            cache.clear();
+            dependencies.clear();
+        }
+    };
+}
+
+const computed = createComputedCache();
+
+let firstName = 'John';
+let lastName = 'Doe';
+
+const fullName = () => computed.compute(
+    'fullName',
+    () => `${firstName} ${lastName}`,
+    [firstName, lastName]
+);
+
+console.log(fullName()); // Computing: fullName
+console.log(fullName()); // Using cached: fullName
+
+firstName = 'Jane';
+console.log(fullName()); // Computing: fullName (deps changed)</code></pre>
+
+                <h2>Practical Example: LRU Cache</h2>
+                <pre><code class="language-javascript">function createLRUCache(maxSize) {
+    const cache = new Map();
+    
+    return {
+        get: function(key) {
+            if (!cache.has(key)) {
+                return undefined;
+            }
+            
+            // Move to end (most recently used)
+            const value = cache.get(key);
+            cache.delete(key);
+            cache.set(key, value);
+            return value;
+        },
+        
+        set: function(key, value) {
+            // Delete if exists (to reinsert at end)
+            if (cache.has(key)) {
+                cache.delete(key);
+            }
+            
+            // Add to end
+            cache.set(key, value);
+            
+            // Evict oldest if over limit
+            if (cache.size > maxSize) {
+                const firstKey = cache.keys().next().value;
+                cache.delete(firstKey);
+            }
+        },
+        
+        has: function(key) {
+            return cache.has(key);
+        },
+        
+        clear: function() {
+            cache.clear();
+        },
+        
+        size: function() {
+            return cache.size;
+        }
+    };
+}
+
+const lru = createLRUCache(3);
+
+lru.set('a', 1);
+lru.set('b', 2);
+lru.set('c', 3);
+console.log(lru.size()); // 3
+
+lru.set('d', 4); // Evicts 'a'
+console.log(lru.has('a')); // false
+console.log(lru.has('d')); // true</code></pre>
+
+                <h2>Practical Example: Async Memoization</h2>
+                <pre><code class="language-javascript">function memoizeAsync(fn) {
+    const cache = new Map();
+    const pending = new Map();
+    
+    return async function(...args) {
+        const key = JSON.stringify(args);
+        
+        // Return cached value
+        if (cache.has(key)) {
+            console.log('Cache hit');
+            return cache.get(key);
+        }
+        
+        // Return pending promise if already computing
+        if (pending.has(key)) {
+            console.log('Waiting for pending computation');
+            return pending.get(key);
+        }
+        
+        // Compute and cache
+        console.log('Computing...');
+        const promise = fn.apply(this, args);
+        pending.set(key, promise);
+        
+        try {
+            const result = await promise;
+            cache.set(key, result);
+            return result;
+        } finally {
+            pending.delete(key);
+        }
+    };
+}
+
+const fetchUser = memoizeAsync(async (id) => {
+    const response = await fetch(`/api/users/${id}`);
+    return response.json();
+});
+
+// Multiple simultaneous calls only trigger one fetch
+Promise.all([
+    fetchUser(1),
+    fetchUser(1),
+    fetchUser(1)
+]).then(results => {
+    console.log('All results:', results);
+    // Only one "Computing..." log
+});</code></pre>
+
+                <h2>Practical Example: Selective Memoization</h2>
+                <pre><code class="language-javascript">function memoizeIf(fn, shouldCache) {
+    const cache = new Map();
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        
+        // Check if we should use cache for these args
+        if (!shouldCache(...args)) {
+            return fn.apply(this, args);
+        }
+        
+        if (cache.has(key)) {
+            return cache.get(key);
+        }
+        
+        const result = fn.apply(this, args);
+        cache.set(key, result);
+        return result;
+    };
+}
+
+// Only cache for numbers > 10
+const selectiveFib = memoizeIf(
+    function(n) {
+        if (n <= 1) return n;
+        return selectiveFib(n - 1) + selectiveFib(n - 2);
+    },
+    (n) => n > 10
+);
+
+selectiveFib(5);  // Not cached
+selectiveFib(15); // Cached
+selectiveFib(15); // Cache hit</code></pre>
+
+                <h2>Practical Example: Cache with Statistics</h2>
+                <pre><code class="language-javascript">function createCacheWithStats(fn) {
+    const cache = new Map();
+    let hits = 0;
+    let misses = 0;
+    
+    const memoized = function(...args) {
+        const key = JSON.stringify(args);
+        
+        if (cache.has(key)) {
+            hits++;
+            return cache.get(key);
+        }
+        
+        misses++;
+        const result = fn.apply(this, args);
+        cache.set(key, result);
+        return result;
+    };
+    
+    memoized.stats = function() {
+        const total = hits + misses;
+        return {
+            hits,
+            misses,
+            total,
+            hitRate: total > 0 ? (hits / total * 100).toFixed(2) + '%' : '0%',
+            cacheSize: cache.size
+        };
+    };
+    
+    memoized.clearStats = function() {
+        hits = 0;
+        misses = 0;
+    };
+    
+    memoized.clearCache = function() {
+        cache.clear();
+    };
+    
+    return memoized;
+}
+
+const tracked = createCacheWithStats(expensiveCalculation);
+
+tracked(1, 2);
+tracked(1, 2);
+tracked(3, 4);
+tracked(1, 2);
+
+console.log(tracked.stats());
+// { hits: 2, misses: 2, total: 4, hitRate: '50.00%', cacheSize: 2 }</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ <strong>Memoization</strong> caches function results for performance</li>
+                        <li>✅ Closures provide <strong>private cache storage</strong></li>
+                        <li>✅ Implement <strong>cache limits</strong> to manage memory</li>
+                        <li>✅ Use <strong>TTL</strong> for time-sensitive data</li>
+                        <li>✅ <strong>LRU caches</strong> evict least recently used items</li>
+                        <li>✅ Memoization works with both <strong>sync</strong> and <strong>async</strong> functions</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    You've completed Section 3 on Common Use Cases! In the next section, we'll explore advanced concepts including the classic closure pitfall in loops, memory management, and performance considerations.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="3-3.html" class="btn btn-secondary">← Previous: Array Methods</a>
+                    <a href="4-1.html" class="btn btn-primary">Next: Closures in Loops →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

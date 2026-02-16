@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.2: Factory Functions - Learn to create objects with private state using factory functions.">
+    <meta name="keywords" content="JavaScript, Closures, Factory Functions, Object Creation">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.2: Factory Functions | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/2-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.2: Factory Functions</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 2: Practical Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand what factory functions are</li>
+                        <li>Compare factory functions to constructors and classes</li>
+                        <li>Create objects with private state</li>
+                        <li>Implement composition with factory functions</li>
+                    </ul>
+                </div>
+
+                <h2>What Are Factory Functions?</h2>
+                <p>
+                    A <strong>factory function</strong> is a function that returns a new object. Unlike constructors, you don't use the <code>new</code> keyword. Factory functions leverage closures to create objects with private state.
+                </p>
+
+                <pre><code class="language-javascript">// Factory function
+function createDog(name, breed) {
+    return {
+        name: name,
+        breed: breed,
+        bark: function() {
+            console.log(`${name} says woof!`);
+        }
+    };
+}
+
+const dog1 = createDog("Max", "Golden Retriever");
+const dog2 = createDog("Bella", "Poodle");
+
+dog1.bark(); // "Max says woof!"
+dog2.bark(); // "Bella says woof!"</code></pre>
+
+                <h2>Factory Functions vs Constructors</h2>
+                <p>
+                    Let's compare the three main ways to create objects:
+                </p>
+
+                <pre><code class="language-javascript">// 1. Constructor function
+function Dog(name, breed) {
+    this.name = name;
+    this.breed = breed;
+}
+Dog.prototype.bark = function() {
+    console.log(`${this.name} says woof!`);
+};
+const dog1 = new Dog("Max", "Golden Retriever");
+
+// 2. ES6 Class
+class DogClass {
+    constructor(name, breed) {
+        this.name = name;
+        this.breed = breed;
+    }
+    bark() {
+        console.log(`${this.name} says woof!`);
+    }
+}
+const dog2 = new DogClass("Bella", "Poodle");
+
+// 3. Factory function
+function createDog(name, breed) {
+    return {
+        name,
+        breed,
+        bark() {
+            console.log(`${name} says woof!`);
+        }
+    };
+}
+const dog3 = createDog("Charlie", "Beagle");</code></pre>
+
+                <h2>Advantages of Factory Functions</h2>
+                <ul>
+                    <li><strong>No <code>new</code> keyword</strong>: Simpler to use, no <code>this</code> confusion</li>
+                    <li><strong>True privacy</strong>: Can have truly private variables</li>
+                    <li><strong>Flexible</strong>: Can return any object structure</li>
+                    <li><strong>Composition-friendly</strong>: Easy to mix behaviors</li>
+                    <li><strong>No prototype chain</strong>: Simpler mental model</li>
+                </ul>
+
+                <h2>Private State with Factory Functions</h2>
+                <p>
+                    Factory functions excel at creating private state:
+                </p>
+
+                <pre><code class="language-javascript">function createBankAccount(accountHolder, initialBalance) {
+    // Private variables
+    let balance = initialBalance;
+    const transactions = [];
+    
+    // Private helper function
+    function recordTransaction(type, amount) {
+        transactions.push({
+            type,
+            amount,
+            date: new Date(),
+            balance: balance
+        });
+    }
+    
+    // Public interface
+    return {
+        getAccountHolder() {
+            return accountHolder;
+        },
+        
+        getBalance() {
+            return balance;
+        },
+        
+        deposit(amount) {
+            if (amount <= 0) {
+                return "Amount must be positive";
+            }
+            balance += amount;
+            recordTransaction('deposit', amount);
+            return `Deposited $${amount}. New balance: $${balance}`;
+        },
+        
+        withdraw(amount) {
+            if (amount <= 0) {
+                return "Amount must be positive";
+            }
+            if (amount > balance) {
+                return "Insufficient funds";
+            }
+            balance -= amount;
+            recordTransaction('withdrawal', amount);
+            return `Withdrew $${amount}. New balance: $${balance}`;
+        },
+        
+        getTransactionHistory() {
+            // Return a copy to prevent modification
+            return [...transactions];
+        }
+    };
+}
+
+const account = createBankAccount("Alice", 1000);
+account.deposit(500);
+account.withdraw(200);
+console.log(account.getBalance()); // 1300
+console.log(account.getTransactionHistory());
+
+// Can't access private variables
+console.log(account.balance); // undefined
+console.log(account.transactions); // undefined</code></pre>
+
+                <h2>Composition with Factory Functions</h2>
+                <p>
+                    Factory functions make it easy to compose behaviors:
+                </p>
+
+                <pre><code class="language-javascript">// Behavior factories
+function canEat(state) {
+    return {
+        eat(food) {
+            console.log(`${state.name} is eating ${food}`);
+            state.energy += 10;
+        }
+    };
+}
+
+function canSleep(state) {
+    return {
+        sleep(hours) {
+            console.log(`${state.name} slept for ${hours} hours`);
+            state.energy += hours * 5;
+        }
+    };
+}
+
+function canPlay(state) {
+    return {
+        play(activity) {
+            if (state.energy < 10) {
+                console.log(`${state.name} is too tired to play`);
+                return;
+            }
+            console.log(`${state.name} is playing ${activity}`);
+            state.energy -= 10;
+        }
+    };
+}
+
+// Compose a dog
+function createDog(name) {
+    const state = {
+        name,
+        energy: 50
+    };
+    
+    return Object.assign(
+        {},
+        { getEnergy: () => state.energy },
+        canEat(state),
+        canSleep(state),
+        canPlay(state)
+    );
+}
+
+const dog = createDog("Max");
+dog.play("fetch");       // "Max is playing fetch"
+dog.eat("treats");       // "Max is eating treats"
+dog.sleep(8);            // "Max slept for 8 hours"
+console.log(dog.getEnergy()); // 90</code></pre>
+
+                <h2>Practical Example: Todo List</h2>
+                <pre><code class="language-javascript">function createTodoList(name) {
+    const todos = [];
+    let nextId = 1;
+    
+    return {
+        getName() {
+            return name;
+        },
+        
+        addTodo(text) {
+            const todo = {
+                id: nextId++,
+                text,
+                completed: false,
+                createdAt: new Date()
+            };
+            todos.push(todo);
+            return todo.id;
+        },
+        
+        completeTodo(id) {
+            const todo = todos.find(t => t.id === id);
+            if (todo) {
+                todo.completed = true;
+                return true;
+            }
+            return false;
+        },
+        
+        removeTodo(id) {
+            const index = todos.findIndex(t => t.id === id);
+            if (index !== -1) {
+                todos.splice(index, 1);
+                return true;
+            }
+            return false;
+        },
+        
+        getTodos() {
+            return todos.map(t => ({...t})); // Return copies
+        },
+        
+        getStats() {
+            return {
+                total: todos.length,
+                completed: todos.filter(t => t.completed).length,
+                pending: todos.filter(t => !t.completed).length
+            };
+        }
+    };
+}
+
+const myList = createTodoList("Work Tasks");
+myList.addTodo("Write documentation");
+myList.addTodo("Review pull requests");
+myList.addTodo("Deploy to production");
+
+myList.completeTodo(1);
+console.log(myList.getStats());
+// { total: 3, completed: 1, pending: 2 }</code></pre>
+
+                <h2>Practical Example: Event Emitter</h2>
+                <pre><code class="language-javascript">function createEventEmitter() {
+    const events = {};
+    
+    return {
+        on(event, callback) {
+            if (!events[event]) {
+                events[event] = [];
+            }
+            events[event].push(callback);
+            
+            // Return unsubscribe function
+            return () => {
+                const index = events[event].indexOf(callback);
+                if (index !== -1) {
+                    events[event].splice(index, 1);
+                }
+            };
+        },
+        
+        emit(event, data) {
+            if (!events[event]) return;
+            events[event].forEach(callback => callback(data));
+        },
+        
+        once(event, callback) {
+            const unsubscribe = this.on(event, (data) => {
+                callback(data);
+                unsubscribe();
+            });
+            return unsubscribe;
+        },
+        
+        removeAllListeners(event) {
+            if (event) {
+                delete events[event];
+            } else {
+                Object.keys(events).forEach(key => delete events[key]);
+            }
+        }
+    };
+}
+
+const emitter = createEventEmitter();
+
+const unsubscribe = emitter.on('data', (data) => {
+    console.log('Received:', data);
+});
+
+emitter.emit('data', { value: 42 }); // "Received: { value: 42 }"
+unsubscribe();
+emitter.emit('data', { value: 100 }); // No output</code></pre>
+
+                <h2>When to Use Factory Functions</h2>
+                <ul>
+                    <li>When you need <strong>true private variables</strong></li>
+                    <li>When you want to avoid <code>this</code> binding issues</li>
+                    <li>When <strong>composition</strong> is more important than inheritance</li>
+                    <li>When creating <strong>utility objects</strong> or modules</li>
+                    <li>When you want a <strong>simpler API</strong> (no <code>new</code>)</li>
+                </ul>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ Factory functions return new objects without using <code>new</code></li>
+                        <li>✅ They provide <strong>true privacy</strong> through closures</li>
+                        <li>✅ No <code>this</code> binding issues</li>
+                        <li>✅ Perfect for <strong>composition</strong> over inheritance</li>
+                        <li>✅ Each instance has independent private state</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand factory functions, in the next lesson we'll explore the Module Pattern - a powerful way to organize code and create namespaces using closures.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="2-1.html" class="btn btn-secondary">← Previous: Data Privacy</a>
+                    <a href="2-3.html" class="btn btn-primary">Next: Module Pattern →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 4.2: Memory Management and Leaks - Avoid memory leaks when using closures.">
+    <meta name="keywords" content="JavaScript, Closures, Memory Management, Memory Leaks">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 4.2: Memory Management and Leaks | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/4-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 4.2: Memory Management and Leaks</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 4: Advanced Concepts</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand how closures affect memory</li>
+                        <li>Identify common memory leak patterns</li>
+                        <li>Learn techniques to prevent memory leaks</li>
+                        <li>Implement proper cleanup strategies</li>
+                    </ul>
+                </div>
+
+                <h2>How Closures Affect Memory</h2>
+                <p>
+                    Closures keep their lexical environment alive in memory. This is powerful but can lead to memory leaks if not managed properly.
+                </p>
+
+                <pre><code class="language-javascript">function createClosure() {
+    const largeData = new Array(1000000).fill('data');
+    
+    return function() {
+        // This closure keeps largeData in memory
+        return largeData.length;
+    };
+}
+
+const closure = createClosure();
+// largeData is still in memory even though createClosure finished!</code></pre>
+
+                <h2>Common Memory Leak Pattern 1: Forgotten Event Listeners</h2>
+                <pre><code class="language-javascript">// ❌ Memory leak: Event listener never removed
+function setupButton() {
+    const largeData = new Array(1000000).fill('data');
+    
+    document.getElementById('myButton').addEventListener('click', function() {
+        console.log(largeData.length);
+    });
+}
+
+setupButton();
+// largeData stays in memory forever!
+
+// ✅ Solution: Remove event listener when done
+function setupButton() {
+    const largeData = new Array(1000000).fill('data');
+    const button = document.getElementById('myButton');
+    
+    const handler = function() {
+        console.log(largeData.length);
+    };
+    
+    button.addEventListener('click', handler);
+    
+    // Return cleanup function
+    return function cleanup() {
+        button.removeEventListener('click', handler);
+    };
+}
+
+const cleanup = setupButton();
+// Later, when done:
+cleanup(); // Now largeData can be garbage collected</code></pre>
+
+                <h2>Common Memory Leak Pattern 2: Timers</h2>
+                <pre><code class="language-javascript">// ❌ Memory leak: Timer never cleared
+function startPolling() {
+    const largeData = new Array(1000000).fill('data');
+    
+    setInterval(function() {
+        console.log(largeData.length);
+    }, 1000);
+}
+
+startPolling();
+// largeData and interval run forever!
+
+// ✅ Solution: Return cleanup function
+function startPolling() {
+    const largeData = new Array(1000000).fill('data');
+    
+    const intervalId = setInterval(function() {
+        console.log(largeData.length);
+    }, 1000);
+    
+    return function stopPolling() {
+        clearInterval(intervalId);
+    };
+}
+
+const stop = startPolling();
+// Later:
+stop(); // Clears interval and allows garbage collection</code></pre>
+
+                <h2>Common Memory Leak Pattern 3: Circular References</h2>
+                <pre><code class="language-javascript">// ❌ Potential memory leak: Circular reference
+function createCircular() {
+    const obj1 = {};
+    const obj2 = {};
+    
+    obj1.ref = obj2;
+    obj2.ref = obj1;
+    
+    return function() {
+        return obj1;
+    };
+}
+
+// Modern JavaScript engines handle this, but be aware
+
+// ✅ Better: Break references when done
+function createCircular() {
+    let obj1 = {};
+    let obj2 = {};
+    
+    obj1.ref = obj2;
+    obj2.ref = obj1;
+    
+    return {
+        get: function() {
+            return obj1;
+        },
+        cleanup: function() {
+            obj1.ref = null;
+            obj2.ref = null;
+            obj1 = null;
+            obj2 = null;
+        }
+    };
+}</code></pre>
+
+                <h2>Pattern: Cleanup Function</h2>
+                <p>
+                    Always provide a way to clean up closures:
+                </p>
+
+                <pre><code class="language-javascript">function createSubscription(topic, callback) {
+    const listeners = [];
+    
+    // Subscribe
+    listeners.push(callback);
+    
+    // Return unsubscribe function
+    return function unsubscribe() {
+        const index = listeners.indexOf(callback);
+        if (index > -1) {
+            listeners.splice(index, 1);
+        }
+    };
+}
+
+const unsubscribe = createSubscription('news', (data) => {
+    console.log(data);
+});
+
+// When done:
+unsubscribe(); // Allows garbage collection</code></pre>
+
+                <h2>Pattern: WeakMap for Private Data</h2>
+                <p>
+                    Use WeakMap to allow garbage collection:
+                </p>
+
+                <pre><code class="language-javascript">// Using WeakMap allows garbage collection
+const privateData = new WeakMap();
+
+function createObject(data) {
+    const obj = {};
+    
+    // Store private data
+    privateData.set(obj, data);
+    
+    return {
+        getData: function() {
+            return privateData.get(obj);
+        }
+    };
+}
+
+let myObj = createObject({ secret: 'value' });
+// When myObj is no longer referenced, both it and its
+// private data can be garbage collected
+
+myObj = null; // Private data can now be collected</code></pre>
+
+                <h2>Pattern: Nullifying References</h2>
+                <pre><code class="language-javascript">function createCache() {
+    let cache = new Map();
+    let isActive = true;
+    
+    return {
+        set: function(key, value) {
+            if (isActive) {
+                cache.set(key, value);
+            }
+        },
+        
+        get: function(key) {
+            if (isActive) {
+                return cache.get(key);
+            }
+        },
+        
+        destroy: function() {
+            cache.clear();
+            cache = null; // Allow garbage collection
+            isActive = false;
+        }
+    };
+}
+
+const cache = createCache();
+cache.set('key', 'value');
+
+// When done:
+cache.destroy(); // Cleans up and allows GC</code></pre>
+
+                <h2>Detecting Memory Leaks</h2>
+                <pre><code class="language-javascript">// Monitor memory usage
+function monitorMemory() {
+    if (performance.memory) {
+        console.log({
+            usedJSHeapSize: (performance.memory.usedJSHeapSize / 1048576).toFixed(2) + ' MB',
+            totalJSHeapSize: (performance.memory.totalJSHeapSize / 1048576).toFixed(2) + ' MB',
+            jsHeapSizeLimit: (performance.memory.jsHeapSizeLimit / 1048576).toFixed(2) + ' MB'
+        });
+    }
+}
+
+// Check before and after operations
+monitorMemory();
+// ... perform operations ...
+monitorMemory();</code></pre>
+
+                <h2>Best Practices for Memory Management</h2>
+
+                <h3>1. Limit Closure Scope</h3>
+                <pre><code class="language-javascript">// ❌ Captures unnecessary data
+function createHandler() {
+    const largeData = loadLargeData();
+    const smallData = extractSmallData(largeData);
+    
+    return function() {
+        // Only needs smallData, but captures largeData too!
+        return smallData;
+    };
+}
+
+// ✅ Better: Limit what's captured
+function createHandler() {
+    const largeData = loadLargeData();
+    const smallData = extractSmallData(largeData);
+    // largeData goes out of scope here
+    
+    return function() {
+        return smallData; // Only captures smallData
+    };
+}</code></pre>
+
+                <h3>2. Use Weak References</h3>
+                <pre><code class="language-javascript">// Use WeakMap/WeakSet for object keys
+const cache = new WeakMap();
+
+function cacheResult(obj, result) {
+    cache.set(obj, result);
+}
+
+let myObj = { id: 1 };
+cacheResult(myObj, 'result');
+
+// When myObj is no longer referenced, it and its
+// cached result can be garbage collected
+myObj = null;</code></pre>
+
+                <h3>3. Implement Disposal Pattern</h3>
+                <pre><code class="language-javascript">class ResourceManager {
+    constructor() {
+        this.resources = [];
+        this.isDisposed = false;
+    }
+    
+    addResource(resource) {
+        if (this.isDisposed) {
+            throw new Error('Manager is disposed');
+        }
+        this.resources.push(resource);
+    }
+    
+    dispose() {
+        if (this.isDisposed) return;
+        
+        // Clean up all resources
+        this.resources.forEach(resource => {
+            if (resource.cleanup) {
+                resource.cleanup();
+            }
+        });
+        
+        this.resources = [];
+        this.isDisposed = true;
+    }
+}
+
+const manager = new ResourceManager();
+// ... use manager ...
+manager.dispose(); // Clean up when done</code></pre>
+
+                <h3>4. Avoid Accidental Globals</h3>
+                <pre><code class="language-javascript">// ❌ Accidental global
+function createClosure() {
+    // Missing 'const/let/var' creates global!
+    data = new Array(1000000);
+    
+    return function() {
+        return data.length;
+    };
+}
+
+// ✅ Always declare variables
+function createClosure() {
+    const data = new Array(1000000);
+    
+    return function() {
+        return data.length;
+    };
+}</code></pre>
+
+                <h2>Practical Example: Event Manager with Cleanup</h2>
+                <pre><code class="language-javascript">function createEventManager() {
+    const listeners = new Map();
+    
+    return {
+        on: function(event, callback) {
+            if (!listeners.has(event)) {
+                listeners.set(event, new Set());
+            }
+            listeners.get(event).add(callback);
+            
+            // Return unsubscribe function
+            return () => {
+                const callbacks = listeners.get(event);
+                if (callbacks) {
+                    callbacks.delete(callback);
+                    if (callbacks.size === 0) {
+                        listeners.delete(event);
+                    }
+                }
+            };
+        },
+        
+        emit: function(event, data) {
+            const callbacks = listeners.get(event);
+            if (callbacks) {
+                callbacks.forEach(callback => callback(data));
+            }
+        },
+        
+        removeAllListeners: function(event) {
+            if (event) {
+                listeners.delete(event);
+            } else {
+                listeners.clear();
+            }
+        },
+        
+        destroy: function() {
+            listeners.clear();
+        }
+    };
+}
+
+const events = createEventManager();
+const unsubscribe = events.on('data', (data) => console.log(data));
+
+// Clean up when done
+unsubscribe();
+// Or destroy everything
+events.destroy();</code></pre>
+
+                <h2>Practical Example: Component Lifecycle</h2>
+                <pre><code class="language-javascript">function createComponent(element) {
+    const cleanupFunctions = [];
+    let isDestroyed = false;
+    
+    function registerCleanup(fn) {
+        cleanupFunctions.push(fn);
+    }
+    
+    // Setup event listeners
+    const clickHandler = () => console.log('clicked');
+    element.addEventListener('click', clickHandler);
+    registerCleanup(() => {
+        element.removeEventListener('click', clickHandler);
+    });
+    
+    // Setup interval
+    const intervalId = setInterval(() => {
+        console.log('tick');
+    }, 1000);
+    registerCleanup(() => {
+        clearInterval(intervalId);
+    });
+    
+    return {
+        destroy: function() {
+            if (isDestroyed) return;
+            
+            // Run all cleanup functions
+            cleanupFunctions.forEach(fn => fn());
+            cleanupFunctions.length = 0;
+            
+            isDestroyed = true;
+        }
+    };
+}
+
+const component = createComponent(document.getElementById('myElement'));
+// When component is no longer needed:
+component.destroy();</code></pre>
+
+                <h2>Tools for Detecting Memory Leaks</h2>
+                <ul>
+                    <li><strong>Chrome DevTools</strong>: Memory profiler and heap snapshots</li>
+                    <li><strong>Performance.memory API</strong>: Monitor heap size</li>
+                    <li><strong>Memory Timeline</strong>: Track allocations over time</li>
+                    <li><strong>Heap Snapshots</strong>: Compare before/after states</li>
+                </ul>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ Closures keep their lexical environment <strong>alive in memory</strong></li>
+                        <li>✅ Always <strong>remove event listeners</strong> and <strong>clear timers</strong></li>
+                        <li>✅ Provide <strong>cleanup/dispose functions</strong> for closures</li>
+                        <li>✅ Use <strong>WeakMap/WeakSet</strong> for automatic garbage collection</li>
+                        <li>✅ <strong>Nullify references</strong> when done with large objects</li>
+                        <li>✅ Use browser <strong>DevTools</strong> to detect memory leaks</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand memory management with closures, in the final lesson we'll explore performance considerations and optimization techniques.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="4-1.html" class="btn btn-secondary">← Previous: Closures in Loops</a>
+                    <a href="4-3.html" class="btn btn-primary">Next: Performance Considerations →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

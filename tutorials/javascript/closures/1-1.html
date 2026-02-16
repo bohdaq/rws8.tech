@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.1: What Are Closures? Understanding Scope - Learn the fundamentals of JavaScript closures and scope.">
+    <meta name="keywords" content="JavaScript, Closures, Scope, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.1: What Are Closures? Understanding Scope | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/1-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .diagram {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.1: What Are Closures? Understanding Scope</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 1: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand what closures are in JavaScript</li>
+                        <li>Learn about scope and variable accessibility</li>
+                        <li>Differentiate between global, function, and block scope</li>
+                        <li>Recognize closure patterns in code</li>
+                    </ul>
+                </div>
+
+                <h2>What Is a Closure?</h2>
+                <p>
+                    A <strong>closure</strong> is one of JavaScript's most powerful and misunderstood features. Simply put, a closure is a function that has access to variables from an outer (enclosing) function's scope, even after that outer function has finished executing.
+                </p>
+
+                <p>
+                    Before we dive into closures, we need to understand <strong>scope</strong> - the context in which variables are accessible.
+                </p>
+
+                <h2>Understanding Scope</h2>
+                <p>
+                    Scope determines where variables can be accessed in your code. JavaScript has three types of scope:
+                </p>
+
+                <h3>1. Global Scope</h3>
+                <p>Variables declared outside any function are in the global scope and can be accessed anywhere:</p>
+
+                <pre><code class="language-javascript">const globalVar = "I'm global!";
+
+function showGlobal() {
+    console.log(globalVar); // Can access global variable
+}
+
+showGlobal(); // Output: "I'm global!"
+console.log(globalVar); // Output: "I'm global!"</code></pre>
+
+                <h3>2. Function Scope</h3>
+                <p>Variables declared inside a function are only accessible within that function:</p>
+
+                <pre><code class="language-javascript">function myFunction() {
+    const localVar = "I'm local!";
+    console.log(localVar); // Works fine
+}
+
+myFunction(); // Output: "I'm local!"
+console.log(localVar); // Error: localVar is not defined</code></pre>
+
+                <h3>3. Block Scope (ES6+)</h3>
+                <p>Variables declared with <code>let</code> or <code>const</code> inside a block <code>{}</code> are only accessible within that block:</p>
+
+                <pre><code class="language-javascript">if (true) {
+    let blockVar = "I'm in a block!";
+    const anotherBlockVar = "Me too!";
+    console.log(blockVar); // Works fine
+}
+
+console.log(blockVar); // Error: blockVar is not defined</code></pre>
+
+                <h2>Your First Closure</h2>
+                <p>
+                    Now that we understand scope, let's see a closure in action:
+                </p>
+
+                <pre><code class="language-javascript">function outerFunction() {
+    const outerVar = "I'm from outer!";
+    
+    function innerFunction() {
+        console.log(outerVar); // Can access outerVar
+    }
+    
+    return innerFunction;
+}
+
+const myClosure = outerFunction();
+myClosure(); // Output: "I'm from outer!"</code></pre>
+
+                <p>
+                    What just happened? Let's break it down:
+                </p>
+
+                <ol>
+                    <li><code>outerFunction</code> declares a variable <code>outerVar</code></li>
+                    <li><code>innerFunction</code> is defined inside <code>outerFunction</code></li>
+                    <li><code>innerFunction</code> references <code>outerVar</code> from its parent scope</li>
+                    <li><code>outerFunction</code> returns <code>innerFunction</code></li>
+                    <li>We call <code>outerFunction()</code> and store the returned function in <code>myClosure</code></li>
+                    <li>When we call <code>myClosure()</code>, it still has access to <code>outerVar</code>!</li>
+                </ol>
+
+                <p>
+                    This is a closure! Even though <code>outerFunction</code> has finished executing, <code>innerFunction</code> still "remembers" and can access <code>outerVar</code>.
+                </p>
+
+                <h2>Why Do Closures Exist?</h2>
+                <p>
+                    Closures exist because of JavaScript's <strong>lexical scoping</strong>. When a function is created, it retains a reference to its lexical environment (the scope in which it was created). This means the function can access variables from that environment, even if the outer function has completed.
+                </p>
+
+                <h2>A Practical Example</h2>
+                <p>
+                    Let's see a more practical use of closures - creating a counter:
+                </p>
+
+                <pre><code class="language-javascript">function createCounter() {
+    let count = 0; // Private variable
+    
+    return {
+        increment: function() {
+            count++;
+            return count;
+        },
+        decrement: function() {
+            count--;
+            return count;
+        },
+        getCount: function() {
+            return count;
+        }
+    };
+}
+
+const counter = createCounter();
+console.log(counter.increment()); // 1
+console.log(counter.increment()); // 2
+console.log(counter.decrement()); // 1
+console.log(counter.getCount());  // 1
+
+// Can't access count directly
+console.log(counter.count); // undefined</code></pre>
+
+                <p>
+                    This is powerful! The <code>count</code> variable is private - it can only be modified through the methods we've provided. This is called <strong>data encapsulation</strong>, and it's one of the most common uses of closures.
+                </p>
+
+                <h2>Visualizing Closures</h2>
+                <div class="diagram">
+┌─────────────────────────────────────┐
+│  Global Scope                       │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │ outerFunction()               │ │
+│  │                               │ │
+│  │ outerVar = "I'm from outer!"  │ │
+│  │                               │ │
+│  │ ┌─────────────────────────┐   │ │
+│  │ │ innerFunction()         │   │ │
+│  │ │                         │   │ │
+│  │ │ Can access outerVar ✓   │   │ │
+│  │ │                         │   │ │
+│  │ └─────────────────────────┘   │ │
+│  │                               │ │
+│  └───────────────────────────────┘ │
+│                                     │
+└─────────────────────────────────────┘
+                </div>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ A <strong>closure</strong> is a function that accesses variables from an outer function's scope</li>
+                        <li>✅ <strong>Scope</strong> determines where variables can be accessed (global, function, block)</li>
+                        <li>✅ Closures "remember" their lexical environment</li>
+                        <li>✅ Closures enable <strong>data privacy</strong> and encapsulation</li>
+                        <li>✅ Inner functions have access to outer function variables, even after the outer function returns</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand what closures are and how scope works, in the next lesson we'll dive deeper into <strong>lexical scope</strong> and the <strong>scope chain</strong> to understand exactly how JavaScript resolves variable references.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Course</a>
+                    <a href="1-2.html" class="btn btn-primary">Next Lesson: Lexical Scope →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

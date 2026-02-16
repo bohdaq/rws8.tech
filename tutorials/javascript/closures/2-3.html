@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.3: Module Pattern - Learn to organize code using the module pattern with closures.">
+    <meta name="keywords" content="JavaScript, Closures, Module Pattern, Code Organization">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.3: Module Pattern | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/2-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.3: Module Pattern</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 2: Practical Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand the module pattern and its benefits</li>
+                        <li>Create modules with private and public members</li>
+                        <li>Implement the revealing module pattern</li>
+                        <li>Build singleton modules</li>
+                    </ul>
+                </div>
+
+                <h2>What Is the Module Pattern?</h2>
+                <p>
+                    The <strong>module pattern</strong> uses closures to create encapsulated modules with private and public members. It's one of the most popular design patterns in JavaScript for organizing code.
+                </p>
+
+                <pre><code class="language-javascript">const myModule = (function() {
+    // Private variables and functions
+    let privateVar = "I'm private";
+    
+    function privateFunction() {
+        console.log(privateVar);
+    }
+    
+    // Public API
+    return {
+        publicMethod: function() {
+            privateFunction();
+        },
+        
+        publicVar: "I'm public"
+    };
+})();
+
+myModule.publicMethod(); // "I'm private"
+console.log(myModule.publicVar); // "I'm public"
+console.log(myModule.privateVar); // undefined</code></pre>
+
+                <h2>IIFE (Immediately Invoked Function Expression)</h2>
+                <p>
+                    The module pattern uses an IIFE to create a closure immediately:
+                </p>
+
+                <pre><code class="language-javascript">// IIFE syntax
+(function() {
+    // Code here runs immediately
+    console.log("I run right away!");
+})();
+
+// With return value
+const result = (function() {
+    return "Hello!";
+})();
+console.log(result); // "Hello!"</code></pre>
+
+                <h2>Basic Module Example</h2>
+                <pre><code class="language-javascript">const counterModule = (function() {
+    // Private state
+    let count = 0;
+    
+    // Private helper
+    function logCount() {
+        console.log(`Current count: ${count}`);
+    }
+    
+    // Public API
+    return {
+        increment: function() {
+            count++;
+            logCount();
+        },
+        
+        decrement: function() {
+            count--;
+            logCount();
+        },
+        
+        reset: function() {
+            count = 0;
+            logCount();
+        },
+        
+        getCount: function() {
+            return count;
+        }
+    };
+})();
+
+counterModule.increment(); // "Current count: 1"
+counterModule.increment(); // "Current count: 2"
+counterModule.decrement(); // "Current count: 1"
+console.log(counterModule.getCount()); // 1</code></pre>
+
+                <h2>Practical Example: API Client Module</h2>
+                <pre><code class="language-javascript">const apiClient = (function() {
+    // Private configuration
+    const config = {
+        baseURL: 'https://api.example.com',
+        timeout: 5000,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    
+    // Private helper functions
+    function buildURL(endpoint) {
+        return `${config.baseURL}${endpoint}`;
+    }
+    
+    function handleResponse(response) {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    }
+    
+    function handleError(error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+    
+    // Public API
+    return {
+        get: async function(endpoint) {
+            try {
+                const response = await fetch(buildURL(endpoint), {
+                    method: 'GET',
+                    headers: config.headers,
+                    timeout: config.timeout
+                });
+                return await handleResponse(response);
+            } catch (error) {
+                return handleError(error);
+            }
+        },
+        
+        post: async function(endpoint, data) {
+            try {
+                const response = await fetch(buildURL(endpoint), {
+                    method: 'POST',
+                    headers: config.headers,
+                    body: JSON.stringify(data),
+                    timeout: config.timeout
+                });
+                return await handleResponse(response);
+            } catch (error) {
+                return handleError(error);
+            }
+        },
+        
+        setBaseURL: function(url) {
+            config.baseURL = url;
+        },
+        
+        setTimeout: function(ms) {
+            config.timeout = ms;
+        }
+    };
+})();
+
+// Usage
+apiClient.get('/users/1').then(user => console.log(user));</code></pre>
+
+                <h2>The Revealing Module Pattern</h2>
+                <p>
+                    A variation where all functions are defined privately and only references are exposed:
+                </p>
+
+                <pre><code class="language-javascript">const calculatorModule = (function() {
+    // Private variables
+    let result = 0;
+    
+    // Private functions
+    function add(x) {
+        result += x;
+        return this;
+    }
+    
+    function subtract(x) {
+        result -= x;
+        return this;
+    }
+    
+    function multiply(x) {
+        result *= x;
+        return this;
+    }
+    
+    function divide(x) {
+        if (x !== 0) {
+            result /= x;
+        }
+        return this;
+    }
+    
+    function getResult() {
+        return result;
+    }
+    
+    function reset() {
+        result = 0;
+        return this;
+    }
+    
+    // Reveal public pointers to private functions
+    return {
+        add: add,
+        subtract: subtract,
+        multiply: multiply,
+        divide: divide,
+        getResult: getResult,
+        reset: reset
+    };
+})();
+
+calculatorModule.add(10).multiply(2).subtract(5);
+console.log(calculatorModule.getResult()); // 15</code></pre>
+
+                <h2>Module with Configuration</h2>
+                <pre><code class="language-javascript">const loggerModule = (function() {
+    // Private state
+    const config = {
+        level: 'info',
+        prefix: '[LOG]',
+        timestamp: true
+    };
+    
+    const levels = {
+        debug: 0,
+        info: 1,
+        warn: 2,
+        error: 3
+    };
+    
+    // Private helper
+    function formatMessage(level, message) {
+        let formatted = config.prefix;
+        
+        if (config.timestamp) {
+            formatted += ` [${new Date().toISOString()}]`;
+        }
+        
+        formatted += ` [${level.toUpperCase()}] ${message}`;
+        return formatted;
+    }
+    
+    function shouldLog(level) {
+        return levels[level] >= levels[config.level];
+    }
+    
+    // Public API
+    return {
+        debug: function(message) {
+            if (shouldLog('debug')) {
+                console.log(formatMessage('debug', message));
+            }
+        },
+        
+        info: function(message) {
+            if (shouldLog('info')) {
+                console.log(formatMessage('info', message));
+            }
+        },
+        
+        warn: function(message) {
+            if (shouldLog('warn')) {
+                console.warn(formatMessage('warn', message));
+            }
+        },
+        
+        error: function(message) {
+            if (shouldLog('error')) {
+                console.error(formatMessage('error', message));
+            }
+        },
+        
+        setLevel: function(level) {
+            if (levels.hasOwnProperty(level)) {
+                config.level = level;
+            }
+        },
+        
+        setPrefix: function(prefix) {
+            config.prefix = prefix;
+        },
+        
+        enableTimestamp: function(enable) {
+            config.timestamp = enable;
+        }
+    };
+})();
+
+loggerModule.info('Application started');
+loggerModule.setLevel('warn');
+loggerModule.info('This won\'t show');
+loggerModule.warn('This will show');</code></pre>
+
+                <h2>Singleton Pattern</h2>
+                <p>
+                    The module pattern creates a singleton by default - only one instance exists:
+                </p>
+
+                <pre><code class="language-javascript">const appState = (function() {
+    // Private state - shared across entire application
+    const state = {
+        user: null,
+        theme: 'light',
+        language: 'en'
+    };
+    
+    const listeners = [];
+    
+    function notifyListeners() {
+        listeners.forEach(listener => listener(state));
+    }
+    
+    return {
+        getState: function() {
+            return {...state}; // Return copy
+        },
+        
+        setUser: function(user) {
+            state.user = user;
+            notifyListeners();
+        },
+        
+        setTheme: function(theme) {
+            state.theme = theme;
+            notifyListeners();
+        },
+        
+        setLanguage: function(lang) {
+            state.language = lang;
+            notifyListeners();
+        },
+        
+        subscribe: function(callback) {
+            listeners.push(callback);
+            return () => {
+                const index = listeners.indexOf(callback);
+                if (index > -1) {
+                    listeners.splice(index, 1);
+                }
+            };
+        }
+    };
+})();
+
+// Subscribe to state changes
+const unsubscribe = appState.subscribe((state) => {
+    console.log('State changed:', state);
+});
+
+appState.setTheme('dark'); // Triggers listener
+appState.setUser({ name: 'Alice' }); // Triggers listener</code></pre>
+
+                <h2>Module with Dependencies</h2>
+                <pre><code class="language-javascript">// Pass dependencies to module
+const userModule = (function(api, logger) {
+    // Private
+    let currentUser = null;
+    
+    async function fetchUser(id) {
+        try {
+            const user = await api.get(`/users/${id}`);
+            logger.info(`Fetched user: ${user.name}`);
+            return user;
+        } catch (error) {
+            logger.error(`Failed to fetch user: ${error.message}`);
+            throw error;
+        }
+    }
+    
+    // Public
+    return {
+        login: async function(id) {
+            currentUser = await fetchUser(id);
+            return currentUser;
+        },
+        
+        logout: function() {
+            logger.info(`User ${currentUser.name} logged out`);
+            currentUser = null;
+        },
+        
+        getCurrentUser: function() {
+            return currentUser;
+        }
+    };
+})(apiClient, loggerModule);
+
+// Usage
+userModule.login(123).then(user => {
+    console.log('Logged in:', user);
+});</code></pre>
+
+                <h2>Benefits of the Module Pattern</h2>
+                <ul>
+                    <li><strong>Encapsulation</strong>: Private variables and functions</li>
+                    <li><strong>Namespace</strong>: Avoids global scope pollution</li>
+                    <li><strong>Organization</strong>: Groups related functionality</li>
+                    <li><strong>Singleton</strong>: Single instance by default</li>
+                    <li><strong>Clean API</strong>: Clear public interface</li>
+                </ul>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ The module pattern uses <strong>IIFE</strong> and closures</li>
+                        <li>✅ Creates <strong>private</strong> and <strong>public</strong> members</li>
+                        <li>✅ The revealing module pattern exposes only references</li>
+                        <li>✅ Modules are <strong>singletons</strong> by default</li>
+                        <li>✅ Perfect for organizing code and avoiding global pollution</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand the module pattern, in the next lesson we'll explore currying and partial application - powerful functional programming techniques enabled by closures.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="2-2.html" class="btn btn-secondary">← Previous: Factory Functions</a>
+                    <a href="2-4.html" class="btn btn-primary">Next: Currying →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

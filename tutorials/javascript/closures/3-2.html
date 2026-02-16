@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.2: setTimeout and setInterval - Master timing functions with closures.">
+    <meta name="keywords" content="JavaScript, Closures, setTimeout, setInterval, Timers">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.2: setTimeout and setInterval | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/3-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.2: setTimeout and setInterval</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 3: Common Use Cases</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Use closures with setTimeout and setInterval</li>
+                        <li>Create timer utilities with private state</li>
+                        <li>Implement countdown and stopwatch functionality</li>
+                        <li>Manage timer cleanup and cancellation</li>
+                    </ul>
+                </div>
+
+                <h2>Closures with setTimeout</h2>
+                <p>
+                    setTimeout callbacks create closures that remember their surrounding context:
+                </p>
+
+                <pre><code class="language-javascript">function delayedGreeting(name, delay) {
+    console.log(`Setting up greeting for ${name}`);
+    
+    setTimeout(function() {
+        // Closure: has access to name and delay
+        console.log(`Hello, ${name}! (after ${delay}ms)`);
+    }, delay);
+}
+
+delayedGreeting('Alice', 1000);
+delayedGreeting('Bob', 2000);</code></pre>
+
+                <h2>Common Pitfall: Loop with setTimeout</h2>
+                <p>
+                    A classic closure problem and its solutions:
+                </p>
+
+                <pre><code class="language-javascript">// ❌ Problem: All timeouts log 5
+for (var i = 0; i < 5; i++) {
+    setTimeout(function() {
+        console.log(i); // Logs 5, five times
+    }, i * 1000);
+}
+
+// ✅ Solution 1: Use let (block scope)
+for (let i = 0; i < 5; i++) {
+    setTimeout(function() {
+        console.log(i); // Logs 0, 1, 2, 3, 4
+    }, i * 1000);
+}
+
+// ✅ Solution 2: Create closure with IIFE
+for (var i = 0; i < 5; i++) {
+    (function(index) {
+        setTimeout(function() {
+            console.log(index); // Logs 0, 1, 2, 3, 4
+        }, index * 1000);
+    })(i);
+}
+
+// ✅ Solution 3: Pass parameter to setTimeout
+for (var i = 0; i < 5; i++) {
+    setTimeout(function(index) {
+        console.log(index); // Logs 0, 1, 2, 3, 4
+    }, i * 1000, i);
+}</code></pre>
+
+                <h2>Practical Example: Countdown Timer</h2>
+                <pre><code class="language-javascript">function createCountdown(seconds) {
+    let remaining = seconds;
+    let intervalId = null;
+    let isPaused = false;
+    
+    return {
+        start: function(callback) {
+            if (intervalId) return; // Already running
+            
+            intervalId = setInterval(() => {
+                if (!isPaused) {
+                    remaining--;
+                    callback(remaining);
+                    
+                    if (remaining <= 0) {
+                        this.stop();
+                    }
+                }
+            }, 1000);
+        },
+        
+        pause: function() {
+            isPaused = true;
+        },
+        
+        resume: function() {
+            isPaused = false;
+        },
+        
+        stop: function() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        },
+        
+        reset: function() {
+            this.stop();
+            remaining = seconds;
+        },
+        
+        getRemaining: function() {
+            return remaining;
+        }
+    };
+}
+
+const timer = createCountdown(10);
+timer.start((remaining) => {
+    console.log(`${remaining} seconds left`);
+    if (remaining === 0) {
+        console.log('Time\'s up!');
+    }
+});</code></pre>
+
+                <h2>Practical Example: Stopwatch</h2>
+                <pre><code class="language-javascript">function createStopwatch() {
+    let startTime = null;
+    let elapsedTime = 0;
+    let intervalId = null;
+    let isRunning = false;
+    
+    return {
+        start: function() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            startTime = Date.now() - elapsedTime;
+            
+            intervalId = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+            }, 10);
+        },
+        
+        stop: function() {
+            if (!isRunning) return;
+            
+            isRunning = false;
+            clearInterval(intervalId);
+        },
+        
+        reset: function() {
+            this.stop();
+            elapsedTime = 0;
+        },
+        
+        getTime: function() {
+            const total = Math.floor(elapsedTime / 1000);
+            const hours = Math.floor(total / 3600);
+            const minutes = Math.floor((total % 3600) / 60);
+            const seconds = total % 60;
+            const ms = Math.floor((elapsedTime % 1000) / 10);
+            
+            return {
+                hours,
+                minutes,
+                seconds,
+                milliseconds: ms,
+                formatted: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(ms).padStart(2, '0')}`
+            };
+        },
+        
+        isRunning: function() {
+            return isRunning;
+        }
+    };
+}
+
+const stopwatch = createStopwatch();
+stopwatch.start();
+setTimeout(() => {
+    console.log(stopwatch.getTime().formatted);
+    stopwatch.stop();
+}, 5000);</code></pre>
+
+                <h2>Practical Example: Retry with Exponential Backoff</h2>
+                <pre><code class="language-javascript">function retryWithBackoff(fn, maxRetries = 3, baseDelay = 1000) {
+    let attempt = 0;
+    
+    function tryExecute() {
+        return fn().catch(error => {
+            attempt++;
+            
+            if (attempt >= maxRetries) {
+                throw new Error(`Failed after ${maxRetries} attempts: ${error.message}`);
+            }
+            
+            const delay = baseDelay * Math.pow(2, attempt - 1);
+            console.log(`Retry ${attempt} after ${delay}ms`);
+            
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(tryExecute());
+                }, delay);
+            });
+        });
+    }
+    
+    return tryExecute();
+}
+
+// Usage
+async function unreliableAPI() {
+    if (Math.random() < 0.7) {
+        throw new Error('API failed');
+    }
+    return 'Success!';
+}
+
+retryWithBackoff(unreliableAPI, 5, 1000)
+    .then(result => console.log(result))
+    .catch(error => console.error(error.message));</code></pre>
+
+                <h2>Practical Example: Polling</h2>
+                <pre><code class="language-javascript">function createPoller(fn, interval) {
+    let intervalId = null;
+    let isPolling = false;
+    let lastResult = null;
+    
+    return {
+        start: function() {
+            if (isPolling) return;
+            
+            isPolling = true;
+            
+            // Execute immediately
+            fn().then(result => {
+                lastResult = result;
+            });
+            
+            // Then poll at interval
+            intervalId = setInterval(() => {
+                fn().then(result => {
+                    lastResult = result;
+                });
+            }, interval);
+        },
+        
+        stop: function() {
+            if (!isPolling) return;
+            
+            isPolling = false;
+            clearInterval(intervalId);
+        },
+        
+        getLastResult: function() {
+            return lastResult;
+        },
+        
+        isPolling: function() {
+            return isPolling;
+        }
+    };
+}
+
+// Poll API every 5 seconds
+const poller = createPoller(
+    () => fetch('/api/status').then(r => r.json()),
+    5000
+);
+
+poller.start();
+
+// Stop after 30 seconds
+setTimeout(() => {
+    poller.stop();
+    console.log('Final result:', poller.getLastResult());
+}, 30000);</code></pre>
+
+                <h2>Practical Example: Debounce with Immediate</h2>
+                <pre><code class="language-javascript">function debounce(fn, delay, immediate = false) {
+    let timeoutId;
+    
+    return function(...args) {
+        const callNow = immediate && !timeoutId;
+        
+        clearTimeout(timeoutId);
+        
+        timeoutId = setTimeout(() => {
+            timeoutId = null;
+            if (!immediate) {
+                fn.apply(this, args);
+            }
+        }, delay);
+        
+        if (callNow) {
+            fn.apply(this, args);
+        }
+    };
+}
+
+// Execute immediately on first call, then debounce
+const search = debounce((query) => {
+    console.log('Searching:', query);
+}, 300, true);</code></pre>
+
+                <h2>Practical Example: Animation Frame Timer</h2>
+                <pre><code class="language-javascript">function createAnimationTimer(duration, onUpdate, onComplete) {
+    let startTime = null;
+    let rafId = null;
+    let isPaused = false;
+    let pausedTime = 0;
+    
+    function animate(currentTime) {
+        if (!startTime) startTime = currentTime;
+        
+        if (isPaused) {
+            rafId = requestAnimationFrame(animate);
+            return;
+        }
+        
+        const elapsed = currentTime - startTime - pausedTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        onUpdate(progress);
+        
+        if (progress < 1) {
+            rafId = requestAnimationFrame(animate);
+        } else {
+            if (onComplete) onComplete();
+        }
+    }
+    
+    return {
+        start: function() {
+            rafId = requestAnimationFrame(animate);
+        },
+        
+        pause: function() {
+            isPaused = true;
+            pausedTime = Date.now() - startTime;
+        },
+        
+        resume: function() {
+            isPaused = false;
+            startTime = Date.now() - pausedTime;
+        },
+        
+        stop: function() {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+        }
+    };
+}
+
+// Animate element over 2 seconds
+const element = document.getElementById('box');
+const animation = createAnimationTimer(
+    2000,
+    (progress) => {
+        element.style.transform = `translateX(${progress * 300}px)`;
+    },
+    () => {
+        console.log('Animation complete!');
+    }
+);
+
+animation.start();</code></pre>
+
+                <h2>Practical Example: Rate Limiter</h2>
+                <pre><code class="language-javascript">function createRateLimiter(maxCalls, timeWindow) {
+    const calls = [];
+    
+    return function(fn) {
+        const now = Date.now();
+        
+        // Remove old calls outside time window
+        while (calls.length > 0 && now - calls[0] > timeWindow) {
+            calls.shift();
+        }
+        
+        if (calls.length < maxCalls) {
+            calls.push(now);
+            return fn();
+        } else {
+            const oldestCall = calls[0];
+            const waitTime = timeWindow - (now - oldestCall);
+            
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    calls.shift();
+                    calls.push(Date.now());
+                    resolve(fn());
+                }, waitTime);
+            });
+        }
+    };
+}
+
+// Allow 3 calls per second
+const limiter = createRateLimiter(3, 1000);
+
+// Make multiple calls
+for (let i = 0; i < 10; i++) {
+    limiter(() => {
+        console.log(`Call ${i} at ${Date.now()}`);
+        return fetch('/api/data');
+    });
+}</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ setTimeout/setInterval callbacks create <strong>closures</strong></li>
+                        <li>✅ Use closures to maintain <strong>timer state</strong></li>
+                        <li>✅ Always <strong>clean up</strong> timers with clearTimeout/clearInterval</li>
+                        <li>✅ Be careful with loops - use <code>let</code> or create explicit closures</li>
+                        <li>✅ Closures enable powerful timer utilities like debounce and throttle</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand closures with timing functions, in the next lesson we'll explore how closures work with array methods like map, filter, and reduce.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="3-1.html" class="btn btn-secondary">← Previous: Event Handlers</a>
+                    <a href="3-3.html" class="btn btn-primary">Next: Array Methods →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

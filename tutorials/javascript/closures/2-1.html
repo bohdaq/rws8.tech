@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.1: Data Privacy and Encapsulation - Learn to create private variables using closures.">
+    <meta name="keywords" content="JavaScript, Closures, Data Privacy, Encapsulation">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.1: Data Privacy and Encapsulation | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/2-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.1: Data Privacy and Encapsulation</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 2: Practical Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand data privacy and why it matters</li>
+                        <li>Create private variables using closures</li>
+                        <li>Build public interfaces to private data</li>
+                        <li>Implement the revealing module pattern</li>
+                    </ul>
+                </div>
+
+                <h2>Why Data Privacy Matters</h2>
+                <p>
+                    In JavaScript, object properties are public by default. Anyone can access and modify them:
+                </p>
+
+                <pre><code class="language-javascript">const user = {
+    name: "Alice",
+    balance: 1000
+};
+
+// Anyone can modify the balance!
+user.balance = 999999;
+console.log(user.balance); // 999999 - Oops!</code></pre>
+
+                <p>
+                    Closures allow us to create truly private variables that can only be accessed through controlled methods.
+                </p>
+
+                <h2>Creating Private Variables</h2>
+                <p>
+                    The basic pattern for private variables:
+                </p>
+
+                <pre><code class="language-javascript">function createUser(name, initialBalance) {
+    // Private variables
+    let balance = initialBalance;
+    const accountNumber = Math.random().toString(36).substr(2, 9);
+    
+    // Public interface
+    return {
+        getName: function() {
+            return name;
+        },
+        
+        getBalance: function() {
+            return balance;
+        },
+        
+        deposit: function(amount) {
+            if (amount > 0) {
+                balance += amount;
+                return true;
+            }
+            return false;
+        },
+        
+        withdraw: function(amount) {
+            if (amount > 0 && amount <= balance) {
+                balance -= amount;
+                return true;
+            }
+            return false;
+        },
+        
+        getAccountNumber: function() {
+            // Return masked version
+            return `***${accountNumber.slice(-4)}`;
+        }
+    };
+}
+
+const alice = createUser("Alice", 1000);
+console.log(alice.getBalance()); // 1000
+alice.deposit(500);
+console.log(alice.getBalance()); // 1500
+
+// Can't access private variables directly
+console.log(alice.balance); // undefined
+console.log(alice.accountNumber); // undefined</code></pre>
+
+                <h2>Practical Example: Configuration Manager</h2>
+                <p>
+                    Use closures to create a configuration object with private settings:
+                </p>
+
+                <pre><code class="language-javascript">function createConfig() {
+    // Private configuration
+    const config = {
+        apiKey: "secret-key-12345",
+        apiUrl: "https://api.example.com",
+        timeout: 5000,
+        retries: 3
+    };
+    
+    // Private validation
+    function isValidTimeout(value) {
+        return typeof value === 'number' && value > 0 && value < 30000;
+    }
+    
+    // Public interface
+    return {
+        getApiUrl: function() {
+            return config.apiUrl;
+        },
+        
+        getTimeout: function() {
+            return config.timeout;
+        },
+        
+        setTimeout: function(value) {
+            if (isValidTimeout(value)) {
+                config.timeout = value;
+                return true;
+            }
+            return false;
+        },
+        
+        getRetries: function() {
+            return config.retries;
+        },
+        
+        // Never expose the API key directly
+        hasApiKey: function() {
+            return config.apiKey !== null;
+        }
+    };
+}
+
+const appConfig = createConfig();
+console.log(appConfig.getTimeout()); // 5000
+appConfig.setTimeout(10000);
+console.log(appConfig.getTimeout()); // 10000
+
+// Can't access the API key!
+console.log(appConfig.apiKey); // undefined</code></pre>
+
+                <h2>Practical Example: Password Manager</h2>
+                <p>
+                    Create a secure password manager with private storage:
+                </p>
+
+                <pre><code class="language-javascript">function createPasswordManager(masterPassword) {
+    // Private storage
+    const passwords = {};
+    let isUnlocked = false;
+    
+    // Private helper
+    function hash(str) {
+        // Simplified hash (use proper hashing in production!)
+        return btoa(str);
+    }
+    
+    return {
+        unlock: function(password) {
+            if (hash(password) === hash(masterPassword)) {
+                isUnlocked = true;
+                return true;
+            }
+            return false;
+        },
+        
+        lock: function() {
+            isUnlocked = false;
+        },
+        
+        addPassword: function(service, password) {
+            if (!isUnlocked) {
+                return "Manager is locked";
+            }
+            passwords[service] = hash(password);
+            return "Password saved";
+        },
+        
+        getPassword: function(service) {
+            if (!isUnlocked) {
+                return "Manager is locked";
+            }
+            return passwords[service] ? "Password exists" : "No password found";
+        },
+        
+        isLocked: function() {
+            return !isUnlocked;
+        }
+    };
+}
+
+const manager = createPasswordManager("master123");
+console.log(manager.isLocked()); // true
+
+manager.unlock("master123");
+manager.addPassword("email", "mypass123");
+console.log(manager.getPassword("email")); // "Password exists"
+
+manager.lock();
+console.log(manager.getPassword("email")); // "Manager is locked"
+
+// Can't access passwords directly!
+console.log(manager.passwords); // undefined</code></pre>
+
+                <h2>The Revealing Module Pattern</h2>
+                <p>
+                    A popular pattern that defines all functions privately and reveals only what's needed:
+                </p>
+
+                <pre><code class="language-javascript">const calculator = (function() {
+    // Private variables and functions
+    let result = 0;
+    
+    function validateNumber(n) {
+        return typeof n === 'number' && !isNaN(n);
+    }
+    
+    function add(n) {
+        if (validateNumber(n)) {
+            result += n;
+        }
+        return this;
+    }
+    
+    function subtract(n) {
+        if (validateNumber(n)) {
+            result -= n;
+        }
+        return this;
+    }
+    
+    function multiply(n) {
+        if (validateNumber(n)) {
+            result *= n;
+        }
+        return this;
+    }
+    
+    function divide(n) {
+        if (validateNumber(n) && n !== 0) {
+            result /= n;
+        }
+        return this;
+    }
+    
+    function getResult() {
+        return result;
+    }
+    
+    function reset() {
+        result = 0;
+        return this;
+    }
+    
+    // Reveal public interface
+    return {
+        add: add,
+        subtract: subtract,
+        multiply: multiply,
+        divide: divide,
+        getResult: getResult,
+        reset: reset
+    };
+})();
+
+calculator.add(10).multiply(2).subtract(5);
+console.log(calculator.getResult()); // 15
+
+// Can't access private functions
+console.log(calculator.validateNumber); // undefined
+console.log(calculator.result); // undefined</code></pre>
+
+                <h2>Private Methods</h2>
+                <p>
+                    You can also have private methods that are only used internally:
+                </p>
+
+                <pre><code class="language-javascript">function createLogger(prefix) {
+    // Private method
+    function formatMessage(level, message) {
+        const timestamp = new Date().toISOString();
+        return `[${timestamp}] [${prefix}] [${level}] ${message}`;
+    }
+    
+    // Public methods
+    return {
+        info: function(message) {
+            console.log(formatMessage('INFO', message));
+        },
+        
+        warn: function(message) {
+            console.warn(formatMessage('WARN', message));
+        },
+        
+        error: function(message) {
+            console.error(formatMessage('ERROR', message));
+        }
+    };
+}
+
+const logger = createLogger('MyApp');
+logger.info('Application started');
+logger.warn('Low memory');
+logger.error('Connection failed');
+
+// Can't call formatMessage directly
+// logger.formatMessage('DEBUG', 'test'); // Error!</code></pre>
+
+                <h2>Benefits of Data Privacy</h2>
+                <ul>
+                    <li><strong>Security</strong>: Sensitive data can't be accessed directly</li>
+                    <li><strong>Validation</strong>: All modifications go through controlled methods</li>
+                    <li><strong>Encapsulation</strong>: Implementation details are hidden</li>
+                    <li><strong>Maintainability</strong>: Internal changes don't affect public API</li>
+                    <li><strong>Predictability</strong>: Data can only change in expected ways</li>
+                </ul>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ Closures enable <strong>true data privacy</strong> in JavaScript</li>
+                        <li>✅ Private variables can only be accessed through <strong>public methods</strong></li>
+                        <li>✅ The <strong>revealing module pattern</strong> exposes only what's necessary</li>
+                        <li>✅ Private methods can be used for <strong>internal logic</strong></li>
+                        <li>✅ Data privacy improves <strong>security and maintainability</strong></li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand data privacy with closures, in the next lesson we'll explore factory functions - a powerful pattern for creating multiple objects with private state.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="1-4.html" class="btn btn-secondary">← Previous: How Closures Work</a>
+                    <a href="2-2.html" class="btn btn-primary">Next: Factory Functions →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

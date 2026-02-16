@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.3: Array Methods - Use closures effectively with map, filter, and reduce.">
+    <meta name="keywords" content="JavaScript, Closures, Array Methods, map, filter, reduce">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.3: Array Methods | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/3-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.3: Array Methods (map, filter, reduce)</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 3: Common Use Cases</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand how closures work with array methods</li>
+                        <li>Create reusable callback factories</li>
+                        <li>Build custom array utilities using closures</li>
+                        <li>Apply functional programming patterns</li>
+                    </ul>
+                </div>
+
+                <h2>Closures in Array Methods</h2>
+                <p>
+                    Array methods like map, filter, and reduce take callback functions that naturally create closures, allowing them to access variables from their surrounding scope.
+                </p>
+
+                <pre><code class="language-javascript">const multiplier = 3;
+
+const numbers = [1, 2, 3, 4, 5];
+
+// Callback has access to multiplier
+const tripled = numbers.map(n => n * multiplier);
+console.log(tripled); // [3, 6, 9, 12, 15]</code></pre>
+
+                <h2>Creating Configurable Callbacks</h2>
+                <p>
+                    Use closures to create reusable, configurable callbacks:
+                </p>
+
+                <pre><code class="language-javascript">// Callback factories
+const multiplyBy = factor => n => n * factor;
+const addTo = amount => n => n + amount;
+const greaterThan = threshold => n => n > threshold;
+const lessThan = threshold => n => n < threshold;
+
+const numbers = [1, 2, 3, 4, 5];
+
+console.log(numbers.map(multiplyBy(2)));     // [2, 4, 6, 8, 10]
+console.log(numbers.map(addTo(10)));         // [11, 12, 13, 14, 15]
+console.log(numbers.filter(greaterThan(3))); // [4, 5]
+console.log(numbers.filter(lessThan(4)));    // [1, 2, 3]</code></pre>
+
+                <h2>Practical Example: Data Transformation</h2>
+                <pre><code class="language-javascript">const users = [
+    { name: 'Alice', age: 25, active: true },
+    { name: 'Bob', age: 17, active: false },
+    { name: 'Charlie', age: 30, active: true },
+    { name: 'David', age: 16, active: true }
+];
+
+// Create reusable filters
+const isActive = user => user.active;
+const isAdult = user => user.age >= 18;
+const hasName = name => user => user.name === name;
+
+// Create reusable mappers
+const getName = user => user.name;
+const getAge = user => user.age;
+const addProperty = (key, value) => obj => ({ ...obj, [key]: value });
+
+// Use them
+const activeAdults = users
+    .filter(isActive)
+    .filter(isAdult)
+    .map(getName);
+
+console.log(activeAdults); // ['Alice', 'Charlie']
+
+// Add property to all users
+const usersWithRole = users.map(addProperty('role', 'user'));
+console.log(usersWithRole);</code></pre>
+
+                <h2>Practical Example: Accumulator with Closure</h2>
+                <pre><code class="language-javascript">function createAccumulator(operation) {
+    return function(array, initialValue) {
+        return array.reduce((acc, item) => {
+            return operation(acc, item);
+        }, initialValue);
+    };
+}
+
+// Create specialized accumulators
+const sum = createAccumulator((acc, n) => acc + n);
+const product = createAccumulator((acc, n) => acc * n);
+const concat = createAccumulator((acc, str) => acc + str);
+const merge = createAccumulator((acc, obj) => ({ ...acc, ...obj }));
+
+const numbers = [1, 2, 3, 4, 5];
+console.log(sum(numbers, 0));      // 15
+console.log(product(numbers, 1));  // 120
+
+const strings = ['Hello', ' ', 'World'];
+console.log(concat(strings, ''));  // "Hello World"
+
+const objects = [{ a: 1 }, { b: 2 }, { c: 3 }];
+console.log(merge(objects, {}));   // { a: 1, b: 2, c: 3 }</code></pre>
+
+                <h2>Practical Example: Grouping and Counting</h2>
+                <pre><code class="language-javascript">function createGrouper(keyFn) {
+    return function(array) {
+        return array.reduce((groups, item) => {
+            const key = keyFn(item);
+            if (!groups[key]) {
+                groups[key] = [];
+            }
+            groups[key].push(item);
+            return groups;
+        }, {});
+    };
+}
+
+function createCounter(keyFn) {
+    return function(array) {
+        return array.reduce((counts, item) => {
+            const key = keyFn(item);
+            counts[key] = (counts[key] || 0) + 1;
+            return counts;
+        }, {});
+    };
+}
+
+const users = [
+    { name: 'Alice', age: 25, country: 'USA' },
+    { name: 'Bob', age: 25, country: 'UK' },
+    { name: 'Charlie', age: 30, country: 'USA' },
+    { name: 'David', age: 25, country: 'Canada' }
+];
+
+const groupByAge = createGrouper(user => user.age);
+const groupByCountry = createGrouper(user => user.country);
+const countByAge = createCounter(user => user.age);
+
+console.log(groupByAge(users));
+console.log(groupByCountry(users));
+console.log(countByAge(users)); // { '25': 3, '30': 1 }</code></pre>
+
+                <h2>Practical Example: Chaining with Closures</h2>
+                <pre><code class="language-javascript">function createPipeline() {
+    const operations = [];
+    
+    return {
+        map: function(fn) {
+            operations.push(arr => arr.map(fn));
+            return this;
+        },
+        
+        filter: function(fn) {
+            operations.push(arr => arr.filter(fn));
+            return this;
+        },
+        
+        reduce: function(fn, initial) {
+            operations.push(arr => arr.reduce(fn, initial));
+            return this;
+        },
+        
+        execute: function(array) {
+            return operations.reduce((result, operation) => {
+                return operation(result);
+            }, array);
+        }
+    };
+}
+
+const pipeline = createPipeline()
+    .filter(n => n > 0)
+    .map(n => n * 2)
+    .filter(n => n < 20)
+    .reduce((sum, n) => sum + n, 0);
+
+console.log(pipeline.execute([1, -2, 3, 4, 5, 10, 15])); // 24</code></pre>
+
+                <h2>Practical Example: Memoized Array Operations</h2>
+                <pre><code class="language-javascript">function memoizeArrayOp(fn) {
+    const cache = new Map();
+    
+    return function(array, ...args) {
+        const key = JSON.stringify([array, ...args]);
+        
+        if (cache.has(key)) {
+            console.log('Cache hit');
+            return cache.get(key);
+        }
+        
+        console.log('Computing...');
+        const result = fn(array, ...args);
+        cache.set(key, result);
+        return result;
+    };
+}
+
+const expensiveFilter = memoizeArrayOp((array, threshold) => {
+    return array.filter(n => {
+        // Simulate expensive operation
+        for (let i = 0; i < 1000000; i++) {}
+        return n > threshold;
+    });
+});
+
+const numbers = [1, 2, 3, 4, 5];
+expensiveFilter(numbers, 3); // Computing...
+expensiveFilter(numbers, 3); // Cache hit</code></pre>
+
+                <h2>Practical Example: Conditional Array Processing</h2>
+                <pre><code class="language-javascript">function createConditionalProcessor(condition) {
+    return {
+        map: function(fn) {
+            return array => array.map(item => 
+                condition(item) ? fn(item) : item
+            );
+        },
+        
+        filter: function(fn) {
+            return array => array.filter(item =>
+                condition(item) ? fn(item) : true
+            );
+        }
+    };
+}
+
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Only process even numbers
+const evenProcessor = createConditionalProcessor(n => n % 2 === 0);
+
+const doubled = evenProcessor.map(n => n * 2)(numbers);
+console.log(doubled); // [1, 4, 3, 8, 5, 12, 7, 16, 9, 20]
+
+const filtered = evenProcessor.filter(n => n > 4)(numbers);
+console.log(filtered); // [1, 2, 3, 4, 6, 8, 10]</code></pre>
+
+                <h2>Practical Example: Array Validator</h2>
+                <pre><code class="language-javascript">function createValidator(rules) {
+    return function(array) {
+        const errors = [];
+        
+        array.forEach((item, index) => {
+            rules.forEach(rule => {
+                if (!rule.test(item)) {
+                    errors.push({
+                        index,
+                        item,
+                        message: rule.message
+                    });
+                }
+            });
+        });
+        
+        return {
+            isValid: errors.length === 0,
+            errors
+        };
+    };
+}
+
+const validateNumbers = createValidator([
+    {
+        test: n => typeof n === 'number',
+        message: 'Must be a number'
+    },
+    {
+        test: n => n >= 0,
+        message: 'Must be non-negative'
+    },
+    {
+        test: n => n <= 100,
+        message: 'Must be <= 100'
+    }
+]);
+
+const data = [10, -5, 150, 'abc', 50];
+const result = validateNumbers(data);
+console.log(result);
+// { isValid: false, errors: [...] }</code></pre>
+
+                <h2>Practical Example: Array Transformer Factory</h2>
+                <pre><code class="language-javascript">function createTransformer(config) {
+    const { mappers = [], filters = [], sorters = [] } = config;
+    
+    return function(array) {
+        let result = [...array];
+        
+        // Apply filters
+        filters.forEach(filter => {
+            result = result.filter(filter);
+        });
+        
+        // Apply mappers
+        mappers.forEach(mapper => {
+            result = result.map(mapper);
+        });
+        
+        // Apply sorters
+        sorters.forEach(sorter => {
+            result = result.sort(sorter);
+        });
+        
+        return result;
+    };
+}
+
+const userTransformer = createTransformer({
+    filters: [
+        user => user.active,
+        user => user.age >= 18
+    ],
+    mappers: [
+        user => ({ ...user, fullName: `${user.firstName} ${user.lastName}` }),
+        user => ({ ...user, ageGroup: user.age < 30 ? 'young' : 'mature' })
+    ],
+    sorters: [
+        (a, b) => a.age - b.age
+    ]
+});
+
+const users = [
+    { firstName: 'Alice', lastName: 'Smith', age: 25, active: true },
+    { firstName: 'Bob', lastName: 'Jones', age: 17, active: true },
+    { firstName: 'Charlie', lastName: 'Brown', age: 35, active: true }
+];
+
+console.log(userTransformer(users));</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ Array method callbacks naturally create <strong>closures</strong></li>
+                        <li>✅ Use closures to create <strong>configurable</strong> callbacks</li>
+                        <li>✅ Build <strong>reusable</strong> transformation utilities</li>
+                        <li>✅ Closures enable <strong>memoization</strong> and caching</li>
+                        <li>✅ Combine closures with array methods for powerful <strong>data processing</strong></li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand closures with array methods, in the next lesson we'll explore memoization and caching - powerful optimization techniques enabled by closures.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="3-2.html" class="btn btn-secondary">← Previous: setTimeout & setInterval</a>
+                    <a href="3-4.html" class="btn btn-primary">Next: Memoization & Caching →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

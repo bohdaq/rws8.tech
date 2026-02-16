@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 3.1: Event Handlers and Callbacks - Use closures effectively with event handlers.">
+    <meta name="keywords" content="JavaScript, Closures, Event Handlers, Callbacks">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 3.1: Event Handlers and Callbacks | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/3-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 3.1: Event Handlers and Callbacks</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 3: Common Use Cases</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Use closures in event handlers effectively</li>
+                        <li>Understand callback patterns with closures</li>
+                        <li>Create reusable event handler factories</li>
+                        <li>Manage event handler state with closures</li>
+                    </ul>
+                </div>
+
+                <h2>Closures in Event Handlers</h2>
+                <p>
+                    Event handlers are one of the most common places where closures shine. They allow handlers to access variables from their creation context.
+                </p>
+
+                <pre><code class="language-javascript">function createButton(label, onClick) {
+    const button = document.createElement('button');
+    button.textContent = label;
+    
+    // Closure: handler has access to label
+    button.addEventListener('click', function() {
+        console.log(`${label} button clicked`);
+        onClick();
+    });
+    
+    return button;
+}
+
+const saveButton = createButton('Save', () => {
+    console.log('Saving data...');
+});
+
+const cancelButton = createButton('Cancel', () => {
+    console.log('Cancelling...');
+});
+
+document.body.append(saveButton, cancelButton);</code></pre>
+
+                <h2>Maintaining State in Event Handlers</h2>
+                <p>
+                    Use closures to maintain state across multiple event invocations:
+                </p>
+
+                <pre><code class="language-javascript">function createCounter() {
+    let count = 0;
+    const button = document.createElement('button');
+    button.textContent = 'Click me!';
+    
+    button.addEventListener('click', function() {
+        count++;
+        button.textContent = `Clicked ${count} times`;
+    });
+    
+    return button;
+}
+
+const counter1 = createCounter();
+const counter2 = createCounter();
+
+document.body.append(counter1, counter2);
+// Each button maintains its own count!</code></pre>
+
+                <h2>Event Handler Factory</h2>
+                <p>
+                    Create reusable event handler factories:
+                </p>
+
+                <pre><code class="language-javascript">function createClickHandler(config) {
+    let clickCount = 0;
+    const { maxClicks = Infinity, onMaxReached, onEachClick } = config;
+    
+    return function(event) {
+        clickCount++;
+        
+        if (onEachClick) {
+            onEachClick(clickCount, event);
+        }
+        
+        if (clickCount >= maxClicks) {
+            event.target.disabled = true;
+            if (onMaxReached) {
+                onMaxReached(clickCount);
+            }
+        }
+    };
+}
+
+// Create a button that can only be clicked 3 times
+const limitedButton = document.createElement('button');
+limitedButton.textContent = 'Limited Clicks';
+
+limitedButton.addEventListener('click', createClickHandler({
+    maxClicks: 3,
+    onEachClick: (count) => {
+        console.log(`Click ${count}`);
+    },
+    onMaxReached: () => {
+        console.log('Max clicks reached!');
+        limitedButton.textContent = 'Disabled';
+    }
+}));
+
+document.body.appendChild(limitedButton);</code></pre>
+
+                <h2>Practical Example: Form Validation</h2>
+                <pre><code class="language-javascript">function createValidator(rules) {
+    const errors = {};
+    
+    return function(fieldName, value) {
+        const fieldRules = rules[fieldName];
+        if (!fieldRules) return true;
+        
+        errors[fieldName] = [];
+        
+        for (const rule of fieldRules) {
+            if (!rule.test(value)) {
+                errors[fieldName].push(rule.message);
+            }
+        }
+        
+        return errors[fieldName].length === 0;
+    };
+}
+
+const validate = createValidator({
+    username: [
+        {
+            test: v => v.length >= 3,
+            message: 'Username must be at least 3 characters'
+        },
+        {
+            test: v => /^[a-zA-Z0-9_]+$/.test(v),
+            message: 'Username can only contain letters, numbers, and underscores'
+        }
+    ],
+    email: [
+        {
+            test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+            message: 'Invalid email format'
+        }
+    ]
+});
+
+// Use in event handlers
+document.getElementById('username').addEventListener('blur', function(e) {
+    const isValid = validate('username', e.target.value);
+    if (!isValid) {
+        console.log('Validation errors:', validate.errors);
+    }
+});</code></pre>
+
+                <h2>Practical Example: Debouncing</h2>
+                <p>
+                    Use closures to implement debouncing for search inputs:
+                </p>
+
+                <pre><code class="language-javascript">function debounce(fn, delay) {
+    let timeoutId;
+    
+    return function(...args) {
+        clearTimeout(timeoutId);
+        
+        timeoutId = setTimeout(() => {
+            fn.apply(this, args);
+        }, delay);
+    };
+}
+
+// Search handler
+function searchAPI(query) {
+    console.log('Searching for:', query);
+    // Make API call...
+}
+
+const debouncedSearch = debounce(searchAPI, 300);
+
+document.getElementById('search').addEventListener('input', function(e) {
+    debouncedSearch(e.target.value);
+    // Only calls searchAPI after user stops typing for 300ms
+});</code></pre>
+
+                <h2>Practical Example: Throttling</h2>
+                <p>
+                    Implement throttling for scroll events:
+                </p>
+
+                <pre><code class="language-javascript">function throttle(fn, limit) {
+    let inThrottle;
+    
+    return function(...args) {
+        if (!inThrottle) {
+            fn.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+function handleScroll() {
+    console.log('Scroll position:', window.scrollY);
+    // Update UI based on scroll...
+}
+
+const throttledScroll = throttle(handleScroll, 100);
+
+window.addEventListener('scroll', throttledScroll);
+// Only calls handleScroll once every 100ms</code></pre>
+
+                <h2>Practical Example: Event Delegation</h2>
+                <pre><code class="language-javascript">function createDelegatedHandler(selector, handler) {
+    return function(event) {
+        const target = event.target.closest(selector);
+        if (target) {
+            handler.call(target, event);
+        }
+    };
+}
+
+// Handle clicks on any button inside the container
+document.getElementById('container').addEventListener('click',
+    createDelegatedHandler('button', function(event) {
+        console.log('Button clicked:', this.textContent);
+        // 'this' refers to the matched button
+    })
+);</code></pre>
+
+                <h2>Practical Example: Once Handler</h2>
+                <p>
+                    Create an event handler that only fires once:
+                </p>
+
+                <pre><code class="language-javascript">function once(fn) {
+    let called = false;
+    let result;
+    
+    return function(...args) {
+        if (!called) {
+            called = true;
+            result = fn.apply(this, args);
+        }
+        return result;
+    };
+}
+
+const button = document.getElementById('submit');
+button.addEventListener('click', once(function() {
+    console.log('Form submitted!');
+    // This will only log once, no matter how many times clicked
+}));</code></pre>
+
+                <h2>Practical Example: Event Emitter</h2>
+                <pre><code class="language-javascript">function createEventEmitter() {
+    const events = {};
+    
+    return {
+        on(event, handler) {
+            if (!events[event]) {
+                events[event] = [];
+            }
+            events[event].push(handler);
+            
+            // Return unsubscribe function
+            return () => {
+                const index = events[event].indexOf(handler);
+                if (index > -1) {
+                    events[event].splice(index, 1);
+                }
+            };
+        },
+        
+        emit(event, data) {
+            if (!events[event]) return;
+            events[event].forEach(handler => handler(data));
+        },
+        
+        once(event, handler) {
+            const unsubscribe = this.on(event, (data) => {
+                handler(data);
+                unsubscribe();
+            });
+            return unsubscribe;
+        }
+    };
+}
+
+const emitter = createEventEmitter();
+
+// Subscribe to events
+const unsubscribe = emitter.on('data', (data) => {
+    console.log('Received:', data);
+});
+
+emitter.emit('data', { value: 42 });
+unsubscribe();
+emitter.emit('data', { value: 100 }); // Won't log</code></pre>
+
+                <h2>Practical Example: Click Counter with Reset</h2>
+                <pre><code class="language-javascript">function createClickCounter(element) {
+    let clicks = 0;
+    let lastClickTime = null;
+    
+    element.addEventListener('click', function() {
+        clicks++;
+        lastClickTime = Date.now();
+        updateDisplay();
+    });
+    
+    function updateDisplay() {
+        element.textContent = `Clicks: ${clicks}`;
+    }
+    
+    function reset() {
+        clicks = 0;
+        lastClickTime = null;
+        updateDisplay();
+    }
+    
+    function getStats() {
+        return {
+            clicks,
+            lastClickTime,
+            averageClickRate: lastClickTime ? 
+                clicks / ((Date.now() - lastClickTime) / 1000) : 0
+        };
+    }
+    
+    updateDisplay();
+    
+    return {
+        reset,
+        getStats
+    };
+}
+
+const button = document.getElementById('myButton');
+const counter = createClickCounter(button);
+
+// Add reset button
+const resetBtn = document.getElementById('reset');
+resetBtn.addEventListener('click', () => counter.reset());</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ Event handlers naturally create <strong>closures</strong></li>
+                        <li>✅ Closures allow handlers to maintain <strong>private state</strong></li>
+                        <li>✅ Use closures for <strong>debouncing</strong> and <strong>throttling</strong></li>
+                        <li>✅ Create <strong>reusable</strong> handler factories with closures</li>
+                        <li>✅ Each handler instance has its own <strong>independent</strong> state</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand closures with event handlers, in the next lesson we'll explore how closures work with setTimeout and setInterval for managing timed operations.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="2-5.html" class="btn btn-secondary">← Previous: Function Composition</a>
+                    <a href="3-2.html" class="btn btn-primary">Next: setTimeout & setInterval →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

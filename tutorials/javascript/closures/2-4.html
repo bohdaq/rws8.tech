@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.4: Currying and Partial Application - Master functional programming techniques with closures.">
+    <meta name="keywords" content="JavaScript, Closures, Currying, Partial Application, Functional Programming">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.4: Currying and Partial Application | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/2-4.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.4: Currying and Partial Application</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 2: Practical Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand what currying is and why it's useful</li>
+                        <li>Learn partial application techniques</li>
+                        <li>Create curried functions using closures</li>
+                        <li>Apply these patterns to real-world problems</li>
+                    </ul>
+                </div>
+
+                <h2>What Is Currying?</h2>
+                <p>
+                    <strong>Currying</strong> is the process of transforming a function that takes multiple arguments into a sequence of functions that each take a single argument. It's named after mathematician Haskell Curry.
+                </p>
+
+                <pre><code class="language-javascript">// Regular function
+function add(a, b, c) {
+    return a + b + c;
+}
+console.log(add(1, 2, 3)); // 6
+
+// Curried version
+function curriedAdd(a) {
+    return function(b) {
+        return function(c) {
+            return a + b + c;
+        };
+    };
+}
+console.log(curriedAdd(1)(2)(3)); // 6
+
+// Or with arrow functions
+const curriedAdd2 = a => b => c => a + b + c;
+console.log(curriedAdd2(1)(2)(3)); // 6</code></pre>
+
+                <h2>Why Curry?</h2>
+                <p>
+                    Currying allows you to create specialized functions by pre-filling some arguments:
+                </p>
+
+                <pre><code class="language-javascript">const curriedMultiply = a => b => a * b;
+
+// Create specialized functions
+const double = curriedMultiply(2);
+const triple = curriedMultiply(3);
+const quadruple = curriedMultiply(4);
+
+console.log(double(5));     // 10
+console.log(triple(5));     // 15
+console.log(quadruple(5));  // 20</code></pre>
+
+                <h2>Practical Example: Logging</h2>
+                <pre><code class="language-javascript">const log = level => prefix => message => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] [${level}] [${prefix}] ${message}`);
+};
+
+// Create specialized loggers
+const infoLog = log('INFO');
+const errorLog = log('ERROR');
+
+const apiInfo = infoLog('API');
+const apiError = errorLog('API');
+
+const dbInfo = infoLog('DB');
+const dbError = errorLog('DB');
+
+// Use them
+apiInfo('Request received');        // [timestamp] [INFO] [API] Request received
+apiError('Connection failed');      // [timestamp] [ERROR] [API] Connection failed
+dbInfo('Query executed');           // [timestamp] [INFO] [DB] Query executed
+dbError('Transaction rolled back'); // [timestamp] [ERROR] [DB] Transaction rolled back</code></pre>
+
+                <h2>Partial Application</h2>
+                <p>
+                    <strong>Partial application</strong> is similar to currying but more flexible - you can fix any number of arguments:
+                </p>
+
+                <pre><code class="language-javascript">function partial(fn, ...fixedArgs) {
+    return function(...remainingArgs) {
+        return fn(...fixedArgs, ...remainingArgs);
+    };
+}
+
+// Original function
+function greet(greeting, name, punctuation) {
+    return `${greeting}, ${name}${punctuation}`;
+}
+
+// Create partially applied functions
+const sayHello = partial(greet, 'Hello');
+const sayHelloToAlice = partial(greet, 'Hello', 'Alice');
+
+console.log(sayHello('Bob', '!'));        // "Hello, Bob!"
+console.log(sayHelloToAlice('!'));        // "Hello, Alice!"
+console.log(sayHelloToAlice('?'));        // "Hello, Alice?"</code></pre>
+
+                <h2>Practical Example: API Requests</h2>
+                <pre><code class="language-javascript">const makeRequest = method => url => headers => body => {
+    return fetch(url, {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers
+        },
+        body: body ? JSON.stringify(body) : undefined
+    }).then(res => res.json());
+};
+
+// Create specialized request functions
+const get = makeRequest('GET');
+const post = makeRequest('POST');
+const put = makeRequest('PUT');
+const del = makeRequest('DELETE');
+
+// Create API endpoint functions
+const apiGet = get('https://api.example.com');
+const apiPost = post('https://api.example.com');
+
+// Create authenticated versions
+const authHeaders = { 'Authorization': 'Bearer token123' };
+const authGet = apiGet(authHeaders);
+const authPost = apiPost(authHeaders);
+
+// Use them
+authGet(null);  // GET request with auth
+authPost({ name: 'Alice', email: 'alice@example.com' }); // POST with auth and body</code></pre>
+
+                <h2>Auto-Currying Function</h2>
+                <p>
+                    Create a utility that automatically curries any function:
+                </p>
+
+                <pre><code class="language-javascript">function curry(fn) {
+    return function curried(...args) {
+        if (args.length >= fn.length) {
+            return fn.apply(this, args);
+        } else {
+            return function(...moreArgs) {
+                return curried.apply(this, args.concat(moreArgs));
+            };
+        }
+    };
+}
+
+// Use it with any function
+function sum(a, b, c, d) {
+    return a + b + c + d;
+}
+
+const curriedSum = curry(sum);
+
+console.log(curriedSum(1)(2)(3)(4));     // 10
+console.log(curriedSum(1, 2)(3, 4));     // 10
+console.log(curriedSum(1, 2, 3)(4));     // 10
+console.log(curriedSum(1)(2, 3, 4));     // 10</code></pre>
+
+                <h2>Practical Example: Validation</h2>
+                <pre><code class="language-javascript">const validate = rule => value => {
+    return rule(value);
+};
+
+// Define validation rules
+const isRequired = value => value !== null && value !== undefined && value !== '';
+const minLength = min => value => value.length >= min;
+const maxLength = max => value => value.length <= max;
+const isEmail = value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+const isNumeric = value => /^\d+$/.test(value);
+
+// Create specific validators
+const validateRequired = validate(isRequired);
+const validateMinLength5 = validate(minLength(5));
+const validateMaxLength20 = validate(maxLength(20));
+const validateEmail = validate(isEmail);
+
+// Compose validators
+function composeValidators(...validators) {
+    return value => {
+        for (const validator of validators) {
+            if (!validator(value)) {
+                return false;
+            }
+        }
+        return true;
+    };
+}
+
+const validateUsername = composeValidators(
+    validateRequired,
+    validateMinLength5,
+    validateMaxLength20
+);
+
+const validateEmailField = composeValidators(
+    validateRequired,
+    validateEmail
+);
+
+console.log(validateUsername('alice'));      // false (too short)
+console.log(validateUsername('alice123'));   // true
+console.log(validateEmailField('alice'));    // false (not email)
+console.log(validateEmailField('alice@example.com')); // true</code></pre>
+
+                <h2>Practical Example: Configuration Builder</h2>
+                <pre><code class="language-javascript">const createConfig = baseUrl => timeout => retries => headers => {
+    return {
+        baseUrl,
+        timeout,
+        retries,
+        headers,
+        
+        request: async function(endpoint, options = {}) {
+            let attempt = 0;
+            
+            while (attempt < this.retries) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+                    
+                    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+                        ...options,
+                        headers: { ...this.headers, ...options.headers },
+                        signal: controller.signal
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    return await response.json();
+                } catch (error) {
+                    attempt++;
+                    if (attempt >= this.retries) throw error;
+                    await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+                }
+            }
+        }
+    };
+};
+
+// Build configurations step by step
+const withBaseUrl = createConfig('https://api.example.com');
+const withTimeout = withBaseUrl(5000);
+const withRetries = withTimeout(3);
+const apiConfig = withRetries({ 'Authorization': 'Bearer token' });
+
+// Or all at once
+const quickConfig = createConfig('https://api.example.com')(5000)(3)({
+    'Authorization': 'Bearer token'
+});
+
+// Use it
+apiConfig.request('/users/1').then(user => console.log(user));</code></pre>
+
+                <h2>Practical Example: Event Handler Factory</h2>
+                <pre><code class="language-javascript">const createHandler = action => selector => callback => {
+    return function(event) {
+        if (event.target.matches(selector)) {
+            callback(event);
+        }
+    };
+};
+
+// Create specialized handlers
+const onClick = createHandler('click');
+const onSubmit = createHandler('submit');
+const onInput = createHandler('input');
+
+// Create element-specific handlers
+const onButtonClick = onClick('button');
+const onLinkClick = onClick('a');
+const onFormSubmit = onSubmit('form');
+const onInputChange = onInput('input');
+
+// Use them
+document.addEventListener('click', onButtonClick(e => {
+    console.log('Button clicked:', e.target.textContent);
+}));
+
+document.addEventListener('click', onLinkClick(e => {
+    e.preventDefault();
+    console.log('Link clicked:', e.target.href);
+}));
+
+document.addEventListener('submit', onFormSubmit(e => {
+    e.preventDefault();
+    console.log('Form submitted');
+}));</code></pre>
+
+                <h2>Benefits of Currying and Partial Application</h2>
+                <ul>
+                    <li><strong>Reusability</strong>: Create specialized functions from generic ones</li>
+                    <li><strong>Composition</strong>: Easier to combine functions</li>
+                    <li><strong>Configuration</strong>: Pre-configure functions with common arguments</li>
+                    <li><strong>Readability</strong>: More expressive code</li>
+                    <li><strong>Flexibility</strong>: Apply arguments incrementally</li>
+                </ul>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ <strong>Currying</strong> transforms multi-argument functions into single-argument chains</li>
+                        <li>✅ <strong>Partial application</strong> fixes some arguments, leaving others open</li>
+                        <li>✅ Both techniques use <strong>closures</strong> to remember arguments</li>
+                        <li>✅ Create <strong>specialized functions</strong> from generic ones</li>
+                        <li>✅ Improves code <strong>reusability</strong> and <strong>composition</strong></li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand currying and partial application, in the next lesson we'll explore function composition - combining simple functions to create complex behavior.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="2-3.html" class="btn btn-secondary">← Previous: Module Pattern</a>
+                    <a href="2-5.html" class="btn btn-primary">Next: Function Composition →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

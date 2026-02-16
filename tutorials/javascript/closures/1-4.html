@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.4: How Closures Work Under the Hood - Understand execution contexts and memory management.">
+    <meta name="keywords" content="JavaScript, Closures, Execution Context, Memory Management">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.4: How Closures Work Under the Hood | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/1-4.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .diagram {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.4: How Closures Work Under the Hood</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 1: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand execution contexts and the call stack</li>
+                        <li>Learn about lexical environments</li>
+                        <li>See how JavaScript engines handle closures</li>
+                        <li>Understand memory management with closures</li>
+                    </ul>
+                </div>
+
+                <h2>Execution Contexts</h2>
+                <p>
+                    To understand how closures work, we need to understand <strong>execution contexts</strong>. When JavaScript code runs, it creates execution contexts that contain:
+                </p>
+
+                <ul>
+                    <li><strong>Variable Environment</strong>: Where variables are stored</li>
+                    <li><strong>Lexical Environment</strong>: References to outer scopes</li>
+                    <li><strong>this binding</strong>: The value of <code>this</code></li>
+                </ul>
+
+                <h2>The Call Stack</h2>
+                <p>
+                    JavaScript uses a <strong>call stack</strong> to manage execution contexts. Let's see it in action:
+                </p>
+
+                <pre><code class="language-javascript">function first() {
+    console.log("In first");
+    second();
+    console.log("Back in first");
+}
+
+function second() {
+    console.log("In second");
+    third();
+    console.log("Back in second");
+}
+
+function third() {
+    console.log("In third");
+}
+
+first();</code></pre>
+
+                <div class="diagram">
+Call Stack Evolution:
+
+1. Initial:
+   [Global Execution Context]
+
+2. first() called:
+   [first() Execution Context]
+   [Global Execution Context]
+
+3. second() called:
+   [second() Execution Context]
+   [first() Execution Context]
+   [Global Execution Context]
+
+4. third() called:
+   [third() Execution Context]
+   [second() Execution Context]
+   [first() Execution Context]
+   [Global Execution Context]
+
+5. third() returns:
+   [second() Execution Context]
+   [first() Execution Context]
+   [Global Execution Context]
+
+6. second() returns:
+   [first() Execution Context]
+   [Global Execution Context]
+
+7. first() returns:
+   [Global Execution Context]
+                </div>
+
+                <h2>Lexical Environment</h2>
+                <p>
+                    Each execution context has a <strong>lexical environment</strong> that consists of:
+                </p>
+
+                <ul>
+                    <li><strong>Environment Record</strong>: Stores variables and functions</li>
+                    <li><strong>Outer Reference</strong>: Link to the parent lexical environment</li>
+                </ul>
+
+                <pre><code class="language-javascript">const globalVar = "global";
+
+function outer() {
+    const outerVar = "outer";
+    
+    function inner() {
+        const innerVar = "inner";
+        console.log(globalVar, outerVar, innerVar);
+    }
+    
+    return inner;
+}
+
+const myFunc = outer();
+myFunc();</code></pre>
+
+                <div class="diagram">
+Lexical Environment Chain:
+
+inner() Lexical Environment:
+├─ Environment Record: { innerVar: "inner" }
+└─ Outer Reference ──→ outer() Lexical Environment
+                       ├─ Environment Record: { outerVar: "outer" }
+                       └─ Outer Reference ──→ Global Lexical Environment
+                                              ├─ Environment Record: { globalVar: "global" }
+                                              └─ Outer Reference: null
+                </div>
+
+                <h2>How Closures Are Created</h2>
+                <p>
+                    When a function is created, it stores a reference to its lexical environment. This is how closures work:
+                </p>
+
+                <pre><code class="language-javascript">function createCounter() {
+    let count = 0;
+    
+    return function increment() {
+        count++;
+        return count;
+    };
+}
+
+const counter = createCounter();</code></pre>
+
+                <p>
+                    Here's what happens step by step:
+                </p>
+
+                <ol>
+                    <li><code>createCounter()</code> is called, creating a new execution context</li>
+                    <li>A variable <code>count</code> is created in this context's environment</li>
+                    <li>The <code>increment</code> function is created and stores a reference to this environment</li>
+                    <li><code>createCounter()</code> returns and its execution context is popped off the stack</li>
+                    <li>BUT the lexical environment is NOT garbage collected because <code>increment</code> still references it!</li>
+                    <li>When we call <code>counter()</code>, it accesses <code>count</code> through its stored reference</li>
+                </ol>
+
+                <h2>Memory Management</h2>
+                <p>
+                    Closures keep their lexical environment alive in memory. This is powerful but requires understanding:
+                </p>
+
+                <pre><code class="language-javascript">function createHeavyObject() {
+    const largeArray = new Array(1000000).fill("data");
+    
+    return function() {
+        // This closure keeps largeArray in memory!
+        return largeArray.length;
+    };
+}
+
+const getLength = createHeavyObject();
+// largeArray is still in memory even though createHeavyObject finished</code></pre>
+
+                <h2>What Gets Captured?</h2>
+                <p>
+                    JavaScript engines are smart - they only keep variables that are actually used by the closure:
+                </p>
+
+                <pre><code class="language-javascript">function createClosure() {
+    const used = "I'm used";
+    const notUsed = "I'm not used";
+    const alsoNotUsed = "Me neither";
+    
+    return function() {
+        console.log(used); // Only 'used' is captured
+    };
+}
+
+const myClosure = createClosure();
+// Modern engines won't keep 'notUsed' and 'alsoNotUsed' in memory</code></pre>
+
+                <h2>Multiple Closures Sharing Environment</h2>
+                <p>
+                    When multiple functions are created in the same scope, they share the same lexical environment:
+                </p>
+
+                <pre><code class="language-javascript">function createCounter() {
+    let count = 0;
+    
+    return {
+        increment: function() {
+            count++;
+            return count;
+        },
+        decrement: function() {
+            count--;
+            return count;
+        },
+        getCount: function() {
+            return count;
+        }
+    };
+}
+
+const counter = createCounter();
+counter.increment(); // count = 1
+counter.increment(); // count = 2
+counter.decrement(); // count = 1
+console.log(counter.getCount()); // 1
+
+// All three methods share the same 'count' variable!</code></pre>
+
+                <h2>Visualizing Closure Memory</h2>
+                <div class="diagram">
+Memory After createCounter() Returns:
+
+Heap Memory:
+┌─────────────────────────────────────┐
+│ Lexical Environment (from outer)   │
+│ ┌─────────────────────────────────┐ │
+│ │ count: 0                        │ │
+│ └─────────────────────────────────┘ │
+│         ↑           ↑           ↑   │
+│         │           │           │   │
+│    ┌────┘      ┌────┘      ┌────┘  │
+│    │           │           │        │
+│ increment  decrement  getCount      │
+│ function   function   function      │
+└─────────────────────────────────────┘
+
+Stack:
+┌─────────────────────────────────────┐
+│ counter = { increment, decrement,   │
+│             getCount }              │
+└─────────────────────────────────────┘
+                </div>
+
+                <h2>Performance Considerations</h2>
+                <p>
+                    Closures are efficient, but keep these points in mind:
+                </p>
+
+                <ul>
+                    <li>Each closure instance has its own environment (memory cost)</li>
+                    <li>Closures prevent garbage collection of captured variables</li>
+                    <li>Modern engines optimize closures heavily</li>
+                    <li>The performance impact is usually negligible</li>
+                </ul>
+
+                <pre><code class="language-javascript">// Creating many closures
+const counters = [];
+for (let i = 0; i < 1000; i++) {
+    counters.push(createCounter());
+}
+// Each counter has its own lexical environment in memory</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ Functions store a reference to their <strong>lexical environment</strong></li>
+                        <li>✅ Closures keep their environment alive even after the outer function returns</li>
+                        <li>✅ The <strong>call stack</strong> manages execution contexts</li>
+                        <li>✅ Modern engines only capture variables that are actually used</li>
+                        <li>✅ Multiple closures from the same scope <strong>share</strong> the same environment</li>
+                        <li>✅ Closures have minimal performance impact in most cases</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    You now understand the fundamentals of closures and how they work under the hood! In the next section, we'll explore practical patterns like data privacy, factory functions, and the module pattern.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="1-3.html" class="btn btn-secondary">← Previous: Creating Closures</a>
+                    <a href="2-1.html" class="btn btn-primary">Next: Data Privacy →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.3: Creating Your First Closure - Build practical closures and understand common patterns.">
+    <meta name="keywords" content="JavaScript, Closures, Tutorial, Practical Examples">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.3: Creating Your First Closure | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/1-3.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.3: Creating Your First Closure</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 1: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Create practical closures from scratch</li>
+                        <li>Understand common closure patterns</li>
+                        <li>Build functions that return functions</li>
+                        <li>Use closures to maintain state</li>
+                    </ul>
+                </div>
+
+                <h2>Building Your First Closure</h2>
+                <p>
+                    Now that you understand scope and lexical environment, let's create some practical closures. We'll start simple and build up to more complex examples.
+                </p>
+
+                <h3>Pattern 1: Simple Counter</h3>
+                <p>
+                    The classic closure example - a counter with private state:
+                </p>
+
+                <pre><code class="language-javascript">function createCounter() {
+    let count = 0; // Private variable
+    
+    return function() {
+        count++;
+        return count;
+    };
+}
+
+const counter = createCounter();
+console.log(counter()); // 1
+console.log(counter()); // 2
+console.log(counter()); // 3
+
+// Create another independent counter
+const counter2 = createCounter();
+console.log(counter2()); // 1
+console.log(counter2()); // 2</code></pre>
+
+                <p>
+                    Each counter maintains its own private <code>count</code> variable. They don't interfere with each other!
+                </p>
+
+                <h3>Pattern 2: Function with Configuration</h3>
+                <p>
+                    Create specialized functions based on configuration:
+                </p>
+
+                <pre><code class="language-javascript">function createGreeter(greeting) {
+    return function(name) {
+        return `${greeting}, ${name}!`;
+    };
+}
+
+const sayHello = createGreeter("Hello");
+const sayHi = createGreeter("Hi");
+const sayHowdy = createGreeter("Howdy");
+
+console.log(sayHello("Alice"));  // "Hello, Alice!"
+console.log(sayHi("Bob"));       // "Hi, Bob!"
+console.log(sayHowdy("Charlie")); // "Howdy, Charlie!"</code></pre>
+
+                <h3>Pattern 3: Multiple Methods</h3>
+                <p>
+                    Return an object with multiple methods that share access to private data:
+                </p>
+
+                <pre><code class="language-javascript">function createBankAccount(initialBalance) {
+    let balance = initialBalance; // Private
+    
+    return {
+        deposit: function(amount) {
+            if (amount > 0) {
+                balance += amount;
+                return `Deposited $${amount}. New balance: $${balance}`;
+            }
+            return "Invalid amount";
+        },
+        
+        withdraw: function(amount) {
+            if (amount > 0 && amount <= balance) {
+                balance -= amount;
+                return `Withdrew $${amount}. New balance: $${balance}`;
+            }
+            return "Invalid amount or insufficient funds";
+        },
+        
+        getBalance: function() {
+            return balance;
+        }
+    };
+}
+
+const myAccount = createBankAccount(100);
+console.log(myAccount.deposit(50));   // "Deposited $50. New balance: $150"
+console.log(myAccount.withdraw(30));  // "Withdrew $30. New balance: $120"
+console.log(myAccount.getBalance());  // 120
+
+// Can't access balance directly
+console.log(myAccount.balance); // undefined</code></pre>
+
+                <h2>Practical Example: ID Generator</h2>
+                <p>
+                    Create a unique ID generator using closures:
+                </p>
+
+                <pre><code class="language-javascript">function createIDGenerator(prefix = "ID") {
+    let currentID = 0;
+    
+    return function() {
+        currentID++;
+        return `${prefix}-${currentID}`;
+    };
+}
+
+const userID = createIDGenerator("USER");
+const orderID = createIDGenerator("ORDER");
+
+console.log(userID());  // "USER-1"
+console.log(userID());  // "USER-2"
+console.log(orderID()); // "ORDER-1"
+console.log(userID());  // "USER-3"
+console.log(orderID()); // "ORDER-2"</code></pre>
+
+                <h2>Practical Example: Rate Limiter</h2>
+                <p>
+                    Use closures to implement a simple rate limiter:
+                </p>
+
+                <pre><code class="language-javascript">function createRateLimiter(maxCalls, timeWindow) {
+    let calls = [];
+    
+    return function(fn) {
+        const now = Date.now();
+        
+        // Remove calls outside the time window
+        calls = calls.filter(time => now - time < timeWindow);
+        
+        if (calls.length < maxCalls) {
+            calls.push(now);
+            return fn();
+        } else {
+            return "Rate limit exceeded. Try again later.";
+        }
+    };
+}
+
+// Allow 3 calls per second
+const limiter = createRateLimiter(3, 1000);
+
+function apiCall() {
+    return "API call successful!";
+}
+
+console.log(limiter(apiCall)); // "API call successful!"
+console.log(limiter(apiCall)); // "API call successful!"
+console.log(limiter(apiCall)); // "API call successful!"
+console.log(limiter(apiCall)); // "Rate limit exceeded..."</code></pre>
+
+                <h2>Practical Example: Memoization</h2>
+                <p>
+                    Cache function results using closures:
+                </p>
+
+                <pre><code class="language-javascript">function memoize(fn) {
+    const cache = {};
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        
+        if (key in cache) {
+            console.log("Returning cached result");
+            return cache[key];
+        }
+        
+        console.log("Computing result");
+        const result = fn(...args);
+        cache[key] = result;
+        return result;
+    };
+}
+
+// Expensive calculation
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+const memoizedFib = memoize(fibonacci);
+
+console.log(memoizedFib(10)); // Computing result: 55
+console.log(memoizedFib(10)); // Returning cached result: 55</code></pre>
+
+                <h2>Common Mistakes to Avoid</h2>
+
+                <h3>Mistake 1: Forgetting to Return the Function</h3>
+                <pre><code class="language-javascript">// ❌ Wrong
+function createCounter() {
+    let count = 0;
+    function increment() {
+        count++;
+        return count;
+    }
+    // Forgot to return increment!
+}
+
+// ✅ Correct
+function createCounter() {
+    let count = 0;
+    return function increment() {
+        count++;
+        return count;
+    };
+}</code></pre>
+
+                <h3>Mistake 2: Not Understanding Independent Closures</h3>
+                <pre><code class="language-javascript">function createCounter() {
+    let count = 0;
+    return function() {
+        count++;
+        return count;
+    };
+}
+
+const counter1 = createCounter();
+const counter2 = createCounter();
+
+console.log(counter1()); // 1
+console.log(counter1()); // 2
+console.log(counter2()); // 1 (not 3!)
+// Each closure has its own count variable</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ Closures enable <strong>private variables</strong> and data encapsulation</li>
+                        <li>✅ Functions can return other functions that maintain access to outer scope</li>
+                        <li>✅ Each closure instance has its own <strong>independent</strong> copy of variables</li>
+                        <li>✅ Closures are perfect for <strong>configuration</strong> and <strong>state management</strong></li>
+                        <li>✅ Common patterns: counters, generators, memoization, rate limiting</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    You've now created several practical closures! In the next lesson, we'll dive deeper into how closures work under the hood, exploring the JavaScript engine's execution context and memory management.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="1-2.html" class="btn btn-secondary">← Previous: Lexical Scope</a>
+                    <a href="1-4.html" class="btn btn-primary">Next: How Closures Work →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

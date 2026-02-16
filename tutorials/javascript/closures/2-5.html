@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 2.5: Function Composition with Closures - Learn to combine functions for powerful abstractions.">
+    <meta name="keywords" content="JavaScript, Closures, Function Composition, Functional Programming">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 2.5: Function Composition | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/2-5.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 2.5: Function Composition with Closures</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 2: Practical Patterns</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand function composition principles</li>
+                        <li>Create compose and pipe utilities</li>
+                        <li>Build data transformation pipelines</li>
+                        <li>Apply composition to real-world problems</li>
+                    </ul>
+                </div>
+
+                <h2>What Is Function Composition?</h2>
+                <p>
+                    <strong>Function composition</strong> is the process of combining simple functions to build more complex ones. It's like connecting pipes where the output of one function becomes the input of the next.
+                </p>
+
+                <pre><code class="language-javascript">// Simple functions
+const add5 = x => x + 5;
+const multiply3 = x => x * 3;
+const subtract2 = x => x - 2;
+
+// Manual composition
+const result = subtract2(multiply3(add5(10)));
+console.log(result); // 43
+// Steps: 10 → 15 → 45 → 43</code></pre>
+
+                <h2>The compose Function</h2>
+                <p>
+                    Create a utility that composes functions right-to-left:
+                </p>
+
+                <pre><code class="language-javascript">function compose(...fns) {
+    return function(value) {
+        return fns.reduceRight((acc, fn) => fn(acc), value);
+    };
+}
+
+// Use it
+const calculate = compose(
+    subtract2,
+    multiply3,
+    add5
+);
+
+console.log(calculate(10)); // 43
+// Reads right-to-left: add5 → multiply3 → subtract2</code></pre>
+
+                <h2>The pipe Function</h2>
+                <p>
+                    Create a utility that composes functions left-to-right (more intuitive):
+                </p>
+
+                <pre><code class="language-javascript">function pipe(...fns) {
+    return function(value) {
+        return fns.reduce((acc, fn) => fn(acc), value);
+    };
+}
+
+// Use it
+const calculate = pipe(
+    add5,
+    multiply3,
+    subtract2
+);
+
+console.log(calculate(10)); // 43
+// Reads left-to-right: add5 → multiply3 → subtract2</code></pre>
+
+                <h2>Practical Example: Data Transformation</h2>
+                <pre><code class="language-javascript">// Data transformation functions
+const trim = str => str.trim();
+const toLowerCase = str => str.toLowerCase();
+const removeSpaces = str => str.replace(/\s+/g, '-');
+const addPrefix = prefix => str => `${prefix}${str}`;
+const addSuffix = suffix => str => `${str}${suffix}`;
+
+// Create a slug generator
+const createSlug = pipe(
+    trim,
+    toLowerCase,
+    removeSpaces,
+    addPrefix('blog-'),
+    addSuffix('-2024')
+);
+
+console.log(createSlug('  Hello World  '));
+// Output: "blog-hello-world-2024"</code></pre>
+
+                <h2>Practical Example: Validation Pipeline</h2>
+                <pre><code class="language-javascript">// Validation functions
+const isNotEmpty = value => {
+    if (!value || value.trim() === '') {
+        throw new Error('Value cannot be empty');
+    }
+    return value;
+};
+
+const isEmail = value => {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        throw new Error('Invalid email format');
+    }
+    return value;
+};
+
+const isLongEnough = min => value => {
+    if (value.length < min) {
+        throw new Error(`Value must be at least ${min} characters`);
+    }
+    return value;
+};
+
+const normalizeEmail = value => value.toLowerCase().trim();
+
+// Create email validator
+const validateEmail = pipe(
+    isNotEmpty,
+    normalizeEmail,
+    isLongEnough(5),
+    isEmail
+);
+
+try {
+    const email = validateEmail('  Alice@Example.COM  ');
+    console.log('Valid email:', email); // "alice@example.com"
+} catch (error) {
+    console.error(error.message);
+}</code></pre>
+
+                <h2>Practical Example: Array Processing</h2>
+                <pre><code class="language-javascript">// Array transformation functions
+const filterAdults = users => users.filter(u => u.age >= 18);
+const sortByAge = users => [...users].sort((a, b) => a.age - b.age);
+const extractNames = users => users.map(u => u.name);
+const joinWithComma = names => names.join(', ');
+
+// Create user processor
+const processUsers = pipe(
+    filterAdults,
+    sortByAge,
+    extractNames,
+    joinWithComma
+);
+
+const users = [
+    { name: 'Alice', age: 25 },
+    { name: 'Bob', age: 17 },
+    { name: 'Charlie', age: 30 },
+    { name: 'David', age: 16 },
+    { name: 'Eve', age: 22 }
+];
+
+console.log(processUsers(users));
+// Output: "Eve, Alice, Charlie"</code></pre>
+
+                <h2>Composing with Closures</h2>
+                <p>
+                    Closures make composition even more powerful by allowing configuration:
+                </p>
+
+                <pre><code class="language-javascript">// Configurable transformations
+const multiply = factor => value => value * factor;
+const add = amount => value => value + amount;
+const power = exponent => value => Math.pow(value, exponent);
+const round = decimals => value => {
+    const multiplier = Math.pow(10, decimals);
+    return Math.round(value * multiplier) / multiplier;
+};
+
+// Create specialized calculators
+const calculatePrice = pipe(
+    multiply(1.2),      // Add 20% markup
+    add(5),             // Add $5 shipping
+    multiply(1.08),     // Add 8% tax
+    round(2)            // Round to 2 decimals
+);
+
+console.log(calculatePrice(100)); // 133.60
+
+// Create different calculator
+const calculateDiscount = pipe(
+    multiply(0.8),      // 20% discount
+    round(2)
+);
+
+console.log(calculateDiscount(100)); // 80.00</code></pre>
+
+                <h2>Async Composition</h2>
+                <p>
+                    Compose asynchronous functions:
+                </p>
+
+                <pre><code class="language-javascript">function pipeAsync(...fns) {
+    return async function(value) {
+        let result = value;
+        for (const fn of fns) {
+            result = await fn(result);
+        }
+        return result;
+    };
+}
+
+// Async transformation functions
+const fetchUser = async id => {
+    const response = await fetch(`/api/users/${id}`);
+    return response.json();
+};
+
+const enrichUserData = async user => {
+    const orders = await fetch(`/api/orders?userId=${user.id}`).then(r => r.json());
+    return { ...user, orders };
+};
+
+const calculateTotalSpent = user => {
+    const total = user.orders.reduce((sum, order) => sum + order.total, 0);
+    return { ...user, totalSpent: total };
+};
+
+const formatUserReport = user => ({
+    name: user.name,
+    email: user.email,
+    orderCount: user.orders.length,
+    totalSpent: `$${user.totalSpent.toFixed(2)}`
+});
+
+// Create user report generator
+const generateUserReport = pipeAsync(
+    fetchUser,
+    enrichUserData,
+    calculateTotalSpent,
+    formatUserReport
+);
+
+// Use it
+generateUserReport(123).then(report => console.log(report));</code></pre>
+
+                <h2>Practical Example: Middleware Pattern</h2>
+                <pre><code class="language-javascript">// Middleware functions
+const logger = next => req => {
+    console.log(`${req.method} ${req.url}`);
+    return next(req);
+};
+
+const auth = next => req => {
+    if (!req.headers.authorization) {
+        throw new Error('Unauthorized');
+    }
+    req.user = { id: 123, name: 'Alice' };
+    return next(req);
+};
+
+const parseBody = next => req => {
+    if (req.body) {
+        req.parsedBody = JSON.parse(req.body);
+    }
+    return next(req);
+};
+
+const rateLimit = limit => next => {
+    let count = 0;
+    return req => {
+        count++;
+        if (count > limit) {
+            throw new Error('Rate limit exceeded');
+        }
+        return next(req);
+    };
+};
+
+// Final handler
+const handler = req => {
+    return {
+        status: 200,
+        body: { message: 'Success', user: req.user }
+    };
+};
+
+// Compose middleware
+function composeMiddleware(...middlewares) {
+    return middlewares.reduceRight(
+        (next, middleware) => middleware(next),
+        handler
+    );
+}
+
+const app = composeMiddleware(
+    logger,
+    auth,
+    parseBody,
+    rateLimit(100)
+);
+
+// Use it
+const request = {
+    method: 'POST',
+    url: '/api/data',
+    headers: { authorization: 'Bearer token' },
+    body: '{"name":"test"}'
+};
+
+try {
+    const response = app(request);
+    console.log(response);
+} catch (error) {
+    console.error(error.message);
+}</code></pre>
+
+                <h2>Practical Example: Event Processing Pipeline</h2>
+                <pre><code class="language-javascript">// Event processors
+const validateEvent = event => {
+    if (!event.type || !event.data) {
+        throw new Error('Invalid event format');
+    }
+    return event;
+};
+
+const enrichEvent = event => ({
+    ...event,
+    timestamp: Date.now(),
+    id: Math.random().toString(36).substr(2, 9)
+});
+
+const filterByType = types => event => {
+    if (!types.includes(event.type)) {
+        throw new Error(`Event type ${event.type} not allowed`);
+    }
+    return event;
+};
+
+const logEvent = event => {
+    console.log(`[${event.timestamp}] ${event.type}:`, event.data);
+    return event;
+};
+
+const saveEvent = event => {
+    // Simulate saving to database
+    console.log('Saved event:', event.id);
+    return event;
+};
+
+// Create event processor
+const processEvent = pipe(
+    validateEvent,
+    enrichEvent,
+    filterByType(['user.created', 'user.updated', 'user.deleted']),
+    logEvent,
+    saveEvent
+);
+
+// Use it
+try {
+    processEvent({
+        type: 'user.created',
+        data: { name: 'Alice', email: 'alice@example.com' }
+    });
+} catch (error) {
+    console.error('Event processing failed:', error.message);
+}</code></pre>
+
+                <h2>Benefits of Function Composition</h2>
+                <ul>
+                    <li><strong>Modularity</strong>: Small, focused functions</li>
+                    <li><strong>Reusability</strong>: Combine functions in different ways</li>
+                    <li><strong>Testability</strong>: Easy to test individual functions</li>
+                    <li><strong>Readability</strong>: Clear data flow</li>
+                    <li><strong>Maintainability</strong>: Easy to add/remove steps</li>
+                </ul>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ <strong>Composition</strong> combines simple functions into complex ones</li>
+                        <li>✅ <code>compose</code> reads right-to-left, <code>pipe</code> reads left-to-right</li>
+                        <li>✅ Closures enable <strong>configurable</strong> composed functions</li>
+                        <li>✅ Works with both <strong>sync</strong> and <strong>async</strong> functions</li>
+                        <li>✅ Perfect for <strong>data transformation</strong> and <strong>middleware</strong> patterns</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    You've completed Section 2 on Practical Patterns! In the next section, we'll explore common use cases for closures, starting with event handlers and callbacks.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="2-4.html" class="btn btn-secondary">← Previous: Currying</a>
+                    <a href="3-1.html" class="btn btn-primary">Next: Event Handlers →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

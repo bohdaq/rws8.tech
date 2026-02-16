@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 4.1: Closures in Loops - Avoid the classic closure pitfall in loops.">
+    <meta name="keywords" content="JavaScript, Closures, Loops, Common Pitfalls">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 4.1: Closures in Loops | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/4-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 4.1: Closures in Loops (The Classic Pitfall)</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 4: Advanced Concepts</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand the classic closure-in-loop problem</li>
+                        <li>Learn multiple solutions to fix the issue</li>
+                        <li>Understand var vs let in loops</li>
+                        <li>Apply best practices for loops with closures</li>
+                    </ul>
+                </div>
+
+                <h2>The Classic Problem</h2>
+                <p>
+                    One of the most common closure pitfalls occurs when creating closures inside loops. Here's the problem:
+                </p>
+
+                <pre><code class="language-javascript">// ❌ Problem: All buttons log 5
+for (var i = 0; i < 5; i++) {
+    const button = document.createElement('button');
+    button.textContent = `Button ${i}`;
+    
+    button.addEventListener('click', function() {
+        console.log(`Button ${i} clicked`);
+    });
+    
+    document.body.appendChild(button);
+}
+
+// When you click any button, it logs "Button 5 clicked"
+// Why? Because all closures share the same 'i' variable!</code></pre>
+
+                <h2>Why Does This Happen?</h2>
+                <p>
+                    The problem occurs because:
+                </p>
+
+                <ol>
+                    <li><code>var</code> is function-scoped, not block-scoped</li>
+                    <li>All event handlers share the same <code>i</code> variable</li>
+                    <li>By the time any button is clicked, the loop has finished and <code>i</code> is 5</li>
+                    <li>All closures reference the same <code>i</code>, which is now 5</li>
+                </ol>
+
+                <h2>Solution 1: Use let (ES6+)</h2>
+                <p>
+                    The simplest and most modern solution:
+                </p>
+
+                <pre><code class="language-javascript">// ✅ Solution: Use let instead of var
+for (let i = 0; i < 5; i++) {
+    const button = document.createElement('button');
+    button.textContent = `Button ${i}`;
+    
+    button.addEventListener('click', function() {
+        console.log(`Button ${i} clicked`);
+    });
+    
+    document.body.appendChild(button);
+}
+
+// Each iteration creates a new block scope with its own 'i'
+// Each closure captures its own 'i' value</code></pre>
+
+                <h2>Solution 2: IIFE (Immediately Invoked Function Expression)</h2>
+                <p>
+                    Create a new scope for each iteration:
+                </p>
+
+                <pre><code class="language-javascript">// ✅ Solution: Use IIFE to create new scope
+for (var i = 0; i < 5; i++) {
+    (function(index) {
+        const button = document.createElement('button');
+        button.textContent = `Button ${index}`;
+        
+        button.addEventListener('click', function() {
+            console.log(`Button ${index} clicked`);
+        });
+        
+        document.body.appendChild(button);
+    })(i);
+}
+
+// The IIFE creates a new scope with its own 'index' parameter
+// Each closure captures its own 'index'</code></pre>
+
+                <h2>Solution 3: Factory Function</h2>
+                <p>
+                    Extract the closure creation into a function:
+                </p>
+
+                <pre><code class="language-javascript">// ✅ Solution: Use factory function
+function createClickHandler(index) {
+    return function() {
+        console.log(`Button ${index} clicked`);
+    };
+}
+
+for (var i = 0; i < 5; i++) {
+    const button = document.createElement('button');
+    button.textContent = `Button ${i}`;
+    button.addEventListener('click', createClickHandler(i));
+    document.body.appendChild(button);
+}
+
+// Each call to createClickHandler creates a new closure
+// with its own 'index' parameter</code></pre>
+
+                <h2>Solution 4: Array.forEach</h2>
+                <p>
+                    Use array methods that create new scopes:
+                </p>
+
+                <pre><code class="language-javascript">// ✅ Solution: Use forEach
+[0, 1, 2, 3, 4].forEach(function(i) {
+    const button = document.createElement('button');
+    button.textContent = `Button ${i}`;
+    
+    button.addEventListener('click', function() {
+        console.log(`Button ${i} clicked`);
+    });
+    
+    document.body.appendChild(button);
+});
+
+// forEach callback creates a new scope for each iteration
+// Each closure has its own 'i' parameter</code></pre>
+
+                <h2>Solution 5: bind()</h2>
+                <p>
+                    Use bind to create a new function with fixed parameters:
+                </p>
+
+                <pre><code class="language-javascript">// ✅ Solution: Use bind
+function handleClick(index) {
+    console.log(`Button ${index} clicked`);
+}
+
+for (var i = 0; i < 5; i++) {
+    const button = document.createElement('button');
+    button.textContent = `Button ${i}`;
+    button.addEventListener('click', handleClick.bind(null, i));
+    document.body.appendChild(button);
+}
+
+// bind creates a new function with 'i' bound as first argument</code></pre>
+
+                <h2>Practical Example: setTimeout in Loop</h2>
+                <pre><code class="language-javascript">// ❌ Problem: All log 5
+for (var i = 0; i < 5; i++) {
+    setTimeout(function() {
+        console.log(i);
+    }, i * 1000);
+}
+
+// ✅ Solution 1: Use let
+for (let i = 0; i < 5; i++) {
+    setTimeout(function() {
+        console.log(i);
+    }, i * 1000);
+}
+
+// ✅ Solution 2: IIFE
+for (var i = 0; i < 5; i++) {
+    (function(index) {
+        setTimeout(function() {
+            console.log(index);
+        }, index * 1000);
+    })(i);
+}
+
+// ✅ Solution 3: Pass parameter to setTimeout
+for (var i = 0; i < 5; i++) {
+    setTimeout(function(index) {
+        console.log(index);
+    }, i * 1000, i);
+}</code></pre>
+
+                <h2>Practical Example: Event Delegation (Alternative Approach)</h2>
+                <p>
+                    Sometimes you can avoid the problem entirely with event delegation:
+                </p>
+
+                <pre><code class="language-javascript">// Create buttons without individual handlers
+for (let i = 0; i < 5; i++) {
+    const button = document.createElement('button');
+    button.textContent = `Button ${i}`;
+    button.dataset.index = i; // Store index in data attribute
+    document.body.appendChild(button);
+}
+
+// Single delegated handler
+document.body.addEventListener('click', function(e) {
+    if (e.target.tagName === 'BUTTON') {
+        const index = e.target.dataset.index;
+        console.log(`Button ${index} clicked`);
+    }
+});</code></pre>
+
+                <h2>Practical Example: Creating Multiple Counters</h2>
+                <pre><code class="language-javascript">// ❌ Problem: All counters share the same count
+const counters = [];
+for (var i = 0; i < 3; i++) {
+    counters.push({
+        increment: function() {
+            i++;
+            return i;
+        },
+        get: function() {
+            return i;
+        }
+    });
+}
+
+console.log(counters[0].increment()); // 4
+console.log(counters[1].increment()); // 5
+console.log(counters[2].increment()); // 6
+// All share the same 'i'!
+
+// ✅ Solution: Use let or factory function
+function createCounter(initial) {
+    let count = initial;
+    return {
+        increment: function() {
+            count++;
+            return count;
+        },
+        get: function() {
+            return count;
+        }
+    };
+}
+
+const counters2 = [];
+for (let i = 0; i < 3; i++) {
+    counters2.push(createCounter(i));
+}
+
+console.log(counters2[0].increment()); // 1
+console.log(counters2[1].increment()); // 2
+console.log(counters2[2].increment()); // 3
+// Each has its own count!</code></pre>
+
+                <h2>Understanding var vs let in Loops</h2>
+                <pre><code class="language-javascript">// var: Single binding for entire loop
+for (var i = 0; i < 3; i++) {
+    // All iterations share the same 'i'
+}
+console.log(i); // 3 (accessible outside loop)
+
+// let: New binding for each iteration
+for (let j = 0; j < 3; j++) {
+    // Each iteration has its own 'j'
+}
+console.log(j); // ReferenceError (not accessible outside loop)</code></pre>
+
+                <h2>Best Practices</h2>
+                <ul>
+                    <li><strong>Use <code>let</code> or <code>const</code></strong> instead of <code>var</code> in loops</li>
+                    <li><strong>Extract closure creation</strong> into factory functions</li>
+                    <li><strong>Use array methods</strong> like forEach, map, filter when possible</li>
+                    <li><strong>Consider event delegation</strong> to avoid creating many handlers</li>
+                    <li><strong>Test your closures</strong> to ensure they capture the right values</li>
+                </ul>
+
+                <h2>Debugging Closure Issues</h2>
+                <pre><code class="language-javascript">// Add logging to see what's captured
+for (let i = 0; i < 3; i++) {
+    const handler = function() {
+        console.log('Captured i:', i);
+    };
+    
+    // Log immediately to verify
+    console.log('Creating handler for i:', i);
+    
+    setTimeout(handler, 1000);
+}</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ <code>var</code> in loops creates a <strong>single shared variable</strong></li>
+                        <li>✅ <code>let</code> creates a <strong>new binding per iteration</strong></li>
+                        <li>✅ Use <strong>IIFE</strong> or <strong>factory functions</strong> to create new scopes</li>
+                        <li>✅ Array methods like <code>forEach</code> create new scopes automatically</li>
+                        <li>✅ <strong>Event delegation</strong> can avoid the problem entirely</li>
+                        <li>✅ Always prefer <code>let</code>/<code>const</code> over <code>var</code></li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand the closure-in-loop pitfall, in the next lesson we'll explore memory management and how to avoid memory leaks with closures.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="3-4.html" class="btn btn-secondary">← Previous: Memoization</a>
+                    <a href="4-2.html" class="btn btn-primary">Next: Memory Management →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>

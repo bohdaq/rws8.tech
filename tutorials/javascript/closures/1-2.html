@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lesson 1.2: Lexical Scope and Scope Chain - Learn how JavaScript resolves variable references through the scope chain.">
+    <meta name="keywords" content="JavaScript, Closures, Lexical Scope, Scope Chain, Tutorial">
+    <meta name="author" content="bohdaq">
+    <title>Lesson 1.2: Lexical Scope and Scope Chain | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/closures/1-2.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .diagram {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Closures</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Lesson 1.2: Lexical Scope and Scope Chain</h1>
+            <p class="page-subtitle">JavaScript Closures Tutorial - Section 1: Fundamentals</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand what lexical scope means</li>
+                        <li>Learn how the scope chain works</li>
+                        <li>See how JavaScript resolves variable references</li>
+                        <li>Understand the relationship between lexical scope and closures</li>
+                    </ul>
+                </div>
+
+                <h2>What Is Lexical Scope?</h2>
+                <p>
+                    <strong>Lexical scope</strong> (also called static scope) means that the scope of a variable is determined by its position in the source code. In other words, where you write your code determines what variables are accessible.
+                </p>
+
+                <p>
+                    This is different from <strong>dynamic scope</strong> (used in some other languages), where scope is determined by the call stack at runtime. JavaScript uses lexical scope exclusively.
+                </p>
+
+                <pre><code class="language-javascript">const globalVar = "global";
+
+function outer() {
+    const outerVar = "outer";
+    
+    function inner() {
+        const innerVar = "inner";
+        console.log(innerVar);   // ✓ Can access
+        console.log(outerVar);   // ✓ Can access
+        console.log(globalVar);  // ✓ Can access
+    }
+    
+    inner();
+}
+
+outer();</code></pre>
+
+                <p>
+                    The <code>inner</code> function can access variables from its own scope, its parent's scope (<code>outer</code>), and the global scope. This is determined by where <code>inner</code> is written in the code, not where it's called.
+                </p>
+
+                <h2>The Scope Chain</h2>
+                <p>
+                    When JavaScript looks for a variable, it follows the <strong>scope chain</strong>:
+                </p>
+
+                <ol>
+                    <li>First, it looks in the current (local) scope</li>
+                    <li>If not found, it looks in the parent scope</li>
+                    <li>It continues up the chain until it reaches the global scope</li>
+                    <li>If still not found, it throws a ReferenceError</li>
+                </ol>
+
+                <div class="diagram">
+┌─────────────────────────────────────────┐
+│  Global Scope                           │
+│  globalVar = "global"                   │
+│                                         │
+│  ┌───────────────────────────────────┐ │
+│  │ outer() Scope                     │ │
+│  │ outerVar = "outer"                │ │
+│  │                                   │ │
+│  │ ┌─────────────────────────────┐   │ │
+│  │ │ inner() Scope               │   │ │
+│  │ │ innerVar = "inner"          │   │ │
+│  │ │                             │   │ │
+│  │ │ Scope Chain:                │   │ │
+│  │ │ 1. inner scope ──┐          │   │ │
+│  │ │                  │          │   │ │
+│  │ └──────────────────┼──────────┘   │ │
+│  │ 2. outer scope ◄───┘              │ │
+│  │                                   │ │
+│  └───────────────────┼───────────────┘ │
+│  3. global scope ◄───┘                 │
+│                                         │
+└─────────────────────────────────────────┘
+                </div>
+
+                <h2>Lexical Scope in Action</h2>
+                <p>
+                    Let's see how lexical scope determines variable accessibility:
+                </p>
+
+                <pre><code class="language-javascript">const x = "global x";
+
+function first() {
+    const x = "first x";
+    
+    function second() {
+        const x = "second x";
+        console.log(x); // Which x?
+    }
+    
+    second();
+}
+
+first(); // Output: "second x"</code></pre>
+
+                <p>
+                    The output is <code>"second x"</code> because JavaScript finds <code>x</code> in the local scope first. It doesn't need to look further up the scope chain.
+                </p>
+
+                <h2>Variable Shadowing</h2>
+                <p>
+                    When a variable in an inner scope has the same name as a variable in an outer scope, the inner variable <strong>shadows</strong> (hides) the outer one:
+                </p>
+
+                <pre><code class="language-javascript">const message = "global";
+
+function showMessage() {
+    const message = "local"; // Shadows global message
+    console.log(message);    // Output: "local"
+}
+
+showMessage();
+console.log(message); // Output: "global"</code></pre>
+
+                <h2>Lexical Scope and Closures</h2>
+                <p>
+                    Here's where it gets interesting. Because of lexical scope, a function "remembers" the scope in which it was created:
+                </p>
+
+                <pre><code class="language-javascript">function createGreeter(greeting) {
+    // greeting is in this scope
+    
+    return function(name) {
+        // This inner function has access to greeting
+        // because of lexical scope
+        console.log(`${greeting}, ${name}!`);
+    };
+}
+
+const sayHello = createGreeter("Hello");
+const sayHi = createGreeter("Hi");
+
+sayHello("Alice"); // Output: "Hello, Alice!"
+sayHi("Bob");      // Output: "Hi, Bob!"</code></pre>
+
+                <p>
+                    Each returned function "closes over" its own <code>greeting</code> variable. This is a closure in action!
+                </p>
+
+                <h2>The Scope Chain Never Changes</h2>
+                <p>
+                    An important point: the scope chain is determined when the function is <strong>defined</strong>, not when it's called:
+                </p>
+
+                <pre><code class="language-javascript">const value = "global";
+
+function outer() {
+    const value = "outer";
+    
+    function inner() {
+        console.log(value); // Will always log "outer"
+    }
+    
+    return inner;
+}
+
+const myFunc = outer();
+
+// Even if we create a new value variable here
+const value = "new global";
+
+myFunc(); // Still outputs: "outer"</code></pre>
+
+                <p>
+                    The <code>inner</code> function was defined inside <code>outer</code>, so it will always reference <code>outer</code>'s <code>value</code>, regardless of where it's called.
+                </p>
+
+                <h2>Multiple Nested Scopes</h2>
+                <p>
+                    The scope chain can be as deep as you need:
+                </p>
+
+                <pre><code class="language-javascript">const level1 = "L1";
+
+function a() {
+    const level2 = "L2";
+    
+    function b() {
+        const level3 = "L3";
+        
+        function c() {
+            const level4 = "L4";
+            
+            // Can access all levels
+            console.log(level1); // "L1"
+            console.log(level2); // "L2"
+            console.log(level3); // "L3"
+            console.log(level4); // "L4"
+        }
+        
+        c();
+    }
+    
+    b();
+}
+
+a();</code></pre>
+
+                <h2>Practical Example: Configuration</h2>
+                <p>
+                    Lexical scope is perfect for creating configured functions:
+                </p>
+
+                <pre><code class="language-javascript">function createMultiplier(multiplier) {
+    return function(number) {
+        return number * multiplier;
+    };
+}
+
+const double = createMultiplier(2);
+const triple = createMultiplier(3);
+const quadruple = createMultiplier(4);
+
+console.log(double(5));     // 10
+console.log(triple(5));     // 15
+console.log(quadruple(5));  // 20</code></pre>
+
+                <p>
+                    Each function "remembers" its own <code>multiplier</code> value through lexical scope and closures.
+                </p>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ <strong>Lexical scope</strong> means scope is determined by code structure, not runtime</li>
+                        <li>✅ The <strong>scope chain</strong> is the path JavaScript follows to resolve variables</li>
+                        <li>✅ JavaScript looks from inner scope → outer scope → global scope</li>
+                        <li>✅ <strong>Variable shadowing</strong> occurs when inner variables hide outer ones</li>
+                        <li>✅ Functions remember their lexical scope, enabling closures</li>
+                        <li>✅ The scope chain is fixed at function definition, not invocation</li>
+                    </ul>
+                </div>
+
+                <h2>Next Steps</h2>
+                <p>
+                    Now that you understand lexical scope and the scope chain, you're ready to create your first practical closures. In the next lesson, we'll build several closure examples and explore common patterns.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="1-1.html" class="btn btn-secondary">← Previous: What Are Closures?</a>
+                    <a href="1-3.html" class="btn btn-primary">Next: Creating Your First Closure →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>
