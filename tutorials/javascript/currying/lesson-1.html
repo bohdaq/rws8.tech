@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JavaScript Currying - Learn the fundamentals of function currying in JavaScript.">
+    <meta name="keywords" content="JavaScript, Currying, Functions, Functional Programming">
+    <meta name="author" content="bohdaq">
+    <title>JavaScript Currying | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/currying/lesson-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        .lesson-content ul,
+        .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Currying</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>JavaScript Currying</h1>
+            <p class="page-subtitle">Functional Programming Tutorial</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand what currying is and why it's useful</li>
+                        <li>Transform regular functions into curried functions</li>
+                        <li>Build reusable function factories with currying</li>
+                        <li>Apply currying in real-world scenarios</li>
+                        <li>Know when to use currying vs regular functions</li>
+                    </ul>
+                </div>
+
+                <h2>What is Currying?</h2>
+                <p>
+                    <strong>Currying</strong> is a functional programming technique that transforms a function with
+                    multiple arguments
+                    into a sequence of functions, each taking a single argument. Named after mathematician Haskell
+                    Curry, it's a
+                    powerful pattern for creating flexible, reusable code.
+                </p>
+
+                <pre><code class="language-javascript">// Regular function with multiple arguments
+function add(a, b, c) {
+    return a + b + c;
+}
+
+add(1, 2, 3); // 6
+
+// Curried version
+function addCurried(a) {
+    return function(b) {
+        return function(c) {
+            return a + b + c;
+        };
+    };
+}
+
+addCurried(1)(2)(3); // 6</code></pre>
+
+                <h2>The Basic Transformation</h2>
+                <p>
+                    Let's see how a simple two-argument function transforms into a curried function:
+                </p>
+
+                <pre><code class="language-javascript">// Before: Regular function
+function multiply(x, y) {
+    return x * y;
+}
+
+multiply(3, 4); // 12
+
+// After: Curried function
+function multiplyCurried(x) {
+    return function(y) {
+        return x * y;
+    };
+}
+
+multiplyCurried(3)(4); // 12
+
+// Or with arrow functions (more concise)
+const multiplyCurried = x => y => x * y;
+
+multiplyCurried(3)(4); // 12</code></pre>
+
+                <h2>Why Use Currying?</h2>
+
+                <h3>1. Partial Application</h3>
+                <p>
+                    Create specialized functions by pre-filling some arguments:
+                </p>
+
+                <pre><code class="language-javascript">const multiply = x => y => x * y;
+
+// Create specialized functions
+const double = multiply(2);
+const triple = multiply(3);
+
+console.log(double(5));  // 10
+console.log(triple(5));  // 15
+
+// Reuse them
+console.log(double(10)); // 20
+console.log(triple(10)); // 30</code></pre>
+
+                <h3>2. Function Composition</h3>
+                <p>
+                    Curried functions compose beautifully:
+                </p>
+
+                <pre><code class="language-javascript">const add = x => y => x + y;
+const multiply = x => y => x * y;
+
+// Create a pipeline
+const addThenDouble = x => multiply(2)(add(5)(x));
+
+console.log(addThenDouble(3)); // (3 + 5) * 2 = 16</code></pre>
+
+                <h3>3. Configuration and Reusability</h3>
+                <p>
+                    Configure functions once, use them many times:
+                </p>
+
+                <pre><code class="language-javascript">const greet = greeting => name => `${greeting}, ${name}!`;
+
+// Configure different greetings
+const sayHello = greet('Hello');
+const sayHi = greet('Hi');
+const sayGoodbye = greet('Goodbye');
+
+console.log(sayHello('Alice'));   // "Hello, Alice!"
+console.log(sayHi('Bob'));        // "Hi, Bob!"
+console.log(sayGoodbye('Charlie')); // "Goodbye, Charlie!"</code></pre>
+
+                <h2>Real-World Example: Logger</h2>
+                <pre><code class="language-javascript">// Curried logger function
+const log = level => message => timestamp => {
+    console.log(`[${timestamp}] ${level}: ${message}`);
+};
+
+// Create specialized loggers
+const errorLog = log('ERROR');
+const infoLog = log('INFO');
+const debugLog = log('DEBUG');
+
+// Use them
+const now = new Date().toISOString();
+errorLog('Database connection failed')(now);
+infoLog('User logged in')(now);
+debugLog('Processing request')(now);
+
+// Or create even more specialized versions
+const errorNow = errorLog('Something went wrong');
+errorNow(new Date().toISOString());
+errorNow(new Date().toISOString()); // Can reuse!</code></pre>
+
+                <h2>Real-World Example: API Request Builder</h2>
+                <pre><code class="language-javascript">const apiRequest = method => endpoint => data => {
+    return fetch(endpoint, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+};
+
+// Create method-specific functions
+const get = apiRequest('GET');
+const post = apiRequest('POST');
+const put = apiRequest('PUT');
+const del = apiRequest('DELETE');
+
+// Create endpoint-specific functions
+const getUsers = get('/api/users');
+const postUser = post('/api/users');
+const updateUser = put('/api/users');
+
+// Use them
+getUsers(null).then(res => res.json());
+postUser({ name: 'Alice', email: 'alice@example.com' });
+updateUser({ id: 1, name: 'Alice Updated' });</code></pre>
+
+                <h2>Real-World Example: Discount Calculator</h2>
+                <pre><code class="language-javascript">const applyDiscount = discountPercent => price => {
+    return price - (price * discountPercent / 100);
+};
+
+// Create different discount functions
+const apply10Percent = applyDiscount(10);
+const apply20Percent = applyDiscount(20);
+const apply50Percent = applyDiscount(50);
+
+// Use them
+console.log(apply10Percent(100)); // 90
+console.log(apply20Percent(100)); // 80
+console.log(apply50Percent(100)); // 50
+
+// Apply to multiple items
+const prices = [100, 200, 300];
+const discountedPrices = prices.map(apply20Percent);
+console.log(discountedPrices); // [80, 160, 240]</code></pre>
+
+                <h2>Currying with More Arguments</h2>
+                <pre><code class="language-javascript">// Three arguments
+const formatDate = year => month => day => {
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+};
+
+console.log(formatDate(2024)(3)(15)); // "2024-03-15"
+
+// Partially apply
+const format2024 = formatDate(2024);
+const format2024March = format2024(3);
+
+console.log(format2024March(1));  // "2024-03-01"
+console.log(format2024March(15)); // "2024-03-15"
+console.log(format2024March(31)); // "2024-03-31"
+
+// Four arguments
+const createUser = firstName => lastName => email => age => ({
+    firstName,
+    lastName,
+    email,
+    age,
+    fullName: `${firstName} ${lastName}`
+});
+
+const createSmith = createUser('John')('Smith');
+const johnSmithGmail = createSmith('john.smith@gmail.com');
+
+console.log(johnSmithGmail(30));
+// { firstName: 'John', lastName: 'Smith', email: '...', age: 30, fullName: 'John Smith' }</code></pre>
+
+                <h2>Currying vs Regular Functions</h2>
+                <pre><code class="language-javascript">// Regular function - must provide all arguments at once
+function calculateTotal(price, quantity, taxRate) {
+    return price * quantity * (1 + taxRate);
+}
+
+calculateTotal(10, 5, 0.08); // Must provide all three
+
+// Curried version - flexible application
+const calculateTotalCurried = price => quantity => taxRate => {
+    return price * quantity * (1 + taxRate);
+};
+
+// Can apply arguments one at a time
+const priceSet = calculateTotalCurried(10);
+const quantitySet = priceSet(5);
+const total = quantitySet(0.08);
+
+// Or create reusable configurations
+const calculateWithTax = calculateTotalCurried(10)(5);
+console.log(calculateWithTax(0.08)); // 8% tax
+console.log(calculateWithTax(0.10)); // 10% tax
+console.log(calculateWithTax(0.15)); // 15% tax</code></pre>
+
+                <h2>When to Use Currying</h2>
+                <ul>
+                    <li><strong>Configuration:</strong> When you need to configure a function once and use it multiple
+                        times</li>
+                    <li><strong>Partial Application:</strong> When you want to create specialized versions of functions
+                    </li>
+                    <li><strong>Function Composition:</strong> When building pipelines of operations</li>
+                    <li><strong>Event Handlers:</strong> When you need to pass data to event handlers</li>
+                    <li><strong>Higher-Order Functions:</strong> When working with map, filter, reduce, etc.</li>
+                </ul>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ Currying transforms <code>f(a, b, c)</code> into <code>f(a)(b)(c)</code></li>
+                        <li>✅ Each curried function returns another function until all arguments are provided</li>
+                        <li>✅ Arrow functions make currying syntax concise: <code>a => b => c => result</code></li>
+                        <li>✅ Currying enables <strong>partial application</strong> and <strong>function reuse</strong>
+                        </li>
+                        <li>✅ Use currying for <strong>configuration</strong>, <strong>composition</strong>, and
+                            <strong>specialization</strong>
+                        </li>
+                    </ul>
+                </div>
+
+                <h2>Conclusion</h2>
+                <p>
+                    You've learned the fundamentals of currying in JavaScript! Currying is a powerful technique for
+                    creating
+                    reusable, composable functions. Start applying it in your projects where you need configuration,
+                    partial application, or function composition.
+                </p>
+                <p>
+                    <strong>Practice tip:</strong> Try converting some of your existing multi-parameter functions into
+                    curried versions and see where it improves code reusability.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                    <a href="../index.html" class="btn btn-primary">All JavaScript Tutorials →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+
+</html>
