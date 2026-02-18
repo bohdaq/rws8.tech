@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JavaScript 'this' Keyword - Learn how 'this' works in different contexts and master its behavior.">
+    <meta name="keywords" content="JavaScript, this keyword, context, binding, arrow functions">
+    <meta name="author" content="bohdaq">
+    <title>JavaScript 'this' Keyword | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/this/lesson-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">this Keyword</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>JavaScript 'this' Keyword</h1>
+            <p class="page-subtitle">Understanding Context and Binding</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand what <code>this</code> is and how it works</li>
+                        <li>Master the four binding rules</li>
+                        <li>Learn how arrow functions handle <code>this</code></li>
+                        <li>Use bind, call, and apply effectively</li>
+                        <li>Avoid common <code>this</code> pitfalls</li>
+                    </ul>
+                </div>
+
+                <h2>What is 'this'?</h2>
+                <p>
+                    In JavaScript, <code>this</code> is a special keyword that refers to the <strong>context</strong> 
+                    in which a function is executed. Unlike other programming languages where <code>this</code> always 
+                    refers to the instance of a class, JavaScript's <code>this</code> is determined by <strong>how</strong> 
+                    a function is called, not where it's defined.
+                </p>
+
+                <pre><code class="language-javascript">const person = {
+    name: "Alice",
+    greet: function() {
+        console.log(`Hello, I'm ${this.name}`);
+    }
+};
+
+person.greet(); // "Hello, I'm Alice"</code></pre>
+
+                <h2>The Four Binding Rules</h2>
+                <p>
+                    There are four rules that determine what <code>this</code> refers to. Understanding these rules 
+                    is the key to mastering <code>this</code>.
+                </p>
+
+                <h3>1. Default Binding (Global Context)</h3>
+                <p>
+                    When a function is called without any context, <code>this</code> refers to the global object 
+                    (window in browsers, global in Node.js). In strict mode, it's <code>undefined</code>.
+                </p>
+
+                <pre><code class="language-javascript">function showThis() {
+    console.log(this);
+}
+
+showThis(); // Window object (or global)
+
+// In strict mode
+'use strict';
+function showThisStrict() {
+    console.log(this);
+}
+
+showThisStrict(); // undefined</code></pre>
+
+                <h3>2. Implicit Binding (Object Method)</h3>
+                <p>
+                    When a function is called as a method of an object, <code>this</code> refers to that object.
+                </p>
+
+                <pre><code class="language-javascript">const user = {
+    name: "Bob",
+    age: 30,
+    introduce: function() {
+        console.log(`I'm ${this.name}, ${this.age} years old`);
+    }
+};
+
+user.introduce(); // "I'm Bob, 30 years old"
+// 'this' refers to 'user'</code></pre>
+
+                <h3>Implicit Binding Pitfall: Losing Context</h3>
+                <pre><code class="language-javascript">const user = {
+    name: "Bob",
+    greet: function() {
+        console.log(`Hello, ${this.name}`);
+    }
+};
+
+user.greet(); // "Hello, Bob" - works
+
+const greetFunc = user.greet;
+greetFunc(); // "Hello, undefined" - lost context!
+// 'this' is now the global object</code></pre>
+
+                <h3>3. Explicit Binding (call, apply, bind)</h3>
+                <p>
+                    You can explicitly set what <code>this</code> refers to using <code>call()</code>, 
+                    <code>apply()</code>, or <code>bind()</code>.
+                </p>
+
+                <h4>Using call()</h4>
+                <pre><code class="language-javascript">function greet(greeting, punctuation) {
+    console.log(`${greeting}, I'm ${this.name}${punctuation}`);
+}
+
+const person = { name: "Alice" };
+
+greet.call(person, "Hello", "!"); 
+// "Hello, I'm Alice!"
+// First arg is 'this', rest are function arguments</code></pre>
+
+                <h4>Using apply()</h4>
+                <pre><code class="language-javascript">function greet(greeting, punctuation) {
+    console.log(`${greeting}, I'm ${this.name}${punctuation}`);
+}
+
+const person = { name: "Alice" };
+
+greet.apply(person, ["Hello", "!"]); 
+// "Hello, I'm Alice!"
+// Second arg is an array of arguments</code></pre>
+
+                <h4>Using bind()</h4>
+                <pre><code class="language-javascript">function greet() {
+    console.log(`Hello, ${this.name}`);
+}
+
+const person = { name: "Alice" };
+
+const boundGreet = greet.bind(person);
+boundGreet(); // "Hello, Alice"
+// bind() returns a new function with 'this' permanently set</code></pre>
+
+                <h3>4. New Binding (Constructor)</h3>
+                <p>
+                    When a function is called with the <code>new</code> keyword, <code>this</code> refers to the 
+                    newly created object.
+                </p>
+
+                <pre><code class="language-javascript">function Person(name, age) {
+    this.name = name;
+    this.age = age;
+    this.greet = function() {
+        console.log(`Hi, I'm ${this.name}`);
+    };
+}
+
+const alice = new Person("Alice", 25);
+alice.greet(); // "Hi, I'm Alice"
+// 'this' refers to the new object created by 'new'</code></pre>
+
+                <h2>Arrow Functions and 'this'</h2>
+                <p>
+                    Arrow functions don't have their own <code>this</code>. They inherit <code>this</code> from the 
+                    enclosing lexical scope. This is called <strong>lexical this</strong>.
+                </p>
+
+                <pre><code class="language-javascript">const user = {
+    name: "Alice",
+    regularFunc: function() {
+        console.log(this.name); // "Alice"
+    },
+    arrowFunc: () => {
+        console.log(this.name); // undefined
+        // Arrow function inherits 'this' from outer scope (global)
+    }
+};
+
+user.regularFunc(); // "Alice"
+user.arrowFunc();   // undefined</code></pre>
+
+                <h3>Arrow Functions Solve Callback Problems</h3>
+                <pre><code class="language-javascript">// Problem with regular functions
+const counter = {
+    count: 0,
+    start: function() {
+        setInterval(function() {
+            this.count++; // 'this' is global, not counter!
+            console.log(this.count); // NaN
+        }, 1000);
+    }
+};
+
+// Solution 1: Arrow function
+const counter = {
+    count: 0,
+    start: function() {
+        setInterval(() => {
+            this.count++; // 'this' is counter!
+            console.log(this.count); // 1, 2, 3...
+        }, 1000);
+    }
+};
+
+// Solution 2: bind()
+const counter = {
+    count: 0,
+    start: function() {
+        setInterval(function() {
+            this.count++;
+            console.log(this.count);
+        }.bind(this), 1000);
+    }
+};</code></pre>
+
+                <h2>Common Pitfalls and Solutions</h2>
+
+                <h3>Pitfall 1: Event Handlers</h3>
+                <pre><code class="language-javascript">const button = {
+    text: "Click me",
+    handleClick: function() {
+        console.log(this.text);
+    }
+};
+
+// Problem
+document.querySelector('button')
+    .addEventListener('click', button.handleClick);
+// 'this' is the button element, not our object!
+
+// Solution 1: Arrow function
+document.querySelector('button')
+    .addEventListener('click', () => button.handleClick());
+
+// Solution 2: bind()
+document.querySelector('button')
+    .addEventListener('click', button.handleClick.bind(button));</code></pre>
+
+                <h3>Pitfall 2: Array Methods</h3>
+                <pre><code class="language-javascript">const person = {
+    name: "Alice",
+    hobbies: ["reading", "coding"],
+    showHobbies: function() {
+        this.hobbies.forEach(function(hobby) {
+            console.log(`${this.name} likes ${hobby}`);
+            // 'this' is undefined in strict mode!
+        });
+    }
+};
+
+// Solution 1: Arrow function
+const person = {
+    name: "Alice",
+    hobbies: ["reading", "coding"],
+    showHobbies: function() {
+        this.hobbies.forEach(hobby => {
+            console.log(`${this.name} likes ${hobby}`);
+            // Arrow function inherits 'this' from showHobbies
+        });
+    }
+};
+
+// Solution 2: thisArg parameter
+const person = {
+    name: "Alice",
+    hobbies: ["reading", "coding"],
+    showHobbies: function() {
+        this.hobbies.forEach(function(hobby) {
+            console.log(`${this.name} likes ${hobby}`);
+        }, this); // Pass 'this' as second argument
+    }
+};</code></pre>
+
+                <h3>Pitfall 3: Nested Functions</h3>
+                <pre><code class="language-javascript">const obj = {
+    value: 42,
+    method: function() {
+        console.log(this.value); // 42
+        
+        function nested() {
+            console.log(this.value); // undefined
+            // Nested function loses context
+        }
+        nested();
+    }
+};
+
+// Solution 1: Arrow function
+const obj = {
+    value: 42,
+    method: function() {
+        const nested = () => {
+            console.log(this.value); // 42
+        };
+        nested();
+    }
+};
+
+// Solution 2: Save 'this' reference
+const obj = {
+    value: 42,
+    method: function() {
+        const self = this; // Common pattern
+        
+        function nested() {
+            console.log(self.value); // 42
+        }
+        nested();
+    }
+};</code></pre>
+
+                <h2>Classes and 'this'</h2>
+                <p>
+                    In ES6 classes, <code>this</code> refers to the instance of the class.
+                </p>
+
+                <pre><code class="language-javascript">class Person {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    greet() {
+        console.log(`Hello, I'm ${this.name}`);
+    }
+    
+    // Arrow function as class field
+    greetArrow = () => {
+        console.log(`Hello, I'm ${this.name}`);
+    }
+}
+
+const alice = new Person("Alice");
+alice.greet(); // "Hello, I'm Alice"
+
+// Problem: Losing context
+const greet = alice.greet;
+greet(); // TypeError: Cannot read property 'name' of undefined
+
+// Solution: Arrow function
+const greetArrow = alice.greetArrow;
+greetArrow(); // "Hello, I'm Alice" - works!</code></pre>
+
+                <h2>Practical Examples</h2>
+
+                <h3>Example 1: Building a Counter</h3>
+                <pre><code class="language-javascript">function Counter(initialValue = 0) {
+    this.value = initialValue;
+    
+    this.increment = function() {
+        this.value++;
+        return this;
+    };
+    
+    this.decrement = function() {
+        this.value--;
+        return this;
+    };
+    
+    this.getValue = function() {
+        return this.value;
+    };
+}
+
+const counter = new Counter(10);
+counter.increment().increment().decrement();
+console.log(counter.getValue()); // 11</code></pre>
+
+                <h3>Example 2: Method Chaining</h3>
+                <pre><code class="language-javascript">class Calculator {
+    constructor() {
+        this.value = 0;
+    }
+    
+    add(n) {
+        this.value += n;
+        return this; // Return 'this' for chaining
+    }
+    
+    subtract(n) {
+        this.value -= n;
+        return this;
+    }
+    
+    multiply(n) {
+        this.value *= n;
+        return this;
+    }
+    
+    getResult() {
+        return this.value;
+    }
+}
+
+const calc = new Calculator();
+const result = calc.add(5).multiply(2).subtract(3).getResult();
+console.log(result); // 7</code></pre>
+
+                <h3>Example 3: Event Emitter</h3>
+                <pre><code class="language-javascript">class EventEmitter {
+    constructor() {
+        this.events = {};
+    }
+    
+    on(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(callback);
+        return this;
+    }
+    
+    emit(event, data) {
+        if (this.events[event]) {
+            this.events[event].forEach(callback => {
+                callback.call(this, data);
+            });
+        }
+        return this;
+    }
+}
+
+const emitter = new EventEmitter();
+emitter.on('message', function(data) {
+    console.log(`Received: ${data}`);
+});
+
+emitter.emit('message', 'Hello!'); // "Received: Hello!"</code></pre>
+
+                <h2>Binding Priority</h2>
+                <p>
+                    When multiple binding rules apply, they follow this priority order:
+                </p>
+
+                <ol>
+                    <li><strong>new binding</strong> - Highest priority</li>
+                    <li><strong>Explicit binding</strong> (bind, call, apply)</li>
+                    <li><strong>Implicit binding</strong> (method call)</li>
+                    <li><strong>Default binding</strong> - Lowest priority</li>
+                </ol>
+
+                <pre><code class="language-javascript">function greet() {
+    console.log(this.name);
+}
+
+const person1 = { name: "Alice" };
+const person2 = { name: "Bob" };
+
+// Implicit binding
+const obj = {
+    name: "Charlie",
+    greet: greet
+};
+obj.greet(); // "Charlie"
+
+// Explicit binding overrides implicit
+obj.greet.call(person1); // "Alice"
+
+// new binding overrides explicit
+const boundGreet = greet.bind(person2);
+const newObj = new boundGreet(); // Creates new object
+// 'this' is the new object, not person2</code></pre>
+
+                <h2>Best Practices</h2>
+
+                <h3>1. Use Arrow Functions for Callbacks</h3>
+                <pre><code class="language-javascript">// Good
+class Component {
+    constructor() {
+        this.data = [];
+    }
+    
+    fetchData() {
+        fetch('/api/data')
+            .then(response => response.json())
+            .then(data => {
+                this.data = data; // 'this' is Component
+            });
+    }
+}</code></pre>
+
+                <h3>2. Bind in Constructor for Event Handlers</h3>
+                <pre><code class="language-javascript">class Button {
+    constructor() {
+        this.count = 0;
+        // Bind once in constructor
+        this.handleClick = this.handleClick.bind(this);
+    }
+    
+    handleClick() {
+        this.count++;
+        console.log(this.count);
+    }
+}
+
+const btn = new Button();
+element.addEventListener('click', btn.handleClick);</code></pre>
+
+                <h3>3. Use Class Fields for Auto-Binding</h3>
+                <pre><code class="language-javascript">class Button {
+    count = 0;
+    
+    // Arrow function as class field
+    handleClick = () => {
+        this.count++;
+        console.log(this.count);
+    }
+}
+
+const btn = new Button();
+element.addEventListener('click', btn.handleClick); // Works!</code></pre>
+
+                <h3>4. Avoid Mixing Arrow and Regular Functions</h3>
+                <pre><code class="language-javascript">// Confusing - avoid
+const obj = {
+    value: 42,
+    regular: function() {
+        console.log(this.value);
+    },
+    arrow: () => {
+        console.log(this.value);
+    }
+};
+
+// Better - be consistent
+const obj = {
+    value: 42,
+    getValue() {
+        return this.value;
+    },
+    process() {
+        return this.value * 2;
+    }
+};</code></pre>
+
+                <h2>Debugging 'this'</h2>
+                <pre><code class="language-javascript">function debugThis() {
+    console.log('this:', this);
+    console.log('typeof this:', typeof this);
+    console.log('this === window:', this === window);
+}
+
+// Add logging to understand context
+const obj = {
+    method: function() {
+        console.log('In method, this is:', this);
+        
+        const arrow = () => {
+            console.log('In arrow, this is:', this);
+        };
+        arrow();
+    }
+};
+
+obj.method();</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ <code>this</code> is determined by <strong>how</strong> a function is called</li>
+                        <li>✅ Four binding rules: default, implicit, explicit, new</li>
+                        <li>✅ Arrow functions inherit <code>this</code> from enclosing scope</li>
+                        <li>✅ Use <code>bind()</code>, <code>call()</code>, or <code>apply()</code> for explicit binding</li>
+                        <li>✅ Arrow functions solve most callback <code>this</code> problems</li>
+                        <li>✅ Class fields with arrow functions auto-bind <code>this</code></li>
+                        <li>✅ When in doubt, log <code>this</code> to see what it refers to</li>
+                    </ul>
+                </div>
+
+                <h2>Conclusion</h2>
+                <p>
+                    Understanding <code>this</code> is crucial for writing effective JavaScript. While it can be 
+                    confusing at first, the four binding rules provide a clear framework for predicting what 
+                    <code>this</code> will be in any situation.
+                </p>
+                <p>
+                    <strong>Practice tip:</strong> Next time you encounter unexpected <code>this</code> behavior, 
+                    ask yourself: "How is this function being called?" The answer will tell you which binding rule 
+                    applies and what <code>this</code> refers to.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                    <a href="../index.html" class="btn btn-primary">All JavaScript Tutorials →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>
