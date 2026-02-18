@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JavaScript Hoisting - Learn how variable and function declarations are hoisted in JavaScript.">
+    <meta name="keywords" content="JavaScript, Hoisting, Variables, Functions, Scope">
+    <meta name="author" content="bohdaq">
+    <title>JavaScript Hoisting | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/hoisting/lesson-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Hoisting</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>JavaScript Hoisting</h1>
+            <p class="page-subtitle">Understanding Variable and Function Hoisting</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand what hoisting is and how it works</li>
+                        <li>Learn how var, let, and const are hoisted differently</li>
+                        <li>Master function hoisting vs function expressions</li>
+                        <li>Understand the Temporal Dead Zone (TDZ)</li>
+                        <li>Apply best practices to avoid hoisting bugs</li>
+                    </ul>
+                </div>
+
+                <h2>What is Hoisting?</h2>
+                <p>
+                    <strong>Hoisting</strong> is JavaScript's default behavior of moving declarations to the top of their 
+                    scope before code execution. This means you can use variables and functions before they're declared 
+                    in your code.
+                </p>
+
+                <pre><code class="language-javascript">// This works!
+console.log(greeting); // undefined
+var greeting = "Hello";
+
+// Behind the scenes, JavaScript does this:
+var greeting;           // Declaration hoisted
+console.log(greeting);  // undefined
+greeting = "Hello";     // Assignment stays in place</code></pre>
+
+                <h2>Variable Hoisting with var</h2>
+                <p>
+                    Variables declared with <code>var</code> are hoisted to the top of their function or global scope 
+                    and initialized with <code>undefined</code>.
+                </p>
+
+                <pre><code class="language-javascript">function example() {
+    console.log(x); // undefined (not ReferenceError!)
+    var x = 5;
+    console.log(x); // 5
+}
+
+// What JavaScript actually does:
+function example() {
+    var x;              // Hoisted and initialized to undefined
+    console.log(x);     // undefined
+    x = 5;              // Assignment
+    console.log(x);     // 5
+}</code></pre>
+
+                <h3>Common var Hoisting Pitfall</h3>
+                <pre><code class="language-javascript">var name = "Global";
+
+function showName() {
+    console.log(name); // undefined (not "Global"!)
+    var name = "Local";
+    console.log(name); // "Local"
+}
+
+// Why? Because JavaScript does this:
+function showName() {
+    var name;           // Local var hoisted, shadows global
+    console.log(name);  // undefined
+    name = "Local";
+    console.log(name);  // "Local"
+}</code></pre>
+
+                <h2>let and const: The Temporal Dead Zone</h2>
+                <p>
+                    Variables declared with <code>let</code> and <code>const</code> are also hoisted, but they're 
+                    <strong>not initialized</strong>. Accessing them before declaration causes a ReferenceError.
+                </p>
+
+                <pre><code class="language-javascript">console.log(x); // ReferenceError: Cannot access 'x' before initialization
+let x = 5;
+
+console.log(y); // ReferenceError: Cannot access 'y' before initialization
+const y = 10;</code></pre>
+
+                <h3>The Temporal Dead Zone (TDZ)</h3>
+                <p>
+                    The TDZ is the period between entering scope and the variable declaration being executed. 
+                    During this time, the variable exists but cannot be accessed.
+                </p>
+
+                <pre><code class="language-javascript">// TDZ starts here for 'name'
+console.log(name); // ReferenceError
+
+let name = "Alice"; // TDZ ends here
+console.log(name);  // "Alice"</code></pre>
+
+                <pre><code class="language-javascript">function example() {
+    // TDZ for 'temp' starts
+    console.log(temp); // ReferenceError
+    
+    let temp = 5;      // TDZ ends
+    console.log(temp); // 5
+}</code></pre>
+
+                <h2>Function Hoisting</h2>
+                <p>
+                    Function declarations are fully hoisted - both the declaration and the definition. You can call 
+                    them before they appear in your code.
+                </p>
+
+                <pre><code class="language-javascript">// This works!
+greet(); // "Hello!"
+
+function greet() {
+    console.log("Hello!");
+}
+
+// JavaScript hoists the entire function
+function greet() {
+    console.log("Hello!");
+}
+greet(); // "Hello!"</code></pre>
+
+                <h3>Function Expressions Are NOT Hoisted</h3>
+                <p>
+                    Function expressions (functions assigned to variables) follow variable hoisting rules.
+                </p>
+
+                <pre><code class="language-javascript">// Using var
+sayHi(); // TypeError: sayHi is not a function
+
+var sayHi = function() {
+    console.log("Hi!");
+};
+
+// What JavaScript does:
+var sayHi;              // Hoisted, initialized to undefined
+sayHi();                // TypeError: undefined is not a function
+sayHi = function() {
+    console.log("Hi!");
+};</code></pre>
+
+                <pre><code class="language-javascript">// Using let/const
+sayHello(); // ReferenceError: Cannot access 'sayHello' before initialization
+
+const sayHello = function() {
+    console.log("Hello!");
+};</code></pre>
+
+                <h2>Arrow Functions and Hoisting</h2>
+                <p>
+                    Arrow functions follow the same hoisting rules as function expressions.
+                </p>
+
+                <pre><code class="language-javascript">// ReferenceError
+multiply(2, 3);
+
+const multiply = (a, b) => a * b;</code></pre>
+
+                <h2>Class Hoisting</h2>
+                <p>
+                    Classes are hoisted but not initialized, similar to <code>let</code> and <code>const</code>.
+                </p>
+
+                <pre><code class="language-javascript">const dog = new Dog(); // ReferenceError
+
+class Dog {
+    constructor(name) {
+        this.name = name;
+    }
+}</code></pre>
+
+                <h2>Practical Examples</h2>
+
+                <h3>Example 1: Loop Variable Hoisting</h3>
+                <pre><code class="language-javascript">// With var - common bug
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 3, 3, 3 (var is hoisted to function scope)
+
+// With let - works as expected
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 0, 1, 2 (let is block-scoped)</code></pre>
+
+                <h3>Example 2: Conditional Function Declaration</h3>
+                <pre><code class="language-javascript">// Avoid this - behavior varies across browsers
+if (true) {
+    function foo() {
+        return "A";
+    }
+} else {
+    function foo() {
+        return "B";
+    }
+}
+
+// Use function expressions instead
+let foo;
+if (true) {
+    foo = function() {
+        return "A";
+    };
+} else {
+    foo = function() {
+        return "B";
+    };
+}</code></pre>
+
+                <h3>Example 3: Variable Shadowing</h3>
+                <pre><code class="language-javascript">let x = 10;
+
+function test() {
+    console.log(x); // ReferenceError (not 10!)
+    let x = 20;     // This shadows the outer x
+}
+
+// The let x inside test() is hoisted but in TDZ</code></pre>
+
+                <h2>Best Practices</h2>
+
+                <h3>1. Always Declare Variables at the Top</h3>
+                <pre><code class="language-javascript">// Good
+function calculate() {
+    let result = 0;
+    let temp = 5;
+    
+    // Use variables
+    result = temp * 2;
+    return result;
+}</code></pre>
+
+                <h3>2. Use const by Default, let When Needed</h3>
+                <pre><code class="language-javascript">// Good
+const PI = 3.14159;
+let counter = 0;
+
+// Avoid var
+// var x = 5; // Don't use var in modern JavaScript</code></pre>
+
+                <h3>3. Declare Functions Before Use</h3>
+                <pre><code class="language-javascript">// Good - clear and predictable
+const greet = function(name) {
+    return `Hello, ${name}!`;
+};
+
+console.log(greet("Alice"));</code></pre>
+
+                <h3>4. Use Function Declarations for Top-Level Functions</h3>
+                <pre><code class="language-javascript">// Function declarations are fine at the top level
+function initialize() {
+    // Setup code
+}
+
+function processData(data) {
+    // Processing logic
+}
+
+// Call them
+initialize();
+processData(myData);</code></pre>
+
+                <h2>Common Hoisting Mistakes</h2>
+
+                <h3>Mistake 1: Assuming let/const Don't Hoist</h3>
+                <pre><code class="language-javascript">// Wrong assumption: "let doesn't hoist"
+let x = 10;
+
+function test() {
+    console.log(x); // ReferenceError (not 10!)
+    let x = 20;     // This IS hoisted, but in TDZ
+}</code></pre>
+
+                <h3>Mistake 2: Using Variables Before Declaration</h3>
+                <pre><code class="language-javascript">// Bad
+function process() {
+    result = calculate(); // What's result?
+    var result;           // Declared too late
+    return result;
+}
+
+// Good
+function process() {
+    let result = calculate();
+    return result;
+}</code></pre>
+
+                <h3>Mistake 3: Relying on Function Hoisting</h3>
+                <pre><code class="language-javascript">// Works but confusing
+doSomething();
+
+function doSomething() {
+    // Code
+}
+
+// Better - clear order
+function doSomething() {
+    // Code
+}
+
+doSomething();</code></pre>
+
+                <h2>Interview Questions</h2>
+
+                <h3>Question 1: What will this print?</h3>
+                <pre><code class="language-javascript">var a = 1;
+
+function test() {
+    console.log(a);
+    var a = 2;
+}
+
+test();</code></pre>
+                <p><strong>Answer:</strong> <code>undefined</code> - The local <code>var a</code> is hoisted and shadows the global <code>a</code>.</p>
+
+                <h3>Question 2: What will this print?</h3>
+                <pre><code class="language-javascript">console.log(foo());
+
+function foo() {
+    return "A";
+}
+
+var foo = function() {
+    return "B";
+};</code></pre>
+                <p><strong>Answer:</strong> <code>"A"</code> - Function declaration is hoisted above the variable assignment.</p>
+
+                <h3>Question 3: What happens here?</h3>
+                <pre><code class="language-javascript">let x = 1;
+
+{
+    console.log(x);
+    let x = 2;
+}</code></pre>
+                <p><strong>Answer:</strong> <code>ReferenceError</code> - The inner <code>let x</code> is hoisted to the block scope but in TDZ.</p>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ <strong>var</strong> is hoisted and initialized to <code>undefined</code></li>
+                        <li>✅ <strong>let/const</strong> are hoisted but not initialized (TDZ)</li>
+                        <li>✅ <strong>Function declarations</strong> are fully hoisted</li>
+                        <li>✅ <strong>Function expressions</strong> follow variable hoisting rules</li>
+                        <li>✅ Always declare variables at the top of their scope</li>
+                        <li>✅ Prefer <code>const</code> and <code>let</code> over <code>var</code></li>
+                        <li>✅ Don't rely on hoisting - write clear, sequential code</li>
+                    </ul>
+                </div>
+
+                <h2>Conclusion</h2>
+                <p>
+                    Understanding hoisting helps you avoid subtle bugs and write more predictable JavaScript code. 
+                    While hoisting is a core JavaScript behavior, modern best practices encourage writing code that 
+                    doesn't rely on it.
+                </p>
+                <p>
+                    <strong>Practice tip:</strong> Review your existing code for hoisting-related issues. Replace 
+                    <code>var</code> with <code>const</code> or <code>let</code>, and declare all variables at the 
+                    top of their scope.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                    <a href="../index.html" class="btn btn-primary">All JavaScript Tutorials →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>
