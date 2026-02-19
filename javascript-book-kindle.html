@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Mastering JavaScript: Essential Concepts for Modern Developers</title>
+    <meta name="author" content="Bohdan Tsap" />
+    <meta name="description"
+        content="A comprehensive guide to essential JavaScript concepts including data types, hoisting, closures, currying, this keyword, promises, and generators." />
+    <style type="text/css">
+        body {
+            font-family: Georgia, serif;
+            line-height: 1.6;
+            margin: 1em;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            page-break-before: always;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-top: 1.2em;
+            margin-bottom: 0.5em;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+
+        h4 {
+            font-size: 1em;
+            margin-top: 0.8em;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+        }
+
+        p {
+            margin: 0.5em 0;
+            text-align: justify;
+        }
+
+        code {
+            font-family: "Courier New", "Consolas", "Monaco", monospace;
+            background-color: #f5f5f5;
+            padding: 0.1em 0.4em;
+            font-size: 0.85em;
+            border-radius: 3px;
+            color: #333;
+        }
+
+        pre {
+            background-color: #f5f5f5;
+            padding: 1em;
+            overflow-x: auto;
+            margin: 1em 0;
+            border-left: 4px solid #4a90e2;
+            border-radius: 4px;
+            line-height: 1.4;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #2c3e50;
+        }
+
+        /* Kindle-compatible syntax highlighting using semantic classes */
+        .keyword {
+            color: #0066cc;
+            font-weight: bold;
+        }
+
+        .string {
+            color: #669900;
+        }
+
+        .comment {
+            color: #999999;
+            font-style: italic;
+        }
+
+        .number {
+            color: #cc6600;
+        }
+
+        .function {
+            color: #9933cc;
+            font-weight: bold;
+        }
+
+        .operator {
+            color: #666666;
+        }
+
+        .variable {
+            color: #cc0000;
+        }
+
+        .property {
+            color: #0099cc;
+        }
+
+        ul,
+        ol {
+            margin: 0.5em 0;
+            padding-left: 2em;
+        }
+
+        li {
+            margin: 0.3em 0;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        .toc {
+            margin: 2em 0;
+        }
+
+        .toc ul {
+            list-style-type: none;
+            padding-left: 1em;
+        }
+
+        .toc li {
+            margin: 0.5em 0;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .copyright {
+            font-size: 0.9em;
+            margin-top: 3em;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Title Page -->
+    <div class="center page-break">
+        <h1 style="margin-top: 3em;">Mastering JavaScript</h1>
+        <h2>Essential Concepts for Modern Developers</h2>
+        <p style="margin-top: 2em;"><strong>By Bohdan Tsap</strong></p>
+    </div>
+
+    <!-- Copyright Page -->
+    <div class="page-break">
+        <p><strong>Mastering JavaScript: Essential Concepts for Modern Developers</strong></p>
+        <p>Copyright © 2025 Bohdan Tsap</p>
+        <p>All rights reserved.</p>
+        <p style="margin-top: 2em;">No part of this book may be reproduced or transmitted in any form or by any means,
+            electronic or mechanical, including photocopying, recording, or by any information storage and retrieval
+            system, without written permission from the author.</p>
+        <p style="margin-top: 2em;">Published by Bohdan Tsap</p>
+        <p>First Edition: 2025</p>
+    </div>
+
+    <!-- About the Book -->
+    <div class="page-break">
+        <h1>About This Book</h1>
+        <p>This book is a curated collection of essential JavaScript concepts that every developer should master. Each
+            chapter is designed as a quick, practical guide to help you understand and apply these concepts in
+            real-world scenarios.</p>
+        <p>Whether you're a beginner looking to build a solid foundation or an experienced developer wanting to fill
+            knowledge gaps, this book provides clear explanations, practical examples, and best practices for modern
+            JavaScript development.</p>
+    </div>
+
+    <!-- Table of Contents -->
+    <nav id="toc" class="toc page-break" epub:type="toc" role="doc-toc">
+        <h1>Table of Contents</h1>
+
+        <ol>
+            <li><a href="#introduction">Introduction</a></li>
+            <li>
+                <strong>Part I: Core Language Features</strong>
+                <ol>
+                    <li><a href="#chapter1">Chapter 1: JavaScript Data Types</a></li>
+                    <li><a href="#chapter2">Chapter 2: JavaScript Hoisting</a></li>
+                </ol>
+            </li>
+            <li>
+                <strong>Part II: Functions and Context</strong>
+                <ol>
+                    <li><a href="#chapter3">Chapter 3: JavaScript Closures</a></li>
+                    <li><a href="#chapter4">Chapter 4: JavaScript Currying</a></li>
+                    <li><a href="#chapter5">Chapter 5: JavaScript 'this' Keyword</a></li>
+                </ol>
+            </li>
+            <li>
+                <strong>Part III: Asynchronous JavaScript</strong>
+                <ol>
+                    <li><a href="#chapter6">Chapter 6: JavaScript Promises</a></li>
+                    <li><a href="#chapter7">Chapter 7: JavaScript Generators</a></li>
+                </ol>
+            </li>
+            <li><a href="#conclusion">Conclusion</a></li>
+            <li><a href="#author">About the Author</a></li>
+        </ol>
+    </nav>
+
+    <!-- Introduction -->
+    <div id="introduction" class="page-break">
+        <h1>Introduction</h1>
+
+        <p>JavaScript has evolved from a simple scripting language into one of the most powerful and versatile
+            programming languages in the world. It powers everything from interactive websites to server-side
+            applications, mobile apps, and even desktop software.</p>
+
+        <p>But with great power comes great complexity. JavaScript has quirks, features, and patterns that can confuse
+            even experienced developers. This book cuts through the confusion and focuses on the essential concepts you
+            need to write clean, efficient, and maintainable JavaScript code.</p>
+
+        <p>Each chapter in this book is designed to be read in about 3 minutes, making it perfect for busy developers
+            who want to learn on the go. But don't let the brevity fool you - these chapters are packed with practical
+            insights, real-world examples, and best practices that you can apply immediately.</p>
+
+        <h3>Who This Book Is For</h3>
+        <ul>
+            <li><strong>Beginners</strong> who want to build a solid foundation in JavaScript</li>
+            <li><strong>Intermediate developers</strong> looking to deepen their understanding</li>
+            <li><strong>Experienced developers</strong> who want to fill knowledge gaps</li>
+            <li><strong>Anyone</strong> preparing for technical interviews</li>
+        </ul>
+
+        <h3>How to Use This Book</h3>
+        <p>You can read this book from cover to cover, or jump to specific chapters that interest you. Each chapter is
+            self-contained, so you can learn at your own pace.</p>
+
+        <p>I recommend keeping this book handy as a reference. When you encounter a confusing JavaScript behavior,
+            chances are there's a chapter here that explains it.</p>
+
+        <p>Let's dive in!</p>
+    </div>
+
+    <!-- PART I -->
+    <div class="page-break">
+        <h1 class="center">Part I</h1>
+        <h2 class="center">Core Language Features</h2>
+    </div>
+
+    <!-- Chapter 1 -->
+    <div id="chapter1" class="page-break">
+        <h1>Chapter 1: JavaScript Data Types</h1>
+        <h2>Everything You Need to Know</h2>
+
+        <p>Data types are the foundation of any programming language. In JavaScript, understanding types isn't just
+            academic - it's essential for avoiding bugs and writing reliable code. Every value in JavaScript has a type,
+            and that type determines what operations you can perform on it, how it's stored in memory, and how it
+            behaves
+            when you pass it around your program.</p>
+
+        <p>Many JavaScript bugs stem from misunderstanding how types work. You might have encountered situations where
+            adding two numbers gives you an unexpected string, or where comparing values doesn't work the way you
+            expect.
+            These aren't random quirks - they're predictable behaviors once you understand JavaScript's type system.</p>
+
+        <p>In this chapter, we'll explore JavaScript's type system from the ground up. By the end, you'll understand
+            not just what the types are, but why they behave the way they do and how to use them effectively in your
+            code.</p>
+
+        <h3>Two Categories: Primitives and Objects</h3>
+        <p>JavaScript organizes its data types into two fundamental categories, and understanding this distinction is
+            crucial to mastering the language:</p>
+        <ol>
+            <li><strong>Primitives</strong> - Immutable values (7 types)</li>
+            <li><strong>Objects</strong> - Mutable collections (everything else)</li>
+        </ol>
+
+        <p>This distinction matters because primitives and objects behave fundamentally differently in three key ways:
+        </p>
+        <p><strong>Memory storage:</strong> Primitives are stored directly in the variable, while objects are stored
+            as references. This affects how they're copied and compared.</p>
+        <p><strong>Mutability:</strong> Primitives are immutable - you can't change them, only replace them. Objects
+            are mutable - you can modify their contents without creating a new object.</p>
+        <p><strong>Comparison:</strong> Primitives are compared by value, while objects are compared by reference.
+            Two objects with identical contents are not considered equal unless they're the same object.</p>
+
+        <p>Let's explore each primitive type in detail, understanding not just what they are, but when and how to use
+            them.</p>
+
+        <h3>The Seven Primitive Types</h3>
+
+        <h4>1. Number</h4>
+        <p>Unlike many programming languages that have separate types for integers and floating-point numbers,
+            JavaScript
+            simplifies things with a single Number type. All numbers in JavaScript are 64-bit floating-point values,
+            following the IEEE 754 standard. This means whether you write <code>42</code> or <code>42.0</code>,
+            JavaScript
+            treats them the same way.</p>
+
+        <p>This design choice makes JavaScript easier to learn, but it comes with some quirks you need to understand:
+        </p>
+
+        <pre><code>let age = 25;           // Integer
+let price = 19.99;      // Float
+let infinity = Infinity;
+let notANumber = NaN;
+
+console.log(0.1 + 0.2); // 0.30000000000000004 (!)
+console.log(5 / 0);     // Infinity</code></pre>
+
+        <p>The infamous <code>0.1 + 0.2</code> example demonstrates floating-point precision issues. This isn't a
+            JavaScript
+            bug - it's how binary floating-point math works in all programming languages. When you need precise decimal
+            arithmetic (like for financial calculations), use libraries like decimal.js or store values as integers
+            (cents instead of dollars).</p>
+
+        <p>JavaScript also has special numeric values: <code>Infinity</code> represents numbers too large to represent,
+            <code>-Infinity</code> for numbers too small, and <code>NaN</code> (Not a Number) for invalid mathematical
+            operations. Interestingly, <code>NaN</code> is the only value in JavaScript that's not equal to itself:
+            <code>NaN === NaN</code> returns <code>false</code>. Use <code>Number.isNaN()</code> to check for it.
+        </p>
+
+        <p><strong>Practical tip:</strong> When displaying numbers to users, use <code>toFixed()</code> to control
+            decimal places, or <code>toLocaleString()</code> for proper formatting with thousands separators and
+            currency symbols.</p>
+
+        <h4>2. String</h4>
+        <p>Strings represent text in JavaScript and are one of the most commonly used types. They're sequences of
+            characters enclosed in single quotes, double quotes, or backticks. While the first two are functionally
+            identical, backticks (template literals) offer powerful features like string interpolation and multi-line
+            strings.</p>
+
+        <p>A crucial characteristic of strings is that they're <strong>immutable</strong>. Once created, a string's
+            contents cannot be changed. When you perform operations on strings, JavaScript creates new strings rather
+            than modifying existing ones. This immutability might seem inefficient, but it enables important
+            optimizations
+            and makes strings safer to use.</p>
+
+        <pre><code>let name = "Alice";
+let greeting = `Hello, ${name}!`; // Template literal
+
+// Strings are immutable
+name[0] = "B";
+console.log(name); // Still "Alice"</code></pre>
+
+        <p>In the example above, trying to change the first character of <code>name</code> fails silently (or throws
+            an error in strict mode). If you need to modify a string, you must create a new one. Methods like
+            <code>toUpperCase()</code>, <code>slice()</code>, and <code>replace()</code> all return new strings,
+            leaving the original unchanged.
+        </p>
+
+        <p>Template literals (the backtick syntax) revolutionized string handling in JavaScript. They allow you to
+            embed expressions directly in strings using <code>${expression}</code>, making string concatenation much
+            more readable than the old <code>"Hello, " + name + "!"</code> approach.</p>
+
+        <h4>3. Boolean</h4>
+        <p>At first glance, Booleans seem simple: they're either <code>true</code> or <code>false</code>. You use them
+            for conditional logic, flags, and state management. However, JavaScript's Boolean type has a subtle
+            complexity
+            that trips up many developers: the concept of "truthy" and "falsy" values.</p>
+
+        <p>In JavaScript, every value has an inherent Boolean quality. When used in a Boolean context (like an
+            <code>if</code>
+            statement), values are coerced to either <code>true</code> or <code>false</code>. This automatic conversion
+            can be convenient, but it's also a common source of bugs if you don't understand which values are falsy.
+        </p>
+
+        <pre><code>let isActive = true;
+let isComplete = false;
+
+// But watch out for truthy/falsy values
+if ("") {
+    // Won't run - empty string is falsy
+}
+
+if ("hello") {
+    // Will run - non-empty strings are truthy
+}</code></pre>
+
+        <p>There are exactly <strong>six falsy values</strong> in JavaScript: <code>false</code>, <code>0</code>,
+            <code>""</code> (empty string), <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Everything
+            else is truthy - and this includes some values that might surprise you.
+        </p>
+
+        <p>Empty arrays <code>[]</code> and empty objects <code>{}</code> are truthy, even though they contain nothing.
+            The string <code>"0"</code> is truthy, even though the number <code>0</code> is falsy. These distinctions
+            matter when writing conditional logic. If you need to check if an array is empty, don't rely on truthiness -
+            check its <code>length</code> property explicitly.</p>
+
+        <h4>4. Undefined</h4>
+        <p>The <code>undefined</code> type represents the absence of a value, but in a specific way: it means a variable
+            has been declared but not yet assigned a value. JavaScript automatically assigns <code>undefined</code> to
+            variables you declare without initializing, and functions return <code>undefined</code> if they don't
+            explicitly return something else.</p>
+
+        <pre><code>let x;
+console.log(x); // undefined
+
+function noReturn() {}
+console.log(noReturn()); // undefined</code></pre>
+
+        <p>You'll also encounter <code>undefined</code> when accessing object properties that don't exist, or array
+            elements beyond the array's length. Understanding <code>undefined</code> helps you distinguish between
+            "this variable exists but has no value" and "this property doesn't exist at all."</p>
+
+        <p>A common pattern is to check if a variable is <code>undefined</code> before using it, though modern
+            JavaScript
+            offers better alternatives like default parameters and optional chaining (<code>?.</code>).</p>
+
+        <h4>5. Null</h4>
+        <p>While <code>undefined</code> represents an unintentional absence of value, <code>null</code> represents an
+            <strong>intentional</strong> absence. You use <code>null</code> when you want to explicitly indicate that
+            a variable should be empty. It's a way of saying "I've thought about this, and this variable should have
+            no value right now."
+        </p>
+
+        <pre><code>let user = null; // Explicitly empty
+
+// Historical bug:
+console.log(typeof null); // "object" (should be "null")</code></pre>
+
+        <p>There's a famous bug in JavaScript: <code>typeof null</code> returns <code>"object"</code> instead of
+            <code>"null"</code>. This bug has existed since JavaScript's creation and can't be fixed without breaking
+            millions of websites. When checking for <code>null</code>, use strict equality: <code>value === null</code>.
+        </p>
+
+        <p>The distinction between <code>null</code> and <code>undefined</code> is subtle but important. Use
+            <code>undefined</code> for variables that haven't been initialized, and <code>null</code> for variables
+            that you're explicitly setting to "no value." For example, if a user hasn't selected a profile picture,
+            you might set <code>profilePicture = null</code> to indicate the absence is intentional.
+        </p>
+
+        <h4>6. Symbol (ES6)</h4>
+        <p>Symbols are JavaScript's newest primitive type, introduced in ES6 (2015). They're unique identifiers that
+            are guaranteed to be different from every other Symbol, even if they have the same description. This
+            uniqueness makes them perfect for creating object properties that won't conflict with other properties.</p>
+
+        <pre><code>let id1 = Symbol("id");
+let id2 = Symbol("id");
+
+console.log(id1 === id2); // false (each is unique)</code></pre>
+
+        <p>Even though both Symbols have the same description (<code>"id"</code>), they're completely different values.
+            This is useful when you need to add properties to objects without risking name collisions, especially in
+            libraries or frameworks where you don't control all the code.</p>
+
+        <p>Symbols are also used internally by JavaScript for special behaviors. For example,
+            <code>Symbol.iterator</code>
+            defines how an object should be iterated, and <code>Symbol.toStringTag</code> customizes how an object is
+            converted to a string. While you won't use Symbols every day, they're powerful tools for advanced JavaScript
+            patterns.
+        </p>
+
+        <h4>7. BigInt (ES2020)</h4>
+        <p>JavaScript's Number type can safely represent integers up to 2^53 - 1 (about 9 quadrillion). Beyond that,
+            you lose precision. For most applications, this is plenty, but what if you need to work with larger numbers?
+            Cryptography, scientific computing, and financial systems sometimes require arbitrary-precision integers.
+        </p>
+
+        <p>That's where BigInt comes in. Introduced in ES2020, BigInt can represent integers of arbitrary size, limited
+            only by available memory. You create a BigInt by appending <code>n</code> to a number literal or using the
+            <code>BigInt()</code> constructor.
+        </p>
+
+        <pre><code>let bigNum = 9007199254740991n;
+let huge = BigInt("999999999999999999");
+
+// Can't mix with regular numbers
+// console.log(100n + 50); // TypeError
+console.log(100n + 50n);   // 150n</code></pre>
+
+        <p>One important limitation: you can't mix BigInt and Number in arithmetic operations. JavaScript won't
+            automatically convert between them because the conversion could lose precision. If you need to combine them,
+            explicitly convert one type to the other, being mindful of potential precision loss.</p>
+
+        <p>BigInt is relatively new, so check browser compatibility if you're targeting older environments. However,
+            for modern applications dealing with large integers, it's an essential tool.</p>
+
+        <h3>Objects: Everything Else</h3>
+        <p>Now that we've covered the seven primitive types, let's talk about everything else in JavaScript: objects.
+            In JavaScript's type system, if something isn't a primitive, it's an object. This includes plain objects,
+            arrays, functions, dates, regular expressions, and more. They're all built on the same fundamental object
+            structure.</p>
+
+        <p>This might seem confusing at first - how can an array and a function both be "objects"? The answer lies in
+            JavaScript's prototype-based inheritance system. All these types share common object behaviors (like having
+            properties and methods), but each adds its own specialized functionality on top of that foundation.</p>
+
+        <pre><code>let person = { name: "Alice", age: 25 };
+let numbers = [1, 2, 3, 4, 5];
+let greet = function() { console.log("Hi!"); };
+
+console.log(typeof person);  // "object"
+console.log(typeof numbers); // "object"
+console.log(typeof greet);   // "function"</code></pre>
+
+        <p>Notice that <code>typeof</code> returns <code>"function"</code> for functions, even though functions are
+            technically objects. This is a special case that makes it easier to distinguish functions from other
+            objects.
+            However, functions still have all the capabilities of objects - you can add properties to them, pass them
+            around, and even call methods on them.</p>
+
+        <h3>The Critical Difference: Value vs Reference</h3>
+        <p>Understanding the difference between value and reference is perhaps the most important concept for avoiding
+            bugs in JavaScript. This is where primitives and objects behave completely differently, and misunderstanding
+            this distinction causes more bugs than almost any other JavaScript feature.</p>
+
+        <p><strong>Primitives are copied by value.</strong> When you assign a primitive to a new variable, JavaScript
+            creates a completely independent copy of that value. Changes to one variable don't affect the other because
+            they're separate values in memory:</p>
+
+        <pre><code>let a = 5;
+let b = a;  // Copy the value
+b = 10;
+
+console.log(a); // 5 (unchanged)
+console.log(b); // 10</code></pre>
+
+        <p>This behavior is intuitive and matches how we think about numbers and text in the real world. If I write
+            the number 5 on two pieces of paper, changing one doesn't affect the other.</p>
+
+        <p><strong>Objects are copied by reference.</strong> When you assign an object to a new variable, JavaScript
+            doesn't create a new object - it creates a new reference pointing to the same object in memory. Both
+            variables
+            now refer to the exact same object, so changes through one variable are visible through the other:</p>
+
+        <pre><code>let obj1 = { name: "Alice" };
+let obj2 = obj1;  // Copy the reference
+obj2.name = "Bob";
+
+console.log(obj1.name); // "Bob" (changed!)
+console.log(obj2.name); // "Bob"</code></pre>
+
+        <p>This is the source of countless bugs, especially for developers coming from other languages. You might think
+            you're creating a backup of an object before modifying it, but you're actually just creating another
+            reference
+            to the same object. When you modify the "backup," you're modifying the original too.</p>
+
+        <p>This behavior exists for good reasons: objects can be large and complex, so copying them by value would be
+            expensive. References are lightweight - they're just pointers to memory locations. However, when you do need
+            an independent copy of an object, you need to explicitly clone it.</p>
+
+        <p><strong>Cloning objects</strong> comes in two flavors: shallow and deep. A shallow clone creates a new object
+            with copies of the top-level properties, but nested objects are still references. A deep clone recursively
+            copies everything, creating a completely independent structure:</p>
+
+        <pre><code>// Shallow clone
+let clone = { ...original };
+let clone = Object.assign({}, original);
+
+// Deep clone (simple objects)
+let deepClone = JSON.parse(JSON.stringify(original));
+
+// Deep clone (modern way - ES2022)
+let deepClone = structuredClone(original);</code></pre>
+
+        <p>The spread operator (<code>...</code>) and <code>Object.assign()</code> create shallow clones - fast and
+            sufficient for simple objects. The JSON approach works for deep cloning but has limitations: it can't handle
+            functions, undefined values, Symbols, or circular references.</p>
+
+        <p><code>structuredClone()</code> is the modern solution, introduced in ES2022. It handles most JavaScript types
+            correctly (including Date, Map, Set, ArrayBuffer, and more) and properly deals with circular references.
+            However, it can't clone functions or DOM nodes. For most use cases, it's the best choice for deep cloning.
+        </p>
+
+        <h3>Type Checking: typeof and Beyond</h3>
+        <p>JavaScript provides the <code>typeof</code> operator to check a value's type at runtime. While useful, it has
+            some quirks and limitations you need to be aware of. Understanding these limitations helps you write more
+            robust type-checking code.</p>
+
+        <pre><code>console.log(typeof 42);        // "number"
+console.log(typeof "hello");   // "string"
+console.log(typeof true);      // "boolean"
+console.log(typeof undefined); // "undefined"
+console.log(typeof null);      // "object" (bug!)
+console.log(typeof {});        // "object"
+console.log(typeof []);        // "object" (not helpful!)</code></pre>
+
+        <p>The <code>typeof null</code> returning <code>"object"</code> is a famous JavaScript bug that can't be fixed
+            without breaking existing code. More problematically, <code>typeof</code> returns <code>"object"</code> for
+            arrays, which doesn't help you distinguish them from plain objects.</p>
+
+        <p>For arrays specifically, use <code>Array.isArray()</code>, which was added to JavaScript specifically to
+            solve this problem:</p>
+
+        <pre><code>Array.isArray([]);  // true
+Array.isArray({});  // false</code></pre>
+
+        <p>For more sophisticated type checking, you can use <code>instanceof</code> to check if an object was created
+            by a specific constructor, or check the <code>constructor</code> property. However, these approaches have
+            their own edge cases, especially when dealing with objects from different JavaScript contexts (like
+            iframes).</p>
+
+        <h3>Type Coercion: JavaScript's "Helpful" Feature</h3>
+        <p>Type coercion is one of JavaScript's most controversial features. The language automatically converts values
+            from one type to another in certain situations, trying to be "helpful" by making your code work even when
+            types don't match. This can lead to code that works but produces unexpected results.</p>
+
+        <p>Understanding coercion rules is essential because they affect how operators work, how comparisons behave, and
+            how values are converted in conditional statements. Let's explore the main coercion scenarios:</p>
+
+        <pre><code>// String coercion
+console.log("5" + 3);      // "53" (number to string)
+console.log("Hello" + 1);  // "Hello1"
+
+// Number coercion
+console.log("5" - 2);      // 3 (string to number)
+console.log("10" * "2");   // 20
+console.log(true + 1);     // 2 (true becomes 1)
+
+// Boolean coercion
+console.log(!!"hello");    // true
+console.log(!!0);          // false</code></pre>
+
+        <p>Notice the asymmetry: the <code>+</code> operator prefers strings (converting numbers to strings), while
+            <code>-</code>, <code>*</code>, and <code>/</code> prefer numbers (converting strings to numbers). This is
+            because <code>+</code> serves double duty as both addition and string concatenation. When JavaScript sees
+            <code>+</code> with a string, it assumes you want concatenation.
+        </p>
+
+        <p>The double-not (<code>!!</code>) is a common idiom for explicitly converting any value to its Boolean
+            equivalent. The first <code>!</code> converts to Boolean and negates it, the second <code>!</code> negates
+            it back, leaving you with the Boolean representation of the original value.</p>
+
+        <p><strong>Equality coercion</strong> is particularly tricky. JavaScript has two equality operators: loose
+            equality (<code>==</code>) which performs type coercion, and strict equality (<code>===</code>) which
+            doesn't:</p>
+
+        <pre><code>// Loose equality (==) coerces types
+console.log(5 == "5");     // true
+console.log(true == 1);    // true
+console.log(null == undefined); // true
+
+// Strict equality (===) doesn't
+console.log(5 === "5");    // false
+console.log(true === 1);   // false
+
+// Always use === for clarity!</code></pre>
+
+        <p>The coercion rules for <code>==</code> are complex and sometimes counterintuitive. For example,
+            <code>[] == ![]</code> is <code>true</code> due to a chain of coercions. To avoid these surprises, the
+            JavaScript community has largely standardized on using <code>===</code> (strict equality) by default.
+        </p>
+
+        <p>Strict equality checks both value and type, making comparisons predictable and explicit. The only time you
+            might use <code>==</code> is when checking for <code>null</code> or <code>undefined</code> simultaneously:
+            <code>value == null</code> is true for both <code>null</code> and <code>undefined</code>, which is
+            occasionally useful.
+        </p>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li><strong>Primitives</strong> are immutable and copied by value</li>
+            <li><strong>Objects</strong> are mutable and copied by reference</li>
+            <li>Use <code>===</code> to avoid type coercion surprises</li>
+            <li>Check types explicitly when it matters</li>
+            <li>Know your falsy values</li>
+            <li>Use <code>structuredClone()</code> for deep cloning (ES2022)</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 2 -->
+    <div id="chapter2" class="page-break">
+        <h1>Chapter 2: JavaScript Hoisting</h1>
+        <h2>Stop Getting Surprised by Your Code</h2>
+
+        <p>Ever written code that worked in a way you didn't expect? Chances are, hoisting was the culprit. Hoisting
+            is one of JavaScript's most misunderstood features, and it's responsible for countless "Wait, why did that
+            happen?" moments. The good news is that once you understand how it works, hoisting becomes predictable and
+            even useful.</p>
+
+        <p>The confusion around hoisting stems from JavaScript's two-phase execution model. Your code doesn't run
+            exactly as written - JavaScript first scans through your code to set up the environment, then executes it.
+            This preprocessing step is where hoisting happens, and understanding it is key to avoiding bugs and writing
+            more reliable code.</p>
+
+        <h3>What is Hoisting?</h3>
+        <p>Hoisting is JavaScript's default behavior of moving declarations to the top of their scope before code
+            execution. The term "hoisting" is a metaphor - your code isn't actually rearranged in memory. Instead,
+            during the creation phase, JavaScript records all variable and function declarations, making them available
+            throughout their scope even before the line where they're declared.</p>
+
+        <p>This means you can sometimes use variables and functions before you declare them, which seems to violate
+            the normal top-to-bottom execution flow:</p>
+
+        <pre><code>console.log(greeting); // undefined (not an error!)
+var greeting = "Hello";
+
+sayHi(); // "Hi!" (works perfectly)
+function sayHi() {
+    console.log("Hi!");
+}</code></pre>
+
+        <p>Wait, what? How can we log <code>greeting</code> before it's declared, and call <code>sayHi()</code> before
+            it's defined? The answer lies in how JavaScript processes your code.</p>
+
+        <h3>Behind the Scenes</h3>
+        <p>JavaScript's execution model has two distinct phases, and understanding this is crucial to understanding
+            hoisting:</p>
+
+        <ol>
+            <li><strong>Creation phase (compilation)</strong> - JavaScript scans your code, creates the execution
+                context,
+                and records all declarations. This is when hoisting happens.</li>
+            <li><strong>Execution phase</strong> - JavaScript runs your code line by line, executing statements and
+                expressions.</li>
+        </ol>
+
+        <p>During the creation phase, JavaScript finds all <code>var</code>, <code>let</code>, <code>const</code>, and
+            function declarations and registers them in the current scope. However, it treats them differently based on
+            how they're declared.</p>
+
+        <pre><code>// What you write:
+console.log(x);
+var x = 5;
+
+// What JavaScript does:
+var x;              // Hoisted to the top
+console.log(x);     // undefined
+x = 5;              // Assignment stays in place</code></pre>
+
+        <p>The key insight is that only the <em>declaration</em> is hoisted, not the <em>initialization</em>. The
+            variable <code>x</code> is declared at the top of the scope, but the assignment <code>x = 5</code> stays
+            where you wrote it. This is why <code>console.log(x)</code> outputs <code>undefined</code> rather than
+            throwing an error - the variable exists, it just hasn't been assigned a value yet.</p>
+
+        <h3>The var Problem</h3>
+        <p>Variables declared with <code>var</code> are hoisted and automatically initialized to <code>undefined</code>.
+            While this might seem convenient, it's actually the source of many subtle bugs. The problem is that
+            <code>var</code> makes it too easy to accidentally use a variable before you've given it a meaningful value,
+            and JavaScript won't warn you about it.
+        </p>
+
+        <p>Consider this classic example that confuses many developers:</p>
+
+        <pre><code>var name = "Global";
+
+function test() {
+    console.log(name); // undefined (not "Global"!)
+    var name = "Local";
+    console.log(name); // "Local"
+}</code></pre>
+
+        <p>Why does the first <code>console.log</code> output <code>undefined</code> instead of <code>"Global"</code>?
+            Because the local <code>var name</code> declaration is hoisted to the top of the function scope, creating a
+            local variable that shadows the global one. However, the assignment <code>name = "Local"</code> stays where
+            it is, so at the point of the first log, the local <code>name</code> exists but is still
+            <code>undefined</code>.
+        </p>
+
+        <p>This behavior is called "variable shadowing," and it's particularly dangerous because the code looks like it
+            should work. You might expect to access the global variable until you declare the local one, but JavaScript
+            doesn't work that way. The local declaration affects the entire function scope, even the lines before the
+            declaration appears.</p>
+
+        <p>This is why <code>var</code> is considered problematic in modern JavaScript. It's too forgiving - it lets
+            you write code that runs without errors but doesn't do what you expect.</p>
+
+        <h3>Enter let and const: The Temporal Dead Zone</h3>
+        <p>ES6 (2015) introduced <code>let</code> and <code>const</code> to address the problems with <code>var</code>.
+            These new declaration keywords are also hoisted, but they behave differently in a crucial way: they're
+            <strong>not initialized</strong> until the line where they're declared is executed.
+        </p>
+
+        <p>This creates what's called the "Temporal Dead Zone" (TDZ) - a period where the variable exists in scope but
+            cannot be accessed. If you try to use the variable during this period, JavaScript throws a ReferenceError:
+        </p>
+
+        <pre><code>console.log(x); // ReferenceError!
+let x = 5;</code></pre>
+
+        <p>The Temporal Dead Zone starts at the beginning of the scope and ends when the declaration is reached. During
+            this time, the variable is in a kind of limbo - it's been hoisted and registered in the scope, but it's not
+            yet initialized and cannot be accessed:</p>
+
+        <pre><code>function example() {
+    // TDZ starts for 'temp'
+    console.log(temp); // ReferenceError
+    
+    let temp = 5;      // TDZ ends
+    console.log(temp); // 5
+}</code></pre>
+
+        <p>At first glance, the TDZ might seem like an annoyance - why not just initialize <code>let</code> and
+            <code>const</code> to <code>undefined</code> like <code>var</code>? The answer is that the TDZ is actually
+            a feature, not a bug. It catches a whole class of errors at runtime that would otherwise silently produce
+            incorrect results.
+        </p>
+
+        <p>By throwing an error when you try to access a variable before it's declared, JavaScript forces you to write
+            code in a more logical order. This makes your code easier to understand and less prone to subtle bugs. The
+            TDZ is strict, but that strictness helps you write better code.</p>
+
+        <h3>Function Hoisting: The Full Story</h3>
+        <p>Functions in JavaScript can be declared in two main ways: function declarations and function expressions. The
+            way you declare a function dramatically affects how it's hoisted, and understanding this difference is
+            crucial
+            for avoiding bugs.</p>
+
+        <p><strong>Function declarations</strong> are fully hoisted - both the name and the entire function body. This
+            means you can call a function before it appears in your code:</p>
+
+        <pre><code>greet(); // Works!
+
+function greet() {
+    console.log("Hello!");
+}</code></pre>
+
+        <p>This behavior is actually quite useful. It allows you to organize your code with the high-level logic at the
+            top and helper functions at the bottom, making your code more readable. The function is available throughout
+            its entire scope, regardless of where it's declared.</p>
+
+        <p><strong>Function expressions</strong>, however, follow variable hoisting rules. When you assign a function to
+            a variable, only the variable declaration is hoisted, not the function itself:</p>
+
+        <pre><code>sayHi(); // TypeError: sayHi is not a function
+
+var sayHi = function() {
+    console.log("Hi!");
+};</code></pre>
+
+        <p>Why does this throw a TypeError rather than a ReferenceError? Because <code>var sayHi</code> is hoisted and
+            initialized to <code>undefined</code>. When JavaScript tries to execute <code>sayHi()</code>, it's actually
+            trying to call <code>undefined()</code>, which is a type error - <code>undefined</code> is not a function.
+        </p>
+
+        <p>If you use <code>const</code> or <code>let</code> for a function expression, you'll get a ReferenceError
+            instead due to the Temporal Dead Zone:</p>
+
+        <pre><code>greet(); // ReferenceError: Cannot access 'greet' before initialization
+
+const greet = function() {
+    console.log("Hello!");
+};</code></pre>
+
+        <p>This is actually better because the error message is clearer about what went wrong. The lesson here is that
+            if you need to call a function before it's defined, use a function declaration. If you're using function
+            expressions, make sure to define them before you use them.</p>
+
+        <h3>Real-World Gotcha: Loop Variables</h3>
+        <p>One of the most common and confusing hoisting-related bugs involves loop variables and asynchronous code.
+            This example has confused countless developers, and understanding why it happens requires combining your
+            knowledge of hoisting, scope, and closures:</p>
+
+        <pre><code>// With var
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 3, 3, 3
+
+// With let
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 0, 1, 2</code></pre>
+
+        <p>Why does the <code>var</code> version print <code>3, 3, 3</code> instead of <code>0, 1, 2</code>? The answer
+            involves both hoisting and scope. With <code>var</code>, the variable <code>i</code> is hoisted to function
+            scope (or global scope if not in a function), so there's only one <code>i</code> variable shared by all
+            three setTimeout callbacks.</p>
+
+        <p>By the time the setTimeout callbacks execute (after 100ms), the loop has finished running and <code>i</code>
+            has the value 3. All three callbacks reference the same <code>i</code>, so they all log 3.</p>
+
+        <p>With <code>let</code>, each iteration of the loop gets its own block-scoped <code>i</code>. JavaScript
+            creates a new binding for <code>i</code> in each iteration, so each setTimeout callback captures its own
+            separate <code>i</code>. This is exactly what you want in most cases.</p>
+
+        <p>This example perfectly illustrates why <code>let</code> and <code>const</code> are preferred over
+            <code>var</code> in modern JavaScript. The block scoping behavior is more intuitive and matches what most
+            developers expect.
+        </p>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Use const and let, Never var</strong></li>
+            <li><strong>Declare Variables at the Top</strong></li>
+            <li><strong>Declare Functions Before Use</strong></li>
+            <li><strong>Enable Strict Mode</strong></li>
+        </ol>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Hoisting moves declarations to the top of their scope</li>
+            <li><code>var</code> is hoisted and initialized to <code>undefined</code></li>
+            <li><code>let</code> and <code>const</code> are hoisted but not initialized (TDZ)</li>
+            <li>Function declarations are fully hoisted</li>
+            <li>Function expressions follow variable rules</li>
+            <li>Modern JavaScript with <code>let</code> and <code>const</code> makes hoisting less problematic</li>
+        </ul>
+    </div>
+
+    <!-- PART II -->
+    <div class="page-break">
+        <h1 class="center">Part II</h1>
+        <h2 class="center">Functions and Context</h2>
+    </div>
+
+    <!-- Chapter 3 -->
+    <div id="chapter3" class="page-break">
+        <h1>Chapter 3: JavaScript Closures</h1>
+        <h2>The Secret Weapon You're Already Using</h2>
+
+        <p>If you've written JavaScript for more than a day, you've used closures - even if you didn't know it. Closures
+            are one of JavaScript's most powerful features, yet they're often misunderstood or overlooked. They're the
+            mechanism behind many common JavaScript patterns, from event handlers to React hooks to module patterns.</p>
+
+        <p>The beauty of closures is that they're not some advanced feature you need to explicitly invoke - they happen
+            automatically whenever you create a function inside another function. Understanding closures transforms you
+            from someone who writes JavaScript that works to someone who understands why it works and can leverage this
+            understanding to write more elegant, powerful code.</p>
+
+        <h3>What is a Closure?</h3>
+        <p>A closure is a function that has access to variables from its outer (enclosing) scope, even after the outer
+            function has finished executing. This might sound abstract, so let's break it down with a concrete example:
+        </p>
+
+        <pre><code>function outer() {
+    let count = 0;
+    
+    function inner() {
+        count++;
+        console.log(count);
+    }
+    
+    return inner;
+}
+
+const counter = outer();
+counter(); // 1
+counter(); // 2
+counter(); // 3</code></pre>
+
+        <p>What's happening here is remarkable when you think about it. The <code>outer()</code> function executes and
+            returns, which normally means all its local variables would be garbage collected and disappear. But the
+            <code>count</code> variable doesn't disappear - it stays alive because the <code>inner</code> function still
+            references it.
+        </p>
+
+        <p>The <code>inner</code> function "closes over" the <code>count</code> variable, creating a closure. This
+            closure
+            is a combination of the function and the lexical environment (the variables) in which it was declared. Every
+            time you call <code>counter()</code>, it accesses and modifies the same <code>count</code> variable, even
+            though <code>outer()</code> finished executing long ago.</p>
+
+        <p>This is possible because JavaScript functions are first-class objects - they can be passed around, returned
+            from other functions, and they carry their scope with them. The closure keeps the variables alive as long as
+            the function that references them exists.</p>
+
+        <h3>Why Closures Matter</h3>
+        <p>Closures aren't just a theoretical concept - they're a practical tool that solves real problems in JavaScript
+            development. Let's explore the three main use cases where closures shine.</p>
+
+        <h4>1. Data Privacy</h4>
+        <p>JavaScript doesn't have traditional private variables like some other languages. Before ES2022's private
+            fields,
+            closures were the primary way to create truly private data. Even now, closures remain a powerful
+            encapsulation
+            technique.</p>
+
+        <p>Consider a bank account where you want to prevent direct manipulation of the balance. Closures let you create
+            private variables that can only be accessed through specific methods:</p>
+
+        <pre><code>function createBankAccount(initialBalance) {
+    let balance = initialBalance;
+    
+    return {
+        deposit(amount) {
+            balance += amount;
+            return balance;
+        },
+        withdraw(amount) {
+            if (amount <= balance) {
+                balance -= amount;
+                return balance;
+            }
+            return "Insufficient funds";
+        },
+        getBalance() {
+            return balance;
+        }
+    };
+}
+
+const account = createBankAccount(100);
+account.deposit(50);    // 150
+account.withdraw(30);   // 120
+// Can't access balance directly!</code></pre>
+
+        <p>The <code>balance</code> variable is completely private - there's no way to access or modify it except
+            through
+            the methods we've provided. This is true encapsulation: the internal state is hidden, and the only way to
+            interact with it is through a controlled interface. You can't accidentally set <code>balance</code> to a
+            negative number or a string - the only way to change it is through <code>deposit()</code> and
+            <code>withdraw()</code>, which can enforce business rules.
+        </p>
+
+        <h4>2. Function Factories</h4>
+        <p>Closures enable a powerful pattern called "function factories" - functions that create and return other
+            functions
+            with specific behaviors baked in. This is particularly useful when you need multiple similar functions with
+            different configurations.</p>
+
+        <pre><code>function multiplier(factor) {
+    return function(number) {
+        return number * factor;
+    };
+}
+
+const double = multiplier(2);
+const triple = multiplier(3);
+
+console.log(double(5));  // 10
+console.log(triple(5));  // 15</code></pre>
+
+        <p>Each call to <code>multiplier()</code> creates a new closure with its own <code>factor</code> variable.
+            <code>double</code> and <code>triple</code> are independent functions, each remembering their own factor.
+            This pattern eliminates code duplication - instead of writing separate <code>double()</code> and
+            <code>triple()</code> functions, we generate them from a single factory.
+        </p>
+
+        <p>Function factories are everywhere in modern JavaScript. React's custom hooks, Redux's action creators, and
+            many utility libraries use this pattern to create specialized functions on demand.</p>
+
+        <h4>3. Event Handlers</h4>
+        <p>Event handlers are one of the most common places where closures appear, often without developers realizing
+            it.
+            When you attach an event listener, the callback function forms a closure over any variables in its scope:
+        </p>
+
+        <pre><code>function setupButton(buttonId) {
+    let clickCount = 0;
+    
+    document.getElementById(buttonId).addEventListener('click', function() {
+        clickCount++;
+        console.log(`Button clicked ${clickCount} times`);
+    });
+}</code></pre>
+
+        <p>The event handler function closes over <code>clickCount</code>, maintaining its own counter that persists
+            between clicks. Each button you set up with <code>setupButton()</code> gets its own independent counter -
+            they don't interfere with each other because each has its own closure.</p>
+
+        <p>This pattern is incredibly useful for maintaining state in event-driven code without resorting to global
+            variables or complex state management systems.</p>
+
+        <h3>Common Pitfall: Loop Closures</h3>
+        <p>One of the most confusing aspects of closures for beginners is how they interact with loops. This classic
+            problem has tripped up countless developers and demonstrates an important subtlety about how closures work:
+        </p>
+
+        <pre><code>// Problem
+for (var i = 0; i < 3; i++) {
+    setTimeout(function() {
+        console.log(i);
+    }, 100);
+}
+// Prints: 3, 3, 3
+
+// Solution 1: Use let
+for (let i = 0; i < 3; i++) {
+    setTimeout(function() {
+        console.log(i);
+    }, 100);
+}
+// Prints: 0, 1, 2
+
+// Solution 2: IIFE
+for (var i = 0; i < 3; i++) {
+    (function(j) {
+        setTimeout(function() {
+            console.log(j);
+        }, 100);
+    })(i);
+}
+// Prints: 0, 1, 2</code></pre>
+
+        <p>The problem occurs because all three setTimeout callbacks close over the same <code>i</code> variable. By the
+            time the callbacks execute (after 100ms), the loop has finished and <code>i</code> is 3. All three closures
+            reference the same variable, so they all see the final value.</p>
+
+        <p>The <code>let</code> solution works because <code>let</code> creates a new binding for each iteration of the
+            loop. Each setTimeout callback closes over its own separate <code>i</code>, capturing the value from that
+            specific iteration.</p>
+
+        <p>The IIFE (Immediately Invoked Function Expression) solution works by creating a new scope for each iteration.
+            The IIFE takes <code>i</code> as a parameter (renamed to <code>j</code> for clarity), creating a new
+            variable
+            that captures the current value. This was the common solution before <code>let</code> was introduced.</p>
+
+        <p>This pitfall illustrates an important principle: closures capture variables by reference, not by value. They
+            don't take a snapshot of the variable's value - they maintain a live connection to the variable itself.</p>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Closures give functions access to their outer scope</li>
+            <li>They enable data privacy and encapsulation</li>
+            <li>Perfect for creating function factories</li>
+            <li>Essential for event handlers and callbacks</li>
+            <li>Closures capture variables by reference, not by value</li>
+            <li>Use <code>let</code> in loops to avoid closure pitfalls</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 4 -->
+    <div id="chapter4" class="page-break">
+        <h1>Chapter 4: JavaScript Currying</h1>
+        <h2>Write More Reusable Code</h2>
+
+        <p>Function currying is one of those functional programming concepts that sounds complicated but is surprisingly
+            simple once you see it in action. It's a technique that transforms how you think about function composition
+            and reusability, enabling elegant solutions to common programming problems.</p>
+
+        <p>While currying comes from functional programming theory, you don't need to understand category theory or
+            lambda calculus to use it effectively. In JavaScript, currying is simply a practical tool for creating more
+            flexible, reusable functions. Once you understand the pattern, you'll start seeing opportunities to use it
+            everywhere.</p>
+
+        <h3>What is Currying?</h3>
+        <p>Currying transforms a function that takes multiple arguments into a sequence of functions, each taking a
+            single argument. Instead of calling a function with all its arguments at once, you call it with one argument
+            at a time, and each call returns a new function that expects the next argument.</p>
+
+        <pre><code>// Regular function
+function add(a, b, c) {
+    return a + b + c;
+}
+add(1, 2, 3); // 6
+
+// Curried version
+const addCurried = a => b => c => a + b + c;
+addCurried(1)(2)(3); // 6</code></pre>
+
+        <p>Named after mathematician Haskell Curry (though the concept predates him), this technique enables powerful
+            patterns for code reuse. The curried version might look strange at first - why would you want to call a
+            function three times instead of once? The answer lies in partial application.</p>
+
+        <p>With currying, you can provide arguments incrementally. You might call <code>addCurried(1)</code> and get
+            back a function that's "waiting" for the next two arguments. This partially applied function can be passed
+            around, stored in variables, or used to create specialized versions of the original function. This
+            flexibility
+            is what makes currying so powerful.</p>
+
+        <h3>Why Should You Care?</h3>
+        <p>Currying isn't just an academic exercise - it solves real problems in JavaScript development. Let's explore
+            three practical use cases that demonstrate why currying is worth learning.</p>
+
+        <h4>1. Create Reusable Function Factories</h4>
+        <p>One of the most powerful applications of currying is creating specialized functions from general ones.
+            Instead
+            of writing multiple similar functions, you write one curried function and derive the specialized versions
+            from it:</p>
+
+        <pre><code>const multiply = a => b => a * b;
+
+const double = multiply(2);
+const triple = multiply(3);
+
+double(5);  // 10
+triple(5);  // 15</code></pre>
+
+        <p>You've just created specialized functions from a general one without any code duplication. No need to write
+            separate <code>multiplyByTwo</code> and <code>multiplyByThree</code> functions. This pattern scales
+            beautifully - you can create as many specialized multipliers as you need, and they all share the same
+            underlying implementation.</p>
+
+        <p>This approach follows the DRY (Don't Repeat Yourself) principle at a higher level. Instead of repeating
+            similar function implementations, you're creating a factory that generates the functions you need.</p>
+
+        <h4>2. Cleaner Event Handlers</h4>
+        <p>Event handlers often need access to data beyond just the event object. Currying provides an elegant solution
+            that's cleaner than traditional approaches:</p>
+
+        <pre><code>const handleClick = id => event => {
+    console.log(`Clicked item ${id}`);
+    // Handle the event
+};
+
+// Instead of this:
+button1.addEventListener('click', (e) => handleClick(1, e));
+button2.addEventListener('click', (e) => handleClick(2, e));
+
+// Write this:
+button1.addEventListener('click', handleClick(1));
+button2.addEventListener('click', handleClick(2));</code></pre>
+
+        <p>The curried version is more concise and reads more naturally. You're "configuring" the handler with the ID,
+            then passing the configured handler to addEventListener. This pattern is particularly useful when you have
+            many similar event handlers that differ only in their configuration.</p>
+
+        <h4>3. Build Data Pipelines</h4>
+        <p>Currying shines when building data transformation pipelines. By currying your transformation functions, you
+            can compose them in flexible ways:</p>
+
+        <pre><code>const map = fn => array => array.map(fn);
+const filter = pred => array => array.filter(pred);
+
+const double = x => x * 2;
+const isEven = x => x % 2 === 0;
+
+const processNumbers = numbers => 
+    filter(isEven)(map(double)(numbers));
+
+processNumbers([1, 2, 3, 4]); // [4, 8]</code></pre>
+
+        <p>This pipeline doubles each number, then filters to keep only even results. The curried <code>map</code> and
+            <code>filter</code> functions can be reused in different combinations, creating a library of composable
+            transformations. This is the essence of functional programming - building complex operations from simple,
+            reusable pieces.
+        </p>
+
+        <h3>Real-World Example: API Client</h3>
+        <p>Let's see currying in action with a practical example: building a configurable API client. This demonstrates
+            how currying enables progressive configuration, where you specify general settings first and specific
+            details
+            later:</p>
+
+        <pre><code>const apiRequest = baseURL => endpoint => method => data => {
+    return fetch(`${baseURL}${endpoint}`, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: data ? JSON.stringify(data) : undefined
+    }).then(r => r.json());
+};
+
+// Configure once
+const api = apiRequest('https://api.example.com');
+const usersAPI = api('/users');
+
+// Reuse everywhere
+const getUsers = usersAPI('GET')(null);
+const createUser = usersAPI('POST');
+const updateUser = usersAPI('PUT');
+
+// Use it
+getUsers.then(users => console.log(users));
+createUser({ name: 'Alice' }).then(user => console.log(user));</code></pre>
+
+        <p>This pattern creates a hierarchy of increasingly specific functions. First, you configure the base URL, then
+            the endpoint, then the HTTP method, and finally the data. Each level can be reused independently. The
+            <code>usersAPI</code> function can create GET, POST, PUT, and DELETE operations for the users endpoint,
+            all sharing the same base configuration.
+        </p>
+
+        <h3>Automatic Currying</h3>
+        <p>Writing nested arrow functions for every curried function gets tedious. You can create a helper function that
+            automatically curries any function, making currying more practical for everyday use:</p>
+
+        <pre><code>function curry(fn) {
+    return function curried(...args) {
+        if (args.length >= fn.length) {
+            return fn.apply(this, args);
+        }
+        return (...nextArgs) => curried(...args, ...nextArgs);
+    };
+}
+
+// Now curry any function
+const add = curry((a, b, c) => a + b + c);
+
+add(1)(2)(3);     // 6
+add(1, 2)(3);     // 6
+add(1)(2, 3);     // 6
+add(1, 2, 3);     // 6 - all work!</code></pre>
+
+        <p>This curry helper is flexible - it accepts arguments one at a time, all at once, or any combination. It
+            checks
+            if enough arguments have been provided (using <code>fn.length</code>, which gives the function's arity), and
+            if so, calls the original function. Otherwise, it returns a new function that accumulates more arguments.
+        </p>
+
+        <p>This flexibility makes curried functions more practical. You're not forced into the one-argument-at-a-time
+            pattern - you can provide multiple arguments when convenient while still getting the benefits of partial
+            application.</p>
+
+        <h3>When to Use Currying</h3>
+        <p>Currying is a powerful technique, but like any tool, it's not appropriate for every situation. Here's
+            guidance
+            on when to use it and when to stick with traditional functions:</p>
+
+        <p><strong>Use currying when:</strong></p>
+        <ul>
+            <li><strong>Building configurable functions</strong> - When you need functions with different configurations
+            </li>
+            <li><strong>Creating specialized versions</strong> - Deriving specific functions from general ones</li>
+            <li><strong>Working with functional composition</strong> - Building pipelines of transformations</li>
+            <li><strong>Partial application is frequent</strong> - You often call functions with some but not all
+                arguments</li>
+        </ul>
+
+        <p><strong>Skip currying when:</strong></p>
+        <ul>
+            <li><strong>Functions are called once with all arguments</strong> - No benefit from partial application</li>
+            <li><strong>Performance is critical</strong> - Currying adds function call overhead (though usually
+                negligible)</li>
+            <li><strong>Team is unfamiliar with the pattern</strong> - Code readability matters more than cleverness
+            </li>
+            <li><strong>It doesn't improve readability</strong> - Sometimes traditional functions are clearer</li>
+        </ul>
+
+        <p>The key is to use currying where it genuinely improves your code, not just because it's a cool technique.
+            When
+            currying makes your code more reusable and easier to understand, use it. When it just makes things more
+            complex, stick with regular functions.</p>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Currying transforms <code>f(a, b, c)</code> into <code>f(a)(b)(c)</code></li>
+            <li>Enables partial application and function reuse</li>
+            <li>Perfect for configuration and specialization</li>
+            <li>Use arrow functions for clean syntax</li>
+            <li>Create a curry helper for convenience</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 5 -->
+    <div id="chapter5" class="page-break">
+        <h1>Chapter 5: JavaScript 'this' Keyword</h1>
+        <h2>The Keyword That Confuses Everyone</h2>
+
+        <p>If you've ever written <code>console.log(this)</code> and been surprised by what you saw, you're not alone.
+            The <code>this</code> keyword is JavaScript's most misunderstood feature, responsible for more "Wait, why
+            doesn't this work?" moments than perhaps any other aspect of the language. The confusion stems from the fact
+            that <code>this</code> behaves differently in JavaScript than in most other programming languages.</p>
+
+        <p>In languages like Java or C++, <code>this</code> always refers to the instance of the class where the method
+            is defined. It's predictable and static. JavaScript's <code>this</code>, however, is dynamic - its value is
+            determined at runtime based on how a function is called, not where it's defined. This flexibility is
+            powerful,
+            but it requires understanding the rules that govern <code>this</code> binding.</p>
+
+        <h3>What is 'this'?</h3>
+        <p>In JavaScript, <code>this</code> refers to the <strong>context</strong> in which a function is executed. The
+            key insight is that <code>this</code> is determined by the <strong>call site</strong> - the location in code
+            where the function is called - not by where the function is defined. This dynamic binding is what makes
+            <code>this</code> both powerful and confusing.
+        </p>
+
+        <p>Let's start with a simple example that seems to work as expected:</p>
+
+        <pre><code>const person = {
+    name: "Alice",
+    greet: function() {
+        console.log(`Hello, I'm ${this.name}`);
+    }
+};
+
+person.greet(); // "Hello, I'm Alice"</code></pre>
+
+        <p>Simple enough, right? When you call <code>person.greet()</code>, <code>this</code> refers to
+            <code>person</code>, so <code>this.name</code> is <code>"Alice"</code>. This is called "implicit binding" -
+            the object to the left of the dot becomes <code>this</code>.
+        </p>
+
+        <p>Now watch what happens when we extract the method:</p>
+
+        <pre><code>const greet = person.greet;
+greet(); // "Hello, I'm undefined"</code></pre>
+
+        <p>Wait, what happened? The function lost its context! When you call <code>greet()</code> as a standalone
+            function, there's no object to the left of the dot, so <code>this</code> falls back to the global object
+            (or <code>undefined</code> in strict mode). This is one of the most common sources of bugs in JavaScript,
+            especially when passing methods as callbacks.</p>
+
+        <h3>The Four Rules of 'this'</h3>
+        <p>Understanding <code>this</code> comes down to four binding rules. These rules have a priority order - if
+            multiple rules apply, the higher-priority rule wins. Master these, and you'll never be confused again.</p>
+
+        <h4>1. Default Binding (Standalone Function)</h4>
+        <p>This is the fallback rule when no other binding applies. When you call a function by itself, without any
+            context, <code>this</code> refers to the global object (in browsers, that's <code>window</code>). In strict
+            mode, it's <code>undefined</code> instead.</p>
+
+        <pre><code>function showThis() {
+    console.log(this);
+}
+
+showThis(); // Window (or global object)</code></pre>
+
+        <p>This is the lowest priority rule - it only applies when none of the other rules do.</p>
+
+        <h4>2. Implicit Binding (Method Call)</h4>
+        <p>When you call a function as a method of an object (using dot notation), <code>this</code> refers to that
+            object. The object "owns" the function call, so it becomes the context.</p>
+
+        <pre><code>const user = {
+    name: "Bob",
+    greet() {
+        console.log(`Hi, I'm ${this.name}`);
+    }
+};
+
+user.greet(); // "Hi, I'm Bob"</code></pre>
+
+        <p><strong>The catch:</strong> This binding is easily lost. When you extract a method and call it separately,
+            you lose the implicit binding because there's no longer an object to the left of the dot:</p>
+
+        <pre><code>const greet = user.greet;
+greet(); // "Hi, I'm undefined" - lost context!</code></pre>
+
+        <p>This is a common source of bugs, especially when passing methods as callbacks to functions like
+            <code>setTimeout</code> or event listeners.
+        </p>
+
+        <h4>3. Explicit Binding (call, apply, bind)</h4>
+        <p>JavaScript provides three methods that let you explicitly control what <code>this</code> refers to. These
+            override implicit binding and give you direct control over the context:</p>
+
+        <pre><code>function introduce(greeting) {
+    console.log(`${greeting}, I'm ${this.name}`);
+}
+
+const person = { name: "Alice" };
+
+introduce.call(person, "Hello");  // "Hello, I'm Alice"
+introduce.apply(person, ["Hi"]);  // "Hi, I'm Alice"
+
+const boundIntroduce = introduce.bind(person);
+boundIntroduce("Hey"); // "Hey, I'm Alice"</code></pre>
+
+        <p><code>call()</code> and <code>apply()</code> immediately invoke the function with the specified
+            <code>this</code> value. The only difference is how they handle additional arguments: <code>call()</code>
+            takes them individually, while <code>apply()</code> takes them as an array.
+        </p>
+
+        <p><code>bind()</code> doesn't invoke the function immediately. Instead, it returns a new function with
+            <code>this</code> permanently bound to the specified value. This is useful for creating callback functions
+            that maintain their context.
+        </p>
+
+        <h4>4. New Binding (Constructor)</h4>
+        <p>When you call a function with the <code>new</code> keyword, JavaScript creates a new empty object and sets
+            <code>this</code> to refer to that object. This is how constructor functions work:
+        </p>
+
+        <pre><code>function Person(name) {
+    this.name = name;
+}
+
+const alice = new Person("Alice");
+console.log(alice.name); // "Alice"</code></pre>
+
+        <p>The <code>new</code> keyword does four things: creates a new object, sets <code>this</code> to that object,
+            executes the constructor function, and returns the object (unless the constructor explicitly returns
+            something else). This is the highest priority binding rule.</p>
+
+        <h3>Arrow Functions: The Game Changer</h3>
+        <p>Arrow functions introduced in ES6 fundamentally changed how <code>this</code> works. Unlike regular
+            functions,
+            arrow functions don't have their own <code>this</code> binding. Instead, they inherit <code>this</code> from
+            the surrounding lexical scope - the scope where the arrow function was defined.</p>
+
+        <p>This "lexical this" behavior solves one of JavaScript's most annoying problems: losing <code>this</code> in
+            callbacks:</p>
+
+        <pre><code>const counter = {
+    count: 0,
+    start: function() {
+        setInterval(() => {
+            this.count++; // 'this' is counter!
+            console.log(this.count);
+        }, 1000);
+    }
+};
+
+counter.start(); // 1, 2, 3...</code></pre>
+
+        <p>The arrow function inside <code>setInterval</code> doesn't have its own <code>this</code>, so it uses
+            <code>this</code> from the <code>start</code> method, which is <code>counter</code>. This works perfectly.
+        </p>
+
+        <p>With a regular function, this breaks because the callback has its own <code>this</code> that's set by how
+            <code>setInterval</code> calls it:
+        </p>
+
+        <pre><code>const counter = {
+    count: 0,
+    start: function() {
+        setInterval(function() {
+            this.count++; // 'this' is NOT counter!
+            console.log(this.count); // NaN
+        }, 1000);
+    }
+};</code></pre>
+
+        <p>Arrow functions can't be used as constructors (you can't use <code>new</code> with them), and you can't
+            change their <code>this</code> with <code>call()</code>, <code>apply()</code>, or <code>bind()</code>. Their
+            <code>this</code> is permanently set to the lexical scope where they were created.
+        </p>
+
+        <h3>Real-World Problem: Event Handlers</h3>
+        <p>Event handlers are where <code>this</code> confusion most commonly appears in real applications. When you
+            pass
+            a method as an event handler, it loses its context:</p>
+
+        <pre><code>class Button {
+    constructor() {
+        this.count = 0;
+    }
+    
+    handleClick() {
+        this.count++;
+        console.log(this.count);
+    }
+}
+
+const btn = new Button();
+element.addEventListener('click', btn.handleClick);
+// Click! TypeError: Cannot read property 'count' of undefined</code></pre>
+
+        <p><strong>Why does this fail?</strong> When you pass <code>btn.handleClick</code> to
+            <code>addEventListener</code>, you're passing the function itself, not a method call. The event listener
+            calls the function later without any context, so <code>this</code> becomes the DOM element (the event
+            target),
+            not the Button instance.
+        </p>
+
+        <p><strong>Three solutions:</strong></p>
+
+        <pre><code>// Solution 1: Arrow function wrapper
+element.addEventListener('click', () => btn.handleClick());
+
+// Solution 2: Bind in constructor
+class Button {
+    constructor() {
+        this.count = 0;
+        this.handleClick = this.handleClick.bind(this);
+    }
+    
+    handleClick() {
+        this.count++;
+        console.log(this.count);
+    }
+}
+
+// Solution 3: Class field with arrow function
+class Button {
+    count = 0;
+    
+    handleClick = () => {
+        this.count++;
+        console.log(this.count);
+    }
+}</code></pre>
+
+        <p>Solution 1 creates a new function that calls the method with the correct context. Solution 2 creates a bound
+            version of the method that always has the correct <code>this</code>. Solution 3 uses a class field with an
+            arrow function, which automatically captures <code>this</code> from the class instance. All three work, but
+            Solution 3 is the most modern and concise.</p>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li><code>this</code> is determined by how a function is called</li>
+            <li>Four binding rules: default, implicit, explicit, new</li>
+            <li>Arrow functions inherit <code>this</code> from enclosing scope</li>
+            <li>Use <code>bind()</code>, <code>call()</code>, or <code>apply()</code> for explicit binding</li>
+            <li>Arrow functions solve most callback <code>this</code> problems</li>
+            <li>Class fields with arrow functions auto-bind <code>this</code></li>
+        </ul>
+    </div>
+
+    <!-- PART III -->
+    <div class="page-break">
+        <h1 class="center">Part III</h1>
+        <h2 class="center">Asynchronous JavaScript</h2>
+    </div>
+
+    <!-- Chapter 6 -->
+    <div id="chapter6" class="page-break">
+        <h1>Chapter 6: JavaScript Promises</h1>
+        <h2>From Callback Hell to Async Heaven</h2>
+
+        <p>Remember the days of callback pyramids that looked like the Leaning Tower of Pisa? If you've been writing
+            JavaScript for a while, you probably do. Promises fundamentally changed how we handle asynchronous
+            operations
+            in JavaScript, transforming messy, nested callbacks into clean, readable code. They're now so central to
+            modern JavaScript that it's hard to imagine working without them.</p>
+
+        <p>Promises aren't just a syntactic improvement - they represent a conceptual shift in how we think about
+            asynchronous code. Instead of passing callbacks that will be called "someday," we get back a promise object
+            that represents a value that will be available "someday." This shift from callbacks to values makes
+            asynchronous code much easier to reason about and compose.</p>
+
+        <h3>The Problem: Callback Hell</h3>
+        <p>Before Promises, the standard way to handle asynchronous operations was through callbacks - functions you
+            pass
+            to other functions to be called when the operation completes. This worked, but it led to deeply nested code
+            that was difficult to read and maintain:</p>
+
+        <pre><code>getData(function(a) {
+    getMoreData(a, function(b) {
+        getMoreData(b, function(c) {
+            getMoreData(c, function(d) {
+                getMoreData(d, function(e) {
+                    // Finally do something
+                });
+            });
+        });
+    });
+});</code></pre>
+
+        <p>This "pyramid of doom" or "callback hell" has several problems beyond just looking ugly. Error handling is
+            difficult - you need to handle errors at each level. The code doesn't read top-to-bottom like synchronous
+            code. And trying to do things like running operations in parallel or racing them against each other becomes
+            incredibly complex.</p>
+
+        <p>The fundamental issue is that callbacks invert the control flow. Instead of your code calling functions and
+            getting results, you're giving control to other functions and hoping they call your callbacks correctly.
+            This
+            inversion of control makes code harder to understand and more prone to bugs.</p>
+
+        <h3>Enter Promises</h3>
+        <p>A Promise is an object representing the eventual completion (or failure) of an asynchronous operation.
+            Instead
+            of passing a callback to a function, the function returns a Promise object that you can attach callbacks to.
+            This simple shift restores normal control flow and makes asynchronous code much easier to work with.</p>
+
+        <pre><code>const promise = new Promise((resolve, reject) => {
+    // Async operation
+    if (success) {
+        resolve(value);
+    } else {
+        reject(error);
+    }
+});</code></pre>
+
+        <p>A Promise can be in one of three states, and it can only transition once - from pending to either fulfilled
+            or rejected. Once settled (fulfilled or rejected), a Promise's state never changes:</p>
+
+        <ul>
+            <li><strong>Pending</strong> - Initial state, operation hasn't completed yet</li>
+            <li><strong>Fulfilled</strong> - Operation completed successfully, promise has a value</li>
+            <li><strong>Rejected</strong> - Operation failed, promise has a reason (error)</li>
+        </ul>
+
+        <p>This state machine model makes Promises predictable. You know that a Promise will eventually settle, and once
+            it does, its value or error is immutable. This immutability is crucial for composing asynchronous operations
+            reliably.</p>
+
+        <h3>Using Promises</h3>
+        <p>The real power of Promises comes from how you use them. The <code>.then()</code> method lets you attach
+            callbacks that run when the Promise fulfills, and <code>.catch()</code> handles errors. The key insight is
+            that <code>.then()</code> returns a new Promise, enabling chaining:</p>
+
+        <pre><code>fetch('https://api.example.com/data')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        return processData(data);
+    })
+    .then(result => {
+        console.log(result);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        console.log('Cleanup');
+    });</code></pre>
+
+        <p>Much cleaner! The code reads top-to-bottom like synchronous code, and error handling is centralized in a
+            single <code>.catch()</code> block. The <code>.finally()</code> method runs regardless of whether the
+            Promise
+            fulfilled or rejected, perfect for cleanup operations like hiding loading spinners.</p>
+
+        <p>Each <code>.then()</code> in the chain receives the value from the previous Promise. If you return a value
+            from a <code>.then()</code> callback, it's wrapped in a Promise automatically. If you return a Promise, the
+            next <code>.then()</code> waits for that Promise to settle. This makes sequential async operations natural
+            to express.</p>
+
+        <h3>Creating Promises</h3>
+        <p>While many APIs return Promises (like <code>fetch()</code>), you'll sometimes need to create your own. The
+            Promise constructor takes a function with two parameters: <code>resolve</code> and <code>reject</code>. Call
+            <code>resolve(value)</code> when the operation succeeds, or <code>reject(error)</code> when it fails:
+        </p>
+
+        <pre><code>function delay(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}
+
+delay(1000).then(() => console.log('1 second later'));</code></pre>
+
+        <p>This simple <code>delay</code> function wraps <code>setTimeout</code> in a Promise, making it chainable with
+            other async operations. This pattern of "promisifying" callback-based APIs is common when working with older
+            code.</p>
+
+        <h3>Chaining Promises</h3>
+        <p>Promise chaining is where the real power emerges. Each <code>.then()</code> returns a new Promise, so you can
+            chain operations that depend on previous results. This transforms nested callbacks into a flat, readable
+            chain:</p>
+
+        <pre><code>function getUserData(userId) {
+    return fetch(`/api/users/${userId}`)
+        .then(response => response.json());
+}
+
+function getUserPosts(userId) {
+    return fetch(`/api/users/${userId}/posts`)
+        .then(response => response.json());
+}
+
+getUserData(1)
+    .then(user => {
+        console.log('User:', user);
+        return getUserPosts(user.id);
+    })
+    .then(posts => {
+        console.log('Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });</code></pre>
+
+        <p>The key is that when you return a Promise from a <code>.then()</code> callback, the next <code>.then()</code>
+            waits for that Promise to settle. This makes sequential async operations natural - first get the user, then
+            use the user's ID to get their posts. A single <code>.catch()</code> at the end handles errors from any step
+            in the chain.</p>
+
+        <h3>Promise.all() - Parallel Execution</h3>
+        <p>When you have multiple independent async operations, you don't want to wait for them sequentially - that
+            would
+            be slow. <code>Promise.all()</code> runs them in parallel and waits for all to complete:</p>
+
+        <pre><code>const promise1 = fetch('/api/users');
+const promise2 = fetch('/api/posts');
+const promise3 = fetch('/api/comments');
+
+Promise.all([promise1, promise2, promise3])
+    .then(([users, posts, comments]) => {
+        console.log('All data loaded');
+    })
+    .catch(error => {
+        console.error('One failed:', error);
+    });</code></pre>
+
+        <p><strong>Important:</strong> <code>Promise.all()</code> rejects immediately if ANY promise rejects. This
+            "fail-fast" behavior is useful when all operations must succeed, but it means one failure cancels
+            everything.
+            If you need more resilient behavior, consider <code>Promise.allSettled()</code>, which waits for all
+            Promises
+            regardless of whether they fulfill or reject.</p>
+
+        <h3>Promise.race() - First to Finish</h3>
+        <p><code>Promise.race()</code> returns a Promise that settles as soon as the first Promise in the array settles.
+            This is useful for implementing timeouts or racing multiple data sources:</p>
+
+        <pre><code>const timeout = new Promise((_, reject) => 
+    setTimeout(() => reject('Timeout'), 5000)
+);
+
+const request = fetch('/api/data');
+
+Promise.race([request, timeout])
+    .then(data => console.log('Success:', data))
+    .catch(error => console.error('Error:', error));</code></pre>
+
+        <p>This pattern ensures your request completes within 5 seconds or times out. Whichever Promise settles first
+            (the fetch or the timeout) determines the result. This is particularly useful for providing good user
+            experience by not letting requests hang indefinitely.</p>
+
+        <h3>Async/Await - Promises Made Easy</h3>
+        <p>ES2017 introduced <code>async</code>/<code>await</code>, which is syntactic sugar over Promises that makes
+            asynchronous code look and behave more like synchronous code. An <code>async</code> function always returns
+            a
+            Promise, and <code>await</code> pauses execution until a Promise settles:</p>
+
+        <pre><code>async function fetchUserData(userId) {
+    try {
+        const response = await fetch(`/api/users/${userId}`);
+        const user = await response.json();
+        
+        const postsResponse = await fetch(`/api/users/${userId}/posts`);
+        const posts = await postsResponse.json();
+        
+        return { user, posts };
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
+// Usage
+fetchUserData(1)
+    .then(data => console.log(data))
+    .catch(error => console.error(error));</code></pre>
+
+        <p>The <code>await</code> keyword makes async code read like synchronous code - you write sequential operations
+            line by line without <code>.then()</code> chains. Error handling uses familiar <code>try/catch</code>
+            blocks.
+            This is now the preferred way to work with Promises in modern JavaScript, though understanding Promises
+            themselves is still essential.</p>
+
+        <h3>Common Pitfalls</h3>
+        <p>Even experienced developers make these mistakes with Promises. Understanding these pitfalls will save you
+            hours
+            of debugging:</p>
+
+        <h4>1. Forgetting to return</h4>
+        <p>This is the most common Promise mistake. If you don't return a Promise from a <code>.then()</code> callback,
+            the next <code>.then()</code> receives <code>undefined</code> instead of waiting for the async operation:
+        </p>
+
+        <pre><code>// Wrong
+promise1.then(data => {
+    promise2(data); // Not returned!
+}).then(result => {
+    // result is undefined
+});
+
+// Right
+promise1.then(data => {
+    return promise2(data);
+}).then(result => {
+    // result has value
+});</code></pre>
+
+        <p>The chain continues immediately without waiting for <code>promise2</code> to complete. Always return Promises
+            from <code>.then()</code> callbacks when you want subsequent steps to wait.</p>
+
+        <h4>2. Not handling errors</h4>
+        <p>Unhandled Promise rejections are silent by default (though modern environments warn about them). Always add a
+            <code>.catch()</code> to handle errors, or they'll disappear into the void:
+        </p>
+
+        <pre><code>// Wrong
+fetch('/api/data')
+    .then(response => response.json())
+    .then(data => console.log(data));
+// Errors are silently swallowed!
+
+// Right
+fetch('/api/data')
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error(error));</code></pre>
+
+        <p>Without <code>.catch()</code>, network failures, parsing errors, or any other problems will fail silently,
+            making debugging extremely difficult. Always handle errors explicitly.</p>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Promises represent future values</li>
+            <li>Three states: pending, fulfilled, rejected</li>
+            <li>Chain with <code>.then()</code>, handle errors with <code>.catch()</code></li>
+            <li><code>Promise.all()</code> for parallel execution</li>
+            <li><code>async</code>/<code>await</code> makes Promises easier to read</li>
+            <li>Always handle errors</li>
+            <li>Always return from <code>.then()</code> when chaining</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 7 -->
+    <div id="chapter7" class="page-break">
+        <h1>Chapter 7: JavaScript Generators</h1>
+        <h2>The Underrated Feature That Will Change How You Code</h2>
+
+        <p>If you've been writing JavaScript for a while, you've probably heard of generators. Maybe you've even seen
+            the <code>function*</code> syntax and wondered what it does. Generators are one of JavaScript's most
+            powerful yet underused features, often overlooked because they seem complex or niche. But once you
+            understand
+            them, you'll discover they solve problems that are difficult or impossible to solve elegantly with regular
+            functions.</p>
+
+        <p>Generators fundamentally change the execution model of functions. While regular functions run from start to
+            finish in one go, generators can pause in the middle, return a value, and then resume exactly where they
+            left
+            off. This ability to pause and resume opens up entirely new patterns for handling iteration, lazy
+            evaluation,
+            and complex control flow.</p>
+
+        <h3>What is a Generator?</h3>
+        <p>A generator is a special type of function that can pause and resume its execution. Unlike regular functions
+            that run to completion and return a single value, generators can yield multiple values over time, pausing
+            after each yield and resuming when asked for the next value:</p>
+
+        <pre><code>function* countToThree() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+const counter = countToThree();
+console.log(counter.next()); // { value: 1, done: false }
+console.log(counter.next()); // { value: 2, done: false }
+console.log(counter.next()); // { value: 3, done: false }
+console.log(counter.next()); // { value: undefined, done: true }</code></pre>
+
+        <p>The <code>function*</code> syntax (note the asterisk) creates a generator function. When you call a generator
+            function, it doesn't execute immediately. Instead, it returns a generator object that implements the
+            iterator
+            protocol. Each call to <code>.next()</code> runs the generator until it hits a <code>yield</code> statement,
+            returns the yielded value, and pauses. The next <code>.next()</code> call resumes from exactly where it
+            paused.</p>
+
+        <p>The returned object has two properties: <code>value</code> (the yielded value) and <code>done</code> (a
+            boolean indicating whether the generator has finished). This protocol makes generators work seamlessly with
+            JavaScript's iteration features like <code>for...of</code> loops.</p>
+
+        <h3>Why Generators Matter</h3>
+        <p>Generators enable patterns that are difficult or inefficient with regular functions. Let's explore four key
+            use
+            cases that demonstrate their power:</p>
+
+        <h4>1. Lazy Evaluation</h4>
+        <p>One of the most powerful features of generators is lazy evaluation - values are computed only when requested,
+            not all at once. This enables working with infinite sequences and large datasets without memory concerns:
+        </p>
+
+        <pre><code>function* fibonacci() {
+    let a = 0, b = 1;
+    while (true) {
+        yield a;
+        [a, b] = [b, a + b];
+    }
+}
+
+const fib = fibonacci();
+console.log(fib.next().value); // 0
+console.log(fib.next().value); // 1
+console.log(fib.next().value); // 1
+console.log(fib.next().value); // 2
+console.log(fib.next().value); // 3
+// Can generate infinite sequence!</code></pre>
+
+        <p>This Fibonacci generator has an infinite <code>while (true)</code> loop, which would hang a regular function.
+            But with a generator, it's perfectly safe - each number is computed only when you call <code>.next()</code>.
+            You could generate the millionth Fibonacci number without computing all the previous ones at once. This is
+            impossible with arrays or regular functions.</p>
+
+        <h4>2. Custom Iterators</h4>
+        <p>Generators make creating custom iterators trivial. Any generator automatically works with
+            <code>for...of</code>
+            loops and other iteration protocols:
+        </p>
+
+        <pre><code>function* range(start, end) {
+    for (let i = start; i <= end; i++) {
+        yield i;
+    }
+}
+
+for (let num of range(1, 5)) {
+    console.log(num); // 1, 2, 3, 4, 5
+}</code></pre>
+
+        <p>Without generators, implementing a custom iterator requires manually implementing the iterator protocol with
+            <code>Symbol.iterator</code> and <code>next()</code> methods - much more verbose. Generators handle all that
+            boilerplate for you.
+        </p>
+
+        <h4>3. Async Flow Control</h4>
+        <p>Before <code>async/await</code> existed, generators were used for handling asynchronous code in a synchronous
+            style. Libraries like co and redux-saga still use this pattern:</p>
+
+        <pre><code>function* fetchData() {
+    const user = yield fetch('/api/user');
+    const posts = yield fetch(`/api/posts/${user.id}`);
+    return posts;
+}</code></pre>
+
+        <p>While <code>async/await</code> has largely replaced this use case, understanding it helps you appreciate how
+            generators enable control flow manipulation. The generator pauses at each <code>yield</code>, allowing
+            external code to handle the Promise and resume with the result.</p>
+
+        <h4>4. State Machines</h4>
+        <p>Generators excel at implementing state machines - systems that cycle through a series of states. The
+            generator
+            naturally maintains state between calls:</p>
+
+        <pre><code>function* trafficLight() {
+    while (true) {
+        yield 'red';
+        yield 'yellow';
+        yield 'green';
+    }
+}
+
+const light = trafficLight();
+console.log(light.next().value); // red
+console.log(light.next().value); // yellow
+console.log(light.next().value); // green
+console.log(light.next().value); // red (cycles)</code></pre>
+
+        <p>The generator remembers where it is in the cycle. Implementing this with regular functions would require
+            manually tracking state in external variables. Generators encapsulate the state naturally.</p>
+
+        <h3>Passing Values to Generators</h3>
+        <p>Generators aren't just one-way - you can pass values back into them using <code>.next(value)</code>. The
+            value
+            you pass becomes the result of the <code>yield</code> expression inside the generator:</p>
+
+        <pre><code>function* echo() {
+    const input1 = yield 'Ready';
+    console.log(`Got: ${input1}`);
+    
+    const input2 = yield 'Waiting';
+    console.log(`Got: ${input2}`);
+}
+
+const gen = echo();
+console.log(gen.next());        // { value: 'Ready', done: false }
+console.log(gen.next('Hello')); // Got: Hello, { value: 'Waiting', done: false }
+console.log(gen.next('World')); // Got: World, { value: undefined, done: true }</code></pre>
+
+        <p>This bidirectional communication enables powerful patterns. The generator yields a value out, pauses, and
+            when
+            resumed with <code>.next(value)</code>, that value becomes the result of the yield expression. This creates
+            a
+            conversation between the generator and the calling code.</p>
+
+        <h3>Real-World Example: Pagination</h3>
+        <p>Here's a practical example that demonstrates lazy evaluation and custom iteration. This generator lazily
+            creates pages from a dataset, computing each page only when requested:</p>
+
+        <pre><code>function* paginate(items, pageSize) {
+    for (let i = 0; i < items.length; i += pageSize) {
+        yield items.slice(i, i + pageSize);
+    }
+}
+
+const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const pages = paginate(items, 3);
+
+console.log(pages.next().value); // [1, 2, 3]
+console.log(pages.next().value); // [4, 5, 6]
+console.log(pages.next().value); // [7, 8, 9]
+console.log(pages.next().value); // [10]</code></pre>
+
+        <p>This is perfect for implementing "load more" functionality or processing large datasets in chunks. Each page
+            is
+            created on demand, so you never load the entire dataset into memory at once. You could paginate millions of
+            items efficiently.</p>
+
+        <h3>Generator Delegation</h3>
+        <p>The <code>yield*</code> syntax allows one generator to delegate to another, yielding all values from the
+            delegated generator. This is useful for composing generators and building complex iteration patterns from
+            simpler ones:</p>
+
+        <pre><code>function* gen1() {
+    yield 1;
+    yield 2;
+}
+
+function* gen2() {
+    yield* gen1(); // Delegate to gen1
+    yield 3;
+    yield 4;
+}
+
+const gen = gen2();
+console.log([...gen]); // [1, 2, 3, 4]</code></pre>
+
+        <p>The <code>yield*</code> expression delegates to another iterable (generator, array, etc.) and yields all its
+            values before continuing. This makes it easy to compose generators, similar to how you compose functions.
+            You
+            can build complex iteration logic by combining simple, reusable generator functions.</p>
+
+        <h3>When to Use Generators</h3>
+        <p>Generators are powerful, but they're not always the right tool. Here's guidance on when to use them and when
+            simpler alternatives are better:</p>
+
+        <p><strong>Use generators when:</strong></p>
+        <ul>
+            <li><strong>Working with large or infinite sequences</strong> - Lazy evaluation prevents memory issues</li>
+            <li><strong>Implementing custom iterators</strong> - Much simpler than manual iterator protocol</li>
+            <li><strong>Need lazy evaluation</strong> - Compute values only when needed</li>
+            <li><strong>Building state machines</strong> - Natural way to model state transitions</li>
+            <li><strong>Creating data pipelines</strong> - Compose transformations efficiently</li>
+        </ul>
+
+        <p><strong>Skip generators when:</strong></p>
+        <ul>
+            <li><strong>Simple iteration is enough</strong> - Arrays and <code>for</code> loops are clearer</li>
+            <li><strong>Team is unfamiliar with the syntax</strong> - Code readability matters</li>
+            <li><strong>Performance is critical</strong> - Regular loops have less overhead (though the difference is
+                usually negligible)</li>
+        </ul>
+
+        <p>The key is to use generators where they genuinely simplify your code or enable patterns that would be
+            difficult
+            otherwise. Don't use them just because they're clever - use them because they solve a real problem
+            elegantly.</p>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Generators can pause and resume execution</li>
+            <li>Use <code>function*</code> syntax and <code>yield</code> keyword</li>
+            <li>Perfect for lazy evaluation and infinite sequences</li>
+            <li>Great for custom iterators</li>
+            <li>Can pass values back and forth</li>
+            <li>Use <code>yield*</code> for delegation</li>
+            <li>Modern async/await replaced generators for async code</li>
+        </ul>
+    </div>
+
+    <!-- Conclusion -->
+    <div id="conclusion" class="page-break">
+        <h1>Conclusion</h1>
+
+        <p>Congratulations! You've completed this journey through essential JavaScript concepts. From understanding data
+            types and hoisting to mastering closures, currying, the <code>this</code> keyword, Promises, and generators
+            - you now have a solid foundation in JavaScript.</p>
+
+        <h3>What's Next?</h3>
+
+        <h4>Practice, Practice, Practice</h4>
+        <p>Reading about these concepts is just the first step. The real learning happens when you apply them in your
+            projects. Try to:</p>
+        <ul>
+            <li>Refactor existing code using closures for better encapsulation</li>
+            <li>Use currying to create reusable function factories</li>
+            <li>Replace callbacks with Promises and async/await</li>
+            <li>Experiment with generators for data processing</li>
+        </ul>
+
+        <h4>Keep Learning</h4>
+        <p>JavaScript is constantly evolving. Stay up to date with:</p>
+        <ul>
+            <li>New ECMAScript features</li>
+            <li>Modern frameworks and libraries</li>
+            <li>Best practices and design patterns</li>
+            <li>Performance optimization techniques</li>
+        </ul>
+
+        <h4>Share Your Knowledge</h4>
+        <p>Teaching others is one of the best ways to solidify your understanding. Write blog posts, answer questions on
+            Stack Overflow, or mentor junior developers.</p>
+
+        <h3>Final Thoughts</h3>
+        <p>JavaScript's quirks and features can be confusing, but they're also what makes it powerful and flexible.
+            Understanding these core concepts will make you a better developer, help you write cleaner code, and prepare
+            you for technical interviews.</p>
+
+        <p>Keep this book handy as a reference. When you encounter unexpected behavior or need a refresher on a concept,
+            come back to the relevant chapter.</p>
+
+        <p>Happy coding!</p>
+    </div>
+
+    <!-- About the Author -->
+    <div id="author" class="page-break">
+        <h1>About the Author</h1>
+
+        <p><strong>Bohdan Tsap</strong> is a Full Stack Software Engineer specializing in React and Java/Spring, with
+            expertise in distributed and cloud-native applications. He writes practical, accessible guides to help
+            developers master JavaScript and modern web development.</p>
+
+        <h3>Connect with Bohdan:</h3>
+        <ul>
+            <li>Medium: <a href="https://medium.com/@bohdaq">@bohdaq</a></li>
+            <li>LinkedIn: <a href="https://www.linkedin.com/in/bohdaq/">linkedin.com/in/bohdaq</a></li>
+            <li>GitHub: <a href="https://github.com/bohdaq">github.com/bohdaq</a></li>
+        </ul>
+    </div>
+
+    <!-- Copyright -->
+    <div class="copyright page-break">
+        <p><strong>© 2025 Bohdan Tsap. All rights reserved.</strong></p>
+    </div>
+
+</body>
+
+</html>
