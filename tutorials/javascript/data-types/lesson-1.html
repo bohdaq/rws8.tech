@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JavaScript Data Types - Learn all primitive and reference types in JavaScript.">
+    <meta name="keywords" content="JavaScript, Data Types, Primitives, Objects, Arrays, Type Coercion">
+    <meta name="author" content="bohdaq">
+    <title>JavaScript Data Types | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/data-types/lesson-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .type-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .type-table th,
+        .type-table td {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .type-table th {
+            background-color: var(--bg-secondary);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Data Types</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>JavaScript Data Types</h1>
+            <p class="page-subtitle">Understanding Primitive and Reference Types</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand all seven primitive data types</li>
+                        <li>Learn about reference types: objects, arrays, and functions</li>
+                        <li>Master type checking with typeof and other methods</li>
+                        <li>Understand type coercion and conversion</li>
+                        <li>Avoid common type-related pitfalls</li>
+                    </ul>
+                </div>
+
+                <h2>Overview of JavaScript Data Types</h2>
+                <p>
+                    JavaScript has two main categories of data types:
+                </p>
+                <ul>
+                    <li><strong>Primitive types</strong> - Immutable values stored directly in memory</li>
+                    <li><strong>Reference types</strong> - Mutable objects stored by reference</li>
+                </ul>
+
+                <table class="type-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Types</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Primitives (7)</strong></td>
+                            <td>Number, String, Boolean, Undefined, Null, Symbol, BigInt</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reference Types</strong></td>
+                            <td>Object, Array, Function, Date, RegExp, etc.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Primitive Data Types</h2>
+
+                <h3>1. Number</h3>
+                <p>
+                    JavaScript has only one number type - all numbers are 64-bit floating point values.
+                </p>
+
+                <pre><code class="language-javascript">// Integers
+let age = 25;
+let count = 100;
+
+// Floating point
+let price = 19.99;
+let pi = 3.14159;
+
+// Special numeric values
+let infinity = Infinity;
+let negInfinity = -Infinity;
+let notANumber = NaN;
+
+// Number operations
+console.log(10 / 3);        // 3.3333333333333335
+console.log(0.1 + 0.2);     // 0.30000000000000004 (floating point precision)
+console.log(5 / 0);         // Infinity
+console.log("hello" / 2);   // NaN</code></pre>
+
+                <h4>Number Methods and Properties</h4>
+                <pre><code class="language-javascript">// Checking for NaN
+console.log(isNaN(NaN));           // true
+console.log(isNaN("hello"));       // true
+console.log(Number.isNaN(NaN));    // true (more strict)
+console.log(Number.isNaN("hello")); // false
+
+// Checking for finite numbers
+console.log(isFinite(100));        // true
+console.log(isFinite(Infinity));   // false
+
+// Parsing
+console.log(parseInt("42"));       // 42
+console.log(parseInt("42.5"));     // 42
+console.log(parseFloat("42.5"));   // 42.5
+console.log(parseInt("42px"));     // 42
+
+// Converting to fixed decimals
+let num = 3.14159;
+console.log(num.toFixed(2));       // "3.14"</code></pre>
+
+                <h3>2. String</h3>
+                <p>
+                    Strings represent text and are immutable sequences of characters.
+                </p>
+
+                <pre><code class="language-javascript">// String literals
+let single = 'Hello';
+let double = "World";
+let template = `Hello, World!`;
+
+// String concatenation
+let greeting = "Hello" + " " + "World";  // "Hello World"
+
+// Template literals (ES6)
+let name = "Alice";
+let age = 25;
+let message = `My name is ${name} and I'm ${age} years old`;
+
+// Multi-line strings
+let multiline = `
+    This is a
+    multi-line
+    string
+`;
+
+// Escape characters
+let escaped = "She said, \"Hello!\"";
+let newline = "Line 1\nLine 2";
+let tab = "Column1\tColumn2";</code></pre>
+
+                <h4>String Methods</h4>
+                <pre><code class="language-javascript">let str = "Hello, World!";
+
+// Length
+console.log(str.length);              // 13
+
+// Accessing characters
+console.log(str[0]);                  // "H"
+console.log(str.charAt(0));           // "H"
+
+// Case conversion
+console.log(str.toLowerCase());       // "hello, world!"
+console.log(str.toUpperCase());       // "HELLO, WORLD!"
+
+// Searching
+console.log(str.indexOf("World"));    // 7
+console.log(str.includes("World"));   // true
+console.log(str.startsWith("Hello")); // true
+console.log(str.endsWith("!"));       // true
+
+// Extracting
+console.log(str.slice(0, 5));         // "Hello"
+console.log(str.substring(7, 12));    // "World"
+console.log(str.substr(7, 5));        // "World" (deprecated)
+
+// Replacing
+console.log(str.replace("World", "JavaScript")); // "Hello, JavaScript!"
+
+// Splitting
+console.log(str.split(", "));         // ["Hello", "World!"]
+
+// Trimming
+let padded = "  hello  ";
+console.log(padded.trim());           // "hello"</code></pre>
+
+                <h3>3. Boolean</h3>
+                <p>
+                    Booleans represent logical values: <code>true</code> or <code>false</code>.
+                </p>
+
+                <pre><code class="language-javascript">let isActive = true;
+let isComplete = false;
+
+// Boolean operations
+console.log(true && false);   // false (AND)
+console.log(true || false);   // true (OR)
+console.log(!true);           // false (NOT)
+
+// Comparison operators return booleans
+console.log(5 > 3);           // true
+console.log(10 === 10);       // true
+console.log("a" < "b");       // true
+
+// Truthy and Falsy values
+// Falsy: false, 0, "", null, undefined, NaN
+// Everything else is truthy
+
+if ("hello") {
+    console.log("Strings are truthy");
+}
+
+if (0) {
+    console.log("This won't run");
+}
+
+// Converting to boolean
+console.log(Boolean(1));      // true
+console.log(Boolean(0));      // false
+console.log(Boolean(""));     // false
+console.log(Boolean("text")); // true</code></pre>
+
+                <h3>4. Undefined</h3>
+                <p>
+                    <code>undefined</code> means a variable has been declared but not assigned a value.
+                </p>
+
+                <pre><code class="language-javascript">let x;
+console.log(x);               // undefined
+console.log(typeof x);        // "undefined"
+
+// Function with no return value
+function doNothing() {}
+console.log(doNothing());     // undefined
+
+// Accessing non-existent property
+let obj = {};
+console.log(obj.name);        // undefined
+
+// Function parameter not provided
+function greet(name) {
+    console.log(name);
+}
+greet();                      // undefined</code></pre>
+
+                <h3>5. Null</h3>
+                <p>
+                    <code>null</code> represents the intentional absence of a value.
+                </p>
+
+                <pre><code class="language-javascript">let empty = null;
+console.log(empty);           // null
+console.log(typeof null);     // "object" (historical bug!)
+
+// null vs undefined
+let notAssigned;              // undefined
+let intentionallyEmpty = null; // null
+
+// Checking for null
+if (empty === null) {
+    console.log("Value is null");
+}
+
+// null in operations
+console.log(null + 5);        // 5 (null converts to 0)
+console.log(null == undefined); // true (loose equality)
+console.log(null === undefined); // false (strict equality)</code></pre>
+
+                <h3>6. Symbol (ES6)</h3>
+                <p>
+                    Symbols are unique and immutable identifiers, often used as object property keys.
+                </p>
+
+                <pre><code class="language-javascript">// Creating symbols
+let sym1 = Symbol();
+let sym2 = Symbol("description");
+let sym3 = Symbol("description");
+
+console.log(sym2 === sym3);   // false (each symbol is unique)
+
+// Using symbols as object keys
+let id = Symbol("id");
+let user = {
+    name: "Alice",
+    [id]: 123
+};
+
+console.log(user[id]);        // 123
+console.log(user.id);         // undefined
+
+// Symbols are not enumerable
+for (let key in user) {
+    console.log(key);         // Only "name" is logged
+}
+
+// Global symbol registry
+let globalSym1 = Symbol.for("app.id");
+let globalSym2 = Symbol.for("app.id");
+console.log(globalSym1 === globalSym2); // true</code></pre>
+
+                <h3>7. BigInt (ES2020)</h3>
+                <p>
+                    BigInt allows you to work with integers larger than <code>Number.MAX_SAFE_INTEGER</code>.
+                </p>
+
+                <pre><code class="language-javascript">// Creating BigInt
+let bigNum1 = 9007199254740991n;
+let bigNum2 = BigInt("9007199254740991");
+
+console.log(typeof bigNum1);  // "bigint"
+
+// BigInt operations
+let sum = 100n + 200n;        // 300n
+let product = 50n * 2n;       // 100n
+
+// Cannot mix BigInt and Number
+// console.log(100n + 50);    // TypeError
+
+// Must convert explicitly
+console.log(100n + BigInt(50)); // 150n
+console.log(Number(100n) + 50); // 150
+
+// Comparison works
+console.log(100n > 50);       // true
+console.log(100n === 100);    // false (different types)
+console.log(100n == 100);     // true (loose equality)</code></pre>
+
+                <h2>Reference Types</h2>
+
+                <h3>Objects</h3>
+                <p>
+                    Objects are collections of key-value pairs.
+                </p>
+
+                <pre><code class="language-javascript">// Object literal
+let person = {
+    name: "Alice",
+    age: 25,
+    isStudent: true,
+    greet: function() {
+        console.log("Hello!");
+    }
+};
+
+// Accessing properties
+console.log(person.name);     // "Alice"
+console.log(person["age"]);   // 25
+
+// Adding properties
+person.email = "alice@example.com";
+
+// Deleting properties
+delete person.isStudent;
+
+// Checking for properties
+console.log("name" in person);        // true
+console.log(person.hasOwnProperty("age")); // true
+
+// Object methods
+console.log(Object.keys(person));     // ["name", "age", "email", "greet"]
+console.log(Object.values(person));   // ["Alice", 25, "alice@example.com", function]
+console.log(Object.entries(person));  // [["name", "Alice"], ...]</code></pre>
+
+                <h3>Arrays</h3>
+                <p>
+                    Arrays are ordered collections of values.
+                </p>
+
+                <pre><code class="language-javascript">// Array literal
+let numbers = [1, 2, 3, 4, 5];
+let mixed = [1, "hello", true, null, {name: "Alice"}];
+
+// Accessing elements
+console.log(numbers[0]);      // 1
+console.log(numbers.length);  // 5
+
+// Modifying arrays
+numbers.push(6);              // Add to end
+numbers.pop();                // Remove from end
+numbers.unshift(0);           // Add to beginning
+numbers.shift();              // Remove from beginning
+
+// Array methods
+let doubled = numbers.map(n => n * 2);
+let evens = numbers.filter(n => n % 2 === 0);
+let sum = numbers.reduce((acc, n) => acc + n, 0);
+
+// Checking if array
+console.log(Array.isArray(numbers));  // true
+console.log(typeof numbers);          // "object"</code></pre>
+
+                <h3>Functions</h3>
+                <p>
+                    Functions are first-class objects in JavaScript.
+                </p>
+
+                <pre><code class="language-javascript">// Function declaration
+function add(a, b) {
+    return a + b;
+}
+
+// Function expression
+let multiply = function(a, b) {
+    return a * b;
+};
+
+// Arrow function
+let divide = (a, b) => a / b;
+
+// Functions are objects
+console.log(typeof add);      // "function"
+add.customProperty = "value";
+console.log(add.customProperty); // "value"</code></pre>
+
+                <h2>Type Checking</h2>
+
+                <h3>Using typeof</h3>
+                <pre><code class="language-javascript">console.log(typeof 42);           // "number"
+console.log(typeof "hello");      // "string"
+console.log(typeof true);         // "boolean"
+console.log(typeof undefined);    // "undefined"
+console.log(typeof null);         // "object" (bug!)
+console.log(typeof Symbol());     // "symbol"
+console.log(typeof 100n);         // "bigint"
+console.log(typeof {});           // "object"
+console.log(typeof []);           // "object"
+console.log(typeof function(){}); // "function"</code></pre>
+
+                <h3>Better Type Checking</h3>
+                <pre><code class="language-javascript">// Check for null
+let value = null;
+console.log(value === null);      // true
+
+// Check for array
+console.log(Array.isArray([]));   // true
+console.log(Array.isArray({}));   // false
+
+// Check for object (not null, not array)
+function isObject(value) {
+    return value !== null && 
+           typeof value === 'object' && 
+           !Array.isArray(value);
+}
+
+// Using Object.prototype.toString
+function getType(value) {
+    return Object.prototype.toString.call(value).slice(8, -1);
+}
+
+console.log(getType(42));         // "Number"
+console.log(getType("hello"));    // "String"
+console.log(getType([]));         // "Array"
+console.log(getType(null));       // "Null"
+console.log(getType(new Date())); // "Date"</code></pre>
+
+                <h2>Type Coercion</h2>
+                <p>
+                    JavaScript automatically converts types in certain situations (implicit coercion).
+                </p>
+
+                <h3>String Coercion</h3>
+                <pre><code class="language-javascript">// + operator with strings
+console.log("5" + 3);         // "53" (number to string)
+console.log("Hello" + true);  // "Hellotrue"
+console.log("Value: " + null); // "Value: null"
+
+// Template literals
+console.log(`Count: ${5}`);   // "Count: 5"</code></pre>
+
+                <h3>Number Coercion</h3>
+                <pre><code class="language-javascript">// Arithmetic operators (except +)
+console.log("5" - 2);         // 3
+console.log("10" * "2");      // 20
+console.log("20" / "4");      // 5
+console.log("5" % 2);         // 1
+
+// Unary + operator
+console.log(+"42");           // 42
+console.log(+true);           // 1
+console.log(+false);          // 0
+console.log(+null);           // 0
+console.log(+undefined);      // NaN</code></pre>
+
+                <h3>Boolean Coercion</h3>
+                <pre><code class="language-javascript">// Falsy values: false, 0, "", null, undefined, NaN
+// Everything else is truthy
+
+if ("") {
+    console.log("Won't run");
+}
+
+if ("hello") {
+    console.log("Will run");
+}
+
+// Double NOT for explicit conversion
+console.log(!!"hello");       // true
+console.log(!!0);             // false
+console.log(!!null);          // false</code></pre>
+
+                <h3>Equality Coercion</h3>
+                <pre><code class="language-javascript">// Loose equality (==) performs coercion
+console.log(5 == "5");        // true
+console.log(true == 1);       // true
+console.log(false == 0);      // true
+console.log(null == undefined); // true
+console.log("" == 0);         // true
+
+// Strict equality (===) does NOT coerce
+console.log(5 === "5");       // false
+console.log(true === 1);      // false
+console.log(null === undefined); // false
+
+// Always prefer === for clarity</code></pre>
+
+                <h2>Type Conversion</h2>
+                <p>
+                    Explicit type conversion is clearer and safer than relying on coercion.
+                </p>
+
+                <pre><code class="language-javascript">// To String
+String(123);                  // "123"
+String(true);                 // "true"
+String(null);                 // "null"
+(123).toString();             // "123"
+
+// To Number
+Number("123");                // 123
+Number("12.5");               // 12.5
+Number("hello");              // NaN
+Number(true);                 // 1
+Number(false);                // 0
+Number(null);                 // 0
+Number(undefined);            // NaN
+
+parseInt("42");               // 42
+parseInt("42.5");             // 42
+parseFloat("42.5");           // 42.5
+
+// To Boolean
+Boolean(1);                   // true
+Boolean(0);                   // false
+Boolean("hello");             // true
+Boolean("");                  // false
+Boolean(null);                // false
+Boolean(undefined);           // false</code></pre>
+
+                <h2>Primitive vs Reference Types</h2>
+
+                <h3>Primitives are Immutable</h3>
+                <pre><code class="language-javascript">let str = "hello";
+str[0] = "H";                 // Doesn't work
+console.log(str);             // "hello"
+
+// String methods return new strings
+let upper = str.toUpperCase();
+console.log(str);             // "hello" (original unchanged)
+console.log(upper);           // "HELLO" (new string)</code></pre>
+
+                <h3>Primitives are Copied by Value</h3>
+                <pre><code class="language-javascript">let a = 5;
+let b = a;                    // Copy value
+b = 10;
+
+console.log(a);               // 5 (unchanged)
+console.log(b);               // 10</code></pre>
+
+                <h3>Objects are Copied by Reference</h3>
+                <pre><code class="language-javascript">let obj1 = { name: "Alice" };
+let obj2 = obj1;              // Copy reference
+obj2.name = "Bob";
+
+console.log(obj1.name);       // "Bob" (changed!)
+console.log(obj2.name);       // "Bob"
+
+// Arrays too
+let arr1 = [1, 2, 3];
+let arr2 = arr1;
+arr2.push(4);
+
+console.log(arr1);            // [1, 2, 3, 4] (changed!)
+console.log(arr2);            // [1, 2, 3, 4]</code></pre>
+
+                <h3>Cloning Objects and Arrays</h3>
+                <pre><code class="language-javascript">// Shallow clone object
+let original = { name: "Alice", age: 25 };
+let clone1 = { ...original };           // Spread operator
+let clone2 = Object.assign({}, original);
+
+clone1.name = "Bob";
+console.log(original.name);   // "Alice" (unchanged)
+
+// Shallow clone array
+let arr = [1, 2, 3];
+let arrClone1 = [...arr];
+let arrClone2 = arr.slice();
+
+// Deep clone (for nested objects)
+let nested = { user: { name: "Alice" } };
+let deepClone = JSON.parse(JSON.stringify(nested));
+
+deepClone.user.name = "Bob";
+console.log(nested.user.name); // "Alice" (unchanged)</code></pre>
+
+                <h2>Common Pitfalls</h2>
+
+                <h3>Pitfall 1: typeof null</h3>
+                <pre><code class="language-javascript">console.log(typeof null);     // "object" (bug!)
+
+// Correct way to check for null
+if (value === null) {
+    // Handle null
+}</code></pre>
+
+                <h3>Pitfall 2: NaN Comparison</h3>
+                <pre><code class="language-javascript">console.log(NaN === NaN);     // false!
+
+// Use isNaN or Number.isNaN
+console.log(isNaN(NaN));      // true
+console.log(Number.isNaN(NaN)); // true (more strict)</code></pre>
+
+                <h3>Pitfall 3: Floating Point Precision</h3>
+                <pre><code class="language-javascript">console.log(0.1 + 0.2);       // 0.30000000000000004
+
+// Solution: Use toFixed or round
+console.log((0.1 + 0.2).toFixed(2)); // "0.30"
+console.log(Math.round((0.1 + 0.2) * 100) / 100); // 0.3</code></pre>
+
+                <h3>Pitfall 4: Array Type Checking</h3>
+                <pre><code class="language-javascript">console.log(typeof []);       // "object"
+
+// Use Array.isArray
+console.log(Array.isArray([])); // true</code></pre>
+
+                <h3>Pitfall 5: Truthy/Falsy Confusion</h3>
+                <pre><code class="language-javascript">// Empty array and object are truthy!
+if ([]) {
+    console.log("Empty array is truthy");
+}
+
+if ({}) {
+    console.log("Empty object is truthy");
+}
+
+// Check length for arrays
+let arr = [];
+if (arr.length > 0) {
+    // Array has items
+}
+
+// Check keys for objects
+let obj = {};
+if (Object.keys(obj).length > 0) {
+    // Object has properties
+}</code></pre>
+
+                <h2>Best Practices</h2>
+
+                <h3>1. Use Strict Equality</h3>
+                <pre><code class="language-javascript">// Good
+if (value === 5) { }
+
+// Avoid
+if (value == 5) { }</code></pre>
+
+                <h3>2. Explicit Type Conversion</h3>
+                <pre><code class="language-javascript">// Good
+let num = Number(input);
+let str = String(value);
+
+// Avoid relying on coercion
+let num = +input;
+let str = value + "";</code></pre>
+
+                <h3>3. Use const and let</h3>
+                <pre><code class="language-javascript">// Good
+const PI = 3.14159;
+let counter = 0;
+
+// Avoid
+var x = 5;</code></pre>
+
+                <h3>4. Check Types Before Operations</h3>
+                <pre><code class="language-javascript">function divide(a, b) {
+    if (typeof a !== 'number' || typeof b !== 'number') {
+        throw new TypeError('Arguments must be numbers');
+    }
+    if (b === 0) {
+        throw new Error('Cannot divide by zero');
+    }
+    return a / b;
+}</code></pre>
+
+                <div class="key-takeaways">
+                    <h3>Key Takeaways</h3>
+                    <ul>
+                        <li>✅ JavaScript has 7 primitive types and reference types</li>
+                        <li>✅ Primitives are immutable and copied by value</li>
+                        <li>✅ Objects are mutable and copied by reference</li>
+                        <li>✅ Use <code>typeof</code> for basic type checking</li>
+                        <li>✅ Use <code>===</code> for strict equality without coercion</li>
+                        <li>✅ Be aware of falsy values: false, 0, "", null, undefined, NaN</li>
+                        <li>✅ Prefer explicit type conversion over implicit coercion</li>
+                    </ul>
+                </div>
+
+                <h2>Conclusion</h2>
+                <p>
+                    Understanding JavaScript's type system is fundamental to writing reliable code. While JavaScript's 
+                    dynamic typing and type coercion can be convenient, they can also lead to subtle bugs. By knowing 
+                    the differences between primitive and reference types, using strict equality, and performing explicit 
+                    type conversions, you'll write more predictable and maintainable code.
+                </p>
+                <p>
+                    <strong>Practice tip:</strong> When debugging unexpected behavior, always check the types of your 
+                    variables using <code>typeof</code> and <code>console.log()</code>. Many bugs stem from incorrect 
+                    type assumptions.
+                </p>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                    <a href="../index.html" class="btn btn-primary">All JavaScript Tutorials →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdaq/" target="_blank" rel="nofollow noopener">LinkedIn</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../../../assets/prism/prism.js"></script>
+    <script src="../../../assets/prism/prism-javascript.js"></script>
+</body>
+</html>
