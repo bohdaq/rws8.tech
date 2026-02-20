@@ -14,21 +14,23 @@ Whether you're a beginner looking to build a solid foundation or an experienced 
 
 ## Table of Contents
 
-**Part I: Core Language Features**
+**Part I: JavaScript Fundamentals**
 1. JavaScript Data Types: Everything You Need to Know
-2. JavaScript Hoisting: Stop Getting Surprised by Your Code
-3. JavaScript Variables and Scope: Master var, let, and const
-4. JavaScript Functions: Master the Building Blocks
+2. JavaScript Variables and Scope: Master var, let, and const
+3. JavaScript Functions: Master the Building Blocks
+4. JavaScript Hoisting: Stop Getting Surprised by Your Code
 
-**Part II: Functions and Context**
+**Part II: Advanced Functions**
 5. JavaScript Closures: The Secret Weapon You're Already Using
 6. JavaScript Currying: Write More Reusable Code
 7. JavaScript 'this': The Keyword That Confuses Everyone
-8. JavaScript Polymorphism: Write Flexible, Reusable Code
-9. JavaScript Inheritance: Master Prototypal Inheritance
-10. JavaScript Encapsulation: Master Data Hiding
 
-**Part III: Asynchronous JavaScript**
+**Part III: Object-Oriented JavaScript**
+8. JavaScript Encapsulation: Master Data Hiding
+9. JavaScript Inheritance: Master Prototypal Inheritance
+10. JavaScript Polymorphism: Write Flexible, Reusable Code
+
+**Part IV: Asynchronous JavaScript**
 11. JavaScript Promises: From Callback Hell to Async Heaven
 12. JavaScript Generators: The Underrated Feature That Will Change How You Code
 
@@ -295,7 +297,7 @@ console.log(true === 1);   // false
 
 ---
 
-# Chapter 2: JavaScript Hoisting
+# Chapter 4: JavaScript Hoisting
 
 ## Stop Getting Surprised by Your Code
 
@@ -436,7 +438,7 @@ With `var`, there's only one `i` hoisted to function scope. With `let`, each ite
 
 ---
 
-# Chapter 3: JavaScript Variables and Scope
+# Chapter 2: JavaScript Variables and Scope
 
 ## Master var, let, and const
 
@@ -595,7 +597,7 @@ let letVariable = 'let';
 
 ---
 
-# Chapter 4: JavaScript Functions
+# Chapter 3: JavaScript Functions
 
 ## Master the Building Blocks
 
@@ -757,7 +759,7 @@ const counter = (function() {
 
 ---
 
-# Part II: Functions and Context
+# Part II: Advanced Functions
 
 ---
 
@@ -1231,7 +1233,11 @@ class Button {
 
 ---
 
-# Chapter 8: JavaScript Polymorphism
+# Part III: Object-Oriented JavaScript
+
+---
+
+# Chapter 10: JavaScript Polymorphism
 
 ## Write Flexible, Reusable Code
 
@@ -1687,7 +1693,7 @@ class Team {
 
 ---
 
-# Chapter 10: JavaScript Encapsulation
+# Chapter 8: JavaScript Encapsulation
 
 ## Master Data Hiding and Private Variables
 
@@ -1880,7 +1886,7 @@ console.log(temp.fahrenheit); // 77
 
 ---
 
-# Part III: Asynchronous JavaScript
+# Part IV: Asynchronous JavaScript
 
 ---
 
