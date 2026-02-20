@@ -199,24 +199,25 @@
                 <ol>
                     <li><a href="#chapter1">Chapter 1: JavaScript Data Types</a></li>
                     <li><a href="#chapter2">Chapter 2: JavaScript Hoisting</a></li>
+                    <li><a href="#chapter3">Chapter 3: JavaScript Variables and Scope</a></li>
                 </ol>
             </li>
             <li>
                 <strong>Part II: Functions and Context</strong>
                 <ol>
-                    <li><a href="#chapter3">Chapter 3: JavaScript Closures</a></li>
-                    <li><a href="#chapter4">Chapter 4: JavaScript Currying</a></li>
-                    <li><a href="#chapter5">Chapter 5: JavaScript 'this' Keyword</a></li>
-                    <li><a href="#chapter6">Chapter 6: JavaScript Polymorphism</a></li>
-                    <li><a href="#chapter7">Chapter 7: JavaScript Inheritance</a></li>
-                    <li><a href="#chapter8">Chapter 8: JavaScript Encapsulation</a></li>
+                    <li><a href="#chapter4">Chapter 4: JavaScript Closures</a></li>
+                    <li><a href="#chapter5">Chapter 5: JavaScript Currying</a></li>
+                    <li><a href="#chapter6">Chapter 6: JavaScript 'this' Keyword</a></li>
+                    <li><a href="#chapter7">Chapter 7: JavaScript Polymorphism</a></li>
+                    <li><a href="#chapter8">Chapter 8: JavaScript Inheritance</a></li>
+                    <li><a href="#chapter9">Chapter 9: JavaScript Encapsulation</a></li>
                 </ol>
             </li>
             <li>
                 <strong>Part III: Asynchronous JavaScript</strong>
                 <ol>
-                    <li><a href="#chapter9">Chapter 9: JavaScript Promises</a></li>
-                    <li><a href="#chapter10">Chapter 10: JavaScript Generators</a></li>
+                    <li><a href="#chapter10">Chapter 10: JavaScript Promises</a></li>
+                    <li><a href="#chapter11">Chapter 11: JavaScript Generators</a></li>
                 </ol>
             </li>
             <li><a href="#conclusion">Conclusion</a></li>
@@ -907,15 +908,152 @@ for (let i = 0; i < 3; i++) {
         </ul>
     </div>
 
+    <!-- Chapter 3 -->
+    <div id="chapter3" class="page-break">
+        <h1>Chapter 3: JavaScript Variables and Scope</h1>
+        <h2>Master var, let, and const</h2>
+
+        <p>Variables and scope are fundamental to JavaScript, yet they're often misunderstood. The way you declare
+            variables affects where they can be accessed, how they behave, and whether they can be reassigned.</p>
+
+        <h3>The Three Ways to Declare Variables</h3>
+        <p>JavaScript has three keywords for declaring variables: <code>var</code>, <code>let</code>, and
+            <code>const</code>.
+        </p>
+
+        <p><strong>var - The Old Way</strong></p>
+        <pre><code class="language-javascript">var name = 'Alice';
+
+// var can be redeclared
+var name = 'Bob'; // No error!
+
+// var is function-scoped, not block-scoped
+if (true) {
+    var message = 'Hello';
+}
+console.log(message); // 'Hello' - accessible outside!</code></pre>
+
+        <p><strong>let - Block-Scoped Variables</strong></p>
+        <pre><code class="language-javascript">let name = 'Alice';
+
+// let cannot be redeclared
+// let name = 'Bob'; // SyntaxError!
+
+// let is block-scoped
+if (true) {
+    let message = 'Hello';
+}
+// console.log(message); // ReferenceError
+
+// But let can be reassigned
+let age = 30;
+age = 31; // This works</code></pre>
+
+        <p><strong>const - Constants</strong></p>
+        <pre><code class="language-javascript">const PI = 3.14159;
+
+// const cannot be reassigned
+// PI = 3.14; // TypeError!
+
+// But const objects can be mutated
+const person = { name: 'Alice' };
+person.name = 'Bob'; // This works!</code></pre>
+
+        <h3>Function Scope vs Block Scope</h3>
+        <p><strong>Function Scope (var):</strong></p>
+        <pre><code class="language-javascript">function example() {
+    var x = 1;
+    
+    if (true) {
+        var x = 2; // Same variable!
+        console.log(x); // 2
+    }
+    
+    console.log(x); // 2
+}</code></pre>
+
+        <p><strong>Block Scope (let and const):</strong></p>
+        <pre><code class="language-javascript">function example() {
+    let x = 1;
+    
+    if (true) {
+        let x = 2; // Different variable!
+        console.log(x); // 2
+    }
+    
+    console.log(x); // 1
+}</code></pre>
+
+        <p>This is crucial in loops:</p>
+        <pre><code class="language-javascript">// With var
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 3, 3, 3
+
+// With let
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 0, 1, 2</code></pre>
+
+        <h3>Lexical Scope and the Scope Chain</h3>
+        <p>JavaScript uses lexical scoping - inner functions can access variables from outer scopes:</p>
+        <pre><code class="language-javascript">const globalVar = 'global';
+
+function outer() {
+    const outerVar = 'outer';
+    
+    function inner() {
+        const innerVar = 'inner';
+        console.log(globalVar); // 'global'
+        console.log(outerVar);  // 'outer'
+        console.log(innerVar);  // 'inner'
+    }
+    
+    inner();
+}</code></pre>
+
+        <h3>The Temporal Dead Zone</h3>
+        <p>Variables declared with <code>let</code> and <code>const</code> are in a "temporal dead zone" from the start
+            of the block until the declaration:</p>
+        <pre><code class="language-javascript">// With var - hoisted and initialized
+console.log(varVariable); // undefined
+var varVariable = 'var';
+
+// With let - hoisted but NOT initialized
+// console.log(letVariable); // ReferenceError!
+let letVariable = 'let';</code></pre>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Prefer const by default</strong> - Use for values that won't be reassigned</li>
+            <li><strong>Use let when you need to reassign</strong> - For counters, accumulators, etc.</li>
+            <li><strong>Avoid var</strong> - No benefits over let/const in modern JavaScript</li>
+            <li><strong>Minimize scope</strong> - Declare variables close to where they're used</li>
+            <li><strong>Use descriptive names</strong> - Make your code self-documenting</li>
+        </ol>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Use const by default, let when you need to reassign, avoid var</li>
+            <li>var is function-scoped, let and const are block-scoped</li>
+            <li>Lexical scope means inner functions can access outer variables</li>
+            <li>The scope chain is searched from inner to outer scopes</li>
+            <li>Temporal Dead Zone prevents accessing let/const before declaration</li>
+            <li>const prevents reassignment, not mutation</li>
+        </ul>
+    </div>
+
     <!-- PART II -->
     <div class="page-break">
         <h1 class="center">Part II</h1>
         <h2 class="center">Functions and Context</h2>
     </div>
 
-    <!-- Chapter 3 -->
-    <div id="chapter3" class="page-break">
-        <h1>Chapter 3: JavaScript Closures</h1>
+    <!-- Chapter 4 -->
+    <div id="chapter4" class="page-break">
+        <h1>Chapter 4: JavaScript Closures</h1>
         <h2>The Secret Weapon You're Already Using</h2>
 
         <p>If you've written JavaScript for more than a day, you've used closures - even if you didn't know it. Closures
@@ -1119,9 +1257,9 @@ for (var i = 0; i < 3; i++) {
         </ul>
     </div>
 
-    <!-- Chapter 4 -->
-    <div id="chapter4" class="page-break">
-        <h1>Chapter 4: JavaScript Currying</h1>
+    <!-- Chapter 5 -->
+    <div id="chapter5" class="page-break">
+        <h1>Chapter 5: JavaScript Currying</h1>
         <h2>Write More Reusable Code</h2>
 
         <p>Function currying is one of those functional programming concepts that sounds complicated but is surprisingly
@@ -1330,9 +1468,9 @@ add(1, 2, 3);     // 6 - all work!</code></pre>
         </ul>
     </div>
 
-    <!-- Chapter 5 -->
-    <div id="chapter5" class="page-break">
-        <h1>Chapter 5: JavaScript 'this' Keyword</h1>
+    <!-- Chapter 6 -->
+    <div id="chapter6" class="page-break">
+        <h1>Chapter 6: JavaScript 'this' Keyword</h1>
         <h2>The Keyword That Confuses Everyone</h2>
 
         <p>If you've ever written <code>console.log(this)</code> and been surprised by what you saw, you're not alone.
@@ -1576,9 +1714,9 @@ class Button {
         </ul>
     </div>
 
-    <!-- Chapter 6 -->
-    <div id="chapter6" class="page-break">
-        <h1>Chapter 6: JavaScript Polymorphism</h1>
+    <!-- Chapter 7 -->
+    <div id="chapter7" class="page-break">
+        <h1>Chapter 7: JavaScript Polymorphism</h1>
         <h2>Write Flexible, Reusable Code</h2>
 
         <p>If you've been writing JavaScript for a while, you've probably used polymorphism without even realizing it.
@@ -1776,9 +1914,9 @@ describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
         </ul>
     </div>
 
-    <!-- Chapter 7 -->
-    <div id="chapter7" class="page-break">
-        <h1>Chapter 7: JavaScript Inheritance</h1>
+    <!-- Chapter 8 -->
+    <div id="chapter8" class="page-break">
+        <h1>Chapter 8: JavaScript Inheritance</h1>
         <h2>Master Prototypal Inheritance and ES6 Classes</h2>
 
         <p>Inheritance is one of those concepts that sounds complicated but is actually quite natural once you
@@ -1983,9 +2121,9 @@ console.log(circle.getArea()); // 78.54...</code></pre>
         </ul>
     </div>
 
-    <!-- Chapter 8 -->
-    <div id="chapter8" class="page-break">
-        <h1>Chapter 8: JavaScript Encapsulation</h1>
+    <!-- Chapter 9 -->
+    <div id="chapter9" class="page-break">
+        <h1>Chapter 9: JavaScript Encapsulation</h1>
         <h2>Master Data Hiding and Private Variables</h2>
 
         <p>Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical
@@ -2182,9 +2320,9 @@ console.log(temp.fahrenheit); // 77</code></pre>
         <h2 class="center">Asynchronous JavaScript</h2>
     </div>
 
-    <!-- Chapter 9 -->
-    <div id="chapter9" class="page-break">
-        <h1>Chapter 9: JavaScript Promises</h1>
+    <!-- Chapter 10 -->
+    <div id="chapter10" class="page-break">
+        <h1>Chapter 10: JavaScript Promises</h1>
         <h2>From Callback Hell to Async Heaven</h2>
 
         <p>Remember the days of callback pyramids that looked like the Leaning Tower of Pisa? If you've been writing
@@ -2468,9 +2606,9 @@ fetch('/api/data')
         </ul>
     </div>
 
-    <!-- Chapter 10 -->
-    <div id="chapter10" class="page-break">
-        <h1>Chapter 10: JavaScript Generators</h1>
+    <!-- Chapter 11 -->
+    <div id="chapter11" class="page-break">
+        <h1>Chapter 11: JavaScript Generators</h1>
         <h2>The Underrated Feature That Will Change How You Code</h2>
 
         <p>If you've been writing JavaScript for a while, you've probably heard of generators. Maybe you've even seen

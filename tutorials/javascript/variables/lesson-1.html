@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn JavaScript Variables and Scope - Master var, let, const, block scope, function scope, lexical scope, and the temporal dead zone.">
+    <meta name="keywords" content="JavaScript variables, var let const, variable scope, block scope, function scope, lexical scope, temporal dead zone">
+    <meta name="author" content="bohdaq">
+    <title>JavaScript Variables and Scope | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/variables/lesson-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Variables & Scope</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>JavaScript Variables and Scope</h1>
+            <p class="page-subtitle">Master var, let, const and Understand Scope</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand the differences between var, let, and const</li>
+                        <li>Master function scope vs block scope</li>
+                        <li>Learn about lexical scope and the scope chain</li>
+                        <li>Understand the temporal dead zone</li>
+                        <li>Apply best practices for variable declarations</li>
+                    </ul>
+                </div>
+
+                <h2>Understanding Variables in JavaScript</h2>
+                <p>Variables are containers for storing data values. In JavaScript, you can declare variables using three keywords: <code>var</code>, <code>let</code>, and <code>const</code>. Each has different characteristics and use cases.</p>
+
+                <h2>The Three Ways to Declare Variables</h2>
+
+                <h3>var - The Old Way</h3>
+                <p><code>var</code> was the original way to declare variables in JavaScript. It has some quirks that can lead to bugs:</p>
+
+                <pre><code class="language-javascript">var name = 'Alice';
+var age = 30;
+
+// var can be redeclared
+var name = 'Bob'; // No error!
+
+// var is function-scoped, not block-scoped
+if (true) {
+    var message = 'Hello';
+}
+console.log(message); // 'Hello' - accessible outside the block!</code></pre>
+
+                <h3>let - Block-Scoped Variables</h3>
+                <p><code>let</code> was introduced in ES6 (2015) and provides block-level scoping:</p>
+
+                <pre><code class="language-javascript">let name = 'Alice';
+let age = 30;
+
+// let cannot be redeclared in the same scope
+// let name = 'Bob'; // SyntaxError!
+
+// let is block-scoped
+if (true) {
+    let message = 'Hello';
+    console.log(message); // 'Hello'
+}
+// console.log(message); // ReferenceError: message is not defined
+
+// But let can be reassigned
+age = 31; // This works</code></pre>
+
+                <h3>const - Constants</h3>
+                <p><code>const</code> declares constants that cannot be reassigned:</p>
+
+                <pre><code class="language-javascript">const PI = 3.14159;
+const MAX_SIZE = 100;
+
+// const cannot be reassigned
+// PI = 3.14; // TypeError: Assignment to constant variable
+
+// const must be initialized
+// const VALUE; // SyntaxError: Missing initializer
+
+// But const objects can be mutated
+const person = { name: 'Alice' };
+person.name = 'Bob'; // This works!
+person.age = 30;     // This works!
+
+// You just can't reassign the variable itself
+// person = {}; // TypeError!</code></pre>
+
+                <h2>Function Scope vs Block Scope</h2>
+
+                <h3>Function Scope (var)</h3>
+                <p><code>var</code> is function-scoped, meaning it's accessible anywhere within the function where it's declared:</p>
+
+                <pre><code class="language-javascript">function example() {
+    var x = 1;
+    
+    if (true) {
+        var x = 2; // Same variable!
+        console.log(x); // 2
+    }
+    
+    console.log(x); // 2 - modified by the if block
+}
+
+example();</code></pre>
+
+                <h3>Block Scope (let and const)</h3>
+                <p><code>let</code> and <code>const</code> are block-scoped, meaning they're only accessible within the block where they're declared:</p>
+
+                <pre><code class="language-javascript">function example() {
+    let x = 1;
+    
+    if (true) {
+        let x = 2; // Different variable!
+        console.log(x); // 2
+    }
+    
+    console.log(x); // 1 - unchanged
+}
+
+example();
+
+// Block scope works with any block
+{
+    let blockScoped = 'I exist only in this block';
+    console.log(blockScoped); // Works
+}
+// console.log(blockScoped); // ReferenceError
+
+// Useful in loops
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 0, 1, 2
+
+// Compare with var
+for (var j = 0; j < 3; j++) {
+    setTimeout(() => console.log(j), 100);
+}
+// Prints: 3, 3, 3 (all reference the same variable!)</code></pre>
+
+                <h2>Lexical Scope and the Scope Chain</h2>
+                <p>JavaScript uses lexical scoping, meaning inner functions have access to variables in their outer scopes:</p>
+
+                <pre><code class="language-javascript">const globalVar = 'global';
+
+function outer() {
+    const outerVar = 'outer';
+    
+    function inner() {
+        const innerVar = 'inner';
+        
+        // Can access all three variables
+        console.log(globalVar); // 'global'
+        console.log(outerVar);  // 'outer'
+        console.log(innerVar);  // 'inner'
+    }
+    
+    inner();
+    // console.log(innerVar); // ReferenceError - can't access inner scope
+}
+
+outer();</code></pre>
+
+                <p>The scope chain is the hierarchy of scopes that JavaScript searches when looking for a variable:</p>
+
+                <pre><code class="language-javascript">let a = 1;
+
+function first() {
+    let b = 2;
+    
+    function second() {
+        let c = 3;
+        
+        function third() {
+            let d = 4;
+            console.log(a + b + c + d); // 10
+            // Searches: third scope → second scope → first scope → global scope
+        }
+        
+        third();
+    }
+    
+    second();
+}
+
+first();</code></pre>
+
+                <h2>The Temporal Dead Zone (TDZ)</h2>
+                <p>Variables declared with <code>let</code> and <code>const</code> are in a "temporal dead zone" from the start of the block until the declaration is reached:</p>
+
+                <pre><code class="language-javascript">// With var - hoisted and initialized to undefined
+console.log(varVariable); // undefined
+var varVariable = 'var';
+
+// With let - hoisted but NOT initialized (TDZ)
+// console.log(letVariable); // ReferenceError: Cannot access before initialization
+let letVariable = 'let';
+
+// With const - same as let
+// console.log(constVariable); // ReferenceError
+const constVariable = 'const';
+
+// TDZ in action
+{
+    // TDZ starts here for 'x'
+    // console.log(x); // ReferenceError
+    
+    let x = 10; // TDZ ends here
+    console.log(x); // 10
+}</code></pre>
+
+                <h2>Global Scope and Its Pitfalls</h2>
+                <p>Variables declared outside any function or block are in the global scope:</p>
+
+                <pre><code class="language-javascript">// Global variables
+var globalVar = 'I am global';
+let globalLet = 'Also global';
+const globalConst = 'Global too';
+
+// In browsers, var creates a property on window
+console.log(window.globalVar); // 'I am global'
+console.log(window.globalLet); // undefined (let doesn't create window property)
+
+// Avoid polluting global scope
+// Bad
+var count = 0;
+function increment() {
+    count++;
+}
+
+// Better - use modules or IIFE
+(function() {
+    let count = 0;
+    function increment() {
+        count++;
+    }
+})();
+
+// Best - use ES6 modules
+// export function increment() { ... }</code></pre>
+
+                <h2>Variable Shadowing</h2>
+                <p>Inner scopes can declare variables with the same name as outer scopes, "shadowing" them:</p>
+
+                <pre><code class="language-javascript">let name = 'Global';
+
+function outer() {
+    let name = 'Outer';
+    console.log(name); // 'Outer'
+    
+    function inner() {
+        let name = 'Inner';
+        console.log(name); // 'Inner'
+    }
+    
+    inner();
+    console.log(name); // 'Outer'
+}
+
+outer();
+console.log(name); // 'Global'
+
+// Be careful with shadowing - it can be confusing
+function confusing() {
+    let x = 1;
+    
+    if (true) {
+        let x = 2; // Different x
+        console.log(x); // 2
+    }
+    
+    console.log(x); // 1 - might expect 2!
+}</code></pre>
+
+                <h2>Common Pitfalls and How to Avoid Them</h2>
+
+                <h3>1. Accidental Global Variables</h3>
+                <pre><code class="language-javascript">// Bad - creates global variable
+function bad() {
+    accidentalGlobal = 'oops'; // No var/let/const!
+}
+bad();
+console.log(accidentalGlobal); // 'oops' - leaked to global!
+
+// Good - always declare variables
+function good() {
+    let intentional = 'safe';
+}
+
+// Use strict mode to catch this
+'use strict';
+function strict() {
+    // undeclared = 'error'; // ReferenceError in strict mode
+}</code></pre>
+
+                <h3>2. Loop Variable Leakage with var</h3>
+                <pre><code class="language-javascript">// Bad - var leaks outside loop
+for (var i = 0; i < 5; i++) {
+    // loop body
+}
+console.log(i); // 5 - still accessible!
+
+// Good - let is block-scoped
+for (let j = 0; j < 5; j++) {
+    // loop body
+}
+// console.log(j); // ReferenceError</code></pre>
+
+                <h3>3. Closures with var in Loops</h3>
+                <pre><code class="language-javascript">// Bad - all callbacks reference the same i
+var funcs = [];
+for (var i = 0; i < 3; i++) {
+    funcs.push(function() {
+        console.log(i);
+    });
+}
+funcs[0](); // 3
+funcs[1](); // 3
+funcs[2](); // 3
+
+// Good - let creates a new binding for each iteration
+var funcs2 = [];
+for (let i = 0; i < 3; i++) {
+    funcs2.push(function() {
+        console.log(i);
+    });
+}
+funcs2[0](); // 0
+funcs2[1](); // 1
+funcs2[2](); // 2</code></pre>
+
+                <h3>4. Const Doesn't Mean Immutable</h3>
+                <pre><code class="language-javascript">// const prevents reassignment, not mutation
+const obj = { count: 0 };
+obj.count = 1; // Works!
+obj.newProp = 'new'; // Works!
+
+const arr = [1, 2, 3];
+arr.push(4); // Works!
+arr[0] = 99; // Works!
+
+// To make truly immutable, use Object.freeze()
+const frozen = Object.freeze({ count: 0 });
+frozen.count = 1; // Silently fails (throws in strict mode)
+console.log(frozen.count); // 0
+
+// For deep immutability, freeze recursively or use libraries
+const deepFrozen = Object.freeze({
+    nested: Object.freeze({ value: 1 })
+});</code></pre>
+
+                <h2>Best Practices</h2>
+
+                <h3>1. Prefer const by Default</h3>
+                <pre><code class="language-javascript">// Use const for values that won't be reassigned
+const API_KEY = 'abc123';
+const MAX_RETRIES = 3;
+const user = { name: 'Alice', age: 30 };
+
+// This makes your intent clear and prevents accidental reassignment</code></pre>
+
+                <h3>2. Use let When You Need to Reassign</h3>
+                <pre><code class="language-javascript">// Use let for values that will change
+let count = 0;
+count++;
+
+let message = 'Loading...';
+message = 'Complete!';</code></pre>
+
+                <h3>3. Avoid var</h3>
+                <pre><code class="language-javascript">// Don't use var in modern JavaScript
+// var has confusing scoping rules and no benefits over let/const</code></pre>
+
+                <h3>4. Declare Variables at the Top of Their Scope</h3>
+                <pre><code class="language-javascript">// Good - clear what variables exist in this scope
+function process(data) {
+    const result = [];
+    let total = 0;
+    let average = 0;
+    
+    // ... use variables
+    
+    return { result, total, average };
+}</code></pre>
+
+                <h3>5. Use Descriptive Names</h3>
+                <pre><code class="language-javascript">// Bad
+let x = 10;
+let y = 20;
+let z = x + y;
+
+// Good
+let width = 10;
+let height = 20;
+let area = width + height;</code></pre>
+
+                <h3>6. Minimize Scope</h3>
+                <pre><code class="language-javascript">// Bad - wider scope than needed
+function process() {
+    let temp = 0;
+    
+    // ... lots of code
+    
+    if (condition) {
+        temp = calculate(); // Only used here
+    }
+}
+
+// Good - narrower scope
+function process() {
+    // ... lots of code
+    
+    if (condition) {
+        const temp = calculate(); // Scoped to where it's used
+    }
+}</code></pre>
+
+                <h2>Real-World Example: Counter Module</h2>
+                <pre><code class="language-javascript">// Using closures and proper scoping
+function createCounter(initialValue = 0) {
+    let count = initialValue; // Private variable
+    
+    return {
+        increment() {
+            count++;
+            return count;
+        },
+        
+        decrement() {
+            count--;
+            return count;
+        },
+        
+        getValue() {
+            return count;
+        },
+        
+        reset() {
+            count = initialValue;
+            return count;
+        }
+    };
+}
+
+const counter1 = createCounter(0);
+const counter2 = createCounter(100);
+
+console.log(counter1.increment()); // 1
+console.log(counter1.increment()); // 2
+console.log(counter2.increment()); // 101
+
+// Each counter has its own private count variable
+console.log(counter1.getValue()); // 2
+console.log(counter2.getValue()); // 101</code></pre>
+
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li><strong>Use const by default</strong>, let when you need to reassign, avoid var</li>
+                    <li><strong>var is function-scoped</strong>, let and const are block-scoped</li>
+                    <li><strong>Lexical scope</strong> means inner functions can access outer variables</li>
+                    <li><strong>The scope chain</strong> is searched from inner to outer scopes</li>
+                    <li><strong>Temporal Dead Zone</strong> prevents accessing let/const before declaration</li>
+                    <li><strong>const prevents reassignment</strong>, not mutation of objects/arrays</li>
+                    <li><strong>Always declare variables</strong> to avoid accidental globals</li>
+                    <li><strong>Use block scope</strong> to limit variable visibility</li>
+                    <li><strong>Variable shadowing</strong> can be confusing - use carefully</li>
+                    <li><strong>Minimize scope</strong> and use descriptive names</li>
+                </ul>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                    <a href="../index.html" class="btn btn-secondary">All JavaScript Tutorials →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../assets/prism/prism.js"></script>
+</body>
+</html>
