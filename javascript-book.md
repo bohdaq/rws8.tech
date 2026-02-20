@@ -18,18 +18,19 @@ Whether you're a beginner looking to build a solid foundation or an experienced 
 1. JavaScript Data Types: Everything You Need to Know
 2. JavaScript Hoisting: Stop Getting Surprised by Your Code
 3. JavaScript Variables and Scope: Master var, let, and const
+4. JavaScript Functions: Master the Building Blocks
 
 **Part II: Functions and Context**
-4. JavaScript Closures: The Secret Weapon You're Already Using
-5. JavaScript Currying: Write More Reusable Code
-6. JavaScript 'this': The Keyword That Confuses Everyone
-7. JavaScript Polymorphism: Write Flexible, Reusable Code
-8. JavaScript Inheritance: Master Prototypal Inheritance
-9. JavaScript Encapsulation: Master Data Hiding
+5. JavaScript Closures: The Secret Weapon You're Already Using
+6. JavaScript Currying: Write More Reusable Code
+7. JavaScript 'this': The Keyword That Confuses Everyone
+8. JavaScript Polymorphism: Write Flexible, Reusable Code
+9. JavaScript Inheritance: Master Prototypal Inheritance
+10. JavaScript Encapsulation: Master Data Hiding
 
 **Part III: Asynchronous JavaScript**
-10. JavaScript Promises: From Callback Hell to Async Heaven
-11. JavaScript Generators: The Underrated Feature That Will Change How You Code
+11. JavaScript Promises: From Callback Hell to Async Heaven
+12. JavaScript Generators: The Underrated Feature That Will Change How You Code
 
 ---
 
@@ -435,10 +436,6 @@ With `var`, there's only one `i` hoisted to function scope. With `let`, each ite
 
 ---
 
-# Part II: Functions and Context
-
----
-
 # Chapter 3: JavaScript Variables and Scope
 
 ## Master var, let, and const
@@ -598,7 +595,173 @@ let letVariable = 'let';
 
 ---
 
-# Chapter 4: JavaScript Closures
+# Chapter 4: JavaScript Functions
+
+## Master the Building Blocks
+
+Functions are the fundamental building blocks of JavaScript. They allow you to encapsulate code, make it reusable, and organize your programs into logical units.
+
+### Function Declarations vs Expressions
+
+**Function Declarations:**
+
+```javascript
+function add(a, b) {
+    return a + b;
+}
+
+// Can be called before definition (hoisted)
+sayHello(); // Works!
+
+function sayHello() {
+    console.log('Hello!');
+}
+```
+
+**Function Expressions:**
+
+```javascript
+const multiply = function(a, b) {
+    return a * b;
+};
+
+// Cannot be called before definition
+// subtract(); // Error!
+const subtract = function(a, b) {
+    return a - b;
+};
+```
+
+### Arrow Functions
+
+Arrow functions provide concise syntax:
+
+```javascript
+// Traditional
+const square1 = function(x) {
+    return x * x;
+};
+
+// Arrow - concise (implicit return)
+const square2 = x => x * x;
+
+// Multiple parameters
+const add = (a, b) => a + b;
+
+// No parameters
+const random = () => Math.random();
+
+// Returning objects
+const makePerson = (name, age) => ({ name, age });
+```
+
+### Parameters and Arguments
+
+**Default Parameters:**
+
+```javascript
+function greet(name = 'Guest', greeting = 'Hello') {
+    console.log(`${greeting}, ${name}!`);
+}
+
+greet(); // Hello, Guest!
+greet('Alice'); // Hello, Alice!
+```
+
+**Rest Parameters:**
+
+```javascript
+function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15
+```
+
+### Higher-Order Functions
+
+Functions that take or return other functions:
+
+```javascript
+// Takes a function
+function repeat(n, action) {
+    for (let i = 0; i < n; i++) {
+        action(i);
+    }
+}
+
+repeat(3, console.log); // 0, 1, 2
+
+// Returns a function
+function multiplyBy(factor) {
+    return function(number) {
+        return number * factor;
+    };
+}
+
+const double = multiplyBy(2);
+console.log(double(5)); // 10
+```
+
+### Callback Functions
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+const doubled = numbers.map(n => n * 2);
+const evens = numbers.filter(n => n % 2 === 0);
+const sum = numbers.reduce((total, n) => total + n, 0);
+```
+
+### IIFEs (Immediately Invoked Function Expressions)
+
+```javascript
+(function() {
+    console.log('Runs immediately!');
+})();
+
+// Creating private scope
+const counter = (function() {
+    let count = 0;
+    
+    return {
+        increment() {
+            count++;
+            return count;
+        },
+        getCount() {
+            return count;
+        }
+    };
+})();
+```
+
+### Best Practices
+
+1. **Use descriptive names** - Make function purpose clear
+2. **Keep functions small** - Single responsibility
+3. **Prefer arrow functions for callbacks** - More concise
+4. **Use default parameters** - Instead of checking undefined
+5. **Return early** - Reduce nesting
+
+### Key Takeaways
+
+- Function declarations are hoisted, expressions are not
+- Arrow functions provide concise syntax and lexical `this`
+- Default parameters provide fallback values
+- Rest parameters collect remaining arguments
+- Higher-order functions take or return functions
+- Callbacks are functions passed to be executed later
+- IIFEs execute immediately and create private scope
+
+---
+
+# Part II: Functions and Context
+
+---
+
+# Chapter 5: JavaScript Closures
 
 ## The Secret Weapon You're Already Using
 
@@ -729,7 +892,7 @@ for (var i = 0; i < 3; i++) {
 
 ---
 
-# Chapter 5: JavaScript Currying
+# Chapter 6: JavaScript Currying
 
 ## Write More Reusable Code
 
@@ -873,7 +1036,7 @@ add(1, 2, 3);     // 6 - all work!
 
 ---
 
-# Chapter 6: JavaScript 'this'
+# Chapter 7: JavaScript 'this'
 
 ## The Keyword That Confuses Everyone
 
@@ -1068,7 +1231,7 @@ class Button {
 
 ---
 
-# Chapter 7: JavaScript Polymorphism
+# Chapter 8: JavaScript Polymorphism
 
 ## Write Flexible, Reusable Code
 
@@ -1280,7 +1443,7 @@ Don't create complex class hierarchies when simple functions will do. JavaScript
 
 ---
 
-# Chapter 8: JavaScript Inheritance
+# Chapter 9: JavaScript Inheritance
 
 ## Master Prototypal Inheritance and ES6 Classes
 
@@ -1524,7 +1687,7 @@ class Team {
 
 ---
 
-# Chapter 9: JavaScript Encapsulation
+# Chapter 10: JavaScript Encapsulation
 
 ## Master Data Hiding and Private Variables
 
@@ -1721,7 +1884,7 @@ console.log(temp.fahrenheit); // 77
 
 ---
 
-# Chapter 10: JavaScript Promises
+# Chapter 11: JavaScript Promises
 
 ## From Callback Hell to Async Heaven
 
@@ -1933,7 +2096,7 @@ fetch('/api/data')
 
 ---
 
-# Chapter 11: JavaScript Generators
+# Chapter 12: JavaScript Generators
 
 ## The Underrated Feature That Will Change How You Code
 

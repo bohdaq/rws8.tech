@@ -200,24 +200,25 @@
                     <li><a href="#chapter1">Chapter 1: JavaScript Data Types</a></li>
                     <li><a href="#chapter2">Chapter 2: JavaScript Hoisting</a></li>
                     <li><a href="#chapter3">Chapter 3: JavaScript Variables and Scope</a></li>
+                    <li><a href="#chapter4">Chapter 4: JavaScript Functions</a></li>
                 </ol>
             </li>
             <li>
                 <strong>Part II: Functions and Context</strong>
                 <ol>
-                    <li><a href="#chapter4">Chapter 4: JavaScript Closures</a></li>
-                    <li><a href="#chapter5">Chapter 5: JavaScript Currying</a></li>
-                    <li><a href="#chapter6">Chapter 6: JavaScript 'this' Keyword</a></li>
-                    <li><a href="#chapter7">Chapter 7: JavaScript Polymorphism</a></li>
-                    <li><a href="#chapter8">Chapter 8: JavaScript Inheritance</a></li>
-                    <li><a href="#chapter9">Chapter 9: JavaScript Encapsulation</a></li>
+                    <li><a href="#chapter5">Chapter 5: JavaScript Closures</a></li>
+                    <li><a href="#chapter6">Chapter 6: JavaScript Currying</a></li>
+                    <li><a href="#chapter7">Chapter 7: JavaScript 'this' Keyword</a></li>
+                    <li><a href="#chapter8">Chapter 8: JavaScript Polymorphism</a></li>
+                    <li><a href="#chapter9">Chapter 9: JavaScript Inheritance</a></li>
+                    <li><a href="#chapter10">Chapter 10: JavaScript Encapsulation</a></li>
                 </ol>
             </li>
             <li>
                 <strong>Part III: Asynchronous JavaScript</strong>
                 <ol>
-                    <li><a href="#chapter10">Chapter 10: JavaScript Promises</a></li>
-                    <li><a href="#chapter11">Chapter 11: JavaScript Generators</a></li>
+                    <li><a href="#chapter11">Chapter 11: JavaScript Promises</a></li>
+                    <li><a href="#chapter12">Chapter 12: JavaScript Generators</a></li>
                 </ol>
             </li>
             <li><a href="#conclusion">Conclusion</a></li>
@@ -1045,15 +1046,152 @@ let letVariable = 'let';</code></pre>
         </ul>
     </div>
 
+    <!-- Chapter 4 -->
+    <div id="chapter4" class="page-break">
+        <h1>Chapter 4: JavaScript Functions</h1>
+        <h2>Master the Building Blocks</h2>
+
+        <p>Functions are the fundamental building blocks of JavaScript. They allow you to encapsulate code, make it
+            reusable, and organize your programs into logical units.</p>
+
+        <h3>Function Declarations vs Expressions</h3>
+        <p><strong>Function Declarations:</strong></p>
+        <pre><code class="language-javascript">function add(a, b) {
+    return a + b;
+}
+
+// Can be called before definition (hoisted)
+sayHello(); // Works!
+
+function sayHello() {
+    console.log('Hello!');
+}</code></pre>
+
+        <p><strong>Function Expressions:</strong></p>
+        <pre><code class="language-javascript">const multiply = function(a, b) {
+    return a * b;
+};
+
+// Cannot be called before definition
+// subtract(); // Error!
+const subtract = function(a, b) {
+    return a - b;
+};</code></pre>
+
+        <h3>Arrow Functions</h3>
+        <p>Arrow functions provide concise syntax:</p>
+        <pre><code class="language-javascript">// Traditional
+const square1 = function(x) {
+    return x * x;
+};
+
+// Arrow - concise (implicit return)
+const square2 = x => x * x;
+
+// Multiple parameters
+const add = (a, b) => a + b;
+
+// No parameters
+const random = () => Math.random();
+
+// Returning objects
+const makePerson = (name, age) => ({ name, age });</code></pre>
+
+        <h3>Parameters and Arguments</h3>
+        <p><strong>Default Parameters:</strong></p>
+        <pre><code class="language-javascript">function greet(name = 'Guest', greeting = 'Hello') {
+    console.log(`${greeting}, ${name}!`);
+}
+
+greet(); // Hello, Guest!
+greet('Alice'); // Hello, Alice!</code></pre>
+
+        <p><strong>Rest Parameters:</strong></p>
+        <pre><code class="language-javascript">function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15</code></pre>
+
+        <h3>Higher-Order Functions</h3>
+        <p>Functions that take or return other functions:</p>
+        <pre><code class="language-javascript">// Takes a function
+function repeat(n, action) {
+    for (let i = 0; i < n; i++) {
+        action(i);
+    }
+}
+
+repeat(3, console.log); // 0, 1, 2
+
+// Returns a function
+function multiplyBy(factor) {
+    return function(number) {
+        return number * factor;
+    };
+}
+
+const double = multiplyBy(2);
+console.log(double(5)); // 10</code></pre>
+
+        <h3>Callback Functions</h3>
+        <pre><code class="language-javascript">const numbers = [1, 2, 3, 4, 5];
+
+const doubled = numbers.map(n => n * 2);
+const evens = numbers.filter(n => n % 2 === 0);
+const sum = numbers.reduce((total, n) => total + n, 0);</code></pre>
+
+        <h3>IIFEs (Immediately Invoked Function Expressions)</h3>
+        <pre><code class="language-javascript">(function() {
+    console.log('Runs immediately!');
+})();
+
+// Creating private scope
+const counter = (function() {
+    let count = 0;
+    
+    return {
+        increment() {
+            count++;
+            return count;
+        },
+        getCount() {
+            return count;
+        }
+    };
+})();</code></pre>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Use descriptive names</strong> - Make function purpose clear</li>
+            <li><strong>Keep functions small</strong> - Single responsibility</li>
+            <li><strong>Prefer arrow functions for callbacks</strong> - More concise</li>
+            <li><strong>Use default parameters</strong> - Instead of checking undefined</li>
+            <li><strong>Return early</strong> - Reduce nesting</li>
+        </ol>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Function declarations are hoisted, expressions are not</li>
+            <li>Arrow functions provide concise syntax and lexical <code>this</code></li>
+            <li>Default parameters provide fallback values</li>
+            <li>Rest parameters collect remaining arguments</li>
+            <li>Higher-order functions take or return functions</li>
+            <li>Callbacks are functions passed to be executed later</li>
+            <li>IIFEs execute immediately and create private scope</li>
+        </ul>
+    </div>
+
     <!-- PART II -->
     <div class="page-break">
         <h1 class="center">Part II</h1>
         <h2 class="center">Functions and Context</h2>
     </div>
 
-    <!-- Chapter 4 -->
-    <div id="chapter4" class="page-break">
-        <h1>Chapter 4: JavaScript Closures</h1>
+    <!-- Chapter 5 -->
+    <div id="chapter5" class="page-break">
+        <h1>Chapter 5: JavaScript Closures</h1>
         <h2>The Secret Weapon You're Already Using</h2>
 
         <p>If you've written JavaScript for more than a day, you've used closures - even if you didn't know it. Closures
@@ -1257,9 +1395,9 @@ for (var i = 0; i < 3; i++) {
         </ul>
     </div>
 
-    <!-- Chapter 5 -->
-    <div id="chapter5" class="page-break">
-        <h1>Chapter 5: JavaScript Currying</h1>
+    <!-- Chapter 6 -->
+    <div id="chapter6" class="page-break">
+        <h1>Chapter 6: JavaScript Currying</h1>
         <h2>Write More Reusable Code</h2>
 
         <p>Function currying is one of those functional programming concepts that sounds complicated but is surprisingly
@@ -1468,9 +1606,9 @@ add(1, 2, 3);     // 6 - all work!</code></pre>
         </ul>
     </div>
 
-    <!-- Chapter 6 -->
-    <div id="chapter6" class="page-break">
-        <h1>Chapter 6: JavaScript 'this' Keyword</h1>
+    <!-- Chapter 7 -->
+    <div id="chapter7" class="page-break">
+        <h1>Chapter 7: JavaScript 'this' Keyword</h1>
         <h2>The Keyword That Confuses Everyone</h2>
 
         <p>If you've ever written <code>console.log(this)</code> and been surprised by what you saw, you're not alone.
@@ -1714,9 +1852,9 @@ class Button {
         </ul>
     </div>
 
-    <!-- Chapter 7 -->
-    <div id="chapter7" class="page-break">
-        <h1>Chapter 7: JavaScript Polymorphism</h1>
+    <!-- Chapter 8 -->
+    <div id="chapter8" class="page-break">
+        <h1>Chapter 8: JavaScript Polymorphism</h1>
         <h2>Write Flexible, Reusable Code</h2>
 
         <p>If you've been writing JavaScript for a while, you've probably used polymorphism without even realizing it.
@@ -1914,9 +2052,9 @@ describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
         </ul>
     </div>
 
-    <!-- Chapter 8 -->
-    <div id="chapter8" class="page-break">
-        <h1>Chapter 8: JavaScript Inheritance</h1>
+    <!-- Chapter 9 -->
+    <div id="chapter9" class="page-break">
+        <h1>Chapter 9: JavaScript Inheritance</h1>
         <h2>Master Prototypal Inheritance and ES6 Classes</h2>
 
         <p>Inheritance is one of those concepts that sounds complicated but is actually quite natural once you
@@ -2121,9 +2259,9 @@ console.log(circle.getArea()); // 78.54...</code></pre>
         </ul>
     </div>
 
-    <!-- Chapter 9 -->
-    <div id="chapter9" class="page-break">
-        <h1>Chapter 9: JavaScript Encapsulation</h1>
+    <!-- Chapter 10 -->
+    <div id="chapter10" class="page-break">
+        <h1>Chapter 10: JavaScript Encapsulation</h1>
         <h2>Master Data Hiding and Private Variables</h2>
 
         <p>Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical
@@ -2320,9 +2458,9 @@ console.log(temp.fahrenheit); // 77</code></pre>
         <h2 class="center">Asynchronous JavaScript</h2>
     </div>
 
-    <!-- Chapter 10 -->
-    <div id="chapter10" class="page-break">
-        <h1>Chapter 10: JavaScript Promises</h1>
+    <!-- Chapter 11 -->
+    <div id="chapter11" class="page-break">
+        <h1>Chapter 11: JavaScript Promises</h1>
         <h2>From Callback Hell to Async Heaven</h2>
 
         <p>Remember the days of callback pyramids that looked like the Leaning Tower of Pisa? If you've been writing
@@ -2606,9 +2744,9 @@ fetch('/api/data')
         </ul>
     </div>
 
-    <!-- Chapter 11 -->
-    <div id="chapter11" class="page-break">
-        <h1>Chapter 11: JavaScript Generators</h1>
+    <!-- Chapter 12 -->
+    <div id="chapter12" class="page-break">
+        <h1>Chapter 12: JavaScript Generators</h1>
         <h2>The Underrated Feature That Will Change How You Code</h2>
 
         <p>If you've been writing JavaScript for a while, you've probably heard of generators. Maybe you've even seen

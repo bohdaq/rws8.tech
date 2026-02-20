@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn JavaScript Functions - Master function declarations, expressions, arrow functions, parameters, callbacks, and advanced function concepts.">
+    <meta name="keywords" content="JavaScript functions, function declaration, function expression, arrow functions, IIFE, higher-order functions, callback functions">
+    <meta name="author" content="bohdaq">
+    <title>JavaScript Functions | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/functions/lesson-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Functions</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>JavaScript Functions</h1>
+            <p class="page-subtitle">Master the Building Blocks of JavaScript</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand function declarations vs function expressions</li>
+                        <li>Master arrow functions and their characteristics</li>
+                        <li>Learn parameters, arguments, and default values</li>
+                        <li>Work with higher-order functions and callbacks</li>
+                        <li>Apply best practices for writing functions</li>
+                    </ul>
+                </div>
+
+                <h2>What Are Functions?</h2>
+                <p>Functions are reusable blocks of code that perform a specific task. They're the fundamental building blocks of JavaScript programs, allowing you to organize code, avoid repetition, and create abstractions.</p>
+
+                <pre><code class="language-javascript">// A simple function
+function greet() {
+    console.log('Hello, World!');
+}
+
+greet(); // 'Hello, World!'</code></pre>
+
+                <h2>Function Declarations</h2>
+                <p>Function declarations define named functions using the <code>function</code> keyword:</p>
+
+                <pre><code class="language-javascript">function add(a, b) {
+    return a + b;
+}
+
+console.log(add(5, 3)); // 8
+
+// Function declarations are hoisted
+sayHello(); // Works!
+
+function sayHello() {
+    console.log('Hello!');
+}</code></pre>
+
+                <p><strong>Key characteristics:</strong></p>
+                <ul>
+                    <li>Hoisted to the top of their scope</li>
+                    <li>Can be called before they're defined</li>
+                    <li>Must have a name</li>
+                </ul>
+
+                <h2>Function Expressions</h2>
+                <p>Function expressions define functions as part of an expression, typically by assigning them to variables:</p>
+
+                <pre><code class="language-javascript">const multiply = function(a, b) {
+    return a * b;
+};
+
+console.log(multiply(4, 5)); // 20
+
+// Function expressions are NOT hoisted
+// subtract(); // Error: Cannot access before initialization
+
+const subtract = function(a, b) {
+    return a - b;
+};</code></pre>
+
+                <p><strong>Key characteristics:</strong></p>
+                <ul>
+                    <li>Not hoisted (when using const/let)</li>
+                    <li>Can be anonymous or named</li>
+                    <li>Treated as values</li>
+                </ul>
+
+                <h2>Arrow Functions</h2>
+                <p>Arrow functions provide a concise syntax and have special behavior with <code>this</code>:</p>
+
+                <pre><code class="language-javascript">// Traditional function expression
+const square1 = function(x) {
+    return x * x;
+};
+
+// Arrow function - full syntax
+const square2 = (x) => {
+    return x * x;
+};
+
+// Arrow function - concise syntax (implicit return)
+const square3 = x => x * x;
+
+console.log(square3(5)); // 25
+
+// Multiple parameters need parentheses
+const add = (a, b) => a + b;
+
+// No parameters need empty parentheses
+const random = () => Math.random();
+
+// Returning objects requires parentheses
+const makePerson = (name, age) => ({ name, age });
+
+console.log(makePerson('Alice', 30)); // { name: 'Alice', age: 30 }</code></pre>
+
+                <p><strong>Arrow function rules:</strong></p>
+                <ul>
+                    <li>Single parameter: parentheses optional</li>
+                    <li>Single expression: braces and return optional</li>
+                    <li>No parameters or multiple parameters: parentheses required</li>
+                    <li>Don't have their own <code>this</code> binding</li>
+                </ul>
+
+                <h2>Parameters and Arguments</h2>
+                <p>Parameters are variables in the function definition. Arguments are the actual values passed when calling the function:</p>
+
+                <pre><code class="language-javascript">// Parameters: name, age
+function introduce(name, age) {
+    console.log(`Hi, I'm ${name} and I'm ${age} years old.`);
+}
+
+// Arguments: 'Alice', 30
+introduce('Alice', 30); // Hi, I'm Alice and I'm 30 years old.
+
+// Too few arguments - undefined
+introduce('Bob'); // Hi, I'm Bob and I'm undefined years old.
+
+// Too many arguments - extras ignored
+introduce('Charlie', 25, 'extra'); // Hi, I'm Charlie and I'm 25 years old.</code></pre>
+
+                <h3>Default Parameters</h3>
+                <pre><code class="language-javascript">function greet(name = 'Guest', greeting = 'Hello') {
+    console.log(`${greeting}, ${name}!`);
+}
+
+greet(); // Hello, Guest!
+greet('Alice'); // Hello, Alice!
+greet('Bob', 'Hi'); // Hi, Bob!
+
+// Default can be any expression
+function createArray(length = 5, fill = 0) {
+    return new Array(length).fill(fill);
+}
+
+console.log(createArray()); // [0, 0, 0, 0, 0]
+console.log(createArray(3, 1)); // [1, 1, 1]</code></pre>
+
+                <h3>Rest Parameters</h3>
+                <p>Rest parameters collect remaining arguments into an array:</p>
+
+                <pre><code class="language-javascript">function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15
+
+// Rest parameter must be last
+function logInfo(first, second, ...rest) {
+    console.log('First:', first);
+    console.log('Second:', second);
+    console.log('Rest:', rest);
+}
+
+logInfo('a', 'b', 'c', 'd', 'e');
+// First: a
+// Second: b
+// Rest: ['c', 'd', 'e']</code></pre>
+
+                <h2>Return Values</h2>
+                <p>Functions can return values using the <code>return</code> statement:</p>
+
+                <pre><code class="language-javascript">function multiply(a, b) {
+    return a * b;
+}
+
+const result = multiply(5, 3);
+console.log(result); // 15
+
+// Without return, functions return undefined
+function noReturn() {
+    console.log('This function returns nothing');
+}
+
+console.log(noReturn()); // undefined
+
+// Early return
+function divide(a, b) {
+    if (b === 0) {
+        return 'Cannot divide by zero';
+    }
+    return a / b;
+}
+
+console.log(divide(10, 2)); // 5
+console.log(divide(10, 0)); // Cannot divide by zero</code></pre>
+
+                <h2>Higher-Order Functions</h2>
+                <p>Functions that take other functions as arguments or return functions:</p>
+
+                <pre><code class="language-javascript">// Function that takes a function as argument
+function repeat(n, action) {
+    for (let i = 0; i < n; i++) {
+        action(i);
+    }
+}
+
+repeat(3, console.log);
+// 0
+// 1
+// 2
+
+// Function that returns a function
+function multiplyBy(factor) {
+    return function(number) {
+        return number * factor;
+    };
+}
+
+const double = multiplyBy(2);
+const triple = multiplyBy(3);
+
+console.log(double(5)); // 10
+console.log(triple(5)); // 15</code></pre>
+
+                <h2>Callback Functions</h2>
+                <p>Functions passed as arguments to be executed later:</p>
+
+                <pre><code class="language-javascript">// Array methods use callbacks
+const numbers = [1, 2, 3, 4, 5];
+
+// map - transform each element
+const doubled = numbers.map(n => n * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
+
+// filter - select elements
+const evens = numbers.filter(n => n % 2 === 0);
+console.log(evens); // [2, 4]
+
+// reduce - combine elements
+const sum = numbers.reduce((total, n) => total + n, 0);
+console.log(sum); // 15
+
+// forEach - perform action on each
+numbers.forEach(n => console.log(n * n));
+// 1, 4, 9, 16, 25
+
+// Custom callback example
+function processArray(arr, callback) {
+    const result = [];
+    for (let item of arr) {
+        result.push(callback(item));
+    }
+    return result;
+}
+
+const squared = processArray([1, 2, 3], x => x * x);
+console.log(squared); // [1, 4, 9]</code></pre>
+
+                <h2>Immediately Invoked Function Expressions (IIFE)</h2>
+                <p>Functions that execute immediately after being defined:</p>
+
+                <pre><code class="language-javascript">// Basic IIFE
+(function() {
+    console.log('This runs immediately!');
+})();
+
+// IIFE with parameters
+(function(name) {
+    console.log(`Hello, ${name}!`);
+})('Alice');
+
+// IIFE with return value
+const result = (function() {
+    const x = 10;
+    const y = 20;
+    return x + y;
+})();
+
+console.log(result); // 30
+
+// Arrow function IIFE
+(() => {
+    console.log('Arrow IIFE!');
+})();
+
+// Use case: Creating private scope
+const counter = (function() {
+    let count = 0; // Private variable
+    
+    return {
+        increment() {
+            count++;
+            return count;
+        },
+        decrement() {
+            count--;
+            return count;
+        },
+        getCount() {
+            return count;
+        }
+    };
+})();
+
+console.log(counter.increment()); // 1
+console.log(counter.increment()); // 2
+console.log(counter.getCount()); // 2
+// console.log(counter.count); // undefined - private!</code></pre>
+
+                <h2>Function Scope</h2>
+                <p>Variables declared inside a function are local to that function:</p>
+
+                <pre><code class="language-javascript">function outer() {
+    const outerVar = 'I am outer';
+    
+    function inner() {
+        const innerVar = 'I am inner';
+        console.log(outerVar); // Can access outer scope
+        console.log(innerVar); // Can access own scope
+    }
+    
+    inner();
+    // console.log(innerVar); // Error: innerVar not defined
+}
+
+outer();
+
+// Closures - inner functions remember outer scope
+function makeCounter() {
+    let count = 0;
+    
+    return function() {
+        count++;
+        return count;
+    };
+}
+
+const counter1 = makeCounter();
+const counter2 = makeCounter();
+
+console.log(counter1()); // 1
+console.log(counter1()); // 2
+console.log(counter2()); // 1 - separate closure</code></pre>
+
+                <h2>Best Practices</h2>
+
+                <h3>1. Use Descriptive Names</h3>
+                <pre><code class="language-javascript">// Bad
+function f(x, y) {
+    return x + y;
+}
+
+// Good
+function calculateTotal(price, tax) {
+    return price + tax;
+}</code></pre>
+
+                <h3>2. Keep Functions Small and Focused</h3>
+                <pre><code class="language-javascript">// Bad - does too much
+function processUser(user) {
+    validateUser(user);
+    saveToDatabase(user);
+    sendEmail(user);
+    logActivity(user);
+}
+
+// Good - single responsibility
+function validateUser(user) { /* ... */ }
+function saveUser(user) { /* ... */ }
+function notifyUser(user) { /* ... */ }</code></pre>
+
+                <h3>3. Prefer Arrow Functions for Callbacks</h3>
+                <pre><code class="language-javascript">// Verbose
+numbers.map(function(n) {
+    return n * 2;
+});
+
+// Concise
+numbers.map(n => n * 2);</code></pre>
+
+                <h3>4. Use Default Parameters Instead of Checking</h3>
+                <pre><code class="language-javascript">// Bad
+function greet(name) {
+    name = name || 'Guest';
+    console.log(`Hello, ${name}!`);
+}
+
+// Good
+function greet(name = 'Guest') {
+    console.log(`Hello, ${name}!`);
+}</code></pre>
+
+                <h3>5. Return Early to Reduce Nesting</h3>
+                <pre><code class="language-javascript">// Bad - nested
+function processValue(value) {
+    if (value) {
+        if (value > 0) {
+            if (value < 100) {
+                return value * 2;
+            }
+        }
+    }
+    return 0;
+}
+
+// Good - early returns
+function processValue(value) {
+    if (!value) return 0;
+    if (value <= 0) return 0;
+    if (value >= 100) return 0;
+    return value * 2;
+}</code></pre>
+
+                <h3>6. Use Rest Parameters Instead of arguments</h3>
+                <pre><code class="language-javascript">// Bad - arguments object
+function sum() {
+    let total = 0;
+    for (let i = 0; i < arguments.length; i++) {
+        total += arguments[i];
+    }
+    return total;
+}
+
+// Good - rest parameters
+function sum(...numbers) {
+    return numbers.reduce((total, n) => total + n, 0);
+}</code></pre>
+
+                <h2>Common Patterns</h2>
+
+                <h3>Function Factory</h3>
+                <pre><code class="language-javascript">function createGreeter(greeting) {
+    return function(name) {
+        return `${greeting}, ${name}!`;
+    };
+}
+
+const sayHello = createGreeter('Hello');
+const sayHi = createGreeter('Hi');
+
+console.log(sayHello('Alice')); // Hello, Alice!
+console.log(sayHi('Bob')); // Hi, Bob!</code></pre>
+
+                <h3>Memoization</h3>
+                <pre><code class="language-javascript">function memoize(fn) {
+    const cache = {};
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        if (key in cache) {
+            return cache[key];
+        }
+        const result = fn(...args);
+        cache[key] = result;
+        return result;
+    };
+}
+
+const expensiveCalculation = memoize((n) => {
+    console.log('Calculating...');
+    return n * n;
+});
+
+console.log(expensiveCalculation(5)); // Calculating... 25
+console.log(expensiveCalculation(5)); // 25 (cached)</code></pre>
+
+                <h3>Partial Application</h3>
+                <pre><code class="language-javascript">function partial(fn, ...fixedArgs) {
+    return function(...remainingArgs) {
+        return fn(...fixedArgs, ...remainingArgs);
+    };
+}
+
+function greet(greeting, name) {
+    return `${greeting}, ${name}!`;
+}
+
+const sayHello = partial(greet, 'Hello');
+console.log(sayHello('Alice')); // Hello, Alice!
+console.log(sayHello('Bob')); // Hello, Bob!</code></pre>
+
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li><strong>Function declarations</strong> are hoisted and can be called before definition</li>
+                    <li><strong>Function expressions</strong> are not hoisted and are treated as values</li>
+                    <li><strong>Arrow functions</strong> provide concise syntax and lexical <code>this</code></li>
+                    <li><strong>Default parameters</strong> provide fallback values</li>
+                    <li><strong>Rest parameters</strong> collect remaining arguments into an array</li>
+                    <li><strong>Higher-order functions</strong> take or return other functions</li>
+                    <li><strong>Callbacks</strong> are functions passed to be executed later</li>
+                    <li><strong>IIFEs</strong> execute immediately and create private scope</li>
+                    <li><strong>Keep functions small</strong>, focused, and well-named</li>
+                    <li><strong>Use arrow functions</strong> for callbacks and short functions</li>
+                </ul>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                    <a href="../index.html" class="btn btn-secondary">All JavaScript Tutorials →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../assets/prism/prism.js"></script>
+</body>
+</html>
