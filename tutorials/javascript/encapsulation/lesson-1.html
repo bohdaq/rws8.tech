@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn JavaScript Encapsulation - Master private variables, closures, modules, ES2022 private fields, and data hiding techniques.">
+    <meta name="keywords" content="JavaScript encapsulation, private variables, closures, modules, private fields, data hiding, JavaScript OOP">
+    <meta name="author" content="bohdaq">
+    <title>JavaScript Encapsulation | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/encapsulation/lesson-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .lesson-content ul, .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Encapsulation</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>JavaScript Encapsulation</h1>
+            <p class="page-subtitle">Master Data Hiding and Private Variables</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand encapsulation and its benefits</li>
+                        <li>Create private variables using closures</li>
+                        <li>Implement the Module Pattern</li>
+                        <li>Use ES2022 private fields</li>
+                        <li>Apply getters and setters effectively</li>
+                    </ul>
+                </div>
+
+                <h2>What is Encapsulation?</h2>
+                <p>Encapsulation is the practice of bundling data and methods that operate on that data within a single unit, while hiding the internal implementation details from the outside world. It's one of the four fundamental principles of object-oriented programming (along with inheritance, polymorphism, and abstraction).</p>
+
+                <p>In JavaScript, encapsulation helps you:</p>
+                <ul>
+                    <li><strong>Protect data</strong> - Prevent direct access to internal state</li>
+                    <li><strong>Control access</strong> - Define how data can be read and modified</li>
+                    <li><strong>Reduce coupling</strong> - Hide implementation details from other code</li>
+                    <li><strong>Improve maintainability</strong> - Change internals without breaking external code</li>
+                </ul>
+
+                <pre><code class="language-javascript">// Without encapsulation - data is exposed
+const user = {
+    balance: 1000
+};
+
+user.balance = -500; // Oops! No validation
+
+// With encapsulation - data is protected
+function createUser(initialBalance) {
+    let balance = initialBalance; // Private variable
+    
+    return {
+        getBalance() {
+            return balance;
+        },
+        deposit(amount) {
+            if (amount > 0) {
+                balance += amount;
+                return true;
+            }
+            return false;
+        },
+        withdraw(amount) {
+            if (amount > 0 && amount <= balance) {
+                balance -= amount;
+                return true;
+            }
+            return false;
+        }
+    };
+}
+
+const account = createUser(1000);
+console.log(account.getBalance()); // 1000
+account.deposit(500);              // true
+console.log(account.getBalance()); // 1500
+account.balance = -500;            // Has no effect!
+console.log(account.getBalance()); // Still 1500</code></pre>
+
+                <h2>Private Variables with Closures</h2>
+                <p>Before ES2022, closures were the primary way to create private variables in JavaScript. A closure allows an inner function to access variables from its outer function, even after the outer function has returned.</p>
+
+                <pre><code class="language-javascript">function Counter() {
+    let count = 0; // Private variable
+    
+    this.increment = function() {
+        count++;
+        return count;
+    };
+    
+    this.decrement = function() {
+        count--;
+        return count;
+    };
+    
+    this.getCount = function() {
+        return count;
+    };
+}
+
+const counter = new Counter();
+console.log(counter.increment()); // 1
+console.log(counter.increment()); // 2
+console.log(counter.getCount());  // 2
+console.log(counter.count);       // undefined - private!</code></pre>
+
+                <p>The <code>count</code> variable is only accessible through the methods we've defined. There's no way to directly access or modify it from outside.</p>
+
+                <h2>The Module Pattern</h2>
+                <p>The Module Pattern uses an Immediately Invoked Function Expression (IIFE) to create a private scope and return a public API:</p>
+
+                <pre><code class="language-javascript">const Calculator = (function() {
+    // Private variables and functions
+    let history = [];
+    
+    function log(operation, result) {
+        history.push({ operation, result, timestamp: Date.now() });
+    }
+    
+    // Public API
+    return {
+        add(a, b) {
+            const result = a + b;
+            log(`${a} + ${b}`, result);
+            return result;
+        },
+        
+        subtract(a, b) {
+            const result = a - b;
+            log(`${a} - ${b}`, result);
+            return result;
+        },
+        
+        getHistory() {
+            return [...history]; // Return copy, not reference
+        },
+        
+        clearHistory() {
+            history = [];
+        }
+    };
+})();
+
+console.log(Calculator.add(5, 3));      // 8
+console.log(Calculator.subtract(10, 4)); // 6
+console.log(Calculator.getHistory());    // Array with 2 operations
+console.log(Calculator.history);         // undefined - private!</code></pre>
+
+                <p>The Module Pattern is excellent for creating singleton objects with private state and a clean public interface.</p>
+
+                <h2>ES2022 Private Fields</h2>
+                <p>Modern JavaScript (ES2022) introduced true private fields using the <code>#</code> prefix. These are enforced by the JavaScript engine itself:</p>
+
+                <pre><code class="language-javascript">class BankAccount {
+    #balance;        // Private field
+    #transactions;   // Private field
+    
+    constructor(initialBalance) {
+        this.#balance = initialBalance;
+        this.#transactions = [];
+    }
+    
+    deposit(amount) {
+        if (amount <= 0) {
+            throw new Error('Amount must be positive');
+        }
+        this.#balance += amount;
+        this.#logTransaction('deposit', amount);
+        return this.#balance;
+    }
+    
+    withdraw(amount) {
+        if (amount <= 0) {
+            throw new Error('Amount must be positive');
+        }
+        if (amount > this.#balance) {
+            throw new Error('Insufficient funds');
+        }
+        this.#balance -= amount;
+        this.#logTransaction('withdraw', amount);
+        return this.#balance;
+    }
+    
+    getBalance() {
+        return this.#balance;
+    }
+    
+    // Private method
+    #logTransaction(type, amount) {
+        this.#transactions.push({
+            type,
+            amount,
+            balance: this.#balance,
+            timestamp: new Date()
+        });
+    }
+    
+    getTransactionHistory() {
+        return [...this.#transactions]; // Return copy
+    }
+}
+
+const account = new BankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance());        // 1500
+// account.#balance;                      // SyntaxError!
+// account.#logTransaction('hack', 999);  // SyntaxError!</code></pre>
+
+                <p>Private fields are truly private - attempting to access them from outside the class results in a syntax error, not just <code>undefined</code>.</p>
+
+                <h2>WeakMap for Private Data</h2>
+                <p>Before private fields, WeakMaps were used to store truly private data:</p>
+
+                <pre><code class="language-javascript">const privateData = new WeakMap();
+
+class User {
+    constructor(name, email, password) {
+        // Store private data in WeakMap
+        privateData.set(this, {
+            password: password,
+            loginAttempts: 0
+        });
+        
+        // Public properties
+        this.name = name;
+        this.email = email;
+    }
+    
+    login(password) {
+        const data = privateData.get(this);
+        
+        if (password === data.password) {
+            data.loginAttempts = 0;
+            return true;
+        }
+        
+        data.loginAttempts++;
+        if (data.loginAttempts >= 3) {
+            throw new Error('Account locked');
+        }
+        return false;
+    }
+    
+    changePassword(oldPassword, newPassword) {
+        const data = privateData.get(this);
+        
+        if (oldPassword !== data.password) {
+            throw new Error('Incorrect password');
+        }
+        
+        data.password = newPassword;
+        return true;
+    }
+}
+
+const user = new User('Alice', 'alice@example.com', 'secret123');
+console.log(user.name);     // 'Alice'
+console.log(user.password); // undefined - private!
+user.login('wrong');        // false
+user.login('secret123');    // true</code></pre>
+
+                <p>WeakMaps are still useful when you need to attach private data to objects you don't control, but private fields are now the preferred approach for classes.</p>
+
+                <h2>Getters and Setters</h2>
+                <p>Getters and setters provide controlled access to private data with validation:</p>
+
+                <pre><code class="language-javascript">class Temperature {
+    #celsius;
+    
+    constructor(celsius) {
+        this.celsius = celsius; // Uses setter
+    }
+    
+    get celsius() {
+        return this.#celsius;
+    }
+    
+    set celsius(value) {
+        if (typeof value !== 'number') {
+            throw new Error('Temperature must be a number');
+        }
+        if (value < -273.15) {
+            throw new Error('Temperature below absolute zero');
+        }
+        this.#celsius = value;
+    }
+    
+    get fahrenheit() {
+        return (this.#celsius * 9/5) + 32;
+    }
+    
+    set fahrenheit(value) {
+        this.celsius = (value - 32) * 5/9; // Uses celsius setter
+    }
+    
+    get kelvin() {
+        return this.#celsius + 273.15;
+    }
+    
+    set kelvin(value) {
+        this.celsius = value - 273.15; // Uses celsius setter
+    }
+}
+
+const temp = new Temperature(25);
+console.log(temp.celsius);     // 25
+console.log(temp.fahrenheit);  // 77
+console.log(temp.kelvin);      // 298.15
+
+temp.fahrenheit = 32;
+console.log(temp.celsius);     // 0
+
+// temp.celsius = -300;        // Error: Temperature below absolute zero</code></pre>
+
+                <h2>Real-World Example: Shopping Cart</h2>
+                <p>Let's build a shopping cart with proper encapsulation:</p>
+
+                <pre><code class="language-javascript">class ShoppingCart {
+    #items;
+    #discountRate;
+    
+    constructor() {
+        this.#items = [];
+        this.#discountRate = 0;
+    }
+    
+    addItem(product, quantity = 1) {
+        if (quantity <= 0) {
+            throw new Error('Quantity must be positive');
+        }
+        
+        const existingItem = this.#items.find(item => item.product.id === product.id);
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            this.#items.push({ product, quantity });
+        }
+        
+        return this.#calculateTotal();
+    }
+    
+    removeItem(productId) {
+        const index = this.#items.findIndex(item => item.product.id === productId);
+        
+        if (index !== -1) {
+            this.#items.splice(index, 1);
+        }
+        
+        return this.#calculateTotal();
+    }
+    
+    updateQuantity(productId, quantity) {
+        if (quantity <= 0) {
+            return this.removeItem(productId);
+        }
+        
+        const item = this.#items.find(item => item.product.id === productId);
+        
+        if (item) {
+            item.quantity = quantity;
+        }
+        
+        return this.#calculateTotal();
+    }
+    
+    applyDiscount(percentage) {
+        if (percentage < 0 || percentage > 100) {
+            throw new Error('Discount must be between 0 and 100');
+        }
+        this.#discountRate = percentage / 100;
+        return this.#calculateTotal();
+    }
+    
+    #calculateTotal() {
+        const subtotal = this.#items.reduce((sum, item) => {
+            return sum + (item.product.price * item.quantity);
+        }, 0);
+        
+        const discount = subtotal * this.#discountRate;
+        return subtotal - discount;
+    }
+    
+    getItems() {
+        // Return deep copy to prevent external modification
+        return this.#items.map(item => ({
+            product: { ...item.product },
+            quantity: item.quantity
+        }));
+    }
+    
+    getTotal() {
+        return this.#calculateTotal();
+    }
+    
+    getItemCount() {
+        return this.#items.reduce((sum, item) => sum + item.quantity, 0);
+    }
+    
+    clear() {
+        this.#items = [];
+        this.#discountRate = 0;
+    }
+}
+
+// Usage
+const cart = new ShoppingCart();
+
+cart.addItem({ id: 1, name: 'Laptop', price: 999 }, 1);
+cart.addItem({ id: 2, name: 'Mouse', price: 25 }, 2);
+
+console.log(cart.getTotal());      // 1049
+console.log(cart.getItemCount());  // 3
+
+cart.applyDiscount(10);            // 10% off
+console.log(cart.getTotal());      // 944.10
+
+// cart.#items.push(...);          // SyntaxError - can't access private field!
+// cart.#discountRate = 0.5;       // SyntaxError - can't access private field!</code></pre>
+
+                <h2>Encapsulation Best Practices</h2>
+
+                <h3>1. Make Everything Private by Default</h3>
+                <p>Only expose what's necessary for the public API:</p>
+
+                <pre><code class="language-javascript">class DataProcessor {
+    #data;
+    #cache;
+    
+    constructor(data) {
+        this.#data = data;
+        this.#cache = new Map();
+    }
+    
+    // Public method
+    process() {
+        return this.#validate() && this.#transform() && this.#save();
+    }
+    
+    // Private methods
+    #validate() { /* ... */ }
+    #transform() { /* ... */ }
+    #save() { /* ... */ }
+}</code></pre>
+
+                <h3>2. Use Getters for Computed Properties</h3>
+                <pre><code class="language-javascript">class Rectangle {
+    #width;
+    #height;
+    
+    constructor(width, height) {
+        this.#width = width;
+        this.#height = height;
+    }
+    
+    get area() {
+        return this.#width * this.#height;
+    }
+    
+    get perimeter() {
+        return 2 * (this.#width + this.#height);
+    }
+}</code></pre>
+
+                <h3>3. Validate in Setters</h3>
+                <pre><code class="language-javascript">class Person {
+    #age;
+    
+    set age(value) {
+        if (typeof value !== 'number' || value < 0 || value > 150) {
+            throw new Error('Invalid age');
+        }
+        this.#age = value;
+    }
+    
+    get age() {
+        return this.#age;
+    }
+}</code></pre>
+
+                <h3>4. Return Copies, Not References</h3>
+                <pre><code class="language-javascript">class Team {
+    #members;
+    
+    constructor() {
+        this.#members = [];
+    }
+    
+    getMembers() {
+        // Return copy to prevent external modification
+        return [...this.#members];
+    }
+}</code></pre>
+
+                <h3>5. Use Meaningful Method Names</h3>
+                <pre><code class="language-javascript">// Good - clear intent
+class User {
+    #isActive;
+    
+    activate() { this.#isActive = true; }
+    deactivate() { this.#isActive = false; }
+    isActive() { return this.#isActive; }
+}
+
+// Bad - unclear
+class User {
+    #status;
+    
+    set(val) { this.#status = val; }
+    get() { return this.#status; }
+}</code></pre>
+
+                <h2>When to Use Encapsulation</h2>
+
+                <p><strong>Use encapsulation when:</strong></p>
+                <ul>
+                    <li>You need to protect data integrity</li>
+                    <li>You want to control how data is accessed or modified</li>
+                    <li>You're building reusable components or libraries</li>
+                    <li>You need to validate data before changes</li>
+                    <li>You want to hide complex implementation details</li>
+                    <li>You need to maintain backward compatibility</li>
+                </ul>
+
+                <p><strong>Consider simpler approaches when:</strong></p>
+                <ul>
+                    <li>You're building simple data structures</li>
+                    <li>The code is only used internally in your team</li>
+                    <li>Performance is critical and the overhead matters</li>
+                    <li>The data doesn't need protection or validation</li>
+                </ul>
+
+                <h2>Common Pitfalls</h2>
+
+                <h3>1. Over-Encapsulation</h3>
+                <pre><code class="language-javascript">// Bad - too much encapsulation for a simple point
+class Point {
+    #x;
+    #y;
+    
+    getX() { return this.#x; }
+    setX(x) { this.#x = x; }
+    getY() { return this.#y; }
+    setY(y) { this.#y = y; }
+}
+
+// Better - simple data structure
+class Point {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}</code></pre>
+
+                <h3>2. Forgetting to Return Copies</h3>
+                <pre><code class="language-javascript">// Bad - exposes internal array
+class List {
+    #items = [];
+    
+    getItems() {
+        return this.#items; // External code can modify this!
+    }
+}
+
+// Good - returns copy
+class List {
+    #items = [];
+    
+    getItems() {
+        return [...this.#items];
+    }
+}</code></pre>
+
+                <h3>3. Inconsistent Access Patterns</h3>
+                <pre><code class="language-javascript">// Bad - mixing patterns
+class User {
+    #name;
+    email; // Public
+    
+    getName() { return this.#name; }
+}
+
+// Good - consistent
+class User {
+    #name;
+    #email;
+    
+    getName() { return this.#name; }
+    getEmail() { return this.#email; }
+}</code></pre>
+
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li>Encapsulation bundles data and methods while hiding implementation details</li>
+                    <li>Use closures for private variables in functions and modules</li>
+                    <li>The Module Pattern creates singletons with private state</li>
+                    <li>ES2022 private fields (#) are the modern way to create truly private class members</li>
+                    <li>WeakMaps can store private data for objects you don't control</li>
+                    <li>Getters and setters provide controlled access with validation</li>
+                    <li>Always return copies of internal data structures, not references</li>
+                    <li>Make everything private by default, only expose what's necessary</li>
+                    <li>Use meaningful names for public methods</li>
+                    <li>Don't over-encapsulate simple data structures</li>
+                </ul>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                    <a href="../index.html" class="btn btn-secondary">All JavaScript Tutorials →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../assets/prism/prism.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@
     <meta name="author" content="Bohdan Tsap" />
     <meta name="description"
         content="A comprehensive guide to essential JavaScript concepts including data types, hoisting, closures, currying, this keyword, promises, and generators." />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <style type="text/css">
         body {
             font-family: Georgia, serif;
@@ -208,13 +209,14 @@
                     <li><a href="#chapter5">Chapter 5: JavaScript 'this' Keyword</a></li>
                     <li><a href="#chapter6">Chapter 6: JavaScript Polymorphism</a></li>
                     <li><a href="#chapter7">Chapter 7: JavaScript Inheritance</a></li>
+                    <li><a href="#chapter8">Chapter 8: JavaScript Encapsulation</a></li>
                 </ol>
             </li>
             <li>
                 <strong>Part III: Asynchronous JavaScript</strong>
                 <ol>
-                    <li><a href="#chapter8">Chapter 8: JavaScript Promises</a></li>
-                    <li><a href="#chapter9">Chapter 9: JavaScript Generators</a></li>
+                    <li><a href="#chapter9">Chapter 9: JavaScript Promises</a></li>
+                    <li><a href="#chapter10">Chapter 10: JavaScript Generators</a></li>
                 </ol>
             </li>
             <li><a href="#conclusion">Conclusion</a></li>
@@ -315,7 +317,7 @@
         <p>This design choice makes JavaScript easier to learn, but it comes with some quirks you need to understand:
         </p>
 
-        <pre><code>let age = 25;           // Integer
+        <pre><code class="language-javascript">let age = 25;           // Integer
 let price = 19.99;      // Float
 let infinity = Infinity;
 let notANumber = NaN;
@@ -351,7 +353,7 @@ console.log(5 / 0);     // Infinity</code></pre>
             optimizations
             and makes strings safer to use.</p>
 
-        <pre><code>let name = "Alice";
+        <pre><code class="language-javascript">let name = "Alice";
 let greeting = `Hello, ${name}!`; // Template literal
 
 // Strings are immutable
@@ -380,7 +382,7 @@ console.log(name); // Still "Alice"</code></pre>
             can be convenient, but it's also a common source of bugs if you don't understand which values are falsy.
         </p>
 
-        <pre><code>let isActive = true;
+        <pre><code class="language-javascript">let isActive = true;
 let isComplete = false;
 
 // But watch out for truthy/falsy values
@@ -408,7 +410,7 @@ if ("hello") {
             variables you declare without initializing, and functions return <code>undefined</code> if they don't
             explicitly return something else.</p>
 
-        <pre><code>let x;
+        <pre><code class="language-javascript">let x;
 console.log(x); // undefined
 
 function noReturn() {}
@@ -429,7 +431,7 @@ console.log(noReturn()); // undefined</code></pre>
             no value right now."
         </p>
 
-        <pre><code>let user = null; // Explicitly empty
+        <pre><code class="language-javascript">let user = null; // Explicitly empty
 
 // Historical bug:
 console.log(typeof null); // "object" (should be "null")</code></pre>
@@ -450,7 +452,7 @@ console.log(typeof null); // "object" (should be "null")</code></pre>
             are guaranteed to be different from every other Symbol, even if they have the same description. This
             uniqueness makes them perfect for creating object properties that won't conflict with other properties.</p>
 
-        <pre><code>let id1 = Symbol("id");
+        <pre><code class="language-javascript">let id1 = Symbol("id");
 let id2 = Symbol("id");
 
 console.log(id1 === id2); // false (each is unique)</code></pre>
@@ -477,7 +479,7 @@ console.log(id1 === id2); // false (each is unique)</code></pre>
             <code>BigInt()</code> constructor.
         </p>
 
-        <pre><code>let bigNum = 9007199254740991n;
+        <pre><code class="language-javascript">let bigNum = 9007199254740991n;
 let huge = BigInt("999999999999999999");
 
 // Can't mix with regular numbers
@@ -501,7 +503,7 @@ console.log(100n + 50n);   // 150n</code></pre>
             JavaScript's prototype-based inheritance system. All these types share common object behaviors (like having
             properties and methods), but each adds its own specialized functionality on top of that foundation.</p>
 
-        <pre><code>let person = { name: "Alice", age: 25 };
+        <pre><code class="language-javascript">let person = { name: "Alice", age: 25 };
 let numbers = [1, 2, 3, 4, 5];
 let greet = function() { console.log("Hi!"); };
 
@@ -524,7 +526,7 @@ console.log(typeof greet);   // "function"</code></pre>
             creates a completely independent copy of that value. Changes to one variable don't affect the other because
             they're separate values in memory:</p>
 
-        <pre><code>let a = 5;
+        <pre><code class="language-javascript">let a = 5;
 let b = a;  // Copy the value
 b = 10;
 
@@ -539,7 +541,7 @@ console.log(b); // 10</code></pre>
             variables
             now refer to the exact same object, so changes through one variable are visible through the other:</p>
 
-        <pre><code>let obj1 = { name: "Alice" };
+        <pre><code class="language-javascript">let obj1 = { name: "Alice" };
 let obj2 = obj1;  // Copy the reference
 obj2.name = "Bob";
 
@@ -559,7 +561,7 @@ console.log(obj2.name); // "Bob"</code></pre>
             with copies of the top-level properties, but nested objects are still references. A deep clone recursively
             copies everything, creating a completely independent structure:</p>
 
-        <pre><code>// Shallow clone
+        <pre><code class="language-javascript">// Shallow clone
 let clone = { ...original };
 let clone = Object.assign({}, original);
 
@@ -583,7 +585,7 @@ let deepClone = structuredClone(original);</code></pre>
             some quirks and limitations you need to be aware of. Understanding these limitations helps you write more
             robust type-checking code.</p>
 
-        <pre><code>console.log(typeof 42);        // "number"
+        <pre><code class="language-javascript">console.log(typeof 42);        // "number"
 console.log(typeof "hello");   // "string"
 console.log(typeof true);      // "boolean"
 console.log(typeof undefined); // "undefined"
@@ -598,7 +600,7 @@ console.log(typeof []);        // "object" (not helpful!)</code></pre>
         <p>For arrays specifically, use <code>Array.isArray()</code>, which was added to JavaScript specifically to
             solve this problem:</p>
 
-        <pre><code>Array.isArray([]);  // true
+        <pre><code class="language-javascript">Array.isArray([]);  // true
 Array.isArray({});  // false</code></pre>
 
         <p>For more sophisticated type checking, you can use <code>instanceof</code> to check if an object was created
@@ -614,7 +616,7 @@ Array.isArray({});  // false</code></pre>
         <p>Understanding coercion rules is essential because they affect how operators work, how comparisons behave, and
             how values are converted in conditional statements. Let's explore the main coercion scenarios:</p>
 
-        <pre><code>// String coercion
+        <pre><code class="language-javascript">// String coercion
 console.log("5" + 3);      // "53" (number to string)
 console.log("Hello" + 1);  // "Hello1"
 
@@ -641,7 +643,7 @@ console.log(!!0);          // false</code></pre>
             equality (<code>==</code>) which performs type coercion, and strict equality (<code>===</code>) which
             doesn't:</p>
 
-        <pre><code>// Loose equality (==) coerces types
+        <pre><code class="language-javascript">// Loose equality (==) coerces types
 console.log(5 == "5");     // true
 console.log(true == 1);    // true
 console.log(null == undefined); // true
@@ -698,7 +700,7 @@ console.log(true === 1);   // false
         <p>This means you can sometimes use variables and functions before you declare them, which seems to violate
             the normal top-to-bottom execution flow:</p>
 
-        <pre><code>console.log(greeting); // undefined (not an error!)
+        <pre><code class="language-javascript">console.log(greeting); // undefined (not an error!)
 var greeting = "Hello";
 
 sayHi(); // "Hi!" (works perfectly)
@@ -725,7 +727,7 @@ function sayHi() {
             function declarations and registers them in the current scope. However, it treats them differently based on
             how they're declared.</p>
 
-        <pre><code>// What you write:
+        <pre><code class="language-javascript">// What you write:
 console.log(x);
 var x = 5;
 
@@ -748,7 +750,7 @@ x = 5;              // Assignment stays in place</code></pre>
 
         <p>Consider this classic example that confuses many developers:</p>
 
-        <pre><code>var name = "Global";
+        <pre><code class="language-javascript">var name = "Global";
 
 function test() {
     console.log(name); // undefined (not "Global"!)
@@ -781,14 +783,14 @@ function test() {
             cannot be accessed. If you try to use the variable during this period, JavaScript throws a ReferenceError:
         </p>
 
-        <pre><code>console.log(x); // ReferenceError!
+        <pre><code class="language-javascript">console.log(x); // ReferenceError!
 let x = 5;</code></pre>
 
         <p>The Temporal Dead Zone starts at the beginning of the scope and ends when the declaration is reached. During
             this time, the variable is in a kind of limbo - it's been hoisted and registered in the scope, but it's not
             yet initialized and cannot be accessed:</p>
 
-        <pre><code>function example() {
+        <pre><code class="language-javascript">function example() {
     // TDZ starts for 'temp'
     console.log(temp); // ReferenceError
     
@@ -815,7 +817,7 @@ let x = 5;</code></pre>
         <p><strong>Function declarations</strong> are fully hoisted - both the name and the entire function body. This
             means you can call a function before it appears in your code:</p>
 
-        <pre><code>greet(); // Works!
+        <pre><code class="language-javascript">greet(); // Works!
 
 function greet() {
     console.log("Hello!");
@@ -828,7 +830,7 @@ function greet() {
         <p><strong>Function expressions</strong>, however, follow variable hoisting rules. When you assign a function to
             a variable, only the variable declaration is hoisted, not the function itself:</p>
 
-        <pre><code>sayHi(); // TypeError: sayHi is not a function
+        <pre><code class="language-javascript">sayHi(); // TypeError: sayHi is not a function
 
 var sayHi = function() {
     console.log("Hi!");
@@ -842,7 +844,7 @@ var sayHi = function() {
         <p>If you use <code>const</code> or <code>let</code> for a function expression, you'll get a ReferenceError
             instead due to the Temporal Dead Zone:</p>
 
-        <pre><code>greet(); // ReferenceError: Cannot access 'greet' before initialization
+        <pre><code class="language-javascript">greet(); // ReferenceError: Cannot access 'greet' before initialization
 
 const greet = function() {
     console.log("Hello!");
@@ -857,7 +859,7 @@ const greet = function() {
             This example has confused countless developers, and understanding why it happens requires combining your
             knowledge of hoisting, scope, and closures:</p>
 
-        <pre><code>// With var
+        <pre><code class="language-javascript">// With var
 for (var i = 0; i < 3; i++) {
     setTimeout(() => console.log(i), 100);
 }
@@ -930,7 +932,7 @@ for (let i = 0; i < 3; i++) {
             function has finished executing. This might sound abstract, so let's break it down with a concrete example:
         </p>
 
-        <pre><code>function outer() {
+        <pre><code class="language-javascript">function outer() {
     let count = 0;
     
     function inner() {
@@ -976,7 +978,7 @@ counter(); // 3</code></pre>
         <p>Consider a bank account where you want to prevent direct manipulation of the balance. Closures let you create
             private variables that can only be accessed through specific methods:</p>
 
-        <pre><code>function createBankAccount(initialBalance) {
+        <pre><code class="language-javascript">function createBankAccount(initialBalance) {
     let balance = initialBalance;
     
     return {
@@ -1016,7 +1018,7 @@ account.withdraw(30);   // 120
             with specific behaviors baked in. This is particularly useful when you need multiple similar functions with
             different configurations.</p>
 
-        <pre><code>function multiplier(factor) {
+        <pre><code class="language-javascript">function multiplier(factor) {
     return function(number) {
         return number * factor;
     };
@@ -1043,7 +1045,7 @@ console.log(triple(5));  // 15</code></pre>
             When you attach an event listener, the callback function forms a closure over any variables in its scope:
         </p>
 
-        <pre><code>function setupButton(buttonId) {
+        <pre><code class="language-javascript">function setupButton(buttonId) {
     let clickCount = 0;
     
     document.getElementById(buttonId).addEventListener('click', function() {
@@ -1064,7 +1066,7 @@ console.log(triple(5));  // 15</code></pre>
             problem has tripped up countless developers and demonstrates an important subtlety about how closures work:
         </p>
 
-        <pre><code>// Problem
+        <pre><code class="language-javascript">// Problem
 for (var i = 0; i < 3; i++) {
     setTimeout(function() {
         console.log(i);
@@ -1136,7 +1138,7 @@ for (var i = 0; i < 3; i++) {
             single argument. Instead of calling a function with all its arguments at once, you call it with one argument
             at a time, and each call returns a new function that expects the next argument.</p>
 
-        <pre><code>// Regular function
+        <pre><code class="language-javascript">// Regular function
 function add(a, b, c) {
     return a + b + c;
 }
@@ -1166,7 +1168,7 @@ addCurried(1)(2)(3); // 6</code></pre>
             of writing multiple similar functions, you write one curried function and derive the specialized versions
             from it:</p>
 
-        <pre><code>const multiply = a => b => a * b;
+        <pre><code class="language-javascript">const multiply = a => b => a * b;
 
 const double = multiply(2);
 const triple = multiply(3);
@@ -1186,7 +1188,7 @@ triple(5);  // 15</code></pre>
         <p>Event handlers often need access to data beyond just the event object. Currying provides an elegant solution
             that's cleaner than traditional approaches:</p>
 
-        <pre><code>const handleClick = id => event => {
+        <pre><code class="language-javascript">const handleClick = id => event => {
     console.log(`Clicked item ${id}`);
     // Handle the event
 };
@@ -1207,7 +1209,7 @@ button2.addEventListener('click', handleClick(2));</code></pre>
         <p>Currying shines when building data transformation pipelines. By currying your transformation functions, you
             can compose them in flexible ways:</p>
 
-        <pre><code>const map = fn => array => array.map(fn);
+        <pre><code class="language-javascript">const map = fn => array => array.map(fn);
 const filter = pred => array => array.filter(pred);
 
 const double = x => x * 2;
@@ -1230,7 +1232,7 @@ processNumbers([1, 2, 3, 4]); // [4, 8]</code></pre>
             details
             later:</p>
 
-        <pre><code>const apiRequest = baseURL => endpoint => method => data => {
+        <pre><code class="language-javascript">const apiRequest = baseURL => endpoint => method => data => {
     return fetch(`${baseURL}${endpoint}`, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -1261,7 +1263,7 @@ createUser({ name: 'Alice' }).then(user => console.log(user));</code></pre>
         <p>Writing nested arrow functions for every curried function gets tedious. You can create a helper function that
             automatically curries any function, making currying more practical for everyday use:</p>
 
-        <pre><code>function curry(fn) {
+        <pre><code class="language-javascript">function curry(fn) {
     return function curried(...args) {
         if (args.length >= fn.length) {
             return fn.apply(this, args);
@@ -1353,7 +1355,7 @@ add(1, 2, 3);     // 6 - all work!</code></pre>
 
         <p>Let's start with a simple example that seems to work as expected:</p>
 
-        <pre><code>const person = {
+        <pre><code class="language-javascript">const person = {
     name: "Alice",
     greet: function() {
         console.log(`Hello, I'm ${this.name}`);
@@ -1369,7 +1371,7 @@ person.greet(); // "Hello, I'm Alice"</code></pre>
 
         <p>Now watch what happens when we extract the method:</p>
 
-        <pre><code>const greet = person.greet;
+        <pre><code class="language-javascript">const greet = person.greet;
 greet(); // "Hello, I'm undefined"</code></pre>
 
         <p>Wait, what happened? The function lost its context! When you call <code>greet()</code> as a standalone
@@ -1386,7 +1388,7 @@ greet(); // "Hello, I'm undefined"</code></pre>
             context, <code>this</code> refers to the global object (in browsers, that's <code>window</code>). In strict
             mode, it's <code>undefined</code> instead.</p>
 
-        <pre><code>function showThis() {
+        <pre><code class="language-javascript">function showThis() {
     console.log(this);
 }
 
@@ -1398,7 +1400,7 @@ showThis(); // Window (or global object)</code></pre>
         <p>When you call a function as a method of an object (using dot notation), <code>this</code> refers to that
             object. The object "owns" the function call, so it becomes the context.</p>
 
-        <pre><code>const user = {
+        <pre><code class="language-javascript">const user = {
     name: "Bob",
     greet() {
         console.log(`Hi, I'm ${this.name}`);
@@ -1410,7 +1412,7 @@ user.greet(); // "Hi, I'm Bob"</code></pre>
         <p><strong>The catch:</strong> This binding is easily lost. When you extract a method and call it separately,
             you lose the implicit binding because there's no longer an object to the left of the dot:</p>
 
-        <pre><code>const greet = user.greet;
+        <pre><code class="language-javascript">const greet = user.greet;
 greet(); // "Hi, I'm undefined" - lost context!</code></pre>
 
         <p>This is a common source of bugs, especially when passing methods as callbacks to functions like
@@ -1421,7 +1423,7 @@ greet(); // "Hi, I'm undefined" - lost context!</code></pre>
         <p>JavaScript provides three methods that let you explicitly control what <code>this</code> refers to. These
             override implicit binding and give you direct control over the context:</p>
 
-        <pre><code>function introduce(greeting) {
+        <pre><code class="language-javascript">function introduce(greeting) {
     console.log(`${greeting}, I'm ${this.name}`);
 }
 
@@ -1448,7 +1450,7 @@ boundIntroduce("Hey"); // "Hey, I'm Alice"</code></pre>
             <code>this</code> to refer to that object. This is how constructor functions work:
         </p>
 
-        <pre><code>function Person(name) {
+        <pre><code class="language-javascript">function Person(name) {
     this.name = name;
 }
 
@@ -1468,7 +1470,7 @@ console.log(alice.name); // "Alice"</code></pre>
         <p>This "lexical this" behavior solves one of JavaScript's most annoying problems: losing <code>this</code> in
             callbacks:</p>
 
-        <pre><code>const counter = {
+        <pre><code class="language-javascript">const counter = {
     count: 0,
     start: function() {
         setInterval(() => {
@@ -1488,7 +1490,7 @@ counter.start(); // 1, 2, 3...</code></pre>
             <code>setInterval</code> calls it:
         </p>
 
-        <pre><code>const counter = {
+        <pre><code class="language-javascript">const counter = {
     count: 0,
     start: function() {
         setInterval(function() {
@@ -1508,7 +1510,7 @@ counter.start(); // 1, 2, 3...</code></pre>
             pass
             a method as an event handler, it loses its context:</p>
 
-        <pre><code>class Button {
+        <pre><code class="language-javascript">class Button {
     constructor() {
         this.count = 0;
     }
@@ -1532,7 +1534,7 @@ element.addEventListener('click', btn.handleClick);
 
         <p><strong>Three solutions:</strong></p>
 
-        <pre><code>// Solution 1: Arrow function wrapper
+        <pre><code class="language-javascript">// Solution 1: Arrow function wrapper
 element.addEventListener('click', () => btn.handleClick());
 
 // Solution 2: Bind in constructor
@@ -1592,7 +1594,7 @@ class Button {
             doesn't care about an object's type—only what methods it has.
         </p>
 
-        <pre><code>// Different objects with the same interface
+        <pre><code class="language-javascript">// Different objects with the same interface
 const dog = {
     speak() { return 'Woof!'; }
 };
@@ -1623,7 +1625,7 @@ makeItSpeak(robot);  // Beep boop!</code></pre>
             specific
             methods or properties:</p>
 
-        <pre><code>function draw(shape) {
+        <pre><code class="language-javascript">function draw(shape) {
     if (typeof shape.draw === 'function') {
         shape.draw();
     } else {
@@ -1657,7 +1659,7 @@ draw(square);  // Drawing square with side 10</code></pre>
         <h3>Real-World Example: Payment Processing</h3>
         <p>Here's a practical example that shows polymorphism's power:</p>
 
-        <pre><code>class PaymentProcessor {
+        <pre><code class="language-javascript">class PaymentProcessor {
     processPayment(paymentMethod, amount) {
         if (typeof paymentMethod.pay !== 'function') {
             throw new Error('Invalid payment method');
@@ -1700,7 +1702,7 @@ processor.processPayment(new PayPal('user@example.com'), 50);</code></pre>
         <h3>Polymorphism with Classes</h3>
         <p>You can also use ES6 classes for more traditional OOP-style polymorphism:</p>
 
-        <pre><code>class Animal {
+        <pre><code class="language-javascript">class Animal {
     constructor(name) {
         this.name = name;
     }
@@ -1797,7 +1799,7 @@ describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
             walks up the prototype chain until it finds the property or reaches the end of the chain.
         </p>
 
-        <pre><code>const animal = {
+        <pre><code class="language-javascript">const animal = {
     eats: true,
     walk() {
         console.log('Animal walks');
@@ -1820,7 +1822,7 @@ rabbit.walk();             // "Animal walks"</code></pre>
         <h3>ES6 Classes: The Modern Way</h3>
         <p>ES6 introduced class syntax that makes inheritance much cleaner and more intuitive:</p>
 
-        <pre><code>class Animal {
+        <pre><code class="language-javascript">class Animal {
     constructor(name) {
         this.name = name;
     }
@@ -1856,7 +1858,7 @@ rex.fetch();  // "Rex fetches the ball"</code></pre>
         <h3>The super Keyword</h3>
         <p>The <code>super</code> keyword is your gateway to parent class functionality:</p>
 
-        <pre><code>class Animal {
+        <pre><code class="language-javascript">class Animal {
     constructor(name) {
         this.name = name;
     }
@@ -1883,7 +1885,7 @@ console.log(dog.speak());
         <h3>Real-World Example: User Roles</h3>
         <p>Here's a practical example showing inheritance in action:</p>
 
-        <pre><code>class User {
+        <pre><code class="language-javascript">class User {
     constructor(name, email) {
         this.name = name;
         this.email = email;
@@ -1920,7 +1922,7 @@ console.log(admin.canEdit());  // true</code></pre>
         <h3>Method Overriding</h3>
         <p>Child classes can override parent methods to provide specialized behavior:</p>
 
-        <pre><code>class Shape {
+        <pre><code class="language-javascript">class Shape {
     constructor(color) {
         this.color = color;
     }
@@ -1981,15 +1983,208 @@ console.log(circle.getArea()); // 78.54...</code></pre>
         </ul>
     </div>
 
+    <!-- Chapter 8 -->
+    <div id="chapter8" class="page-break">
+        <h1>Chapter 8: JavaScript Encapsulation</h1>
+        <h2>Master Data Hiding and Private Variables</h2>
+
+        <p>Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical
+            once you understand it. If you've ever wanted to protect your data from being accidentally modified or
+            create
+            cleaner APIs for your code, encapsulation is the answer.</p>
+
+        <h3>What is Encapsulation?</h3>
+        <p>Encapsulation is the practice of bundling data and methods together while hiding internal implementation
+            details
+            from the outside world. It's one of the four fundamental principles of object-oriented programming (along
+            with
+            inheritance, polymorphism, and abstraction).</p>
+
+        <p>In JavaScript, encapsulation helps you protect data, control access, reduce coupling, and improve
+            maintainability.</p>
+
+        <pre><code class="language-javascript">// Without encapsulation - data is exposed
+const account = {
+    balance: 1000
+};
+account.balance = -500; // Oops! No validation
+
+// With encapsulation - data is protected
+function createAccount(initialBalance) {
+    let balance = initialBalance; // Private
+    
+    return {
+        deposit(amount) {
+            if (amount > 0) {
+                balance += amount;
+                return true;
+            }
+            return false;
+        },
+        getBalance() {
+            return balance;
+        }
+    };
+}
+
+const myAccount = createAccount(1000);
+myAccount.deposit(500);
+console.log(myAccount.getBalance()); // 1500
+myAccount.balance = -500;            // Has no effect!</code></pre>
+
+        <h3>Private Variables with Closures</h3>
+        <p>Before ES2022, closures were the primary way to create private variables in JavaScript:</p>
+
+        <pre><code class="language-javascript">function Counter() {
+    let count = 0; // Private variable
+    
+    this.increment = function() {
+        count++;
+        return count;
+    };
+    
+    this.getCount = function() {
+        return count;
+    };
+}
+
+const counter = new Counter();
+counter.increment(); // 1
+counter.increment(); // 2
+console.log(counter.count); // undefined - private!</code></pre>
+
+        <h3>ES2022 Private Fields</h3>
+        <p>Modern JavaScript introduced true private fields using the <code>#</code> prefix:</p>
+
+        <pre><code class="language-javascript">class BankAccount {
+    #balance; // Private field
+    
+    constructor(initialBalance) {
+        this.#balance = initialBalance;
+    }
+    
+    deposit(amount) {
+        if (amount <= 0) {
+            throw new Error('Amount must be positive');
+        }
+        this.#balance += amount;
+        return this.#balance;
+    }
+    
+    getBalance() {
+        return this.#balance;
+    }
+}
+
+const account = new BankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance()); // 1500
+// account.#balance; // SyntaxError!</code></pre>
+
+        <p>Private fields are truly private - attempting to access them from outside the class results in a syntax
+            error.
+        </p>
+
+        <h3>The Module Pattern</h3>
+        <p>The Module Pattern uses an IIFE to create a private scope:</p>
+
+        <pre><code class="language-javascript">const Calculator = (function() {
+    // Private
+    let history = [];
+    
+    function log(operation, result) {
+        history.push({ operation, result });
+    }
+    
+    // Public API
+    return {
+        add(a, b) {
+            const result = a + b;
+            log(`${a} + ${b}`, result);
+            return result;
+        },
+        getHistory() {
+            return [...history];
+        }
+    };
+})();
+
+Calculator.add(5, 3); // 8
+console.log(Calculator.history); // undefined - private!</code></pre>
+
+        <h3>Getters and Setters</h3>
+        <p>Getters and setters provide controlled access with validation:</p>
+
+        <pre><code class="language-javascript">class Temperature {
+    #celsius;
+    
+    get celsius() {
+        return this.#celsius;
+    }
+    
+    set celsius(value) {
+        if (value < -273.15) {
+            throw new Error('Below absolute zero');
+        }
+        this.#celsius = value;
+    }
+    
+    get fahrenheit() {
+        return (this.#celsius * 9/5) + 32;
+    }
+}
+
+const temp = new Temperature();
+temp.celsius = 25;
+console.log(temp.fahrenheit); // 77</code></pre>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Make everything private by default</strong> - Only expose what's necessary</li>
+            <li><strong>Use getters for computed properties</strong> - Calculate values on demand</li>
+            <li><strong>Validate in setters</strong> - Ensure data integrity</li>
+            <li><strong>Return copies, not references</strong> - Prevent external modification</li>
+            <li><strong>Use meaningful method names</strong> - Make your API clear</li>
+        </ol>
+
+        <h3>When to Use Encapsulation</h3>
+        <p><strong>Use it when:</strong></p>
+        <ul>
+            <li>You need to protect data integrity</li>
+            <li>You want to control how data is accessed</li>
+            <li>You're building reusable components</li>
+            <li>You need validation before changes</li>
+        </ul>
+
+        <p><strong>Skip it when:</strong></p>
+        <ul>
+            <li>You're building simple data structures</li>
+            <li>The code is only used internally</li>
+            <li>The data doesn't need protection</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Encapsulation bundles data and methods while hiding implementation</li>
+            <li>Use closures for private variables in functions</li>
+            <li>ES2022 private fields (#) are the modern way for classes</li>
+            <li>The Module Pattern creates singletons with private state</li>
+            <li>Getters and setters provide controlled access</li>
+            <li>Always return copies of internal data, not references</li>
+            <li>Make everything private by default</li>
+            <li>Don't over-encapsulate simple structures</li>
+        </ul>
+    </div>
+
     <!-- PART III -->
     <div class="page-break">
         <h1 class="center">Part III</h1>
         <h2 class="center">Asynchronous JavaScript</h2>
     </div>
 
-    <!-- Chapter 8 -->
-    <div id="chapter8" class="page-break">
-        <h1>Chapter 8: JavaScript Promises</h1>
+    <!-- Chapter 9 -->
+    <div id="chapter9" class="page-break">
+        <h1>Chapter 9: JavaScript Promises</h1>
         <h2>From Callback Hell to Async Heaven</h2>
 
         <p>Remember the days of callback pyramids that looked like the Leaning Tower of Pisa? If you've been writing
@@ -2009,7 +2204,7 @@ console.log(circle.getArea()); // 78.54...</code></pre>
             to other functions to be called when the operation completes. This worked, but it led to deeply nested code
             that was difficult to read and maintain:</p>
 
-        <pre><code>getData(function(a) {
+        <pre><code class="language-javascript">getData(function(a) {
     getMoreData(a, function(b) {
         getMoreData(b, function(c) {
             getMoreData(c, function(d) {
@@ -2037,7 +2232,7 @@ console.log(circle.getArea()); // 78.54...</code></pre>
             of passing a callback to a function, the function returns a Promise object that you can attach callbacks to.
             This simple shift restores normal control flow and makes asynchronous code much easier to work with.</p>
 
-        <pre><code>const promise = new Promise((resolve, reject) => {
+        <pre><code class="language-javascript">const promise = new Promise((resolve, reject) => {
     // Async operation
     if (success) {
         resolve(value);
@@ -2064,7 +2259,7 @@ console.log(circle.getArea()); // 78.54...</code></pre>
             callbacks that run when the Promise fulfills, and <code>.catch()</code> handles errors. The key insight is
             that <code>.then()</code> returns a new Promise, enabling chaining:</p>
 
-        <pre><code>fetch('https://api.example.com/data')
+        <pre><code class="language-javascript">fetch('https://api.example.com/data')
     .then(response => response.json())
     .then(data => {
         console.log(data);
@@ -2096,7 +2291,7 @@ console.log(circle.getArea()); // 78.54...</code></pre>
             <code>resolve(value)</code> when the operation succeeds, or <code>reject(error)</code> when it fails:
         </p>
 
-        <pre><code>function delay(ms) {
+        <pre><code class="language-javascript">function delay(ms) {
     return new Promise(resolve => {
         setTimeout(resolve, ms);
     });
@@ -2113,7 +2308,7 @@ delay(1000).then(() => console.log('1 second later'));</code></pre>
             chain operations that depend on previous results. This transforms nested callbacks into a flat, readable
             chain:</p>
 
-        <pre><code>function getUserData(userId) {
+        <pre><code class="language-javascript">function getUserData(userId) {
     return fetch(`/api/users/${userId}`)
         .then(response => response.json());
 }
@@ -2145,7 +2340,7 @@ getUserData(1)
             would
             be slow. <code>Promise.all()</code> runs them in parallel and waits for all to complete:</p>
 
-        <pre><code>const promise1 = fetch('/api/users');
+        <pre><code class="language-javascript">const promise1 = fetch('/api/users');
 const promise2 = fetch('/api/posts');
 const promise3 = fetch('/api/comments');
 
@@ -2168,7 +2363,7 @@ Promise.all([promise1, promise2, promise3])
         <p><code>Promise.race()</code> returns a Promise that settles as soon as the first Promise in the array settles.
             This is useful for implementing timeouts or racing multiple data sources:</p>
 
-        <pre><code>const timeout = new Promise((_, reject) => 
+        <pre><code class="language-javascript">const timeout = new Promise((_, reject) => 
     setTimeout(() => reject('Timeout'), 5000)
 );
 
@@ -2188,7 +2383,7 @@ Promise.race([request, timeout])
             a
             Promise, and <code>await</code> pauses execution until a Promise settles:</p>
 
-        <pre><code>async function fetchUserData(userId) {
+        <pre><code class="language-javascript">async function fetchUserData(userId) {
     try {
         const response = await fetch(`/api/users/${userId}`);
         const user = await response.json();
@@ -2224,7 +2419,7 @@ fetchUserData(1)
             the next <code>.then()</code> receives <code>undefined</code> instead of waiting for the async operation:
         </p>
 
-        <pre><code>// Wrong
+        <pre><code class="language-javascript">// Wrong
 promise1.then(data => {
     promise2(data); // Not returned!
 }).then(result => {
@@ -2246,7 +2441,7 @@ promise1.then(data => {
             <code>.catch()</code> to handle errors, or they'll disappear into the void:
         </p>
 
-        <pre><code>// Wrong
+        <pre><code class="language-javascript">// Wrong
 fetch('/api/data')
     .then(response => response.json())
     .then(data => console.log(data));
@@ -2273,9 +2468,9 @@ fetch('/api/data')
         </ul>
     </div>
 
-    <!-- Chapter 9 -->
-    <div id="chapter9" class="page-break">
-        <h1>Chapter 9: JavaScript Generators</h1>
+    <!-- Chapter 10 -->
+    <div id="chapter10" class="page-break">
+        <h1>Chapter 10: JavaScript Generators</h1>
         <h2>The Underrated Feature That Will Change How You Code</h2>
 
         <p>If you've been writing JavaScript for a while, you've probably heard of generators. Maybe you've even seen
@@ -2297,7 +2492,7 @@ fetch('/api/data')
             that run to completion and return a single value, generators can yield multiple values over time, pausing
             after each yield and resuming when asked for the next value:</p>
 
-        <pre><code>function* countToThree() {
+        <pre><code class="language-javascript">function* countToThree() {
     yield 1;
     yield 2;
     yield 3;
@@ -2330,7 +2525,7 @@ console.log(counter.next()); // { value: undefined, done: true }</code></pre>
             not all at once. This enables working with infinite sequences and large datasets without memory concerns:
         </p>
 
-        <pre><code>function* fibonacci() {
+        <pre><code class="language-javascript">function* fibonacci() {
     let a = 0, b = 1;
     while (true) {
         yield a;
@@ -2357,7 +2552,7 @@ console.log(fib.next().value); // 3
             loops and other iteration protocols:
         </p>
 
-        <pre><code>function* range(start, end) {
+        <pre><code class="language-javascript">function* range(start, end) {
     for (let i = start; i <= end; i++) {
         yield i;
     }
@@ -2376,7 +2571,7 @@ for (let num of range(1, 5)) {
         <p>Before <code>async/await</code> existed, generators were used for handling asynchronous code in a synchronous
             style. Libraries like co and redux-saga still use this pattern:</p>
 
-        <pre><code>function* fetchData() {
+        <pre><code class="language-javascript">function* fetchData() {
     const user = yield fetch('/api/user');
     const posts = yield fetch(`/api/posts/${user.id}`);
     return posts;
@@ -2391,7 +2586,7 @@ for (let num of range(1, 5)) {
             generator
             naturally maintains state between calls:</p>
 
-        <pre><code>function* trafficLight() {
+        <pre><code class="language-javascript">function* trafficLight() {
     while (true) {
         yield 'red';
         yield 'yellow';
@@ -2413,7 +2608,7 @@ console.log(light.next().value); // red (cycles)</code></pre>
             value
             you pass becomes the result of the <code>yield</code> expression inside the generator:</p>
 
-        <pre><code>function* echo() {
+        <pre><code class="language-javascript">function* echo() {
     const input1 = yield 'Ready';
     console.log(`Got: ${input1}`);
     
@@ -2436,7 +2631,7 @@ console.log(gen.next('World')); // Got: World, { value: undefined, done: true }<
         <p>Here's a practical example that demonstrates lazy evaluation and custom iteration. This generator lazily
             creates pages from a dataset, computing each page only when requested:</p>
 
-        <pre><code>function* paginate(items, pageSize) {
+        <pre><code class="language-javascript">function* paginate(items, pageSize) {
     for (let i = 0; i < items.length; i += pageSize) {
         yield items.slice(i, i + pageSize);
     }
@@ -2460,7 +2655,7 @@ console.log(pages.next().value); // [10]</code></pre>
             delegated generator. This is useful for composing generators and building complex iteration patterns from
             simpler ones:</p>
 
-        <pre><code>function* gen1() {
+        <pre><code class="language-javascript">function* gen1() {
     yield 1;
     yield 2;
 }
@@ -2582,6 +2777,8 @@ console.log([...gen]); // [1, 2, 3, 4]</code></pre>
         <p><strong>© 2025 Bohdan Tsap. All rights reserved.</strong></p>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 </body>
 
 </html>
