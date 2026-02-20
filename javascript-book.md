@@ -61,7 +61,7 @@ Let's dive in!
 
 ---
 
-# Part I: Core Language Features
+# Part I: JavaScript Fundamentals
 
 ---
 
@@ -294,147 +294,6 @@ console.log(true === 1);   // false
 - Check types explicitly when it matters
 - Know your falsy values
 - Use `structuredClone()` for deep cloning (ES2022)
-
----
-
-# Chapter 4: JavaScript Hoisting
-
-## Stop Getting Surprised by Your Code
-
-Ever written code that worked in a way you didn't expect? Chances are, hoisting was the culprit. Let's demystify this JavaScript behavior once and for all.
-
-### What is Hoisting?
-
-Hoisting is JavaScript's default behavior of moving declarations to the top of their scope before code execution. This means you can sometimes use variables and functions before you declare them.
-
-```javascript
-console.log(greeting); // undefined (not an error!)
-var greeting = "Hello";
-
-sayHi(); // "Hi!" (works perfectly)
-function sayHi() {
-    console.log("Hi!");
-}
-```
-
-Wait, what? How does this work?
-
-### Behind the Scenes
-
-JavaScript processes your code in two phases:
-
-1. **Creation phase** - Declarations are hoisted
-2. **Execution phase** - Code runs line by line
-
-```javascript
-// What you write:
-console.log(x);
-var x = 5;
-
-// What JavaScript does:
-var x;              // Hoisted to the top
-console.log(x);     // undefined
-x = 5;              // Assignment stays in place
-```
-
-### The var Problem
-
-Variables declared with `var` are hoisted and initialized to `undefined`. This causes unexpected behavior:
-
-```javascript
-var name = "Global";
-
-function test() {
-    console.log(name); // undefined (not "Global"!)
-    var name = "Local";
-    console.log(name); // "Local"
-}
-```
-
-Why `undefined` instead of `"Global"`? Because the local `var name` is hoisted to the top of the function, shadowing the global variable.
-
-### Enter let and const: The Temporal Dead Zone
-
-Modern JavaScript introduced `let` and `const` to fix this confusion. They're hoisted too, but **not initialized**.
-
-```javascript
-console.log(x); // ReferenceError!
-let x = 5;
-```
-
-The period between entering scope and the declaration is called the **Temporal Dead Zone (TDZ)**. During this time, the variable exists but cannot be accessed.
-
-```javascript
-function example() {
-    // TDZ starts for 'temp'
-    console.log(temp); // ReferenceError
-    
-    let temp = 5;      // TDZ ends
-    console.log(temp); // 5
-}
-```
-
-This is actually a good thing - it catches bugs early!
-
-### Function Hoisting: The Full Story
-
-Function declarations are fully hoisted - both name and body:
-
-```javascript
-greet(); // Works!
-
-function greet() {
-    console.log("Hello!");
-}
-```
-
-But function expressions follow variable hoisting rules:
-
-```javascript
-sayHi(); // TypeError: sayHi is not a function
-
-var sayHi = function() {
-    console.log("Hi!");
-};
-```
-
-Why? Because `var sayHi` is hoisted and set to `undefined`, then you try to call `undefined()`.
-
-### Real-World Gotcha: Loop Variables
-
-This classic bug trips up many developers:
-
-```javascript
-// With var
-for (var i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i), 100);
-}
-// Prints: 3, 3, 3
-
-// With let
-for (let i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i), 100);
-}
-// Prints: 0, 1, 2
-```
-
-With `var`, there's only one `i` hoisted to function scope. With `let`, each iteration gets its own block-scoped `i`.
-
-### Best Practices
-
-1. **Use const and let, Never var**
-2. **Declare Variables at the Top**
-3. **Declare Functions Before Use**
-4. **Enable Strict Mode**
-
-### Key Takeaways
-
-- Hoisting moves declarations to the top of their scope
-- `var` is hoisted and initialized to `undefined`
-- `let` and `const` are hoisted but not initialized (TDZ)
-- Function declarations are fully hoisted
-- Function expressions follow variable rules
-- Modern JavaScript with `let` and `const` makes hoisting less problematic
 
 ---
 
@@ -756,6 +615,147 @@ const counter = (function() {
 - Higher-order functions take or return functions
 - Callbacks are functions passed to be executed later
 - IIFEs execute immediately and create private scope
+
+---
+
+# Chapter 4: JavaScript Hoisting
+
+## Stop Getting Surprised by Your Code
+
+Ever written code that worked in a way you didn't expect? Chances are, hoisting was the culprit. Let's demystify this JavaScript behavior once and for all.
+
+### What is Hoisting?
+
+Hoisting is JavaScript's default behavior of moving declarations to the top of their scope before code execution. This means you can sometimes use variables and functions before you declare them.
+
+```javascript
+console.log(greeting); // undefined (not an error!)
+var greeting = "Hello";
+
+sayHi(); // "Hi!" (works perfectly)
+function sayHi() {
+    console.log("Hi!");
+}
+```
+
+Wait, what? How does this work?
+
+### Behind the Scenes
+
+JavaScript processes your code in two phases:
+
+1. **Creation phase** - Declarations are hoisted
+2. **Execution phase** - Code runs line by line
+
+```javascript
+// What you write:
+console.log(x);
+var x = 5;
+
+// What JavaScript does:
+var x;              // Hoisted to the top
+console.log(x);     // undefined
+x = 5;              // Assignment stays in place
+```
+
+### The var Problem
+
+Variables declared with `var` are hoisted and initialized to `undefined`. This causes unexpected behavior:
+
+```javascript
+var name = "Global";
+
+function test() {
+    console.log(name); // undefined (not "Global"!)
+    var name = "Local";
+    console.log(name); // "Local"
+}
+```
+
+Why `undefined` instead of `"Global"`? Because the local `var name` is hoisted to the top of the function, shadowing the global variable.
+
+### Enter let and const: The Temporal Dead Zone
+
+Modern JavaScript introduced `let` and `const` to fix this confusion. They're hoisted too, but **not initialized**.
+
+```javascript
+console.log(x); // ReferenceError!
+let x = 5;
+```
+
+The period between entering scope and the declaration is called the **Temporal Dead Zone (TDZ)**. During this time, the variable exists but cannot be accessed.
+
+```javascript
+function example() {
+    // TDZ starts for 'temp'
+    console.log(temp); // ReferenceError
+    
+    let temp = 5;      // TDZ ends
+    console.log(temp); // 5
+}
+```
+
+This is actually a good thing - it catches bugs early!
+
+### Function Hoisting: The Full Story
+
+Function declarations are fully hoisted - both name and body:
+
+```javascript
+greet(); // Works!
+
+function greet() {
+    console.log("Hello!");
+}
+```
+
+But function expressions follow variable hoisting rules:
+
+```javascript
+sayHi(); // TypeError: sayHi is not a function
+
+var sayHi = function() {
+    console.log("Hi!");
+};
+```
+
+Why? Because `var sayHi` is hoisted and set to `undefined`, then you try to call `undefined()`.
+
+### Real-World Gotcha: Loop Variables
+
+This classic bug trips up many developers:
+
+```javascript
+// With var
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 3, 3, 3
+
+// With let
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 0, 1, 2
+```
+
+With `var`, there's only one `i` hoisted to function scope. With `let`, each iteration gets its own block-scoped `i`.
+
+### Best Practices
+
+1. **Use const and let, Never var**
+2. **Declare Variables at the Top**
+3. **Declare Functions Before Use**
+4. **Enable Strict Mode**
+
+### Key Takeaways
+
+- Hoisting moves declarations to the top of their scope
+- `var` is hoisted and initialized to `undefined`
+- `let` and `const` are hoisted but not initialized (TDZ)
+- Function declarations are fully hoisted
+- Function expressions follow variable rules
+- Modern JavaScript with `let` and `const` makes hoisting less problematic
 
 ---
 
@@ -1237,215 +1237,196 @@ class Button {
 
 ---
 
-# Chapter 10: JavaScript Polymorphism
+# Chapter 8: JavaScript Encapsulation
 
-## Write Flexible, Reusable Code
+## Master Data Hiding and Private Variables
 
-If you've been writing JavaScript for a while, you've probably used polymorphism without even realizing it. It's one of those concepts that sounds intimidating but is actually quite natural in JavaScript. Let me show you why it matters and how to use it effectively.
+Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical once you understand it. If you've ever wanted to protect your data from being accidentally modified or create cleaner APIs for your code, encapsulation is the answer.
 
-### What is Polymorphism?
+### What is Encapsulation?
 
-Polymorphism comes from Greek: "poly" (many) + "morph" (form), meaning "many forms." In programming, it means writing code that works with different types of objects through a common interface.
+Encapsulation is the practice of bundling data and methods together while hiding internal implementation details from the outside world. It's one of the four fundamental principles of object-oriented programming (along with inheritance, polymorphism, and abstraction).
 
-Unlike Java or C++ where polymorphism relies on inheritance and strict type hierarchies, JavaScript uses **duck typing**: "If it walks like a duck and quacks like a duck, it's a duck." JavaScript doesn't care about an object's type—only what methods it has.
-
-```javascript
-// Different objects with the same interface
-const dog = {
-    speak() { return 'Woof!'; }
-};
-
-const cat = {
-    speak() { return 'Meow!'; }
-};
-
-const robot = {
-    speak() { return 'Beep boop!'; }
-};
-
-// Polymorphic function - works with any object that has speak()
-function makeItSpeak(animal) {
-    console.log(animal.speak());
-}
-
-makeItSpeak(dog);    // Woof!
-makeItSpeak(cat);    // Meow!
-makeItSpeak(robot);  // Beep boop!
-```
-
-The `makeItSpeak` function doesn't check types. It only cares that the object has a `speak()` method. This is polymorphism in action.
-
-### Duck Typing in Practice
-
-Duck typing makes JavaScript incredibly flexible. Instead of checking an object's type, you check for specific methods or properties:
+In JavaScript, encapsulation helps you protect data, control access, reduce coupling, and improve maintainability.
 
 ```javascript
-function draw(shape) {
-    if (typeof shape.draw === 'function') {
-        shape.draw();
-    } else {
-        console.error('Object is not drawable');
-    }
-}
-
-const circle = {
-    radius: 5,
-    draw() {
-        console.log(`Drawing circle with radius ${this.radius}`);
-    }
+// Without encapsulation - data is exposed
+const account = {
+    balance: 1000
 };
+account.balance = -500; // Oops! No validation
 
-const square = {
-    side: 10,
-    draw() {
-        console.log(`Drawing square with side ${this.side}`);
-    }
-};
-
-draw(circle);  // Drawing circle with radius 5
-draw(square);  // Drawing square with side 10
-```
-
-This pattern is everywhere in JavaScript. Promises work with any "thenable" (object with a `then()` method). Iterators work with any object that has a `next()` method. Array methods work with any array-like object.
-
-### Real-World Example: Payment Processing
-
-Here's a practical example that shows polymorphism's power:
-
-```javascript
-class PaymentProcessor {
-    processPayment(paymentMethod, amount) {
-        if (typeof paymentMethod.pay !== 'function') {
-            throw new Error('Invalid payment method');
+// With encapsulation - data is protected
+function createAccount(initialBalance) {
+    let balance = initialBalance; // Private
+    
+    return {
+        deposit(amount) {
+            if (amount > 0) {
+                balance += amount;
+                return true;
+            }
+            return false;
+        },
+        getBalance() {
+            return balance;
         }
-        return paymentMethod.pay(amount);
-    }
+    };
 }
 
-class CreditCard {
-    constructor(cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-    
-    pay(amount) {
-        console.log(`Charging $${amount} to card ending in ${this.cardNumber.slice(-4)}`);
-        return { success: true, method: 'credit_card' };
-    }
-}
-
-class PayPal {
-    constructor(email) {
-        this.email = email;
-    }
-    
-    pay(amount) {
-        console.log(`Processing $${amount} PayPal payment for ${this.email}`);
-        return { success: true, method: 'paypal' };
-    }
-}
-
-// Usage
-const processor = new PaymentProcessor();
-processor.processPayment(new CreditCard('1234567890123456'), 100);
-processor.processPayment(new PayPal('user@example.com'), 50);
+const myAccount = createAccount(1000);
+myAccount.deposit(500);
+console.log(myAccount.getBalance()); // 1500
+myAccount.balance = -500;            // Has no effect!
 ```
 
-The `PaymentProcessor` doesn't need to know about specific payment types. It only needs objects with a `pay()` method. Adding new payment methods requires zero changes to the processor.
+### Private Variables with Closures
 
-### Polymorphism with Classes
-
-You can also use ES6 classes for more traditional OOP-style polymorphism:
+Before ES2022, closures were the primary way to create private variables in JavaScript:
 
 ```javascript
-class Animal {
-    constructor(name) {
-        this.name = name;
-    }
+function Counter() {
+    let count = 0; // Private variable
     
-    speak() {
-        return `${this.name} makes a sound`;
-    }
+    this.increment = function() {
+        count++;
+        return count;
+    };
+    
+    this.getCount = function() {
+        return count;
+    };
 }
 
-class Dog extends Animal {
-    speak() {
-        return `${this.name} barks`;
-    }
-}
-
-class Cat extends Animal {
-    speak() {
-        return `${this.name} meows`;
-    }
-}
-
-function describeAnimal(animal) {
-    console.log(animal.speak());
-}
-
-describeAnimal(new Dog('Rex'));      // Rex barks
-describeAnimal(new Cat('Whiskers')); // Whiskers meows
+const counter = new Counter();
+counter.increment(); // 1
+counter.increment(); // 2
+console.log(counter.count); // undefined - private!
 ```
 
-Each subclass overrides `speak()` with its own implementation. The `describeAnimal` function works with any Animal, regardless of the specific subclass.
+### ES2022 Private Fields
 
-### Common Pitfalls
-
-**1. Assuming methods exist**
+Modern JavaScript introduced true private fields using the `#` prefix:
 
 ```javascript
-// Bad - no validation
-function processItem(item) {
-    item.process();  // What if item doesn't have process()?
-}
-
-// Good - check first
-function processItem(item) {
-    if (typeof item.process === 'function') {
-        item.process();
+class BankAccount {
+    #balance; // Private field
+    
+    constructor(initialBalance) {
+        this.#balance = initialBalance;
+    }
+    
+    deposit(amount) {
+        if (amount <= 0) {
+            throw new Error('Amount must be positive');
+        }
+        this.#balance += amount;
+        return this.#balance;
+    }
+    
+    getBalance() {
+        return this.#balance;
     }
 }
 
-// Better - use optional chaining
-function processItem(item) {
-    item.process?.();
-}
+const account = new BankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance()); // 1500
+// account.#balance; // SyntaxError!
 ```
 
-**2. Over-engineering**
+Private fields are truly private - attempting to access them from outside the class results in a syntax error.
 
-Don't create complex class hierarchies when simple functions will do. JavaScript's functional nature often makes polymorphism through functions more natural than through classes.
+### The Module Pattern
+
+The Module Pattern uses an IIFE to create a private scope:
+
+```javascript
+const Calculator = (function() {
+    // Private
+    let history = [];
+    
+    function log(operation, result) {
+        history.push({ operation, result });
+    }
+    
+    // Public API
+    return {
+        add(a, b) {
+            const result = a + b;
+            log(`${a} + ${b}`, result);
+            return result;
+        },
+        getHistory() {
+            return [...history];
+        }
+    };
+})();
+
+Calculator.add(5, 3); // 8
+console.log(Calculator.history); // undefined - private!
+```
+
+### Getters and Setters
+
+Getters and setters provide controlled access with validation:
+
+```javascript
+class Temperature {
+    #celsius;
+    
+    get celsius() {
+        return this.#celsius;
+    }
+    
+    set celsius(value) {
+        if (value < -273.15) {
+            throw new Error('Below absolute zero');
+        }
+        this.#celsius = value;
+    }
+    
+    get fahrenheit() {
+        return (this.#celsius * 9/5) + 32;
+    }
+}
+
+const temp = new Temperature();
+temp.celsius = 25;
+console.log(temp.fahrenheit); // 77
+```
 
 ### Best Practices
 
-1. **Design around interfaces** - Think about what methods objects need, not what type they are
-2. **Use consistent method names** - If objects do similar things, give them the same method names
-3. **Validate interfaces** - Always check that objects have the methods you need
-4. **Document expectations** - Use JSDoc to document what methods objects should implement
-5. **Consider TypeScript** - For large projects, TypeScript's interfaces provide compile-time checking
+1. **Make everything private by default** - Only expose what's necessary
+2. **Use getters for computed properties** - Calculate values on demand
+3. **Validate in setters** - Ensure data integrity
+4. **Return copies, not references** - Prevent external modification
+5. **Use meaningful method names** - Make your API clear
 
-### When to Use Polymorphism
+### When to Use Encapsulation
 
 **Use it when:**
-- You have multiple objects that do similar things differently
-- You want functions that work with many types
-- You're building plugin systems or extensible architectures
-- You want to reduce code duplication
+- You need to protect data integrity
+- You want to control how data is accessed
+- You're building reusable components
+- You need validation before changes
 
-**Avoid it when:**
-- You only have one type of object
-- Objects don't share common behavior
-- Simple conditional logic is clearer
-- It adds unnecessary complexity
+**Skip it when:**
+- You're building simple data structures
+- The code is only used internally
+- The data doesn't need protection
 
 ### Key Takeaways
 
-- Polymorphism lets different objects be treated through a common interface
-- JavaScript uses duck typing - objects are defined by their methods, not types
-- Design around interfaces (sets of methods) rather than specific types
-- Always validate that objects have the methods you need
-- Use consistent method names across similar objects
-- Don't over-engineer - use polymorphism where it adds value
+- Encapsulation bundles data and methods while hiding implementation
+- Use closures for private variables in functions
+- ES2022 private fields (#) are the modern way for classes
+- The Module Pattern creates singletons with private state
+- Getters and setters provide controlled access
+- Always return copies of internal data, not references
+- Make everything private by default
+- Don't over-encapsulate simple structures
 
 ---
 
@@ -1693,196 +1674,215 @@ class Team {
 
 ---
 
-# Chapter 8: JavaScript Encapsulation
+# Chapter 10: JavaScript Polymorphism
 
-## Master Data Hiding and Private Variables
+## Write Flexible, Reusable Code
 
-Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical once you understand it. If you've ever wanted to protect your data from being accidentally modified or create cleaner APIs for your code, encapsulation is the answer.
+If you've been writing JavaScript for a while, you've probably used polymorphism without even realizing it. It's one of those concepts that sounds intimidating but is actually quite natural in JavaScript. Let me show you why it matters and how to use it effectively.
 
-### What is Encapsulation?
+### What is Polymorphism?
 
-Encapsulation is the practice of bundling data and methods together while hiding internal implementation details from the outside world. It's one of the four fundamental principles of object-oriented programming (along with inheritance, polymorphism, and abstraction).
+Polymorphism comes from Greek: "poly" (many) + "morph" (form), meaning "many forms." In programming, it means writing code that works with different types of objects through a common interface.
 
-In JavaScript, encapsulation helps you protect data, control access, reduce coupling, and improve maintainability.
+Unlike Java or C++ where polymorphism relies on inheritance and strict type hierarchies, JavaScript uses **duck typing**: "If it walks like a duck and quacks like a duck, it's a duck." JavaScript doesn't care about an object's type—only what methods it has.
 
 ```javascript
-// Without encapsulation - data is exposed
-const account = {
-    balance: 1000
+// Different objects with the same interface
+const dog = {
+    speak() { return 'Woof!'; }
 };
-account.balance = -500; // Oops! No validation
 
-// With encapsulation - data is protected
-function createAccount(initialBalance) {
-    let balance = initialBalance; // Private
-    
-    return {
-        deposit(amount) {
-            if (amount > 0) {
-                balance += amount;
-                return true;
-            }
-            return false;
-        },
-        getBalance() {
-            return balance;
-        }
-    };
+const cat = {
+    speak() { return 'Meow!'; }
+};
+
+const robot = {
+    speak() { return 'Beep boop!'; }
+};
+
+// Polymorphic function - works with any object that has speak()
+function makeItSpeak(animal) {
+    console.log(animal.speak());
 }
 
-const myAccount = createAccount(1000);
-myAccount.deposit(500);
-console.log(myAccount.getBalance()); // 1500
-myAccount.balance = -500;            // Has no effect!
+makeItSpeak(dog);    // Woof!
+makeItSpeak(cat);    // Meow!
+makeItSpeak(robot);  // Beep boop!
 ```
 
-### Private Variables with Closures
+The `makeItSpeak` function doesn't check types. It only cares that the object has a `speak()` method. This is polymorphism in action.
 
-Before ES2022, closures were the primary way to create private variables in JavaScript:
+### Duck Typing in Practice
 
-```javascript
-function Counter() {
-    let count = 0; // Private variable
-    
-    this.increment = function() {
-        count++;
-        return count;
-    };
-    
-    this.getCount = function() {
-        return count;
-    };
-}
-
-const counter = new Counter();
-counter.increment(); // 1
-counter.increment(); // 2
-console.log(counter.count); // undefined - private!
-```
-
-### ES2022 Private Fields
-
-Modern JavaScript introduced true private fields using the `#` prefix:
+Duck typing makes JavaScript incredibly flexible. Instead of checking an object's type, you check for specific methods or properties:
 
 ```javascript
-class BankAccount {
-    #balance; // Private field
-    
-    constructor(initialBalance) {
-        this.#balance = initialBalance;
-    }
-    
-    deposit(amount) {
-        if (amount <= 0) {
-            throw new Error('Amount must be positive');
-        }
-        this.#balance += amount;
-        return this.#balance;
-    }
-    
-    getBalance() {
-        return this.#balance;
+function draw(shape) {
+    if (typeof shape.draw === 'function') {
+        shape.draw();
+    } else {
+        console.error('Object is not drawable');
     }
 }
 
-const account = new BankAccount(1000);
-account.deposit(500);
-console.log(account.getBalance()); // 1500
-// account.#balance; // SyntaxError!
+const circle = {
+    radius: 5,
+    draw() {
+        console.log(`Drawing circle with radius ${this.radius}`);
+    }
+};
+
+const square = {
+    side: 10,
+    draw() {
+        console.log(`Drawing square with side ${this.side}`);
+    }
+};
+
+draw(circle);  // Drawing circle with radius 5
+draw(square);  // Drawing square with side 10
 ```
 
-Private fields are truly private - attempting to access them from outside the class results in a syntax error.
+This pattern is everywhere in JavaScript. Promises work with any "thenable" (object with a `then()` method). Iterators work with any object that has a `next()` method. Array methods work with any array-like object.
 
-### The Module Pattern
+### Real-World Example: Payment Processing
 
-The Module Pattern uses an IIFE to create a private scope:
-
-```javascript
-const Calculator = (function() {
-    // Private
-    let history = [];
-    
-    function log(operation, result) {
-        history.push({ operation, result });
-    }
-    
-    // Public API
-    return {
-        add(a, b) {
-            const result = a + b;
-            log(`${a} + ${b}`, result);
-            return result;
-        },
-        getHistory() {
-            return [...history];
-        }
-    };
-})();
-
-Calculator.add(5, 3); // 8
-console.log(Calculator.history); // undefined - private!
-```
-
-### Getters and Setters
-
-Getters and setters provide controlled access with validation:
+Here's a practical example that shows polymorphism's power:
 
 ```javascript
-class Temperature {
-    #celsius;
-    
-    get celsius() {
-        return this.#celsius;
-    }
-    
-    set celsius(value) {
-        if (value < -273.15) {
-            throw new Error('Below absolute zero');
+class PaymentProcessor {
+    processPayment(paymentMethod, amount) {
+        if (typeof paymentMethod.pay !== 'function') {
+            throw new Error('Invalid payment method');
         }
-        this.#celsius = value;
-    }
-    
-    get fahrenheit() {
-        return (this.#celsius * 9/5) + 32;
+        return paymentMethod.pay(amount);
     }
 }
 
-const temp = new Temperature();
-temp.celsius = 25;
-console.log(temp.fahrenheit); // 77
+class CreditCard {
+    constructor(cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+    
+    pay(amount) {
+        console.log(`Charging $${amount} to card ending in ${this.cardNumber.slice(-4)}`);
+        return { success: true, method: 'credit_card' };
+    }
+}
+
+class PayPal {
+    constructor(email) {
+        this.email = email;
+    }
+    
+    pay(amount) {
+        console.log(`Processing $${amount} PayPal payment for ${this.email}`);
+        return { success: true, method: 'paypal' };
+    }
+}
+
+// Usage
+const processor = new PaymentProcessor();
+processor.processPayment(new CreditCard('1234567890123456'), 100);
+processor.processPayment(new PayPal('user@example.com'), 50);
 ```
+
+The `PaymentProcessor` doesn't need to know about specific payment types. It only needs objects with a `pay()` method. Adding new payment methods requires zero changes to the processor.
+
+### Polymorphism with Classes
+
+You can also use ES6 classes for more traditional OOP-style polymorphism:
+
+```javascript
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        return `${this.name} barks`;
+    }
+}
+
+class Cat extends Animal {
+    speak() {
+        return `${this.name} meows`;
+    }
+}
+
+function describeAnimal(animal) {
+    console.log(animal.speak());
+}
+
+describeAnimal(new Dog('Rex'));      // Rex barks
+describeAnimal(new Cat('Whiskers')); // Whiskers meows
+```
+
+Each subclass overrides `speak()` with its own implementation. The `describeAnimal` function works with any Animal, regardless of the specific subclass.
+
+### Common Pitfalls
+
+**1. Assuming methods exist**
+
+```javascript
+// Bad - no validation
+function processItem(item) {
+    item.process();  // What if item doesn't have process()?
+}
+
+// Good - check first
+function processItem(item) {
+    if (typeof item.process === 'function') {
+        item.process();
+    }
+}
+
+// Better - use optional chaining
+function processItem(item) {
+    item.process?.();
+}
+```
+
+**2. Over-engineering**
+
+Don't create complex class hierarchies when simple functions will do. JavaScript's functional nature often makes polymorphism through functions more natural than through classes.
 
 ### Best Practices
 
-1. **Make everything private by default** - Only expose what's necessary
-2. **Use getters for computed properties** - Calculate values on demand
-3. **Validate in setters** - Ensure data integrity
-4. **Return copies, not references** - Prevent external modification
-5. **Use meaningful method names** - Make your API clear
+1. **Design around interfaces** - Think about what methods objects need, not what type they are
+2. **Use consistent method names** - If objects do similar things, give them the same method names
+3. **Validate interfaces** - Always check that objects have the methods you need
+4. **Document expectations** - Use JSDoc to document what methods objects should implement
+5. **Consider TypeScript** - For large projects, TypeScript's interfaces provide compile-time checking
 
-### When to Use Encapsulation
+### When to Use Polymorphism
 
 **Use it when:**
-- You need to protect data integrity
-- You want to control how data is accessed
-- You're building reusable components
-- You need validation before changes
+- You have multiple objects that do similar things differently
+- You want functions that work with many types
+- You're building plugin systems or extensible architectures
+- You want to reduce code duplication
 
-**Skip it when:**
-- You're building simple data structures
-- The code is only used internally
-- The data doesn't need protection
+**Avoid it when:**
+- You only have one type of object
+- Objects don't share common behavior
+- Simple conditional logic is clearer
+- It adds unnecessary complexity
 
 ### Key Takeaways
 
-- Encapsulation bundles data and methods while hiding implementation
-- Use closures for private variables in functions
-- ES2022 private fields (#) are the modern way for classes
-- The Module Pattern creates singletons with private state
-- Getters and setters provide controlled access
-- Always return copies of internal data, not references
-- Make everything private by default
-- Don't over-encapsulate simple structures
+- Polymorphism lets different objects be treated through a common interface
+- JavaScript uses duck typing - objects are defined by their methods, not types
+- Design around interfaces (sets of methods) rather than specific types
+- Always validate that objects have the methods you need
+- Use consistent method names across similar objects
+- Don't over-engineer - use polymorphism where it adds value
 
 ---
 

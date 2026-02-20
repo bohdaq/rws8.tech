@@ -268,7 +268,7 @@
     <!-- PART I -->
     <div class="page-break">
         <h1 class="center">Part I</h1>
-        <h2 class="center">Core Language Features</h2>
+        <h2 class="center">JavaScript Fundamentals</h2>
     </div>
 
     <!-- Chapter 1 -->
@@ -683,6 +683,283 @@ console.log(true === 1);   // false
         </ul>
     </div>
 
+
+    <!-- Chapter 2 -->
+    <div id="chapter2" class="page-break">
+        <h1>Chapter 2: JavaScript Variables and Scope</h1>
+        <h2>Master var, let, and const</h2>
+
+        <p>Variables and scope are fundamental to JavaScript, yet they're often misunderstood. The way you declare
+            variables affects where they can be accessed, how they behave, and whether they can be reassigned.</p>
+
+        <h3>The Three Ways to Declare Variables</h3>
+        <p>JavaScript has three keywords for declaring variables: <code>var</code>, <code>let</code>, and
+            <code>const</code>.
+        </p>
+
+        <p><strong>var - The Old Way</strong></p>
+        <pre><code class="language-javascript">var name = 'Alice';
+
+// var can be redeclared
+var name = 'Bob'; // No error!
+
+// var is function-scoped, not block-scoped
+if (true) {
+    var message = 'Hello';
+}
+console.log(message); // 'Hello' - accessible outside!</code></pre>
+
+        <p><strong>let - Block-Scoped Variables</strong></p>
+        <pre><code class="language-javascript">let name = 'Alice';
+
+// let cannot be redeclared
+// let name = 'Bob'; // SyntaxError!
+
+// let is block-scoped
+if (true) {
+    let message = 'Hello';
+}
+// console.log(message); // ReferenceError
+
+// But let can be reassigned
+let age = 30;
+age = 31; // This works</code></pre>
+
+        <p><strong>const - Constants</strong></p>
+        <pre><code class="language-javascript">const PI = 3.14159;
+
+// const cannot be reassigned
+// PI = 3.14; // TypeError!
+
+// But const objects can be mutated
+const person = { name: 'Alice' };
+person.name = 'Bob'; // This works!</code></pre>
+
+        <h3>Function Scope vs Block Scope</h3>
+        <p><strong>Function Scope (var):</strong></p>
+        <pre><code class="language-javascript">function example() {
+    var x = 1;
+    
+    if (true) {
+        var x = 2; // Same variable!
+        console.log(x); // 2
+    }
+    
+    console.log(x); // 2
+}</code></pre>
+
+        <p><strong>Block Scope (let and const):</strong></p>
+        <pre><code class="language-javascript">function example() {
+    let x = 1;
+    
+    if (true) {
+        let x = 2; // Different variable!
+        console.log(x); // 2
+    }
+    
+    console.log(x); // 1
+}</code></pre>
+
+        <p>This is crucial in loops:</p>
+        <pre><code class="language-javascript">// With var
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 3, 3, 3
+
+// With let
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 100);
+}
+// Prints: 0, 1, 2</code></pre>
+
+        <h3>Lexical Scope and the Scope Chain</h3>
+        <p>JavaScript uses lexical scoping - inner functions can access variables from outer scopes:</p>
+        <pre><code class="language-javascript">const globalVar = 'global';
+
+function outer() {
+    const outerVar = 'outer';
+    
+    function inner() {
+        const innerVar = 'inner';
+        console.log(globalVar); // 'global'
+        console.log(outerVar);  // 'outer'
+        console.log(innerVar);  // 'inner'
+    }
+    
+    inner();
+}</code></pre>
+
+        <h3>The Temporal Dead Zone</h3>
+        <p>Variables declared with <code>let</code> and <code>const</code> are in a "temporal dead zone" from the start
+            of the block until the declaration:</p>
+        <pre><code class="language-javascript">// With var - hoisted and initialized
+console.log(varVariable); // undefined
+var varVariable = 'var';
+
+// With let - hoisted but NOT initialized
+// console.log(letVariable); // ReferenceError!
+let letVariable = 'let';</code></pre>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Prefer const by default</strong> - Use for values that won't be reassigned</li>
+            <li><strong>Use let when you need to reassign</strong> - For counters, accumulators, etc.</li>
+            <li><strong>Avoid var</strong> - No benefits over let/const in modern JavaScript</li>
+            <li><strong>Minimize scope</strong> - Declare variables close to where they're used</li>
+            <li><strong>Use descriptive names</strong> - Make your code self-documenting</li>
+        </ol>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Use const by default, let when you need to reassign, avoid var</li>
+            <li>var is function-scoped, let and const are block-scoped</li>
+            <li>Lexical scope means inner functions can access outer variables</li>
+            <li>The scope chain is searched from inner to outer scopes</li>
+            <li>Temporal Dead Zone prevents accessing let/const before declaration</li>
+            <li>const prevents reassignment, not mutation</li>
+        </ul>
+    </div>
+
+
+    <!-- Chapter 3 -->
+    <div id="chapter3" class="page-break">
+        <h1>Chapter 3: JavaScript Functions</h1>
+        <h2>Master the Building Blocks</h2>
+
+        <p>Functions are the fundamental building blocks of JavaScript. They allow you to encapsulate code, make it
+            reusable, and organize your programs into logical units.</p>
+
+        <h3>Function Declarations vs Expressions</h3>
+        <p><strong>Function Declarations:</strong></p>
+        <pre><code class="language-javascript">function add(a, b) {
+    return a + b;
+}
+
+// Can be called before definition (hoisted)
+sayHello(); // Works!
+
+function sayHello() {
+    console.log('Hello!');
+}</code></pre>
+
+        <p><strong>Function Expressions:</strong></p>
+        <pre><code class="language-javascript">const multiply = function(a, b) {
+    return a * b;
+};
+
+// Cannot be called before definition
+// subtract(); // Error!
+const subtract = function(a, b) {
+    return a - b;
+};</code></pre>
+
+        <h3>Arrow Functions</h3>
+        <p>Arrow functions provide concise syntax:</p>
+        <pre><code class="language-javascript">// Traditional
+const square1 = function(x) {
+    return x * x;
+};
+
+// Arrow - concise (implicit return)
+const square2 = x => x * x;
+
+// Multiple parameters
+const add = (a, b) => a + b;
+
+// No parameters
+const random = () => Math.random();
+
+// Returning objects
+const makePerson = (name, age) => ({ name, age });</code></pre>
+
+        <h3>Parameters and Arguments</h3>
+        <p><strong>Default Parameters:</strong></p>
+        <pre><code class="language-javascript">function greet(name = 'Guest', greeting = 'Hello') {
+    console.log(`${greeting}, ${name}!`);
+}
+
+greet(); // Hello, Guest!
+greet('Alice'); // Hello, Alice!</code></pre>
+
+        <p><strong>Rest Parameters:</strong></p>
+        <pre><code class="language-javascript">function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15</code></pre>
+
+        <h3>Higher-Order Functions</h3>
+        <p>Functions that take or return other functions:</p>
+        <pre><code class="language-javascript">// Takes a function
+function repeat(n, action) {
+    for (let i = 0; i < n; i++) {
+        action(i);
+    }
+}
+
+repeat(3, console.log); // 0, 1, 2
+
+// Returns a function
+function multiplyBy(factor) {
+    return function(number) {
+        return number * factor;
+    };
+}
+
+const double = multiplyBy(2);
+console.log(double(5)); // 10</code></pre>
+
+        <h3>Callback Functions</h3>
+        <pre><code class="language-javascript">const numbers = [1, 2, 3, 4, 5];
+
+const doubled = numbers.map(n => n * 2);
+const evens = numbers.filter(n => n % 2 === 0);
+const sum = numbers.reduce((total, n) => total + n, 0);</code></pre>
+
+        <h3>IIFEs (Immediately Invoked Function Expressions)</h3>
+        <pre><code class="language-javascript">(function() {
+    console.log('Runs immediately!');
+})();
+
+// Creating private scope
+const counter = (function() {
+    let count = 0;
+    
+    return {
+        increment() {
+            count++;
+            return count;
+        },
+        getCount() {
+            return count;
+        }
+    };
+})();</code></pre>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Use descriptive names</strong> - Make function purpose clear</li>
+            <li><strong>Keep functions small</strong> - Single responsibility</li>
+            <li><strong>Prefer arrow functions for callbacks</strong> - More concise</li>
+            <li><strong>Use default parameters</strong> - Instead of checking undefined</li>
+            <li><strong>Return early</strong> - Reduce nesting</li>
+        </ol>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Function declarations are hoisted, expressions are not</li>
+            <li>Arrow functions provide concise syntax and lexical <code>this</code></li>
+            <li>Default parameters provide fallback values</li>
+            <li>Rest parameters collect remaining arguments</li>
+            <li>Higher-order functions take or return functions</li>
+            <li>Callbacks are functions passed to be executed later</li>
+            <li>IIFEs execute immediately and create private scope</li>
+        </ul>
+    </div>
+
+
     <!-- Chapter 4 -->
     <div id="chapter4" class="page-break">
         <h1>Chapter 4: JavaScript Hoisting</h1>
@@ -914,280 +1191,6 @@ for (let i = 0; i < 3; i++) {
         </ul>
     </div>
 
-    <!-- Chapter 2 -->
-    <div id="chapter2" class="page-break">
-        <h1>Chapter 2: JavaScript Variables and Scope</h1>
-        <h2>Master var, let, and const</h2>
-
-        <p>Variables and scope are fundamental to JavaScript, yet they're often misunderstood. The way you declare
-            variables affects where they can be accessed, how they behave, and whether they can be reassigned.</p>
-
-        <h3>The Three Ways to Declare Variables</h3>
-        <p>JavaScript has three keywords for declaring variables: <code>var</code>, <code>let</code>, and
-            <code>const</code>.
-        </p>
-
-        <p><strong>var - The Old Way</strong></p>
-        <pre><code class="language-javascript">var name = 'Alice';
-
-// var can be redeclared
-var name = 'Bob'; // No error!
-
-// var is function-scoped, not block-scoped
-if (true) {
-    var message = 'Hello';
-}
-console.log(message); // 'Hello' - accessible outside!</code></pre>
-
-        <p><strong>let - Block-Scoped Variables</strong></p>
-        <pre><code class="language-javascript">let name = 'Alice';
-
-// let cannot be redeclared
-// let name = 'Bob'; // SyntaxError!
-
-// let is block-scoped
-if (true) {
-    let message = 'Hello';
-}
-// console.log(message); // ReferenceError
-
-// But let can be reassigned
-let age = 30;
-age = 31; // This works</code></pre>
-
-        <p><strong>const - Constants</strong></p>
-        <pre><code class="language-javascript">const PI = 3.14159;
-
-// const cannot be reassigned
-// PI = 3.14; // TypeError!
-
-// But const objects can be mutated
-const person = { name: 'Alice' };
-person.name = 'Bob'; // This works!</code></pre>
-
-        <h3>Function Scope vs Block Scope</h3>
-        <p><strong>Function Scope (var):</strong></p>
-        <pre><code class="language-javascript">function example() {
-    var x = 1;
-    
-    if (true) {
-        var x = 2; // Same variable!
-        console.log(x); // 2
-    }
-    
-    console.log(x); // 2
-}</code></pre>
-
-        <p><strong>Block Scope (let and const):</strong></p>
-        <pre><code class="language-javascript">function example() {
-    let x = 1;
-    
-    if (true) {
-        let x = 2; // Different variable!
-        console.log(x); // 2
-    }
-    
-    console.log(x); // 1
-}</code></pre>
-
-        <p>This is crucial in loops:</p>
-        <pre><code class="language-javascript">// With var
-for (var i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i), 100);
-}
-// Prints: 3, 3, 3
-
-// With let
-for (let i = 0; i < 3; i++) {
-    setTimeout(() => console.log(i), 100);
-}
-// Prints: 0, 1, 2</code></pre>
-
-        <h3>Lexical Scope and the Scope Chain</h3>
-        <p>JavaScript uses lexical scoping - inner functions can access variables from outer scopes:</p>
-        <pre><code class="language-javascript">const globalVar = 'global';
-
-function outer() {
-    const outerVar = 'outer';
-    
-    function inner() {
-        const innerVar = 'inner';
-        console.log(globalVar); // 'global'
-        console.log(outerVar);  // 'outer'
-        console.log(innerVar);  // 'inner'
-    }
-    
-    inner();
-}</code></pre>
-
-        <h3>The Temporal Dead Zone</h3>
-        <p>Variables declared with <code>let</code> and <code>const</code> are in a "temporal dead zone" from the start
-            of the block until the declaration:</p>
-        <pre><code class="language-javascript">// With var - hoisted and initialized
-console.log(varVariable); // undefined
-var varVariable = 'var';
-
-// With let - hoisted but NOT initialized
-// console.log(letVariable); // ReferenceError!
-let letVariable = 'let';</code></pre>
-
-        <h3>Best Practices</h3>
-        <ol>
-            <li><strong>Prefer const by default</strong> - Use for values that won't be reassigned</li>
-            <li><strong>Use let when you need to reassign</strong> - For counters, accumulators, etc.</li>
-            <li><strong>Avoid var</strong> - No benefits over let/const in modern JavaScript</li>
-            <li><strong>Minimize scope</strong> - Declare variables close to where they're used</li>
-            <li><strong>Use descriptive names</strong> - Make your code self-documenting</li>
-        </ol>
-
-        <h3>Key Takeaways</h3>
-        <ul>
-            <li>Use const by default, let when you need to reassign, avoid var</li>
-            <li>var is function-scoped, let and const are block-scoped</li>
-            <li>Lexical scope means inner functions can access outer variables</li>
-            <li>The scope chain is searched from inner to outer scopes</li>
-            <li>Temporal Dead Zone prevents accessing let/const before declaration</li>
-            <li>const prevents reassignment, not mutation</li>
-        </ul>
-    </div>
-
-    <!-- Chapter 3 -->
-    <div id="chapter3" class="page-break">
-        <h1>Chapter 3: JavaScript Functions</h1>
-        <h2>Master the Building Blocks</h2>
-
-        <p>Functions are the fundamental building blocks of JavaScript. They allow you to encapsulate code, make it
-            reusable, and organize your programs into logical units.</p>
-
-        <h3>Function Declarations vs Expressions</h3>
-        <p><strong>Function Declarations:</strong></p>
-        <pre><code class="language-javascript">function add(a, b) {
-    return a + b;
-}
-
-// Can be called before definition (hoisted)
-sayHello(); // Works!
-
-function sayHello() {
-    console.log('Hello!');
-}</code></pre>
-
-        <p><strong>Function Expressions:</strong></p>
-        <pre><code class="language-javascript">const multiply = function(a, b) {
-    return a * b;
-};
-
-// Cannot be called before definition
-// subtract(); // Error!
-const subtract = function(a, b) {
-    return a - b;
-};</code></pre>
-
-        <h3>Arrow Functions</h3>
-        <p>Arrow functions provide concise syntax:</p>
-        <pre><code class="language-javascript">// Traditional
-const square1 = function(x) {
-    return x * x;
-};
-
-// Arrow - concise (implicit return)
-const square2 = x => x * x;
-
-// Multiple parameters
-const add = (a, b) => a + b;
-
-// No parameters
-const random = () => Math.random();
-
-// Returning objects
-const makePerson = (name, age) => ({ name, age });</code></pre>
-
-        <h3>Parameters and Arguments</h3>
-        <p><strong>Default Parameters:</strong></p>
-        <pre><code class="language-javascript">function greet(name = 'Guest', greeting = 'Hello') {
-    console.log(`${greeting}, ${name}!`);
-}
-
-greet(); // Hello, Guest!
-greet('Alice'); // Hello, Alice!</code></pre>
-
-        <p><strong>Rest Parameters:</strong></p>
-        <pre><code class="language-javascript">function sum(...numbers) {
-    return numbers.reduce((total, num) => total + num, 0);
-}
-
-console.log(sum(1, 2, 3)); // 6
-console.log(sum(1, 2, 3, 4, 5)); // 15</code></pre>
-
-        <h3>Higher-Order Functions</h3>
-        <p>Functions that take or return other functions:</p>
-        <pre><code class="language-javascript">// Takes a function
-function repeat(n, action) {
-    for (let i = 0; i < n; i++) {
-        action(i);
-    }
-}
-
-repeat(3, console.log); // 0, 1, 2
-
-// Returns a function
-function multiplyBy(factor) {
-    return function(number) {
-        return number * factor;
-    };
-}
-
-const double = multiplyBy(2);
-console.log(double(5)); // 10</code></pre>
-
-        <h3>Callback Functions</h3>
-        <pre><code class="language-javascript">const numbers = [1, 2, 3, 4, 5];
-
-const doubled = numbers.map(n => n * 2);
-const evens = numbers.filter(n => n % 2 === 0);
-const sum = numbers.reduce((total, n) => total + n, 0);</code></pre>
-
-        <h3>IIFEs (Immediately Invoked Function Expressions)</h3>
-        <pre><code class="language-javascript">(function() {
-    console.log('Runs immediately!');
-})();
-
-// Creating private scope
-const counter = (function() {
-    let count = 0;
-    
-    return {
-        increment() {
-            count++;
-            return count;
-        },
-        getCount() {
-            return count;
-        }
-    };
-})();</code></pre>
-
-        <h3>Best Practices</h3>
-        <ol>
-            <li><strong>Use descriptive names</strong> - Make function purpose clear</li>
-            <li><strong>Keep functions small</strong> - Single responsibility</li>
-            <li><strong>Prefer arrow functions for callbacks</strong> - More concise</li>
-            <li><strong>Use default parameters</strong> - Instead of checking undefined</li>
-            <li><strong>Return early</strong> - Reduce nesting</li>
-        </ol>
-
-        <h3>Key Takeaways</h3>
-        <ul>
-            <li>Function declarations are hoisted, expressions are not</li>
-            <li>Arrow functions provide concise syntax and lexical <code>this</code></li>
-            <li>Default parameters provide fallback values</li>
-            <li>Rest parameters collect remaining arguments</li>
-            <li>Higher-order functions take or return functions</li>
-            <li>Callbacks are functions passed to be executed later</li>
-            <li>IIFEs execute immediately and create private scope</li>
-        </ul>
-    </div>
-
     <!-- PART II -->
     <div class="page-break">
         <h1 class="center">Part II</h1>
@@ -1400,6 +1403,7 @@ for (var i = 0; i < 3; i++) {
         </ul>
     </div>
 
+
     <!-- Chapter 6 -->
     <div id="chapter6" class="page-break">
         <h1>Chapter 6: JavaScript Currying</h1>
@@ -1610,6 +1614,7 @@ add(1, 2, 3);     // 6 - all work!</code></pre>
             <li>Create a curry helper for convenience</li>
         </ul>
     </div>
+
 
     <!-- Chapter 7 -->
     <div id="chapter7" class="page-break">
@@ -1863,205 +1868,199 @@ class Button {
         <h2 class="center">Object-Oriented JavaScript</h2>
     </div>
 
-    <!-- Chapter 10 -->
-    <div id="chapter10" class="page-break">
-        <h1>Chapter 10: JavaScript Polymorphism</h1>
-        <h2>Write Flexible, Reusable Code</h2>
+    <!-- Chapter 8 -->
+    <div id="chapter8" class="page-break">
+        <h1>Chapter 8: JavaScript Encapsulation</h1>
+        <h2>Master Data Hiding and Private Variables</h2>
 
-        <p>If you've been writing JavaScript for a while, you've probably used polymorphism without even realizing it.
-            It's one of those concepts that sounds intimidating but is actually quite natural in JavaScript. Let me show
-            you why it matters and how to use it effectively.</p>
+        <p>Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical
+            once you understand it. If you've ever wanted to protect your data from being accidentally modified or
+            create
+            cleaner APIs for your code, encapsulation is the answer.</p>
 
-        <h3>What is Polymorphism?</h3>
-        <p>Polymorphism comes from Greek: "poly" (many) + "morph" (form), meaning "many forms." In programming, it means
-            writing code that works with different types of objects through a common interface.</p>
-
-        <p>Unlike Java or C++ where polymorphism relies on inheritance and strict type hierarchies, JavaScript uses
-            <strong>duck typing</strong>: "If it walks like a duck and quacks like a duck, it's a duck." JavaScript
-            doesn't care about an object's type—only what methods it has.
-        </p>
-
-        <pre><code class="language-javascript">// Different objects with the same interface
-const dog = {
-    speak() { return 'Woof!'; }
-};
-
-const cat = {
-    speak() { return 'Meow!'; }
-};
-
-const robot = {
-    speak() { return 'Beep boop!'; }
-};
-
-// Polymorphic function - works with any object that has speak()
-function makeItSpeak(animal) {
-    console.log(animal.speak());
-}
-
-makeItSpeak(dog);    // Woof!
-makeItSpeak(cat);    // Meow!
-makeItSpeak(robot);  // Beep boop!</code></pre>
-
-        <p>The <code>makeItSpeak</code> function doesn't check types. It only cares that the object has a
-            <code>speak()</code> method. This is polymorphism in action.
-        </p>
-
-        <h3>Duck Typing in Practice</h3>
-        <p>Duck typing makes JavaScript incredibly flexible. Instead of checking an object's type, you check for
-            specific
-            methods or properties:</p>
-
-        <pre><code class="language-javascript">function draw(shape) {
-    if (typeof shape.draw === 'function') {
-        shape.draw();
-    } else {
-        console.error('Object is not drawable');
-    }
-}
-
-const circle = {
-    radius: 5,
-    draw() {
-        console.log(`Drawing circle with radius ${this.radius}`);
-    }
-};
-
-const square = {
-    side: 10,
-    draw() {
-        console.log(`Drawing square with side ${this.side}`);
-    }
-};
-
-draw(circle);  // Drawing circle with radius 5
-draw(square);  // Drawing square with side 10</code></pre>
-
-        <p>This pattern is everywhere in JavaScript. Promises work with any "thenable" (object with a
-            <code>then()</code>
-            method). Iterators work with any object that has a <code>next()</code> method. Array methods work with any
-            array-like object.
-        </p>
-
-        <h3>Real-World Example: Payment Processing</h3>
-        <p>Here's a practical example that shows polymorphism's power:</p>
-
-        <pre><code class="language-javascript">class PaymentProcessor {
-    processPayment(paymentMethod, amount) {
-        if (typeof paymentMethod.pay !== 'function') {
-            throw new Error('Invalid payment method');
-        }
-        return paymentMethod.pay(amount);
-    }
-}
-
-class CreditCard {
-    constructor(cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-    
-    pay(amount) {
-        console.log(`Charging $${amount} to card ending in ${this.cardNumber.slice(-4)}`);
-        return { success: true, method: 'credit_card' };
-    }
-}
-
-class PayPal {
-    constructor(email) {
-        this.email = email;
-    }
-    
-    pay(amount) {
-        console.log(`Processing $${amount} PayPal payment for ${this.email}`);
-        return { success: true, method: 'paypal' };
-    }
-}
-
-// Usage
-const processor = new PaymentProcessor();
-processor.processPayment(new CreditCard('1234567890123456'), 100);
-processor.processPayment(new PayPal('user@example.com'), 50);</code></pre>
-
-        <p>The <code>PaymentProcessor</code> doesn't need to know about specific payment types. It only needs objects
+        <h3>What is Encapsulation?</h3>
+        <p>Encapsulation is the practice of bundling data and methods together while hiding internal implementation
+            details
+            from the outside world. It's one of the four fundamental principles of object-oriented programming (along
             with
-            a <code>pay()</code> method. Adding new payment methods requires zero changes to the processor.</p>
+            inheritance, polymorphism, and abstraction).</p>
 
-        <h3>Polymorphism with Classes</h3>
-        <p>You can also use ES6 classes for more traditional OOP-style polymorphism:</p>
+        <p>In JavaScript, encapsulation helps you protect data, control access, reduce coupling, and improve
+            maintainability.</p>
 
-        <pre><code class="language-javascript">class Animal {
-    constructor(name) {
-        this.name = name;
+        <pre><code class="language-javascript">// Without encapsulation - data is exposed
+const account = {
+    balance: 1000
+};
+account.balance = -500; // Oops! No validation
+
+// With encapsulation - data is protected
+function createAccount(initialBalance) {
+    let balance = initialBalance; // Private
+    
+    return {
+        deposit(amount) {
+            if (amount > 0) {
+                balance += amount;
+                return true;
+            }
+            return false;
+        },
+        getBalance() {
+            return balance;
+        }
+    };
+}
+
+const myAccount = createAccount(1000);
+myAccount.deposit(500);
+console.log(myAccount.getBalance()); // 1500
+myAccount.balance = -500;            // Has no effect!</code></pre>
+
+        <h3>Private Variables with Closures</h3>
+        <p>Before ES2022, closures were the primary way to create private variables in JavaScript:</p>
+
+        <pre><code class="language-javascript">function Counter() {
+    let count = 0; // Private variable
+    
+    this.increment = function() {
+        count++;
+        return count;
+    };
+    
+    this.getCount = function() {
+        return count;
+    };
+}
+
+const counter = new Counter();
+counter.increment(); // 1
+counter.increment(); // 2
+console.log(counter.count); // undefined - private!</code></pre>
+
+        <h3>ES2022 Private Fields</h3>
+        <p>Modern JavaScript introduced true private fields using the <code>#</code> prefix:</p>
+
+        <pre><code class="language-javascript">class BankAccount {
+    #balance; // Private field
+    
+    constructor(initialBalance) {
+        this.#balance = initialBalance;
     }
     
-    speak() {
-        return `${this.name} makes a sound`;
+    deposit(amount) {
+        if (amount <= 0) {
+            throw new Error('Amount must be positive');
+        }
+        this.#balance += amount;
+        return this.#balance;
+    }
+    
+    getBalance() {
+        return this.#balance;
     }
 }
 
-class Dog extends Animal {
-    speak() {
-        return `${this.name} barks`;
+const account = new BankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance()); // 1500
+// account.#balance; // SyntaxError!</code></pre>
+
+        <p>Private fields are truly private - attempting to access them from outside the class results in a syntax
+            error.
+        </p>
+
+        <h3>The Module Pattern</h3>
+        <p>The Module Pattern uses an IIFE to create a private scope:</p>
+
+        <pre><code class="language-javascript">const Calculator = (function() {
+    // Private
+    let history = [];
+    
+    function log(operation, result) {
+        history.push({ operation, result });
+    }
+    
+    // Public API
+    return {
+        add(a, b) {
+            const result = a + b;
+            log(`${a} + ${b}`, result);
+            return result;
+        },
+        getHistory() {
+            return [...history];
+        }
+    };
+})();
+
+Calculator.add(5, 3); // 8
+console.log(Calculator.history); // undefined - private!</code></pre>
+
+        <h3>Getters and Setters</h3>
+        <p>Getters and setters provide controlled access with validation:</p>
+
+        <pre><code class="language-javascript">class Temperature {
+    #celsius;
+    
+    get celsius() {
+        return this.#celsius;
+    }
+    
+    set celsius(value) {
+        if (value < -273.15) {
+            throw new Error('Below absolute zero');
+        }
+        this.#celsius = value;
+    }
+    
+    get fahrenheit() {
+        return (this.#celsius * 9/5) + 32;
     }
 }
 
-class Cat extends Animal {
-    speak() {
-        return `${this.name} meows`;
-    }
-}
-
-function describeAnimal(animal) {
-    console.log(animal.speak());
-}
-
-describeAnimal(new Dog('Rex'));      // Rex barks
-describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
-
-        <p>Each subclass overrides <code>speak()</code> with its own implementation. The <code>describeAnimal</code>
-            function works with any Animal, regardless of the specific subclass.</p>
+const temp = new Temperature();
+temp.celsius = 25;
+console.log(temp.fahrenheit); // 77</code></pre>
 
         <h3>Best Practices</h3>
         <ol>
-            <li><strong>Design around interfaces</strong> - Think about what methods objects need, not what type they
-                are
-            </li>
-            <li><strong>Use consistent method names</strong> - If objects do similar things, give them the same method
-                names</li>
-            <li><strong>Validate interfaces</strong> - Always check that objects have the methods you need</li>
-            <li><strong>Document expectations</strong> - Use JSDoc to document what methods objects should implement
-            </li>
-            <li><strong>Consider TypeScript</strong> - For large projects, TypeScript's interfaces provide compile-time
-                checking</li>
+            <li><strong>Make everything private by default</strong> - Only expose what's necessary</li>
+            <li><strong>Use getters for computed properties</strong> - Calculate values on demand</li>
+            <li><strong>Validate in setters</strong> - Ensure data integrity</li>
+            <li><strong>Return copies, not references</strong> - Prevent external modification</li>
+            <li><strong>Use meaningful method names</strong> - Make your API clear</li>
         </ol>
 
-        <h3>When to Use Polymorphism</h3>
+        <h3>When to Use Encapsulation</h3>
         <p><strong>Use it when:</strong></p>
         <ul>
-            <li>You have multiple objects that do similar things differently</li>
-            <li>You want functions that work with many types</li>
-            <li>You're building plugin systems or extensible architectures</li>
-            <li>You want to reduce code duplication</li>
+            <li>You need to protect data integrity</li>
+            <li>You want to control how data is accessed</li>
+            <li>You're building reusable components</li>
+            <li>You need validation before changes</li>
         </ul>
 
-        <p><strong>Avoid it when:</strong></p>
+        <p><strong>Skip it when:</strong></p>
         <ul>
-            <li>You only have one type of object</li>
-            <li>Objects don't share common behavior</li>
-            <li>Simple conditional logic is clearer</li>
-            <li>It adds unnecessary complexity</li>
+            <li>You're building simple data structures</li>
+            <li>The code is only used internally</li>
+            <li>The data doesn't need protection</li>
         </ul>
 
         <h3>Key Takeaways</h3>
         <ul>
-            <li>Polymorphism lets different objects be treated through a common interface</li>
-            <li>JavaScript uses duck typing - objects are defined by their methods, not types</li>
-            <li>Design around interfaces (sets of methods) rather than specific types</li>
-            <li>Always validate that objects have the methods you need</li>
-            <li>Use consistent method names across similar objects</li>
-            <li>Don't over-engineer - use polymorphism where it adds value</li>
+            <li>Encapsulation bundles data and methods while hiding implementation</li>
+            <li>Use closures for private variables in functions</li>
+            <li>ES2022 private fields (#) are the modern way for classes</li>
+            <li>The Module Pattern creates singletons with private state</li>
+            <li>Getters and setters provide controlled access</li>
+            <li>Always return copies of internal data, not references</li>
+            <li>Make everything private by default</li>
+            <li>Don't over-encapsulate simple structures</li>
         </ul>
     </div>
+
 
     <!-- Chapter 9 -->
     <div id="chapter9" class="page-break">
@@ -2270,204 +2269,214 @@ console.log(circle.getArea()); // 78.54...</code></pre>
         </ul>
     </div>
 
-    <!-- Chapter 8 -->
-    <div id="chapter8" class="page-break">
-        <h1>Chapter 8: JavaScript Encapsulation</h1>
-        <h2>Master Data Hiding and Private Variables</h2>
 
-        <p>Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical
-            once you understand it. If you've ever wanted to protect your data from being accidentally modified or
-            create
-            cleaner APIs for your code, encapsulation is the answer.</p>
+    <!-- Chapter 10 -->
+    <div id="chapter10" class="page-break">
+        <h1>Chapter 10: JavaScript Polymorphism</h1>
+        <h2>Write Flexible, Reusable Code</h2>
 
-        <h3>What is Encapsulation?</h3>
-        <p>Encapsulation is the practice of bundling data and methods together while hiding internal implementation
-            details
-            from the outside world. It's one of the four fundamental principles of object-oriented programming (along
-            with
-            inheritance, polymorphism, and abstraction).</p>
+        <p>If you've been writing JavaScript for a while, you've probably used polymorphism without even realizing it.
+            It's one of those concepts that sounds intimidating but is actually quite natural in JavaScript. Let me show
+            you why it matters and how to use it effectively.</p>
 
-        <p>In JavaScript, encapsulation helps you protect data, control access, reduce coupling, and improve
-            maintainability.</p>
+        <h3>What is Polymorphism?</h3>
+        <p>Polymorphism comes from Greek: "poly" (many) + "morph" (form), meaning "many forms." In programming, it means
+            writing code that works with different types of objects through a common interface.</p>
 
-        <pre><code class="language-javascript">// Without encapsulation - data is exposed
-const account = {
-    balance: 1000
-};
-account.balance = -500; // Oops! No validation
-
-// With encapsulation - data is protected
-function createAccount(initialBalance) {
-    let balance = initialBalance; // Private
-    
-    return {
-        deposit(amount) {
-            if (amount > 0) {
-                balance += amount;
-                return true;
-            }
-            return false;
-        },
-        getBalance() {
-            return balance;
-        }
-    };
-}
-
-const myAccount = createAccount(1000);
-myAccount.deposit(500);
-console.log(myAccount.getBalance()); // 1500
-myAccount.balance = -500;            // Has no effect!</code></pre>
-
-        <h3>Private Variables with Closures</h3>
-        <p>Before ES2022, closures were the primary way to create private variables in JavaScript:</p>
-
-        <pre><code class="language-javascript">function Counter() {
-    let count = 0; // Private variable
-    
-    this.increment = function() {
-        count++;
-        return count;
-    };
-    
-    this.getCount = function() {
-        return count;
-    };
-}
-
-const counter = new Counter();
-counter.increment(); // 1
-counter.increment(); // 2
-console.log(counter.count); // undefined - private!</code></pre>
-
-        <h3>ES2022 Private Fields</h3>
-        <p>Modern JavaScript introduced true private fields using the <code>#</code> prefix:</p>
-
-        <pre><code class="language-javascript">class BankAccount {
-    #balance; // Private field
-    
-    constructor(initialBalance) {
-        this.#balance = initialBalance;
-    }
-    
-    deposit(amount) {
-        if (amount <= 0) {
-            throw new Error('Amount must be positive');
-        }
-        this.#balance += amount;
-        return this.#balance;
-    }
-    
-    getBalance() {
-        return this.#balance;
-    }
-}
-
-const account = new BankAccount(1000);
-account.deposit(500);
-console.log(account.getBalance()); // 1500
-// account.#balance; // SyntaxError!</code></pre>
-
-        <p>Private fields are truly private - attempting to access them from outside the class results in a syntax
-            error.
+        <p>Unlike Java or C++ where polymorphism relies on inheritance and strict type hierarchies, JavaScript uses
+            <strong>duck typing</strong>: "If it walks like a duck and quacks like a duck, it's a duck." JavaScript
+            doesn't care about an object's type—only what methods it has.
         </p>
 
-        <h3>The Module Pattern</h3>
-        <p>The Module Pattern uses an IIFE to create a private scope:</p>
+        <pre><code class="language-javascript">// Different objects with the same interface
+const dog = {
+    speak() { return 'Woof!'; }
+};
 
-        <pre><code class="language-javascript">const Calculator = (function() {
-    // Private
-    let history = [];
-    
-    function log(operation, result) {
-        history.push({ operation, result });
-    }
-    
-    // Public API
-    return {
-        add(a, b) {
-            const result = a + b;
-            log(`${a} + ${b}`, result);
-            return result;
-        },
-        getHistory() {
-            return [...history];
-        }
-    };
-})();
+const cat = {
+    speak() { return 'Meow!'; }
+};
 
-Calculator.add(5, 3); // 8
-console.log(Calculator.history); // undefined - private!</code></pre>
+const robot = {
+    speak() { return 'Beep boop!'; }
+};
 
-        <h3>Getters and Setters</h3>
-        <p>Getters and setters provide controlled access with validation:</p>
+// Polymorphic function - works with any object that has speak()
+function makeItSpeak(animal) {
+    console.log(animal.speak());
+}
 
-        <pre><code class="language-javascript">class Temperature {
-    #celsius;
-    
-    get celsius() {
-        return this.#celsius;
-    }
-    
-    set celsius(value) {
-        if (value < -273.15) {
-            throw new Error('Below absolute zero');
-        }
-        this.#celsius = value;
-    }
-    
-    get fahrenheit() {
-        return (this.#celsius * 9/5) + 32;
+makeItSpeak(dog);    // Woof!
+makeItSpeak(cat);    // Meow!
+makeItSpeak(robot);  // Beep boop!</code></pre>
+
+        <p>The <code>makeItSpeak</code> function doesn't check types. It only cares that the object has a
+            <code>speak()</code> method. This is polymorphism in action.
+        </p>
+
+        <h3>Duck Typing in Practice</h3>
+        <p>Duck typing makes JavaScript incredibly flexible. Instead of checking an object's type, you check for
+            specific
+            methods or properties:</p>
+
+        <pre><code class="language-javascript">function draw(shape) {
+    if (typeof shape.draw === 'function') {
+        shape.draw();
+    } else {
+        console.error('Object is not drawable');
     }
 }
 
-const temp = new Temperature();
-temp.celsius = 25;
-console.log(temp.fahrenheit); // 77</code></pre>
+const circle = {
+    radius: 5,
+    draw() {
+        console.log(`Drawing circle with radius ${this.radius}`);
+    }
+};
+
+const square = {
+    side: 10,
+    draw() {
+        console.log(`Drawing square with side ${this.side}`);
+    }
+};
+
+draw(circle);  // Drawing circle with radius 5
+draw(square);  // Drawing square with side 10</code></pre>
+
+        <p>This pattern is everywhere in JavaScript. Promises work with any "thenable" (object with a
+            <code>then()</code>
+            method). Iterators work with any object that has a <code>next()</code> method. Array methods work with any
+            array-like object.
+        </p>
+
+        <h3>Real-World Example: Payment Processing</h3>
+        <p>Here's a practical example that shows polymorphism's power:</p>
+
+        <pre><code class="language-javascript">class PaymentProcessor {
+    processPayment(paymentMethod, amount) {
+        if (typeof paymentMethod.pay !== 'function') {
+            throw new Error('Invalid payment method');
+        }
+        return paymentMethod.pay(amount);
+    }
+}
+
+class CreditCard {
+    constructor(cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+    
+    pay(amount) {
+        console.log(`Charging $${amount} to card ending in ${this.cardNumber.slice(-4)}`);
+        return { success: true, method: 'credit_card' };
+    }
+}
+
+class PayPal {
+    constructor(email) {
+        this.email = email;
+    }
+    
+    pay(amount) {
+        console.log(`Processing $${amount} PayPal payment for ${this.email}`);
+        return { success: true, method: 'paypal' };
+    }
+}
+
+// Usage
+const processor = new PaymentProcessor();
+processor.processPayment(new CreditCard('1234567890123456'), 100);
+processor.processPayment(new PayPal('user@example.com'), 50);</code></pre>
+
+        <p>The <code>PaymentProcessor</code> doesn't need to know about specific payment types. It only needs objects
+            with
+            a <code>pay()</code> method. Adding new payment methods requires zero changes to the processor.</p>
+
+        <h3>Polymorphism with Classes</h3>
+        <p>You can also use ES6 classes for more traditional OOP-style polymorphism:</p>
+
+        <pre><code class="language-javascript">class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        return `${this.name} barks`;
+    }
+}
+
+class Cat extends Animal {
+    speak() {
+        return `${this.name} meows`;
+    }
+}
+
+function describeAnimal(animal) {
+    console.log(animal.speak());
+}
+
+describeAnimal(new Dog('Rex'));      // Rex barks
+describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
+
+        <p>Each subclass overrides <code>speak()</code> with its own implementation. The <code>describeAnimal</code>
+            function works with any Animal, regardless of the specific subclass.</p>
 
         <h3>Best Practices</h3>
         <ol>
-            <li><strong>Make everything private by default</strong> - Only expose what's necessary</li>
-            <li><strong>Use getters for computed properties</strong> - Calculate values on demand</li>
-            <li><strong>Validate in setters</strong> - Ensure data integrity</li>
-            <li><strong>Return copies, not references</strong> - Prevent external modification</li>
-            <li><strong>Use meaningful method names</strong> - Make your API clear</li>
+            <li><strong>Design around interfaces</strong> - Think about what methods objects need, not what type they
+                are
+            </li>
+            <li><strong>Use consistent method names</strong> - If objects do similar things, give them the same method
+                names</li>
+            <li><strong>Validate interfaces</strong> - Always check that objects have the methods you need</li>
+            <li><strong>Document expectations</strong> - Use JSDoc to document what methods objects should implement
+            </li>
+            <li><strong>Consider TypeScript</strong> - For large projects, TypeScript's interfaces provide compile-time
+                checking</li>
         </ol>
 
-        <h3>When to Use Encapsulation</h3>
+        <h3>When to Use Polymorphism</h3>
         <p><strong>Use it when:</strong></p>
         <ul>
-            <li>You need to protect data integrity</li>
-            <li>You want to control how data is accessed</li>
-            <li>You're building reusable components</li>
-            <li>You need validation before changes</li>
+            <li>You have multiple objects that do similar things differently</li>
+            <li>You want functions that work with many types</li>
+            <li>You're building plugin systems or extensible architectures</li>
+            <li>You want to reduce code duplication</li>
         </ul>
 
-        <p><strong>Skip it when:</strong></p>
+        <p><strong>Avoid it when:</strong></p>
         <ul>
-            <li>You're building simple data structures</li>
-            <li>The code is only used internally</li>
-            <li>The data doesn't need protection</li>
+            <li>You only have one type of object</li>
+            <li>Objects don't share common behavior</li>
+            <li>Simple conditional logic is clearer</li>
+            <li>It adds unnecessary complexity</li>
         </ul>
 
         <h3>Key Takeaways</h3>
         <ul>
-            <li>Encapsulation bundles data and methods while hiding implementation</li>
-            <li>Use closures for private variables in functions</li>
-            <li>ES2022 private fields (#) are the modern way for classes</li>
-            <li>The Module Pattern creates singletons with private state</li>
-            <li>Getters and setters provide controlled access</li>
-            <li>Always return copies of internal data, not references</li>
-            <li>Make everything private by default</li>
-            <li>Don't over-encapsulate simple structures</li>
+            <li>Polymorphism lets different objects be treated through a common interface</li>
+            <li>JavaScript uses duck typing - objects are defined by their methods, not types</li>
+            <li>Design around interfaces (sets of methods) rather than specific types</li>
+            <li>Always validate that objects have the methods you need</li>
+            <li>Use consistent method names across similar objects</li>
+            <li>Don't over-engineer - use polymorphism where it adds value</li>
         </ul>
     </div>
+
 
     <!-- PART IV -->
     <div class="page-break">
         <h1 class="center">Part IV</h1>
         <h2 class="center">Asynchronous JavaScript</h2>
     </div>
+
 
     <!-- Chapter 11 -->
     <div id="chapter11" class="page-break">
@@ -2755,6 +2764,7 @@ fetch('/api/data')
         </ul>
     </div>
 
+
     <!-- Chapter 12 -->
     <div id="chapter12" class="page-break">
         <h1>Chapter 12: JavaScript Generators</h1>
@@ -2998,6 +3008,7 @@ console.log([...gen]); // [1, 2, 3, 4]</code></pre>
             <li>Modern async/await replaced generators for async code</li>
         </ul>
     </div>
+
 
     <!-- Conclusion -->
     <div id="conclusion" class="page-break">
