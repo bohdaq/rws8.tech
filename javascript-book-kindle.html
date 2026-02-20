@@ -207,13 +207,14 @@
                     <li><a href="#chapter4">Chapter 4: JavaScript Currying</a></li>
                     <li><a href="#chapter5">Chapter 5: JavaScript 'this' Keyword</a></li>
                     <li><a href="#chapter6">Chapter 6: JavaScript Polymorphism</a></li>
+                    <li><a href="#chapter7">Chapter 7: JavaScript Inheritance</a></li>
                 </ol>
             </li>
             <li>
                 <strong>Part III: Asynchronous JavaScript</strong>
                 <ol>
-                    <li><a href="#chapter7">Chapter 7: JavaScript Promises</a></li>
-                    <li><a href="#chapter8">Chapter 8: JavaScript Generators</a></li>
+                    <li><a href="#chapter8">Chapter 8: JavaScript Promises</a></li>
+                    <li><a href="#chapter9">Chapter 9: JavaScript Generators</a></li>
                 </ol>
             </li>
             <li><a href="#conclusion">Conclusion</a></li>
@@ -1773,15 +1774,222 @@ describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
         </ul>
     </div>
 
+    <!-- Chapter 7 -->
+    <div id="chapter7" class="page-break">
+        <h1>Chapter 7: JavaScript Inheritance</h1>
+        <h2>Master Prototypal Inheritance and ES6 Classes</h2>
+
+        <p>Inheritance is one of those concepts that sounds complicated but is actually quite natural once you
+            understand
+            it. If you've been writing JavaScript for a while, you've probably used inheritance without even realizing
+            it.
+            Let me show you how it works and why it matters.</p>
+
+        <h3>What is Inheritance?</h3>
+        <p>Inheritance is a mechanism that allows one object to acquire properties and methods from another object. It's
+            like saying "a Dog is an Animal" - the Dog inherits all the characteristics of an Animal, plus adds its own
+            specific behaviors.</p>
+
+        <p>Unlike classical languages like Java or C++ that use class-based inheritance, JavaScript uses
+            <strong>prototypal
+                inheritance</strong>. Every object in JavaScript has an internal link to another object called its
+            prototype. When you try to access a property on an object, JavaScript first looks at the object itself, then
+            walks up the prototype chain until it finds the property or reaches the end of the chain.
+        </p>
+
+        <pre><code>const animal = {
+    eats: true,
+    walk() {
+        console.log('Animal walks');
+    }
+};
+
+const rabbit = {
+    jumps: true
+};
+
+rabbit.__proto__ = animal;
+
+console.log(rabbit.eats);  // true (inherited)
+console.log(rabbit.jumps); // true (own property)
+rabbit.walk();             // "Animal walks"</code></pre>
+
+        <p>When we access <code>rabbit.eats</code>, JavaScript doesn't find it on the rabbit object, so it looks at
+            rabbit's prototype (animal) and finds it there. This is the prototype chain in action.</p>
+
+        <h3>ES6 Classes: The Modern Way</h3>
+        <p>ES6 introduced class syntax that makes inheritance much cleaner and more intuitive:</p>
+
+        <pre><code>class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        console.log(`${this.name} makes a sound`);
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name); // Call parent constructor
+        this.breed = breed;
+    }
+    
+    speak() {
+        console.log(`${this.name} barks`);
+    }
+    
+    fetch() {
+        console.log(`${this.name} fetches the ball`);
+    }
+}
+
+const rex = new Dog('Rex', 'German Shepherd');
+rex.speak();  // "Rex barks"
+rex.fetch();  // "Rex fetches the ball"</code></pre>
+
+        <p>The <code>extends</code> keyword sets up the inheritance, and <code>super()</code> calls the parent
+            constructor.
+            Much cleaner than the old constructor function approach!</p>
+
+        <h3>The super Keyword</h3>
+        <p>The <code>super</code> keyword is your gateway to parent class functionality:</p>
+
+        <pre><code>class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        const parentMessage = super.speak();
+        return `${parentMessage} - specifically, a bark!`;
+    }
+}
+
+const dog = new Dog('Buddy');
+console.log(dog.speak()); 
+// "Buddy makes a sound - specifically, a bark!"</code></pre>
+
+        <p><strong>Important:</strong> You must call <code>super()</code> before using <code>this</code> in a child
+            constructor. The parent needs to initialize the object first.</p>
+
+        <h3>Real-World Example: User Roles</h3>
+        <p>Here's a practical example showing inheritance in action:</p>
+
+        <pre><code>class User {
+    constructor(name, email) {
+        this.name = name;
+        this.email = email;
+    }
+    
+    getInfo() {
+        return `${this.name} (${this.email})`;
+    }
+    
+    canEdit() {
+        return false;
+    }
+}
+
+class Admin extends User {
+    constructor(name, email, department) {
+        super(name, email);
+        this.department = department;
+    }
+    
+    canEdit() {
+        return true;
+    }
+    
+    getInfo() {
+        return `${super.getInfo()} - Admin (${this.department})`;
+    }
+}
+
+const admin = new Admin('Bob', 'bob@example.com', 'IT');
+console.log(admin.getInfo()); // "Bob (bob@example.com) - Admin (IT)"
+console.log(admin.canEdit());  // true</code></pre>
+
+        <h3>Method Overriding</h3>
+        <p>Child classes can override parent methods to provide specialized behavior:</p>
+
+        <pre><code>class Shape {
+    constructor(color) {
+        this.color = color;
+    }
+    
+    getArea() {
+        return 0;
+    }
+}
+
+class Circle extends Shape {
+    constructor(color, radius) {
+        super(color);
+        this.radius = radius;
+    }
+    
+    getArea() {
+        return Math.PI * this.radius ** 2;
+    }
+}
+
+const circle = new Circle('red', 5);
+console.log(circle.getArea()); // 78.54...</code></pre>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Keep hierarchies shallow</strong> - Limit inheritance to 2-3 levels maximum</li>
+            <li><strong>Favor composition over inheritance</strong> - Don't create deep inheritance trees</li>
+            <li><strong>Use clear "is-a" relationships</strong> - Dog is-a Animal makes sense</li>
+            <li><strong>Document your hierarchy</strong> - Use JSDoc to document inheritance relationships</li>
+        </ol>
+
+        <h3>When to Use Inheritance</h3>
+        <p><strong>Use it when:</strong></p>
+        <ul>
+            <li>You have a clear "is-a" relationship</li>
+            <li>Child classes are specialized versions of the parent</li>
+            <li>You want to share common behavior</li>
+            <li>You're modeling real-world hierarchies</li>
+        </ul>
+
+        <p><strong>Avoid it when:</strong></p>
+        <ul>
+            <li>You have a "has-a" relationship (use composition)</li>
+            <li>The hierarchy would be more than 3 levels deep</li>
+            <li>Classes don't share meaningful behavior</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>JavaScript uses prototypal inheritance, not classical inheritance</li>
+            <li>ES6 classes provide clean syntax but use prototypes under the hood</li>
+            <li>Use <code>extends</code> to create child classes</li>
+            <li>Always call <code>super()</code> before using <code>this</code> in child constructors</li>
+            <li>Use <code>super.method()</code> to call parent methods</li>
+            <li>Child classes can override parent methods</li>
+            <li>Keep inheritance hierarchies shallow</li>
+            <li>Favor composition over inheritance for complex relationships</li>
+        </ul>
+    </div>
+
     <!-- PART III -->
     <div class="page-break">
         <h1 class="center">Part III</h1>
         <h2 class="center">Asynchronous JavaScript</h2>
     </div>
 
-    <!-- Chapter 7 -->
-    <div id="chapter7" class="page-break">
-        <h1>Chapter 7: JavaScript Promises</h1>
+    <!-- Chapter 8 -->
+    <div id="chapter8" class="page-break">
+        <h1>Chapter 8: JavaScript Promises</h1>
         <h2>From Callback Hell to Async Heaven</h2>
 
         <p>Remember the days of callback pyramids that looked like the Leaning Tower of Pisa? If you've been writing
@@ -2065,9 +2273,9 @@ fetch('/api/data')
         </ul>
     </div>
 
-    <!-- Chapter 8 -->
-    <div id="chapter8" class="page-break">
-        <h1>Chapter 8: JavaScript Generators</h1>
+    <!-- Chapter 9 -->
+    <div id="chapter9" class="page-break">
+        <h1>Chapter 9: JavaScript Generators</h1>
         <h2>The Underrated Feature That Will Change How You Code</h2>
 
         <p>If you've been writing JavaScript for a while, you've probably heard of generators. Maybe you've even seen
