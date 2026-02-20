@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9724DKC9BF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-9724DKC9BF');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Learn JavaScript Polymorphism - Master duck typing, polymorphic functions, and interface-based design to write flexible, reusable code.">
+    <meta name="keywords"
+        content="JavaScript polymorphism, duck typing, polymorphic functions, method overriding, JavaScript OOP, interface design">
+    <meta name="author" content="bohdaq">
+    <title>JavaScript Polymorphism | bohdaq</title>
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="canonical" href="https://rws8.tech/tutorials/javascript/polymorphism/lesson-1.html">
+    <link rel="stylesheet" href="../../../assets/prism/prism.css">
+    <style>
+        .lesson-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .lesson-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .lesson-content code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        .lesson-content ul,
+        .lesson-content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .objectives-box {
+            background-color: var(--bg-secondary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .objectives-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .key-takeaways {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../../index.html" class="logo">bohdaq</a>
+            <ul class="nav-links">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../fullstack.html">Fullstack</a></li>
+                <li><a href="../../../frontend.html">Frontend</a></li>
+                <li><a href="../../../backend.html">Backend</a></li>
+                <li><a href="../../../tutorials.html" class="active">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <a href="../../../index.html">Home</a>
+                <span class="separator">›</span>
+                <a href="../../../tutorials.html">Tutorials</a>
+                <span class="separator">›</span>
+                <a href="../index.html">JavaScript</a>
+                <span class="separator">›</span>
+                <a href="index.html">Polymorphism</a>
+                <span class="separator">›</span>
+                <span class="current">Lesson</span>
+            </nav>
+        </div>
+    </section>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>JavaScript Polymorphism</h1>
+            <p class="page-subtitle">Write Flexible, Reusable Code</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="lesson-content">
+                <div class="objectives-box">
+                    <h3>Learning Objectives</h3>
+                    <ul>
+                        <li>Understand polymorphism in JavaScript's dynamic context</li>
+                        <li>Master duck typing and structural typing</li>
+                        <li>Implement polymorphic functions</li>
+                        <li>Use method overriding effectively</li>
+                        <li>Apply polymorphism to real-world problems</li>
+                    </ul>
+                </div>
+                <h2>What is Polymorphism?</h2>
+                <p>Polymorphism is a fundamental principle in object-oriented programming that allows objects of
+                    different types to be treated through a common interface. The word comes from Greek: "poly" (many) +
+                    "morph" (form), meaning "many forms."</p>
+
+                <p>In traditional OOP languages like Java or C++, polymorphism is achieved through inheritance and
+                    interfaces. JavaScript takes a different approach - it uses <strong>duck typing</strong>: "If it
+                    walks like a duck and quacks like a duck, then it must be a duck." This means JavaScript doesn't
+                    care about an object's type or class; it only cares about what methods and properties the object
+                    has.</p>
+
+                <pre><code class="language-javascript">// Different objects with the same interface
+const dog = {
+    name: 'Buddy',
+    speak() {
+        return `${this.name} says Woof!`;
+    }
+};
+
+const cat = {
+    name: 'Whiskers',
+    speak() {
+        return `${this.name} says Meow!`;
+    }
+};
+
+const robot = {
+    name: 'R2D2',
+    speak() {
+        return `${this.name} says Beep boop!`;
+    }
+};
+
+// Polymorphic function - works with any object that has a speak() method
+function makeItSpeak(animal) {
+    console.log(animal.speak());
+}
+
+makeItSpeak(dog);    // Buddy says Woof!
+makeItSpeak(cat);    // Whiskers says Meow!
+makeItSpeak(robot);  // R2D2 says Beep boop!</code></pre>
+
+                <p>The <code>makeItSpeak</code> function doesn't care what type of object you pass to it. It doesn't
+                    check if the object is a Dog, Cat, or Robot. It only cares that the object has a
+                    <code>speak()</code> method. This is polymorphism in action.
+                </p>
+
+                <h2>Duck Typing in JavaScript</h2>
+                <p>Duck typing is JavaScript's approach to polymorphism. Instead of checking an object's type, you check
+                    for the presence of specific methods or properties. This makes JavaScript incredibly flexible but
+                    requires careful design.</p>
+
+                <pre><code class="language-javascript">// A polymorphic function that works with any "drawable" object
+function draw(shape) {
+    if (typeof shape.draw === 'function') {
+        shape.draw();
+    } else {
+        console.error('Object is not drawable');
+    }
+}
+
+const circle = {
+    radius: 5,
+    draw() {
+        console.log(`Drawing a circle with radius ${this.radius}`);
+    }
+};
+
+const square = {
+    side: 10,
+    draw() {
+        console.log(`Drawing a square with side ${this.side}`);
+    }
+};
+
+const triangle = {
+    base: 8,
+    height: 6,
+    draw() {
+        console.log(`Drawing a triangle with base ${this.base} and height ${this.height}`);
+    }
+};
+
+draw(circle);   // Drawing a circle with radius 5
+draw(square);   // Drawing a square with side 10
+draw(triangle); // Drawing a triangle with base 8 and height 6</code></pre>
+
+                <p>This pattern is extremely common in JavaScript libraries and frameworks. For example, Promises work
+                    with any object that has a <code>then()</code> method (a "thenable"), and iterators work with any
+                    object that has a <code>next()</code> method.</p>
+
+                <h2>Polymorphism with Classes</h2>
+                <p>While duck typing is JavaScript's natural approach, you can also use ES6 classes to implement
+                    polymorphism through inheritance and method overriding. This is closer to classical OOP patterns.
+                </p>
+
+                <pre><code class="language-javascript">class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+    
+    move() {
+        return `${this.name} moves`;
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        return `${this.name} barks`;
+    }
+    
+    move() {
+        return `${this.name} runs`;
+    }
+}
+
+class Fish extends Animal {
+    speak() {
+        return `${this.name} blubs`;
+    }
+    
+    move() {
+        return `${this.name} swims`;
+    }
+}
+
+class Bird extends Animal {
+    speak() {
+        return `${this.name} chirps`;
+    }
+    
+    move() {
+        return `${this.name} flies`;
+    }
+}
+
+// Polymorphic function that works with any Animal
+function describeAnimal(animal) {
+    console.log(animal.speak());
+    console.log(animal.move());
+}
+
+const dog = new Dog('Rex');
+const fish = new Fish('Nemo');
+const bird = new Bird('Tweety');
+
+describeAnimal(dog);   // Rex barks / Rex runs
+describeAnimal(fish);  // Nemo blubs / Nemo swims
+describeAnimal(bird);  // Tweety chirps / Tweety flies</code></pre>
+
+                <p>Each subclass overrides the <code>speak()</code> and <code>move()</code> methods to provide its own
+                    implementation. The <code>describeAnimal</code> function works with any Animal instance, regardless
+                    of the specific subclass.</p>
+
+                <h2>Interface-Based Design</h2>
+                <p>While JavaScript doesn't have formal interfaces like TypeScript or Java, you can design your code
+                    around implicit interfaces - sets of methods and properties that objects should implement.</p>
+
+                <pre><code class="language-javascript">// Implicit "Serializable" interface: objects must have toJSON() method
+function saveToDatabase(obj) {
+    if (typeof obj.toJSON !== 'function') {
+        throw new Error('Object must be serializable (have toJSON method)');
+    }
+    
+    const json = obj.toJSON();
+    console.log('Saving to database:', json);
+    // ... database logic
+}
+
+class User {
+    constructor(name, email) {
+        this.name = name;
+        this.email = email;
+    }
+    
+    toJSON() {
+        return {
+            type: 'user',
+            name: this.name,
+            email: this.email
+        };
+    }
+}
+
+class Product {
+    constructor(name, price) {
+        this.name = name;
+        this.price = price;
+    }
+    
+    toJSON() {
+        return {
+            type: 'product',
+            name: this.name,
+            price: this.price
+        };
+    }
+}
+
+const user = new User('Alice', 'alice@example.com');
+const product = new Product('Laptop', 999);
+
+saveToDatabase(user);    // Works - User implements toJSON()
+saveToDatabase(product); // Works - Product implements toJSON()</code></pre>
+
+                <p>This pattern is powerful because it allows you to write functions that work with any object that
+                    implements the required interface, without caring about the object's specific type or inheritance
+                    hierarchy.</p>
+
+                <h2>Real-World Example: Payment Processing</h2>
+                <p>Let's build a practical example: a payment processing system that works with multiple payment methods
+                    polymorphically.</p>
+
+                <pre><code class="language-javascript">// Payment processor that works with any payment method
+class PaymentProcessor {
+    processPayment(paymentMethod, amount) {
+        if (typeof paymentMethod.pay !== 'function') {
+            throw new Error('Invalid payment method');
+        }
+        
+        console.log(`Processing payment of $${amount}`);
+        return paymentMethod.pay(amount);
+    }
+}
+
+// Different payment methods implementing the same interface
+class CreditCard {
+    constructor(cardNumber, cvv) {
+        this.cardNumber = cardNumber;
+        this.cvv = cvv;
+    }
+    
+    pay(amount) {
+        console.log(`Charging $${amount} to credit card ending in ${this.cardNumber.slice(-4)}`);
+        return { success: true, method: 'credit_card', amount };
+    }
+}
+
+class PayPal {
+    constructor(email) {
+        this.email = email;
+    }
+    
+    pay(amount) {
+        console.log(`Processing $${amount} PayPal payment for ${this.email}`);
+        return { success: true, method: 'paypal', amount };
+    }
+}
+
+class Cryptocurrency {
+    constructor(walletAddress) {
+        this.walletAddress = walletAddress;
+    }
+    
+    pay(amount) {
+        console.log(`Sending $${amount} worth of crypto to ${this.walletAddress}`);
+        return { success: true, method: 'crypto', amount };
+    }
+}
+
+// Usage
+const processor = new PaymentProcessor();
+
+const creditCard = new CreditCard('1234567890123456', '123');
+const paypal = new PayPal('user@example.com');
+const crypto = new Cryptocurrency('0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb');
+
+processor.processPayment(creditCard, 100);
+processor.processPayment(paypal, 50);
+processor.processPayment(crypto, 200);</code></pre>
+
+                <p>The <code>PaymentProcessor</code> doesn't need to know about specific payment method types. It only
+                    needs to know that the payment method has a <code>pay()</code> method. This makes it easy to add new
+                    payment methods without modifying the processor.</p>
+
+                <h2>Polymorphism with Array Methods</h2>
+                <p>JavaScript's built-in array methods are excellent examples of polymorphism. They work with any
+                    array-like object or iterable.</p>
+
+                <pre><code class="language-javascript">// Array.from() works with any iterable
+const str = 'hello';
+const arr = [1, 2, 3];
+const set = new Set([4, 5, 6]);
+const map = new Map([['a', 1], ['b', 2]]);
+
+console.log(Array.from(str));  // ['h', 'e', 'l', 'l', 'o']
+console.log(Array.from(arr));  // [1, 2, 3]
+console.log(Array.from(set));  // [4, 5, 6]
+console.log(Array.from(map));  // [['a', 1], ['b', 2]]
+
+// Custom iterable
+const range = {
+    from: 1,
+    to: 5,
+    
+    [Symbol.iterator]() {
+        let current = this.from;
+        const last = this.to;
+        
+        return {
+            next() {
+                if (current <= last) {
+                    return { value: current++, done: false };
+                } else {
+                    return { done: true };
+                }
+            }
+        };
+    }
+};
+
+console.log(Array.from(range)); // [1, 2, 3, 4, 5]</code></pre>
+
+                <p><code>Array.from()</code> works with any object that implements the iterable protocol (has a
+                    <code>Symbol.iterator</code> method). This is polymorphism - the same function works with different
+                    types of objects.
+                </p>
+
+                <h2>Common Pitfalls</h2>
+
+                <h3>1. Assuming Methods Exist</h3>
+                <pre><code class="language-javascript">// Bad - assumes object has the method
+function processItem(item) {
+    item.process(); // What if item doesn't have process()?
+}
+
+// Good - check before calling
+function processItem(item) {
+    if (typeof item.process === 'function') {
+        item.process();
+    } else {
+        console.error('Item does not have a process method');
+    }
+}
+
+// Better - use optional chaining (ES2020)
+function processItem(item) {
+    item.process?.();
+}</code></pre>
+
+                <h3>2. Over-Engineering</h3>
+                <pre><code class="language-javascript">// Bad - unnecessary abstraction
+class StringFormatter {
+    format(str) {
+        return str;
+    }
+}
+
+class UpperCaseFormatter extends StringFormatter {
+    format(str) {
+        return str.toUpperCase();
+    }
+}
+
+// Good - simple functions
+const toUpperCase = str => str.toUpperCase();
+const toLowerCase = str => str.toLowerCase();</code></pre>
+
+                <p>Don't create complex class hierarchies when simple functions will do. JavaScript's functional nature
+                    often makes polymorphism through functions more natural than through classes.</p>
+
+                <h3>3. Ignoring Type Checking</h3>
+                <pre><code class="language-javascript">// Risky - no validation
+function calculateArea(shape) {
+    return shape.getArea();
+}
+
+// Safer - validate the interface
+function calculateArea(shape) {
+    if (!shape || typeof shape.getArea !== 'function') {
+        throw new TypeError('Shape must have a getArea method');
+    }
+    return shape.getArea();
+}</code></pre>
+
+                <h2>Best Practices</h2>
+
+                <h3>1. Design Around Interfaces</h3>
+                <p>Think about what methods objects need to have, not what type they are.</p>
+
+                <pre><code class="language-javascript">// Good - interface-based design
+function render(component) {
+    if (typeof component.render === 'function') {
+        return component.render();
+    }
+    throw new Error('Component must have a render method');
+}</code></pre>
+
+                <h3>2. Use Consistent Method Names</h3>
+                <p>If multiple objects do similar things, give them the same method names.</p>
+
+                <pre><code class="language-javascript">// Good - consistent naming
+const logger = {
+    log(message) { console.log(message); }
+};
+
+const fileLogger = {
+    log(message) { fs.writeFileSync('log.txt', message); }
+};
+
+const remoteLogger = {
+    log(message) { fetch('/api/log', { body: message }); }
+};</code></pre>
+
+                <h3>3. Document Expected Interfaces</h3>
+                <p>Use JSDoc comments to document what methods objects should implement.</p>
+
+                <pre><code class="language-javascript">/**
+ * Processes a drawable object
+ * @param {Object} drawable - Object with a draw() method
+ * @param {Function} drawable.draw - Method to draw the object
+ */
+function processDrawable(drawable) {
+    drawable.draw();
+}</code></pre>
+
+                <h3>4. Consider TypeScript for Large Projects</h3>
+                <p>For larger codebases, TypeScript's interfaces provide compile-time checking of polymorphic code.</p>
+
+                <pre><code class="language-javascript">// TypeScript example
+interface Drawable {
+    draw(): void;
+}
+
+function render(obj: Drawable) {
+    obj.draw(); // TypeScript ensures obj has draw()
+}</code></pre>
+
+                <h2>When to Use Polymorphism</h2>
+
+                <p><strong>Use polymorphism when:</strong></p>
+                <ul>
+                    <li>You have multiple objects that do similar things in different ways</li>
+                    <li>You want to write functions that work with many types</li>
+                    <li>You're building plugin systems or extensible architectures</li>
+                    <li>You want to reduce code duplication</li>
+                </ul>
+
+                <p><strong>Avoid polymorphism when:</strong></p>
+                <ul>
+                    <li>You only have one type of object</li>
+                    <li>The objects don't share common behavior</li>
+                    <li>Simple conditional logic is clearer</li>
+                    <li>It adds unnecessary complexity</li>
+                </ul>
+
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li>Polymorphism allows different objects to be treated through a common interface</li>
+                    <li>JavaScript uses duck typing - objects are defined by their methods, not their types</li>
+                    <li>Design around interfaces (sets of methods) rather than specific types</li>
+                    <li>Always validate that objects have the methods you need</li>
+                    <li>Use consistent method names across similar objects</li>
+                    <li>Don't over-engineer - use polymorphism where it adds value</li>
+                    <li>Consider TypeScript for compile-time interface checking in large projects</li>
+                </ul>
+
+                <div class="lesson-nav">
+                    <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                    <a href="../index.html" class="btn btn-secondary">All JavaScript Tutorials →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 bohdaq. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/bohdaq" target="_blank" rel="nofollow noopener">GitHub</a>
+                <a href="https://crates.io/users/bohdaq" target="_blank" rel="nofollow noopener">crates.io</a>
+                <a href="https://orcid.org/0000-0002-5221-5607" target="_blank" rel="nofollow noopener">ORCID</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../assets/prism/prism.js"></script>
+</body>
+
+</html>
