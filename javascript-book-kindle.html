@@ -11,25 +11,26 @@
         /* Page setup for 6" x 9" trim size */
         @page {
             size: 6in 9in;
-            margin-top: 0.5in;
-            margin-bottom: 0.5in;
-            margin-inside: 0.625in;
-            /* Gutter margin - exceeds 0.375" requirement */
-            margin-outside: 0.5in;
+            margin: 0.5in 0.5in 0.5in 0.875in;
+            /* top, right, bottom, left - left is gutter for compatibility */
         }
 
         @page :left {
-            margin-left: 0.625in;
-            /* Inside/gutter margin for left pages */
+            margin-top: 0.5in;
+            margin-bottom: 0.5in;
+            margin-left: 0.875in;
+            /* Inside/gutter margin for left pages - exceeds 0.625" requirement */
             margin-right: 0.5in;
-            /* Outside margin for left pages */
+            /* Outside margin for left pages - exceeds 0.25" minimum */
         }
 
         @page :right {
+            margin-top: 0.5in;
+            margin-bottom: 0.5in;
             margin-left: 0.5in;
-            /* Outside margin for right pages */
-            margin-right: 0.625in;
-            /* Inside/gutter margin for right pages */
+            /* Outside margin for right pages - exceeds 0.25" minimum */
+            margin-right: 0.875in;
+            /* Inside/gutter margin for right pages - exceeds 0.625" requirement */
         }
 
         body {
@@ -88,6 +89,7 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
             line-height: 1.4;
+            overflow: visible;
         }
 
         pre code {
@@ -97,6 +99,22 @@
             line-height: 1.4;
             color: #000;
             display: block;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Print-specific styles */
+        @media print {
+            pre {
+                white-space: pre-wrap !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+            }
+
+            pre code {
+                white-space: pre-wrap !important;
+                word-break: break-word !important;
+            }
         }
 
         /* Simplified syntax highlighting for Kindle compatibility */
@@ -172,13 +190,12 @@
     <!-- Copyright Page -->
     <div class="page-break">
         <p><strong>Mastering JavaScript: Essential Concepts for Modern Developers</strong></p>
-        <p>Copyright © 2025 Bohdan Tsap</p>
+        <p>Copyright © 2026 Bohdan Tsap</p>
         <p>All rights reserved.</p>
         <p style="margin-top: 2em;">No part of this book may be reproduced or transmitted in any form or by any means,
             electronic or mechanical, including photocopying, recording, or by any information storage and retrieval
             system, without written permission from the author.</p>
         <p style="margin-top: 2em;">Published by Bohdan Tsap</p>
-        <p>First Edition: 2025</p>
     </div>
 
     <!-- About the Book -->
@@ -197,108 +214,108 @@
         <h1>Table of Contents</h1>
 
         <ol>
-            <li><a href="#introduction">Introduction</a></li>
+            <li>Introduction</li>
             <li>
                 <strong>Part I: JavaScript Fundamentals</strong>
                 <ol>
-                    <li><a href="#chapter1">Chapter 1: JavaScript Data Types</a></li>
-                    <li><a href="#chapter2">Chapter 2: JavaScript Variables and Scope</a></li>
-                    <li><a href="#chapter3">Chapter 3: JavaScript Functions</a></li>
-                    <li><a href="#chapter4">Chapter 4: JavaScript Hoisting</a></li>
+                    <li>Chapter 1: JavaScript Data Types</li>
+                    <li>Chapter 2: JavaScript Variables and Scope</li>
+                    <li>Chapter 3: JavaScript Functions</li>
+                    <li>Chapter 4: JavaScript Hoisting</li>
                 </ol>
             </li>
             <li>
                 <strong>Part II: Advanced Functions</strong>
                 <ol>
-                    <li><a href="#chapter5">Chapter 5: JavaScript Closures</a></li>
-                    <li><a href="#chapter6">Chapter 6: JavaScript Currying</a></li>
-                    <li><a href="#chapter7">Chapter 7: JavaScript 'this' Keyword</a></li>
+                    <li>Chapter 5: JavaScript Closures</li>
+                    <li>Chapter 6: JavaScript Currying</li>
+                    <li>Chapter 7: JavaScript 'this' Keyword</li>
                 </ol>
             </li>
             <li>
                 <strong>Part III: Object-Oriented JavaScript</strong>
                 <ol>
-                    <li><a href="#chapter8">Chapter 8: JavaScript Encapsulation</a></li>
-                    <li><a href="#chapter9">Chapter 9: JavaScript Inheritance</a></li>
-                    <li><a href="#chapter10">Chapter 10: JavaScript Polymorphism</a></li>
+                    <li>Chapter 8: JavaScript Encapsulation</li>
+                    <li>Chapter 9: JavaScript Inheritance</li>
+                    <li>Chapter 10: JavaScript Polymorphism</li>
                 </ol>
             </li>
             <li>
                 <strong>Part IV: Asynchronous JavaScript</strong>
                 <ol>
-                    <li><a href="#chapter11">Chapter 11: JavaScript Event Loop</a></li>
-                    <li><a href="#chapter12">Chapter 12: JavaScript Promises</a></li>
-                    <li><a href="#chapter13">Chapter 13: JavaScript Generators</a></li>
-                    <li><a href="#chapter14">Chapter 14: JavaScript async/await</a></li>
+                    <li>Chapter 11: JavaScript Event Loop</li>
+                    <li>Chapter 12: JavaScript Promises</li>
+                    <li>Chapter 13: JavaScript Generators</li>
+                    <li>Chapter 14: JavaScript async/await</li>
                 </ol>
             </li>
             <li>
                 <strong>Part V: Functional JavaScript</strong>
                 <ol>
-                    <li><a href="#chapter15">Chapter 15: JavaScript Functors and Applicatives</a></li>
-                    <li><a href="#chapter16">Chapter 16: JavaScript Function Composition</a></li>
-                    <li><a href="#chapter17">Chapter 17: JavaScript Immutability</a></li>
-                    <li><a href="#chapter18">Chapter 18: JavaScript Monads</a></li>
+                    <li>Chapter 15: JavaScript Functors and Applicatives</li>
+                    <li>Chapter 16: JavaScript Function Composition</li>
+                    <li>Chapter 17: JavaScript Immutability</li>
+                    <li>Chapter 18: JavaScript Monads</li>
                 </ol>
             </li>
             <li>
                 <strong>Part VI: Modern JavaScript Syntax</strong>
                 <ol>
-                    <li><a href="#chapter19">Chapter 19: JavaScript Destructuring</a></li>
-                    <li><a href="#chapter20">Chapter 20: JavaScript Spread and Rest Operators</a></li>
-                    <li><a href="#chapter21">Chapter 21: JavaScript Optional Chaining</a></li>
-                    <li><a href="#chapter22">Chapter 22: JavaScript Modules</a></li>
-                    <li><a href="#chapter23">Chapter 23: JavaScript Classes</a></li>
+                    <li>Chapter 19: JavaScript Destructuring</li>
+                    <li>Chapter 20: JavaScript Spread and Rest Operators</li>
+                    <li>Chapter 21: JavaScript Optional Chaining</li>
+                    <li>Chapter 22: JavaScript Modules</li>
+                    <li>Chapter 23: JavaScript Classes</li>
                 </ol>
             </li>
             <li>
                 <strong>Part VII: Design Patterns</strong>
                 <ol>
-                    <li><a href="#chapter24">Chapter 24: JavaScript Singleton Pattern</a></li>
-                    <li><a href="#chapter25">Chapter 25: JavaScript Factory Pattern</a></li>
-                    <li><a href="#chapter26">Chapter 26: JavaScript Observer Pattern</a></li>
-                    <li><a href="#chapter27">Chapter 27: JavaScript Builder Pattern</a></li>
-                    <li><a href="#chapter28">Chapter 28: JavaScript Module Pattern</a></li>
-                    <li><a href="#chapter29">Chapter 29: JavaScript Decorator Pattern</a></li>
-                    <li><a href="#chapter30">Chapter 30: JavaScript Facade Pattern</a></li>
-                    <li><a href="#chapter31">Chapter 31: JavaScript Strategy Pattern</a></li>
-                    <li><a href="#chapter32">Chapter 32: JavaScript Command Pattern</a></li>
+                    <li>Chapter 24: JavaScript Singleton Pattern</li>
+                    <li>Chapter 25: JavaScript Factory Pattern</li>
+                    <li>Chapter 26: JavaScript Observer Pattern</li>
+                    <li>Chapter 27: JavaScript Builder Pattern</li>
+                    <li>Chapter 28: JavaScript Module Pattern</li>
+                    <li>Chapter 29: JavaScript Decorator Pattern</li>
+                    <li>Chapter 30: JavaScript Facade Pattern</li>
+                    <li>Chapter 31: JavaScript Strategy Pattern</li>
+                    <li>Chapter 32: JavaScript Command Pattern</li>
                 </ol>
             </li>
             <li>
                 <strong>Part VIII: Browser APIs and DOM</strong>
                 <ol>
-                    <li><a href="#chapter33">Chapter 33: JavaScript DOM Manipulation</a></li>
-                    <li><a href="#chapter34">Chapter 34: JavaScript Event Handling</a></li>
-                    <li><a href="#chapter35">Chapter 35: JavaScript Fetch API</a></li>
-                    <li><a href="#chapter36">Chapter 36: JavaScript LocalStorage</a></li>
-                    <li><a href="#chapter37">Chapter 37: JavaScript IntersectionObserver</a></li>
+                    <li>Chapter 33: JavaScript DOM Manipulation</li>
+                    <li>Chapter 34: JavaScript Event Handling</li>
+                    <li>Chapter 35: JavaScript Fetch API</li>
+                    <li>Chapter 36: JavaScript LocalStorage</li>
+                    <li>Chapter 37: JavaScript IntersectionObserver</li>
                 </ol>
             </li>
             <li>
                 <strong>Part IX: Advanced JavaScript Features</strong>
                 <ol>
-                    <li><a href="#chapter38">Chapter 38: JavaScript Symbols</a></li>
-                    <li><a href="#chapter39">Chapter 39: JavaScript BigInt</a></li>
-                    <li><a href="#chapter40">Chapter 40: JavaScript Typed Arrays</a></li>
-                    <li><a href="#chapter41">Chapter 41: JavaScript Regular Expressions</a></li>
-                    <li><a href="#chapter42">Chapter 42: JavaScript Error Handling</a></li>
-                    <li><a href="#chapter43">Chapter 43: JavaScript Iterators</a></li>
-                    <li><a href="#chapter44">Chapter 44: JavaScript Proxies</a></li>
+                    <li>Chapter 38: JavaScript Symbols</li>
+                    <li>Chapter 39: JavaScript BigInt</li>
+                    <li>Chapter 40: JavaScript Typed Arrays</li>
+                    <li>Chapter 41: JavaScript Regular Expressions</li>
+                    <li>Chapter 42: JavaScript Error Handling</li>
+                    <li>Chapter 43: JavaScript Iterators</li>
+                    <li>Chapter 44: JavaScript Proxies</li>
                 </ol>
             </li>
             <li>
                 <strong>Part X: Testing</strong>
                 <ol>
-                    <li><a href="#chapter45">Chapter 45: JavaScript Unit Testing</a></li>
-                    <li><a href="#chapter46">Chapter 46: JavaScript Test-Driven Development</a></li>
-                    <li><a href="#chapter47">Chapter 47: JavaScript Mocking</a></li>
-                    <li><a href="#chapter48">Chapter 48: JavaScript Integration Testing</a></li>
-                    <li><a href="#chapter49">Chapter 49: JavaScript End-to-End Testing</a></li>
+                    <li>Chapter 45: JavaScript Unit Testing</li>
+                    <li>Chapter 46: JavaScript Test-Driven Development</li>
+                    <li>Chapter 47: JavaScript Mocking</li>
+                    <li>Chapter 48: JavaScript Integration Testing</li>
+                    <li>Chapter 49: JavaScript End-to-End Testing</li>
                 </ol>
             </li>
-            <li><a href="#conclusion">Conclusion</a></li>
-            <li><a href="#author">About the Author</a></li>
+            <li>Conclusion</li>
+            <li>About the Author</li>
         </ol>
     </nav>
 
@@ -5983,24 +6000,40 @@ manager.redo();
         <h2 class="center">Browser APIs and DOM</h2>
     </div>
 
-    const header = document.getElementById('header');
+    <!-- Chapter 33: DOM Manipulation -->
+    <div id="chapter33" class="page-break">
+        <h1>Chapter 33: JavaScript DOM Manipulation</h1>
+        <h2>Control the Document Structure</h2>
 
-    // By CSS selector (first match)
-    const button = document.querySelector('.btn-primary');
-    const firstItem = document.querySelector('#list > li:first-child');
+        <p>The Document Object Model (DOM) is the programming interface for HTML documents. It represents the page as a
+            tree of objects that JavaScript can manipulate. DOM manipulation is the foundation of dynamic web pages,
+            allowing you to create, modify, and delete elements in response to user actions or data changes.</p>
 
-    // By CSS selector (all matches)
-    const items = document.querySelectorAll('.list-item');
-    items.forEach(item => console.log(item));
+        <p>Modern DOM APIs provide powerful methods for selecting, creating, and modifying elements. Understanding these
+            APIs is essential for building interactive web applications, whether you're working with vanilla JavaScript
+            or frameworks like React and Vue.</p>
 
-    // Modern approach - use querySelector/querySelectorAll
-    const nav = document.querySelector('nav.navbar');
-    const links = document.querySelectorAll('a[href^="http"]');
-    </code></pre>
+        <h3>Selecting Elements</h3>
 
-    <h3>Creating Elements</h3>
+        <pre><code class="language-javascript">// By ID
+const header = document.getElementById('header');
 
-    <pre><code class="language-javascript">// Create element
+// By CSS selector (first match)
+const button = document.querySelector('.btn-primary');
+const firstItem = document.querySelector('#list > li:first-child');
+
+// By CSS selector (all matches)
+const items = document.querySelectorAll('.list-item');
+items.forEach(item => console.log(item));
+
+// Modern approach - use querySelector/querySelectorAll
+const nav = document.querySelector('nav.navbar');
+const links = document.querySelectorAll('a[href^="http"]');
+</code></pre>
+
+        <h3>Creating Elements</h3>
+
+        <pre><code class="language-javascript">// Create element
 const div = document.createElement('div');
 
 // Set attributes
@@ -6016,9 +6049,9 @@ div.innerHTML = '<p>Hello <strong>World</strong></p>'; // HTML
 document.body.appendChild(div);
 </code></pre>
 
-    <h3>Modifying Elements</h3>
+        <h3>Modifying Elements</h3>
 
-    <pre><code class="language-javascript">const element = document.querySelector('#myElement');
+        <pre><code class="language-javascript">const element = document.querySelector('#myElement');
 
 // Change content
 element.textContent = 'New text content';
@@ -6034,15 +6067,15 @@ element.classList.toggle('visible');
 element.classList.contains('active'); // true/false
 </code></pre>
 
-    <h3>Key Takeaways</h3>
-    <ul>
-        <li>Use querySelector/querySelectorAll for flexible selection</li>
-        <li>createElement creates new DOM elements</li>
-        <li>classList methods manage CSS classes efficiently</li>
-        <li>textContent is safer than innerHTML</li>
-        <li>appendChild adds elements to the DOM</li>
-        <li>remove() deletes elements from the DOM</li>
-    </ul>
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Use querySelector/querySelectorAll for flexible selection</li>
+            <li>createElement creates new DOM elements</li>
+            <li>classList methods manage CSS classes efficiently</li>
+            <li>textContent is safer than innerHTML</li>
+            <li>appendChild adds elements to the DOM</li>
+            <li>remove() deletes elements from the DOM</li>
+        </ul>
     </div>
 
     <!-- Chapter 34: Event Handling -->
@@ -6875,7 +6908,8 @@ console.log(counter.getCount()); // 1
         <h3>Basic Test Structure</h3>
 
         <p>Tests are organized into test suites using <code>describe()</code> blocks and individual test cases using
-            <code>test()</code> or <code>it()</code>. Assertions verify that the code behaves as expected.</p>
+            <code>test()</code> or <code>it()</code>. Assertions verify that the code behaves as expected.
+        </p>
 
         <pre><code class="language-javascript">// Function to test
 function add(a, b) {
@@ -7149,20 +7183,17 @@ test('shopping cart flow', async ({ page }) => {
 
         <h3>Connect with Bohdan:</h3>
         <ul>
-            <li>Medium: <a href="https://medium.com/@bohdaq">@bohdaq</a></li>
-            <li>LinkedIn: <a href="https://www.linkedin.com/in/bohdaq/">linkedin.com/in/bohdaq</a></li>
-            <li>GitHub: <a href="https://github.com/bohdaq">github.com/bohdaq</a></li>
+            <li>Medium: @bohdaq</li>
+            <li>LinkedIn: linkedin.com/in/bohdaq</li>
+            <li>GitHub: github.com/bohdaq</li>
         </ul>
     </div>
 
     <!-- Copyright -->
     <div class="copyright page-break">
-        <p><strong> 2025 Bohdan Tsap. All rights reserved.</strong></p>
-        <p><strong>© 2025 Bohdan Tsap. All rights reserved.</strong></p>
+        <p><strong>© 2026 Bohdan Tsap. All rights reserved.</strong></p>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 </body>
 
 </html>
