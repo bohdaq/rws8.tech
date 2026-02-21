@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Proxies - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Proxies for metaprogramming and object interception.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Proxies</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Proxies</h1>
+            <p class="subtitle">Metaprogramming with Interceptors</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>What are Proxies?</h2>
+            <p>Proxies wrap objects and intercept fundamental operations like property access, assignment, function calls, and more. They enable powerful metaprogramming patterns.</p>
+
+            <h2>Basic Proxy</h2>
+            <pre><code class="language-javascript">const target = {
+    name: 'John',
+    age: 30
+};
+
+const handler = {
+    get(target, property, receiver) {
+        console.log(`Getting property "${property}"`);
+        return Reflect.get(target, property, receiver);
+    },
+    set(target, property, value, receiver) {
+        console.log(`Setting property "${property}" to ${value}`);
+        return Reflect.set(target, property, value, receiver);
+    }
+};
+
+const proxy = new Proxy(target, handler);
+
+console.log(proxy.name); // Logs: Getting property "name", Returns: 'John'
+proxy.age = 31; // Logs: Setting property "age" to 31
+console.log(proxy.age); // Logs: Getting property "age", Returns: 31
+</code></pre>
+
+            <h2>Validation Proxy</h2>
+            <pre><code class="language-javascript">function createValidatedObject(validations) {
+    return new Proxy({}, {
+        set(target, property, value) {
+            const validator = validations[property];
+            
+            if (validator && !validator(value)) {
+                throw new Error(`Invalid value for ${property}: ${value}`);
+            }
+            
+            target[property] = value;
+            return true;
+        }
+    });
+}
+
+const person = createValidatedObject({
+    age: value => typeof value === 'number' && value >= 0 && value <= 150,
+    email: value => typeof value === 'string' && value.includes('@'),
+    name: value => typeof value === 'string' && value.length > 0
+});
+
+person.age = 30; // OK
+person.email = 'john@example.com'; // OK
+// person.age = -5; // Error: Invalid value
+// person.email = 'invalid'; // Error: Invalid value
+</code></pre>
+
+            <h2>Default Values</h2>
+            <pre><code class="language-javascript">function withDefaults(target, defaults) {
+    return new Proxy(target, {
+        get(target, property) {
+            if (property in target) {
+                return target[property];
+            }
+            return defaults[property];
+        }
+    });
+}
+
+const config = withDefaults(
+    { host: 'localhost' },
+    { host: '0.0.0.0', port: 3000, debug: false, timeout: 5000 }
+);
+
+console.log(config.host); // 'localhost' (from target)
+console.log(config.port); // 3000 (from defaults)
+console.log(config.debug); // false (from defaults)
+console.log(config.timeout); // 5000 (from defaults)
+</code></pre>
+
+            <h2>Reactive Data</h2>
+            <pre><code class="language-javascript">function reactive(target, callback) {
+    return new Proxy(target, {
+        set(target, property, value) {
+            const oldValue = target[property];
+            target[property] = value;
+            
+            if (oldValue !== value) {
+                callback(property, value, oldValue);
+            }
+            
+            return true;
+        }
+    });
+}
+
+// Simple reactive state
+const state = reactive(
+    { count: 0, name: 'App' },
+    (property, newValue, oldValue) => {
+        console.log(`${property}: ${oldValue} → ${newValue}`);
+        render(); // Re-render UI
+    }
+);
+
+state.count++; // Logs: count: 0 → 1, triggers render
+state.name = 'My App'; // Logs: name: App → My App, triggers render
+</code></pre>
+
+            <h2>Negative Array Indices</h2>
+            <pre><code class="language-javascript">function negativeArray(array) {
+    return new Proxy(array, {
+        get(target, property) {
+            const index = Number(property);
+            
+            if (Number.isInteger(index) && index < 0) {
+                return target[target.length + index];
+            }
+            
+            return target[property];
+        }
+    });
+}
+
+const arr = negativeArray(['a', 'b', 'c', 'd', 'e']);
+
+console.log(arr[0]); // 'a'
+console.log(arr[-1]); // 'e' (last element)
+console.log(arr[-2]); // 'd' (second to last)
+console.log(arr[-5]); // 'a' (first element)
+</code></pre>
+
+            <h2>Method Tracing</h2>
+            <pre><code class="language-javascript">function trace(target, name = 'object') {
+    return new Proxy(target, {
+        get(target, property) {
+            const value = target[property];
+            
+            if (typeof value === 'function') {
+                return function(...args) {
+                    console.log(`[${name}] Calling ${property}(${args.join(', ')})`);
+                    const startTime = performance.now();
+                    
+                    const result = value.apply(this, args);
+                    
+                    const endTime = performance.now();
+                    console.log(`[${name}] ${property} returned:`, result);
+                    console.log(`[${name}] Execution time: ${(endTime - startTime).toFixed(2)}ms`);
+                    
+                    return result;
+                };
+            }
+            
+            return value;
+        }
+    });
+}
+
+const math = trace({
+    add: (a, b) => a + b,
+    multiply: (a, b) => a * b,
+    fibonacci: (n) => n <= 1 ? n : math.fibonacci(n-1) + math.fibonacci(n-2)
+}, 'Math');
+
+math.add(2, 3); // Logs call, result, and timing
+math.multiply(4, 5); // Logs call, result, and timing
+</code></pre>
+
+            <h2>Revocable Proxies</h2>
+            <pre><code class="language-javascript">const { proxy, revoke } = Proxy.revocable(
+    { data: 'sensitive' },
+    {
+        get(target, property) {
+            console.log(`Accessing ${property}`);
+            return target[property];
+        }
+    }
+);
+
+console.log(proxy.data); // Works: 'sensitive'
+
+// Revoke access
+revoke();
+
+// console.log(proxy.data); // TypeError: Cannot perform 'get' on a proxy that has been revoked
+</code></pre>
+
+            <h2>Common Traps</h2>
+            <pre><code class="language-javascript">const handler = {
+    // Property access
+    get(target, property, receiver) {},
+    
+    // Property assignment
+    set(target, property, value, receiver) {},
+    
+    // Property deletion
+    deleteProperty(target, property) {},
+    
+    // 'in' operator
+    has(target, property) {},
+    
+    // Object.keys(), for...in
+    ownKeys(target) {},
+    
+    // Function call
+    apply(target, thisArg, argumentsList) {},
+    
+    // new operator
+    construct(target, argumentsList, newTarget) {},
+    
+    // Object.getPrototypeOf()
+    getPrototypeOf(target) {},
+    
+    // Object.setPrototypeOf()
+    setPrototypeOf(target, prototype) {}
+};
+</code></pre>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Proxies intercept fundamental object operations</li>
+                <li>Traps customize behavior for specific operations</li>
+                <li>Perfect for validation, logging, and reactivity</li>
+                <li>Use Reflect for default behavior</li>
+                <li>Revocable proxies for security</li>
+                <li>Enable powerful metaprogramming patterns</li>
+                <li>Consider performance for hot paths</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

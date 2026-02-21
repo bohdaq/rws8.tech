@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Typed Arrays - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Typed Arrays for efficient binary data handling.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Typed Arrays</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Typed Arrays</h1>
+            <p class="subtitle">Efficient Binary Data Handling</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>What are Typed Arrays?</h2>
+            <p>Typed Arrays provide a mechanism for accessing raw binary data efficiently. They're essential for WebGL, audio processing, file I/O, and any performance-critical binary operations.</p>
+
+            <h2>ArrayBuffer and Views</h2>
+            <pre><code class="language-javascript">// ArrayBuffer - raw binary data container
+const buffer = new ArrayBuffer(16); // 16 bytes
+console.log(buffer.byteLength); // 16
+
+// Create typed array views
+const int8View = new Int8Array(buffer);
+const uint16View = new Uint16Array(buffer);
+
+// Views share the same buffer
+int8View[0] = 42;
+console.log(uint16View[0]); // Reads same memory
+</code></pre>
+
+            <h2>Typed Array Types</h2>
+            <pre><code class="language-javascript">// 8-bit signed integer (-128 to 127)
+const int8 = new Int8Array([1, 2, 3]);
+
+// 8-bit unsigned integer (0 to 255)
+const uint8 = new Uint8Array([255, 254, 253]);
+
+// 16-bit signed integer
+const int16 = new Int16Array([1000, 2000]);
+
+// 32-bit floating point
+const float32 = new Float32Array([3.14, 2.71]);
+
+// 64-bit floating point
+const float64 = new Float64Array([Math.PI, Math.E]);
+
+// Clamped 0-255 (for canvas)
+const clamped = new Uint8ClampedArray([300, -10, 128]);
+console.log(clamped); // [255, 0, 128]
+</code></pre>
+
+            <h2>Creating Typed Arrays</h2>
+            <pre><code class="language-javascript">// From length
+const arr1 = new Uint8Array(10);
+
+// From array
+const arr2 = new Uint8Array([1, 2, 3, 4, 5]);
+
+// From ArrayBuffer
+const buffer = new ArrayBuffer(16);
+const arr3 = new Uint8Array(buffer);
+
+// From buffer with offset and length
+const arr4 = new Uint8Array(buffer, 4, 4);
+
+// From another typed array
+const arr5 = new Uint16Array(arr2);
+</code></pre>
+
+            <h2>DataView for Mixed Types</h2>
+            <pre><code class="language-javascript">const buffer = new ArrayBuffer(8);
+const view = new DataView(buffer);
+
+// Write different types to same buffer
+view.setInt8(0, 127);
+view.setUint16(1, 65535, true); // little-endian
+view.setFloat32(4, 3.14159, false); // big-endian
+
+// Read back
+console.log(view.getInt8(0)); // 127
+console.log(view.getUint16(1, true)); // 65535
+console.log(view.getFloat32(4, false)); // 3.14159
+</code></pre>
+
+            <h2>Real-World: Image Processing</h2>
+            <pre><code class="language-javascript">function grayscale(imageData) {
+    const pixels = imageData.data; // Uint8ClampedArray
+    
+    for (let i = 0; i < pixels.length; i += 4) {
+        const r = pixels[i];
+        const g = pixels[i + 1];
+        const b = pixels[i + 2];
+        
+        // Calculate grayscale
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        
+        pixels[i] = pixels[i + 1] = pixels[i + 2] = gray;
+        // pixels[i + 3] is alpha, leave unchanged
+    }
+    
+    return imageData;
+}
+</code></pre>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Typed Arrays provide efficient binary data access</li>
+                <li>ArrayBuffer stores raw bytes</li>
+                <li>Views interpret buffer as specific types</li>
+                <li>DataView offers flexible multi-type access</li>
+                <li>Much faster than regular arrays for numeric data</li>
+                <li>Essential for WebGL, audio, file processing</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

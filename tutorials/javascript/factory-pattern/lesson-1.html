@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Factory Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Factory Pattern - create objects without specifying exact classes for flexible object creation.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Factory Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Factory Pattern</h1>
+            <p class="subtitle">Flexible Object Creation</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Factory pattern concept</li>
+                    <li>Implement Simple Factory and Factory Method</li>
+                    <li>Use factories for dependency injection</li>
+                    <li>Create plugin systems with factories</li>
+                    <li>Apply best practices and patterns</li>
+                </ul>
+            </div>
+
+            <h2>What is the Factory Pattern?</h2>
+
+            <p>A Factory creates objects based on input or conditions, hiding the instantiation logic from the client code. Instead of using <code>new</code> directly, you call a factory method that decides which class to instantiate.</p>
+
+            <h2>Simple Factory</h2>
+
+            <pre><code class="language-javascript">class User {
+    constructor(name, role) {
+        this.name = name;
+        this.role = role;
+    }
+    
+    getPermissions() {
+        return [];
+    }
+}
+
+class Admin extends User {
+    constructor(name) {
+        super(name, 'admin');
+    }
+    
+    getPermissions() {
+        return ['read', 'write', 'delete', 'manage'];
+    }
+}
+
+class Editor extends User {
+    constructor(name) {
+        super(name, 'editor');
+    }
+    
+    getPermissions() {
+        return ['read', 'write'];
+    }
+}
+
+class Guest extends User {
+    constructor(name) {
+        super(name, 'guest');
+    }
+    
+    getPermissions() {
+        return ['read'];
+    }
+}
+
+class UserFactory {
+    static createUser(type, name) {
+        switch (type) {
+            case 'admin':
+                return new Admin(name);
+            case 'editor':
+                return new Editor(name);
+            case 'guest':
+                return new Guest(name);
+            default:
+                return new User(name, 'user');
+        }
+    }
+}
+
+// Usage
+const admin = UserFactory.createUser('admin', 'John');
+console.log(admin.getPermissions()); // ['read', 'write', 'delete', 'manage']
+
+const guest = UserFactory.createUser('guest', 'Jane');
+console.log(guest.getPermissions()); // ['read']
+</code></pre>
+
+            <h2>Factory Method Pattern</h2>
+
+            <p>Uses inheritance to delegate object creation to subclasses:</p>
+
+            <pre><code class="language-javascript">class VehicleFactory {
+    createVehicle() {
+        throw new Error('createVehicle must be implemented');
+    }
+    
+    deliverVehicle(model) {
+        const vehicle = this.createVehicle(model);
+        vehicle.assemble();
+        vehicle.test();
+        return vehicle;
+    }
+}
+
+class CarFactory extends VehicleFactory {
+    createVehicle(model) {
+        return new Car(model);
+    }
+}
+
+class BikeFactory extends VehicleFactory {
+    createVehicle(model) {
+        return new Bike(model);
+    }
+}
+
+class Car {
+    constructor(model) {
+        this.model = model;
+        this.type = 'car';
+    }
+    
+    assemble() {
+        console.log(`Assembling ${this.model} car`);
+    }
+    
+    test() {
+        console.log(`Testing ${this.model} car`);
+    }
+}
+
+class Bike {
+    constructor(model) {
+        this.model = model;
+        this.type = 'bike';
+    }
+    
+    assemble() {
+        console.log(`Assembling ${this.model} bike`);
+    }
+    
+    test() {
+        console.log(`Testing ${this.model} bike`);
+    }
+}
+
+// Usage
+const carFactory = new CarFactory();
+const car = carFactory.deliverVehicle('Tesla Model 3');
+
+const bikeFactory = new BikeFactory();
+const bike = bikeFactory.deliverVehicle('Harley Davidson');
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>HTTP Client Factory</h3>
+
+            <pre><code class="language-javascript">class HttpClientFactory {
+    static create(type = 'fetch') {
+        switch (type) {
+            case 'fetch':
+                return new FetchClient();
+            case 'axios':
+                return new AxiosClient();
+            case 'xhr':
+                return new XHRClient();
+            default:
+                throw new Error(`Unknown client type: ${type}`);
+        }
+    }
+}
+
+class FetchClient {
+    async get(url) {
+        const response = await fetch(url);
+        return response.json();
+    }
+    
+    async post(url, data) {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        return response.json();
+    }
+}
+
+class AxiosClient {
+    async get(url) {
+        const response = await axios.get(url);
+        return response.data;
+    }
+    
+    async post(url, data) {
+        const response = await axios.post(url, data);
+        return response.data;
+    }
+}
+
+// Usage
+const client = HttpClientFactory.create('fetch');
+const data = await client.get('/api/users');
+</code></pre>
+
+            <h3>UI Component Factory</h3>
+
+            <pre><code class="language-javascript">class ComponentFactory {
+    static create(type, props) {
+        const components = {
+            button: () => new Button(props),
+            input: () => new Input(props),
+            select: () => new Select(props),
+            checkbox: () => new Checkbox(props)
+        };
+        
+        const creator = components[type];
+        if (!creator) {
+            throw new Error(`Unknown component type: ${type}`);
+        }
+        
+        return creator();
+    }
+}
+
+class Button {
+    constructor({ text, onClick, variant = 'primary' }) {
+        this.text = text;
+        this.onClick = onClick;
+        this.variant = variant;
+    }
+    
+    render() {
+        const button = document.createElement('button');
+        button.textContent = this.text;
+        button.className = `btn btn-${this.variant}`;
+        button.addEventListener('click', this.onClick);
+        return button;
+    }
+}
+
+class Input {
+    constructor({ placeholder, type = 'text', onChange }) {
+        this.placeholder = placeholder;
+        this.type = type;
+        this.onChange = onChange;
+    }
+    
+    render() {
+        const input = document.createElement('input');
+        input.type = this.type;
+        input.placeholder = this.placeholder;
+        input.addEventListener('input', this.onChange);
+        return input;
+    }
+}
+
+// Usage
+const button = ComponentFactory.create('button', {
+    text: 'Click me',
+    onClick: () => console.log('Clicked!'),
+    variant: 'success'
+});
+
+document.body.appendChild(button.render());
+</code></pre>
+
+            <h3>Database Connection Factory</h3>
+
+            <pre><code class="language-javascript">class DatabaseFactory {
+    static createConnection(type, config) {
+        const connections = {
+            mysql: () => new MySQLConnection(config),
+            postgres: () => new PostgresConnection(config),
+            mongodb: () => new MongoConnection(config),
+            sqlite: () => new SQLiteConnection(config)
+        };
+        
+        const creator = connections[type];
+        if (!creator) {
+            throw new Error(`Unknown database type: ${type}`);
+        }
+        
+        return creator();
+    }
+}
+
+class PostgresConnection {
+    constructor(config) {
+        this.config = config;
+        this.client = null;
+    }
+    
+    async connect() {
+        // Connect to PostgreSQL
+        console.log(`Connecting to PostgreSQL at ${this.config.host}`);
+    }
+    
+    async query(sql) {
+        return `PostgreSQL: ${sql}`;
+    }
+}
+
+class MongoConnection {
+    constructor(config) {
+        this.config = config;
+        this.client = null;
+    }
+    
+    async connect() {
+        // Connect to MongoDB
+        console.log(`Connecting to MongoDB at ${this.config.host}`);
+    }
+    
+    async query(collection, filter) {
+        return `MongoDB: ${collection} ${JSON.stringify(filter)}`;
+    }
+}
+
+// Usage
+const db = DatabaseFactory.createConnection('postgres', {
+    host: 'localhost',
+    port: 5432,
+    database: 'myapp'
+});
+
+await db.connect();
+</code></pre>
+
+            <h2>Abstract Factory</h2>
+
+            <p>Create families of related objects:</p>
+
+            <pre><code class="language-javascript">class UIFactory {
+    createButton() {
+        throw new Error('Must implement createButton');
+    }
+    
+    createInput() {
+        throw new Error('Must implement createInput');
+    }
+    
+    createCard() {
+        throw new Error('Must implement createCard');
+    }
+}
+
+class DarkThemeFactory extends UIFactory {
+    createButton() {
+        return new DarkButton();
+    }
+    
+    createInput() {
+        return new DarkInput();
+    }
+    
+    createCard() {
+        return new DarkCard();
+    }
+}
+
+class LightThemeFactory extends UIFactory {
+    createButton() {
+        return new LightButton();
+    }
+    
+    createInput() {
+        return new LightInput();
+    }
+    
+    createCard() {
+        return new LightCard();
+    }
+}
+
+// Usage
+const theme = 'dark';
+const factory = theme === 'dark' 
+    ? new DarkThemeFactory() 
+    : new LightThemeFactory();
+
+const button = factory.createButton();
+const input = factory.createInput();
+const card = factory.createCard();
+
+// All components match the theme
+</code></pre>
+
+            <h2>When to Use Factory Pattern</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Object creation is complex</li>
+                    <li>Need to decouple creation from usage</li>
+                    <li>Creating families of related objects</li>
+                    <li>Plugin systems</li>
+                    <li>Dependency injection</li>
+                    <li>Configuration-based object creation</li>
+                </ul>
+            </div>
+
+            <h2>Benefits</h2>
+
+            <ul>
+                <li><strong>Loose coupling:</strong> Client code doesn't depend on concrete classes</li>
+                <li><strong>Single Responsibility:</strong> Creation logic in one place</li>
+                <li><strong>Open/Closed:</strong> Easy to add new types without changing existing code</li>
+                <li><strong>Easy to extend:</strong> Add new products by adding new classes</li>
+                <li><strong>Centralized:</strong> All creation logic in factory</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use object lookup instead of switch</strong>
+                <pre><code class="language-javascript">const creators = {
+    admin: () => new Admin(),
+    user: () => new User()
+};
+
+return creators[type]();
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Validate input</strong>
+                <pre><code class="language-javascript">static create(type) {
+    if (!this.creators[type]) {
+        throw new Error(`Unknown type: ${type}`);
+    }
+    return this.creators[type]();
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use dependency injection</strong>
+                <pre><code class="language-javascript">class ServiceFactory {
+    constructor(dependencies) {
+        this.deps = dependencies;
+    }
+    
+    create(type) {
+        return new Service(type, this.deps);
+    }
+}
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Factory creates objects without specifying exact classes</li>
+                <li>Simple Factory uses switch/if or object lookup</li>
+                <li>Factory Method uses inheritance</li>
+                <li>Abstract Factory creates families of objects</li>
+                <li>Perfect for plugin systems and dependency injection</li>
+                <li>Promotes loose coupling and extensibility</li>
+                <li>Centralizes object creation logic</li>
+                <li>Follows Open/Closed Principle</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

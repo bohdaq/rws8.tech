@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Strategy Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Strategy Pattern - define a family of algorithms and make them interchangeable.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Strategy Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Strategy Pattern</h1>
+            <p class="subtitle">Interchangeable Algorithms</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Strategy pattern concept</li>
+                    <li>Define interchangeable algorithms</li>
+                    <li>Switch strategies at runtime</li>
+                    <li>Eliminate conditional logic</li>
+                    <li>Apply strategy best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is the Strategy Pattern?</h2>
+
+            <p>Strategy allows you to select an algorithm at runtime, avoiding complex conditional logic. Each algorithm is encapsulated in its own class or function, making them interchangeable.</p>
+
+            <h2>Basic Example</h2>
+
+            <pre><code class="language-javascript">// Define strategies
+const strategies = {
+    credit: (amount) => {
+        console.log(`Processing $${amount} via credit card`);
+        return { success: true, method: 'credit', fee: amount * 0.03 };
+    },
+    
+    paypal: (amount) => {
+        console.log(`Processing $${amount} via PayPal`);
+        return { success: true, method: 'paypal', fee: amount * 0.025 };
+    },
+    
+    crypto: (amount) => {
+        console.log(`Processing $${amount} via cryptocurrency`);
+        return { success: true, method: 'crypto', fee: amount * 0.01 };
+    }
+};
+
+class PaymentProcessor {
+    constructor(strategy) {
+        this.strategy = strategy;
+    }
+    
+    setStrategy(strategy) {
+        this.strategy = strategy;
+    }
+    
+    process(amount) {
+        return this.strategy(amount);
+    }
+}
+
+// Usage - switch strategies at runtime
+const processor = new PaymentProcessor(strategies.credit);
+processor.process(100);
+// Processing $100 via credit card
+
+processor.setStrategy(strategies.paypal);
+processor.process(50);
+// Processing $50 via PayPal
+
+processor.setStrategy(strategies.crypto);
+processor.process(200);
+// Processing $200 via cryptocurrency
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Validation Strategies</h3>
+
+            <pre><code class="language-javascript">class Validator {
+    constructor(strategy) {
+        this.strategy = strategy;
+    }
+    
+    setStrategy(strategy) {
+        this.strategy = strategy;
+    }
+    
+    validate(data) {
+        return this.strategy.validate(data);
+    }
+}
+
+const emailStrategy = {
+    validate(email) {
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        return {
+            valid: isValid,
+            message: isValid ? 'Valid email' : 'Invalid email format'
+        };
+    }
+};
+
+const phoneStrategy = {
+    validate(phone) {
+        const isValid = /^\d{10}$/.test(phone);
+        return {
+            valid: isValid,
+            message: isValid ? 'Valid phone' : 'Phone must be 10 digits'
+        };
+    }
+};
+
+const passwordStrategy = {
+    validate(password) {
+        const isValid = password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
+        return {
+            valid: isValid,
+            message: isValid ? 'Valid password' : 'Password must be 8+ chars with uppercase and number'
+        };
+    }
+};
+
+// Usage
+const validator = new Validator(emailStrategy);
+console.log(validator.validate('test@example.com')); // { valid: true, ... }
+
+validator.setStrategy(phoneStrategy);
+console.log(validator.validate('1234567890')); // { valid: true, ... }
+
+validator.setStrategy(passwordStrategy);
+console.log(validator.validate('Password123')); // { valid: true, ... }
+</code></pre>
+
+            <h3>Sorting Strategies</h3>
+
+            <pre><code class="language-javascript">class Sorter {
+    constructor(strategy) {
+        this.strategy = strategy;
+    }
+    
+    sort(data) {
+        return this.strategy.sort([...data]);
+    }
+}
+
+const bubbleSortStrategy = {
+    sort(arr) {
+        console.log('Using bubble sort');
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = 0; j < arr.length - 1 - i; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                }
+            }
+        }
+        return arr;
+    }
+};
+
+const quickSortStrategy = {
+    sort(arr) {
+        console.log('Using quick sort');
+        if (arr.length <= 1) return arr;
+        
+        const pivot = arr[arr.length - 1];
+        const left = arr.filter((x, i) => x <= pivot && i < arr.length - 1);
+        const right = arr.filter(x => x > pivot);
+        
+        return [...this.sort(left), pivot, ...this.sort(right)];
+    }
+};
+
+// Usage
+const data = [5, 2, 8, 1, 9];
+const sorter = new Sorter(bubbleSortStrategy);
+
+console.log(sorter.sort(data)); // Using bubble sort: [1, 2, 5, 8, 9]
+
+sorter.strategy = quickSortStrategy;
+console.log(sorter.sort(data)); // Using quick sort: [1, 2, 5, 8, 9]
+</code></pre>
+
+            <h3>Compression Strategies</h3>
+
+            <pre><code class="language-javascript">class Compressor {
+    constructor(strategy) {
+        this.strategy = strategy;
+    }
+    
+    compress(data) {
+        return this.strategy.compress(data);
+    }
+    
+    decompress(data) {
+        return this.strategy.decompress(data);
+    }
+}
+
+const zipStrategy = {
+    compress(data) {
+        console.log('Compressing with ZIP');
+        return `ZIP:${data}`;
+    },
+    decompress(data) {
+        return data.replace('ZIP:', '');
+    }
+};
+
+const gzipStrategy = {
+    compress(data) {
+        console.log('Compressing with GZIP');
+        return `GZIP:${data}`;
+    },
+    decompress(data) {
+        return data.replace('GZIP:', '');
+    }
+};
+
+const compressor = new Compressor(zipStrategy);
+const compressed = compressor.compress('Hello World');
+console.log(compressed); // ZIP:Hello World
+console.log(compressor.decompress(compressed)); // Hello World
+</code></pre>
+
+            <h2>Eliminating Conditional Logic</h2>
+
+            <pre><code class="language-javascript">// Bad - lots of conditionals
+function calculateShipping(type, weight) {
+    if (type === 'standard') {
+        return weight * 0.5;
+    } else if (type === 'express') {
+        return weight * 1.5;
+    } else if (type === 'overnight') {
+        return weight * 3.0;
+    }
+    return 0;
+}
+
+// Good - strategy pattern
+const shippingStrategies = {
+    standard: (weight) => weight * 0.5,
+    express: (weight) => weight * 1.5,
+    overnight: (weight) => weight * 3.0
+};
+
+class ShippingCalculator {
+    calculate(type, weight) {
+        const strategy = shippingStrategies[type];
+        if (!strategy) {
+            throw new Error(`Unknown shipping type: ${type}`);
+        }
+        return strategy(weight);
+    }
+}
+
+const calculator = new ShippingCalculator();
+console.log(calculator.calculate('express', 10)); // 15
+</code></pre>
+
+            <h2>When to Use Strategy Pattern</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Multiple algorithms for the same task</li>
+                    <li>Eliminate complex if/else or switch statements</li>
+                    <li>Runtime algorithm selection</li>
+                    <li>Payment processing methods</li>
+                    <li>Sorting/filtering/compression algorithms</li>
+                    <li>Validation rules</li>
+                </ul>
+            </div>
+
+            <h2>Benefits</h2>
+
+            <ul>
+                <li><strong>Open/Closed Principle:</strong> Add new strategies without modifying existing code</li>
+                <li><strong>Eliminates conditionals:</strong> No more complex if/else chains</li>
+                <li><strong>Runtime flexibility:</strong> Switch algorithms at runtime</li>
+                <li><strong>Easy to test:</strong> Each strategy can be tested independently</li>
+                <li><strong>Reusable:</strong> Strategies can be reused across different contexts</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use consistent interface</strong>
+                <pre><code class="language-javascript">// All strategies should have same methods
+const strategy1 = {
+    execute(data) { /* ... */ }
+};
+
+const strategy2 = {
+    execute(data) { /* ... */ }
+};
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Validate strategy exists</strong>
+                <pre><code class="language-javascript">setStrategy(strategy) {
+    if (!strategy || typeof strategy.execute !== 'function') {
+        throw new Error('Invalid strategy');
+    }
+    this.strategy = strategy;
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use object lookup instead of switch</strong>
+                <pre><code class="language-javascript">// Good
+const strategies = {
+    type1: strategy1,
+    type2: strategy2
+};
+
+const strategy = strategies[type];
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Strategy defines interchangeable algorithms</li>
+                <li>Select algorithm at runtime</li>
+                <li>Eliminates complex if/else chains</li>
+                <li>Each strategy is encapsulated</li>
+                <li>Easy to add new strategies</li>
+                <li>Follows Open/Closed Principle</li>
+                <li>Makes code more maintainable and testable</li>
+                <li>Common in payment processing, validation, sorting</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

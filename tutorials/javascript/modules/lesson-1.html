@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Modules - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript ES6 modules - organize code with import/export for better maintainability.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Modules</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering JavaScript Modules</h1>
+            <p class="subtitle">Organize Code with ES6 import/export</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand ES6 module syntax and benefits</li>
+                    <li>Use named exports and imports</li>
+                    <li>Apply default exports and imports</li>
+                    <li>Master dynamic imports for code splitting</li>
+                    <li>Organize code with module patterns</li>
+                </ul>
+            </div>
+
+            <h2>Why Modules?</h2>
+            <p>Before ES6 modules, JavaScript had no native module system. Developers used global variables, IIFEs, CommonJS, or AMD. ES6 modules provide a clean, standardized solution.</p>
+
+            <h2>Named Exports and Imports</h2>
+
+            <h3>Exporting</h3>
+
+            <pre><code class="language-javascript">// utils.js
+export const PI = 3.14159;
+
+export function add(a, b) {
+    return a + b;
+}
+
+export class Calculator {
+    multiply(a, b) {
+        return a * b;
+    }
+}
+</code></pre>
+
+            <h3>Importing</h3>
+
+            <pre><code class="language-javascript">// app.js
+import { PI, add, Calculator } from './utils.js';
+
+console.log(PI); // 3.14159
+console.log(add(2, 3)); // 5
+
+const calc = new Calculator();
+console.log(calc.multiply(4, 5)); // 20
+</code></pre>
+
+            <h3>Import All</h3>
+
+            <pre><code class="language-javascript">import * as utils from './utils.js';
+
+console.log(utils.PI);
+console.log(utils.add(2, 3));
+const calc = new utils.Calculator();
+</code></pre>
+
+            <h3>Rename Imports</h3>
+
+            <pre><code class="language-javascript">import { add as sum, PI as pi } from './utils.js';
+
+console.log(sum(2, 3));
+console.log(pi);
+</code></pre>
+
+            <h2>Default Exports</h2>
+
+            <p>Each module can have one default export:</p>
+
+            <pre><code class="language-javascript">// user.js
+export default class User {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    greet() {
+        return `Hello, I'm ${this.name}`;
+    }
+}
+
+// Or
+class User {
+    constructor(name) {
+        this.name = name;
+    }
+}
+export default User;
+</code></pre>
+
+            <h3>Importing Default</h3>
+
+            <pre><code class="language-javascript">import User from './user.js';
+
+const user = new User('John');
+console.log(user.greet()); // "Hello, I'm John"
+</code></pre>
+
+            <div class="tip-box">
+                <strong>Note:</strong> You can name the default import anything:
+                <pre><code class="language-javascript">import MyUser from './user.js'; // Works!
+import AnyName from './user.js'; // Also works!
+</code></pre>
+            </div>
+
+            <h2>Mixing Default and Named Exports</h2>
+
+            <pre><code class="language-javascript">// api.js
+export default function fetchData() {
+    return fetch('/api/data');
+}
+
+export const API_URL = 'https://api.example.com';
+export const timeout = 5000;
+</code></pre>
+
+            <pre><code class="language-javascript">// Import both
+import fetchData, { API_URL, timeout } from './api.js';
+
+console.log(API_URL);
+const data = await fetchData();
+</code></pre>
+
+            <h2>Re-exporting</h2>
+
+            <p>Aggregate exports from multiple modules:</p>
+
+            <pre><code class="language-javascript">// shapes/index.js
+export { Circle } from './circle.js';
+export { Square } from './square.js';
+export { Triangle } from './triangle.js';
+
+// Or re-export everything
+export * from './circle.js';
+export * from './square.js';
+export * from './triangle.js';
+</code></pre>
+
+            <pre><code class="language-javascript">// app.js
+import { Circle, Square, Triangle } from './shapes/index.js';
+
+const circle = new Circle(5);
+const square = new Square(10);
+</code></pre>
+
+            <h2>Dynamic Imports</h2>
+
+            <p>Load modules on demand for code splitting:</p>
+
+            <pre><code class="language-javascript">// Static import - loaded immediately
+import { heavyFunction } from './heavy.js';
+
+// Dynamic import - loaded when needed
+button.addEventListener('click', async () => {
+    const module = await import('./heavy.js');
+    module.heavyFunction();
+});
+</code></pre>
+
+            <h3>Conditional Loading</h3>
+
+            <pre><code class="language-javascript">if (userIsAdmin) {
+    const adminModule = await import('./admin.js');
+    adminModule.init();
+}
+
+// Feature detection
+if ('IntersectionObserver' in window) {
+    const { lazyLoad } = await import('./lazy-load.js');
+    lazyLoad();
+}
+</code></pre>
+
+            <h3>Lazy Loading Routes</h3>
+
+            <pre><code class="language-javascript">const routes = {
+    '/home': () => import('./pages/home.js'),
+    '/about': () => import('./pages/about.js'),
+    '/contact': () => import('./pages/contact.js')
+};
+
+async function loadRoute(path) {
+    const module = await routes[path]();
+    module.render();
+}
+
+// Usage
+await loadRoute('/home');
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Utility Functions Module</h3>
+
+            <pre><code class="language-javascript">// utils/math.js
+export const add = (a, b) => a + b;
+export const subtract = (a, b) => a - b;
+export const multiply = (a, b) => a * b;
+export const divide = (a, b) => b !== 0 ? a / b : 0;
+
+// utils/string.js
+export const capitalize = (str) => 
+    str.charAt(0).toUpperCase() + str.slice(1);
+
+export const slugify = (str) =>
+    str.toLowerCase().replace(/\s+/g, '-');
+
+export const truncate = (str, length) =>
+    str.length > length ? str.slice(0, length) + '...' : str;
+</code></pre>
+
+            <h3>API Service Module</h3>
+
+            <pre><code class="language-javascript">// services/api.js
+const BASE_URL = 'https://api.example.com';
+
+async function request(endpoint, options = {}) {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        },
+        ...options
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return response.json();
+}
+
+export async function fetchUsers() {
+    return request('/users');
+}
+
+export async function fetchUser(id) {
+    return request(`/users/${id}`);
+}
+
+export async function createUser(userData) {
+    return request('/users', {
+        method: 'POST',
+        body: JSON.stringify(userData)
+    });
+}
+
+export async function updateUser(id, userData) {
+    return request(`/users/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(userData)
+    });
+}
+
+export async function deleteUser(id) {
+    return request(`/users/${id}`, {
+        method: 'DELETE'
+    });
+}
+</code></pre>
+
+            <h3>Configuration Module</h3>
+
+            <pre><code class="language-javascript">// config/index.js
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+export const config = {
+    apiUrl: process.env.API_URL || 'http://localhost:3000',
+    timeout: 5000,
+    retries: 3,
+    debug: isDevelopment
+};
+
+export const endpoints = {
+    users: '/api/users',
+    posts: '/api/posts',
+    comments: '/api/comments'
+};
+
+export default config;
+</code></pre>
+
+            <h3>Singleton Pattern with Modules</h3>
+
+            <pre><code class="language-javascript">// database.js
+class Database {
+    constructor() {
+        this.connection = null;
+    }
+    
+    connect(connectionString) {
+        if (!this.connection) {
+            this.connection = createConnection(connectionString);
+        }
+        return this.connection;
+    }
+    
+    query(sql) {
+        if (!this.connection) {
+            throw new Error('Not connected to database');
+        }
+        return this.connection.execute(sql);
+    }
+}
+
+// Export a single instance
+export default new Database();
+</code></pre>
+
+            <pre><code class="language-javascript">// app.js
+import db from './database.js';
+
+await db.connect('mongodb://localhost:27017');
+const users = await db.query('SELECT * FROM users');
+</code></pre>
+
+            <h2>Module Features</h2>
+
+            <h3>Strict Mode by Default</h3>
+
+            <pre><code class="language-javascript">// Modules are automatically in strict mode
+// No need for 'use strict';
+
+// This will error in modules
+undeclaredVariable = 5; // ReferenceError
+</code></pre>
+
+            <h3>Top-Level this is undefined</h3>
+
+            <pre><code class="language-javascript">// In modules
+console.log(this); // undefined
+
+// In scripts
+console.log(this); // window (in browsers)
+</code></pre>
+
+            <h3>Deferred Execution</h3>
+
+            <pre><code class="language-javascript">// Modules are deferred by default
+// Similar to <script defer>
+</code></pre>
+
+            <h2>Using Modules in HTML</h2>
+
+            <pre><code class="language-html">&lt;!-- Modern browsers --&gt;
+&lt;script type="module" src="app.js"&gt;&lt;/script&gt;
+
+&lt;!-- Inline module --&gt;
+&lt;script type="module"&gt;
+    import { greet } from './utils.js';
+    greet('World');
+&lt;/script&gt;
+
+&lt;!-- Fallback for old browsers --&gt;
+&lt;script type="module" src="app.js"&gt;&lt;/script&gt;
+&lt;script nomodule src="app-legacy.js"&gt;&lt;/script&gt;
+</code></pre>
+
+            <h2>CommonJS vs ES6 Modules</h2>
+
+            <h3>CommonJS (Node.js)</h3>
+
+            <pre><code class="language-javascript">// Export
+module.exports = { add, subtract };
+// or
+exports.add = add;
+
+// Import
+const { add, subtract } = require('./math');
+const math = require('./math');
+</code></pre>
+
+            <h3>ES6 Modules</h3>
+
+            <pre><code class="language-javascript">// Export
+export { add, subtract };
+// or
+export const add = (a, b) => a + b;
+
+// Import
+import { add, subtract } from './math.js';
+import * as math from './math.js';
+</code></pre>
+
+            <h3>Key Differences</h3>
+
+            <ul>
+                <li><strong>Static vs Dynamic:</strong> ES6 modules are analyzed at compile time, CommonJS at runtime</li>
+                <li><strong>Tree Shaking:</strong> ES6 modules support better dead code elimination</li>
+                <li><strong>Async:</strong> ES6 imports are asynchronous, CommonJS is synchronous</li>
+                <li><strong>Bindings:</strong> ES6 imports are read-only live bindings, CommonJS are copies</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. One module, one responsibility</strong>
+                <pre><code class="language-javascript">// Good - focused module
+// user.js
+export class User { }
+
+// Bad - mixed concerns
+// stuff.js
+export class User { }
+export class Product { }
+export function formatDate() { }
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Use named exports for utilities</strong>
+                <pre><code class="language-javascript">// utils.js
+export const add = (a, b) => a + b;
+export const subtract = (a, b) => a - b;
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use default export for main class/function</strong>
+                <pre><code class="language-javascript">// User.js
+export default class User { }
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>4. Keep imports at the top</strong>
+                <pre><code class="language-javascript">// Good
+import { add } from './utils.js';
+
+function calculate() {
+    return add(1, 2);
+}
+
+// Bad
+function calculate() {
+    import { add } from './utils.js'; // Error!
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>5. Use .js extension in imports</strong>
+                <pre><code class="language-javascript">// Good
+import { add } from './utils.js';
+
+// May not work in all environments
+import { add } from './utils';
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>ES6 modules provide standardized code organization</li>
+                <li>Use named exports for multiple exports</li>
+                <li>Use default export for main export (one per module)</li>
+                <li>Dynamic imports enable code splitting and lazy loading</li>
+                <li>Modules are strict mode by default</li>
+                <li>Imports are read-only live bindings</li>
+                <li>Better tree-shaking than CommonJS</li>
+                <li>Essential for modern JavaScript applications</li>
+                <li>Use <code>type="module"</code> in HTML script tags</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

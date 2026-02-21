@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript E2E Testing - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript E2E Testing with Playwright and Cypress.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">E2E Testing</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering E2E Testing</h1>
+            <p class="subtitle">Test Complete User Workflows</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>What is E2E Testing?</h2>
+            <p>End-to-End testing verifies complete user workflows from start to finish, testing the entire application stack including frontend, backend, database, and external services.</p>
+
+            <h2>Playwright Example</h2>
+            <pre><code class="language-javascript">import { test, expect } from '@playwright/test';
+
+test.describe('User Authentication', () => {
+    test('user can login successfully', async ({ page }) => {
+        // Navigate to login page
+        await page.goto('https://example.com/login');
+        
+        // Fill in credentials
+        await page.fill('[name="email"]', 'user@example.com');
+        await page.fill('[name="password"]', 'password123');
+        
+        // Submit form
+        await page.click('button[type="submit"]');
+        
+        // Wait for navigation to dashboard
+        await page.waitForURL('**/dashboard');
+        
+        // Verify user is logged in
+        await expect(page.locator('h1')).toContainText('Dashboard');
+        await expect(page.locator('.user-name')).toContainText('John Doe');
+        
+        // Take screenshot
+        await page.screenshot({ path: 'dashboard.png' });
+    });
+    
+    test('shows error for invalid credentials', async ({ page }) => {
+        await page.goto('https://example.com/login');
+        
+        await page.fill('[name="email"]', 'wrong@example.com');
+        await page.fill('[name="password"]', 'wrongpass');
+        await page.click('button[type="submit"]');
+        
+        // Verify error message
+        await expect(page.locator('.error-message'))
+            .toContainText('Invalid credentials');
+    });
+});
+</code></pre>
+
+            <h2>Cypress Example</h2>
+            <pre><code class="language-javascript">describe('Shopping Cart Flow', () => {
+    beforeEach(() => {
+        cy.visit('/');
+    });
+    
+    it('completes full purchase flow', () => {
+        // Browse products
+        cy.get('[data-testid="products-link"]').click();
+        cy.url().should('include', '/products');
+        
+        // Add item to cart
+        cy.get('[data-testid="product-1"]').within(() => {
+            cy.contains('Add to Cart').click();
+        });
+        
+        // Verify cart badge updated
+        cy.get('[data-testid="cart-badge"]').should('contain', '1');
+        
+        // Go to cart
+        cy.get('[data-testid="cart-icon"]').click();
+        
+        // Verify cart contents
+        cy.get('.cart-item').should('have.length', 1);
+        cy.get('.cart-total').should('contain', '$29.99');
+        
+        // Proceed to checkout
+        cy.get('[data-testid="checkout-btn"]').click();
+        
+        // Fill shipping info
+        cy.get('[name="fullName"]').type('John Doe');
+        cy.get('[name="address"]').type('123 Main St');
+        cy.get('[name="city"]').type('New York');
+        cy.get('[name="zipCode"]').type('10001');
+        
+        // Fill payment info
+        cy.get('[name="cardNumber"]').type('4242424242424242');
+        cy.get('[name="expiry"]').type('12/25');
+        cy.get('[name="cvv"]').type('123');
+        
+        // Submit order
+        cy.get('[data-testid="submit-order"]').click();
+        
+        // Verify success
+        cy.url().should('include', '/order-confirmation');
+        cy.contains('Order confirmed').should('be.visible');
+        cy.get('[data-testid="order-number"]').should('exist');
+    });
+    
+    it('allows removing items from cart', () => {
+        // Add items
+        cy.visit('/products');
+        cy.get('[data-testid="product-1"]').click();
+        cy.get('[data-testid="add-to-cart"]').click();
+        
+        // Go to cart
+        cy.get('[data-testid="cart-icon"]').click();
+        
+        // Remove item
+        cy.get('[data-testid="remove-item"]').click();
+        
+        // Verify cart is empty
+        cy.contains('Your cart is empty').should('be.visible');
+    });
+});
+</code></pre>
+
+            <h2>Handling Async Operations</h2>
+            <pre><code class="language-javascript">// Playwright - automatic waiting
+test('waits for elements', async ({ page }) => {
+    await page.goto('/dashboard');
+    
+    // Automatically waits for element to be visible
+    await page.click('button');
+    
+    // Wait for specific condition
+    await page.waitForSelector('.data-loaded');
+    
+    // Wait for network request
+    await page.waitForResponse(response =>
+        response.url().includes('/api/data') && response.status() === 200
+    );
+});
+
+// Cypress - built-in retry logic
+it('waits for elements', () => {
+    cy.visit('/dashboard');
+    
+    // Automatically retries until element exists
+    cy.get('.loading').should('not.exist');
+    cy.get('.data-loaded').should('be.visible');
+    
+    // Wait for API call
+    cy.intercept('GET', '/api/data').as('getData');
+    cy.wait('@getData');
+});
+</code></pre>
+
+            <h2>Page Object Pattern</h2>
+            <pre><code class="language-javascript">// pages/LoginPage.js
+export class LoginPage {
+    constructor(page) {
+        this.page = page;
+        this.emailInput = page.locator('[name="email"]');
+        this.passwordInput = page.locator('[name="password"]');
+        this.submitButton = page.locator('button[type="submit"]');
+        this.errorMessage = page.locator('.error-message');
+    }
+    
+    async goto() {
+        await this.page.goto('/login');
+    }
+    
+    async login(email, password) {
+        await this.emailInput.fill(email);
+        await this.passwordInput.fill(password);
+        await this.submitButton.click();
+    }
+    
+    async getErrorMessage() {
+        return await this.errorMessage.textContent();
+    }
+}
+
+// test file
+import { LoginPage } from './pages/LoginPage';
+
+test('login with page object', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    
+    await loginPage.goto();
+    await loginPage.login('user@example.com', 'password123');
+    
+    await expect(page).toHaveURL('**/dashboard');
+});
+</code></pre>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li><strong>Test critical paths</strong> - Focus on important user journeys</li>
+                <li><strong>Use data-testid</strong> - Stable selectors independent of styling</li>
+                <li><strong>Keep tests independent</strong> - Each test should run in isolation</li>
+                <li><strong>Handle waits properly</strong> - Use framework's built-in waiting</li>
+                <li><strong>Use page objects</strong> - Encapsulate page interactions</li>
+                <li><strong>Run in CI/CD</strong> - Automate E2E tests in pipeline</li>
+                <li><strong>Avoid flaky tests</strong> - Use reliable selectors and waits</li>
+                <li><strong>Keep tests fast</strong> - Parallelize when possible</li>
+            </ul>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>E2E tests verify complete user workflows</li>
+                <li>Playwright and Cypress are popular frameworks</li>
+                <li>Test from user's perspective</li>
+                <li>Use data-testid for stable selectors</li>
+                <li>Handle async operations with built-in waits</li>
+                <li>Page object pattern improves maintainability</li>
+                <li>Run regularly in CI/CD pipeline</li>
+                <li>Catch integration and workflow issues</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

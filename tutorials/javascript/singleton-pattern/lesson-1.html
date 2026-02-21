@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Singleton Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Singleton Pattern - ensure only one instance exists with this essential design pattern.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Singleton Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Singleton Pattern</h1>
+            <p class="subtitle">One Instance to Rule Them All</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Singleton pattern concept</li>
+                    <li>Implement Singleton with classes and modules</li>
+                    <li>Use Singleton for configuration and state management</li>
+                    <li>Recognize when to use (and avoid) Singletons</li>
+                    <li>Apply best practices and avoid pitfalls</li>
+                </ul>
+            </div>
+
+            <h2>What is the Singleton Pattern?</h2>
+
+            <p>A Singleton restricts instantiation of a class to a single object. No matter how many times you try to create an instance, you always get the same one.</p>
+
+            <h2>Basic Implementation</h2>
+
+            <pre><code class="language-javascript">class Database {
+    constructor() {
+        if (Database.instance) {
+            return Database.instance;
+        }
+        
+        this.connection = null;
+        Database.instance = this;
+    }
+    
+    connect(url) {
+        if (!this.connection) {
+            this.connection = { url, connected: true };
+            console.log(`Connected to ${url}`);
+        }
+    }
+    
+    query(sql) {
+        if (!this.connection) {
+            throw new Error('Not connected');
+        }
+        return `Executing: ${sql}`;
+    }
+}
+
+// Always returns the same instance
+const db1 = new Database();
+const db2 = new Database();
+
+console.log(db1 === db2); // true
+db1.connect('mongodb://localhost');
+console.log(db2.connection); // Same connection!
+</code></pre>
+
+            <h2>ES6 Module Singleton</h2>
+
+            <p>The simplest way - export a single instance:</p>
+
+            <pre><code class="language-javascript">// database.js
+class Database {
+    constructor() {
+        this.connection = null;
+    }
+    
+    connect(url) {
+        this.connection = { url, connected: true };
+    }
+    
+    query(sql) {
+        return `Executing: ${sql}`;
+    }
+}
+
+export default new Database();
+</code></pre>
+
+            <pre><code class="language-javascript">// app.js
+import db from './database.js';
+
+db.connect('mongodb://localhost');
+const result = db.query('SELECT * FROM users');
+</code></pre>
+
+            <p>Every import gets the same instance!</p>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Configuration Singleton</h3>
+
+            <pre><code class="language-javascript">class Config {
+    constructor() {
+        if (Config.instance) {
+            return Config.instance;
+        }
+        
+        this.settings = {
+            apiUrl: process.env.API_URL || 'https://api.example.com',
+            timeout: 5000,
+            debug: process.env.NODE_ENV === 'development'
+        };
+        
+        Config.instance = this;
+    }
+    
+    get(key) {
+        return this.settings[key];
+    }
+    
+    set(key, value) {
+        this.settings[key] = value;
+    }
+    
+    getAll() {
+        return { ...this.settings };
+    }
+}
+
+const config = new Config();
+export default config;
+</code></pre>
+
+            <h3>Logger Singleton</h3>
+
+            <pre><code class="language-javascript">class Logger {
+    constructor() {
+        if (Logger.instance) {
+            return Logger.instance;
+        }
+        
+        this.logs = [];
+        Logger.instance = this;
+    }
+    
+    log(message) {
+        const entry = {
+            message,
+            timestamp: new Date(),
+            level: 'INFO'
+        };
+        this.logs.push(entry);
+        console.log(`[${entry.timestamp.toISOString()}] ${message}`);
+    }
+    
+    error(message) {
+        const entry = {
+            message,
+            timestamp: new Date(),
+            level: 'ERROR'
+        };
+        this.logs.push(entry);
+        console.error(`[${entry.timestamp.toISOString()}] ERROR: ${message}`);
+    }
+    
+    warn(message) {
+        const entry = {
+            message,
+            timestamp: new Date(),
+            level: 'WARN'
+        };
+        this.logs.push(entry);
+        console.warn(`[${entry.timestamp.toISOString()}] WARN: ${message}`);
+    }
+    
+    getLogs(level = null) {
+        if (level) {
+            return this.logs.filter(log => log.level === level);
+        }
+        return [...this.logs];
+    }
+    
+    clear() {
+        this.logs = [];
+    }
+}
+
+export default new Logger();
+</code></pre>
+
+            <h3>State Management Singleton</h3>
+
+            <pre><code class="language-javascript">class Store {
+    constructor() {
+        if (Store.instance) {
+            return Store.instance;
+        }
+        
+        this.state = {};
+        this.listeners = [];
+        Store.instance = this;
+    }
+    
+    getState() {
+        return { ...this.state };
+    }
+    
+    setState(newState) {
+        this.state = { ...this.state, ...newState };
+        this.notify();
+    }
+    
+    subscribe(listener) {
+        this.listeners.push(listener);
+        
+        // Return unsubscribe function
+        return () => {
+            this.listeners = this.listeners.filter(l => l !== listener);
+        };
+    }
+    
+    notify() {
+        this.listeners.forEach(listener => listener(this.state));
+    }
+}
+
+const store = new Store();
+export default store;
+</code></pre>
+
+            <pre><code class="language-javascript">// Usage
+import store from './store.js';
+
+// Subscribe to state changes
+const unsubscribe = store.subscribe(state => {
+    console.log('State changed:', state);
+});
+
+// Update state
+store.setState({ user: { name: 'John' } });
+store.setState({ count: 0 });
+
+// Unsubscribe
+unsubscribe();
+</code></pre>
+
+            <h2>Lazy Initialization</h2>
+
+            <p>Create instance only when needed:</p>
+
+            <pre><code class="language-javascript">class HeavyResource {
+    constructor() {
+        console.log('Initializing heavy resource...');
+        this.data = this.loadHeavyData();
+    }
+    
+    loadHeavyData() {
+        // Expensive operation
+        const data = new Array(1000000).fill(0).map((_, i) => ({
+            id: i,
+            value: Math.random()
+        }));
+        return data;
+    }
+    
+    static getInstance() {
+        if (!HeavyResource.instance) {
+            HeavyResource.instance = new HeavyResource();
+        }
+        return HeavyResource.instance;
+    }
+    
+    getData() {
+        return this.data;
+    }
+}
+
+// Not created until first use
+console.log('App started');
+// ... other code ...
+const resource = HeavyResource.getInstance(); // Created here
+</code></pre>
+
+            <h2>When to Use Singletons</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Configuration management</li>
+                    <li>Logging systems</li>
+                    <li>Database connections</li>
+                    <li>Caching mechanisms</li>
+                    <li>Thread pools</li>
+                    <li>Device drivers</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>Bad use cases:</strong>
+                <ul>
+                    <li>When you need multiple instances</li>
+                    <li>Testing scenarios (hard to mock)</li>
+                    <li>When state should be isolated</li>
+                    <li>When it creates tight coupling</li>
+                </ul>
+            </div>
+
+            <h2>Pros and Cons</h2>
+
+            <h3>Pros</h3>
+            <ul>
+                <li>Controlled access to single instance</li>
+                <li>Reduced memory footprint</li>
+                <li>Global access point</li>
+                <li>Lazy initialization possible</li>
+                <li>Can be subclassed</li>
+            </ul>
+
+            <h3>Cons</h3>
+            <ul>
+                <li>Global state (can cause issues)</li>
+                <li>Hard to test (tight coupling)</li>
+                <li>Violates Single Responsibility Principle</li>
+                <li>Can hide dependencies</li>
+                <li>Difficult to extend</li>
+            </ul>
+
+            <h2>Testing Singletons</h2>
+
+            <pre><code class="language-javascript">class TestableDatabase {
+    constructor() {
+        if (TestableDatabase.instance && !TestableDatabase.testing) {
+            return TestableDatabase.instance;
+        }
+        
+        this.connection = null;
+        if (!TestableDatabase.testing) {
+            TestableDatabase.instance = this;
+        }
+    }
+    
+    static reset() {
+        TestableDatabase.instance = null;
+    }
+    
+    static enableTesting() {
+        TestableDatabase.testing = true;
+    }
+    
+    static disableTesting() {
+        TestableDatabase.testing = false;
+    }
+}
+
+// In tests
+describe('Database', () => {
+    beforeEach(() => {
+        TestableDatabase.enableTesting();
+        TestableDatabase.reset();
+    });
+    
+    afterEach(() => {
+        TestableDatabase.disableTesting();
+    });
+    
+    it('should create new instance in test mode', () => {
+        const db1 = new TestableDatabase();
+        const db2 = new TestableDatabase();
+        expect(db1).not.toBe(db2);
+    });
+});
+</code></pre>
+
+            <h2>Alternatives to Singleton</h2>
+
+            <h3>Dependency Injection</h3>
+
+            <pre><code class="language-javascript">class UserService {
+    constructor(database, logger) {
+        this.db = database;
+        this.logger = logger;
+    }
+    
+    async getUser(id) {
+        this.logger.log(`Fetching user ${id}`);
+        return await this.db.query(`SELECT * FROM users WHERE id = ${id}`);
+    }
+}
+
+// Inject dependencies
+const db = new Database();
+const logger = new Logger();
+const userService = new UserService(db, logger);
+</code></pre>
+
+            <h3>Factory Pattern</h3>
+
+            <pre><code class="language-javascript">class DatabaseFactory {
+    static instances = new Map();
+    
+    static create(name) {
+        if (!this.instances.has(name)) {
+            this.instances.set(name, new Database());
+        }
+        return this.instances.get(name);
+    }
+}
+
+const mainDb = DatabaseFactory.create('main');
+const cacheDb = DatabaseFactory.create('cache');
+</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use ES6 modules for simple singletons</strong>
+                <pre><code class="language-javascript">// config.js
+export default {
+    apiUrl: 'https://api.example.com',
+    timeout: 5000
+};
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Make it clear it's a singleton</strong>
+                <pre><code class="language-javascript">class DatabaseSingleton {
+    // Clear naming convention
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Provide a way to reset for testing</strong>
+                <pre><code class="language-javascript">class Logger {
+    static reset() {
+        Logger.instance = null;
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>4. Consider lazy initialization</strong>
+                <pre><code class="language-javascript">static getInstance() {
+    if (!this.instance) {
+        this.instance = new this();
+    }
+    return this.instance;
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>5. Document singleton behavior</strong>
+                <pre><code class="language-javascript">/**
+ * Database connection manager (Singleton)
+ * Only one instance exists throughout the application
+ */
+class Database {
+    // ...
+}
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Singleton ensures only one instance exists</li>
+                <li>Use ES6 modules for simple singletons</li>
+                <li>Good for configuration, logging, caching</li>
+                <li>Can make testing difficult</li>
+                <li>Consider alternatives like dependency injection</li>
+                <li>Provide reset mechanism for tests</li>
+                <li>Use lazy initialization when appropriate</li>
+                <li>Document singleton behavior clearly</li>
+                <li>Be aware of global state issues</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Iterators - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Iterators for custom iteration protocols.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Iterators</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Iterators</h1>
+            <p class="subtitle">Custom Iteration Protocols</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>What are Iterators?</h2>
+            <p>Iterators provide a standard way to traverse data structures. They enable for...of loops, spread operator, and other iteration features.</p>
+
+            <h2>Basic Iterator Protocol</h2>
+            <pre><code class="language-javascript">const range = {
+    start: 1,
+    end: 5,
+    [Symbol.iterator]() {
+        let current = this.start;
+        const end = this.end;
+        
+        return {
+            next() {
+                if (current <= end) {
+                    return { value: current++, done: false };
+                }
+                return { done: true };
+            }
+        };
+    }
+};
+
+// Use with for...of
+for (const num of range) {
+    console.log(num); // 1, 2, 3, 4, 5
+}
+
+// Use with spread
+console.log([...range]); // [1, 2, 3, 4, 5]
+
+// Use with Array.from
+console.log(Array.from(range)); // [1, 2, 3, 4, 5]
+</code></pre>
+
+            <h2>Iterator with Generator</h2>
+            <pre><code class="language-javascript">const range = {
+    start: 1,
+    end: 5,
+    *[Symbol.iterator]() {
+        for (let i = this.start; i <= this.end; i++) {
+            yield i;
+        }
+    }
+};
+
+for (const num of range) {
+    console.log(num); // 1, 2, 3, 4, 5
+}
+</code></pre>
+
+            <h2>Custom Collection</h2>
+            <pre><code class="language-javascript">class LinkedList {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+    
+    append(value) {
+        const node = { value, next: null };
+        if (!this.head) {
+            this.head = this.tail = node;
+        } else {
+            this.tail.next = node;
+            this.tail = node;
+        }
+        this.size++;
+    }
+    
+    *[Symbol.iterator]() {
+        let current = this.head;
+        while (current) {
+            yield current.value;
+            current = current.next;
+        }
+    }
+}
+
+const list = new LinkedList();
+list.append('a');
+list.append('b');
+list.append('c');
+
+for (const value of list) {
+    console.log(value); // 'a', 'b', 'c'
+}
+
+console.log([...list]); // ['a', 'b', 'c']
+</code></pre>
+
+            <h2>Infinite Iterators</h2>
+            <pre><code class="language-javascript">function* fibonacci() {
+    let [a, b] = [0, 1];
+    while (true) {
+        yield a;
+        [a, b] = [b, a + b];
+    }
+}
+
+const fib = fibonacci();
+console.log(fib.next().value); // 0
+console.log(fib.next().value); // 1
+console.log(fib.next().value); // 1
+console.log(fib.next().value); // 2
+console.log(fib.next().value); // 3
+
+// Take first n values
+function* take(iterable, n) {
+    let count = 0;
+    for (const item of iterable) {
+        if (count++ >= n) break;
+        yield item;
+    }
+}
+
+console.log([...take(fibonacci(), 10)]);
+// [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+</code></pre>
+
+            <h2>Iterator Helpers</h2>
+            <pre><code class="language-javascript">class IteratorHelpers {
+    static *take(iterable, n) {
+        let count = 0;
+        for (const item of iterable) {
+            if (count++ >= n) break;
+            yield item;
+        }
+    }
+    
+    static *filter(iterable, predicate) {
+        for (const item of iterable) {
+            if (predicate(item)) {
+                yield item;
+            }
+        }
+    }
+    
+    static *map(iterable, fn) {
+        for (const item of iterable) {
+            yield fn(item);
+        }
+    }
+    
+    static *chain(...iterables) {
+        for (const iterable of iterables) {
+            yield* iterable;
+        }
+    }
+}
+
+// Usage
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+const result = IteratorHelpers.take(
+    IteratorHelpers.filter(
+        IteratorHelpers.map(numbers, x => x * 2),
+        x => x > 5
+    ),
+    3
+);
+
+console.log([...result]); // [6, 8, 10]
+
+// Chain multiple iterables
+const combined = IteratorHelpers.chain([1, 2], [3, 4], [5, 6]);
+console.log([...combined]); // [1, 2, 3, 4, 5, 6]
+</code></pre>
+
+            <h2>Real-World: Paginated Data</h2>
+            <pre><code class="language-javascript">class PaginatedAPI {
+    constructor(baseUrl, pageSize = 10) {
+        this.baseUrl = baseUrl;
+        this.pageSize = pageSize;
+    }
+    
+    async *[Symbol.asyncIterator]() {
+        let page = 1;
+        let hasMore = true;
+        
+        while (hasMore) {
+            const response = await fetch(
+                `${this.baseUrl}?page=${page}&size=${this.pageSize}`
+            );
+            const data = await response.json();
+            
+            for (const item of data.items) {
+                yield item;
+            }
+            
+            hasMore = data.hasMore;
+            page++;
+        }
+    }
+}
+
+// Usage
+const api = new PaginatedAPI('/api/users');
+
+for await (const user of api) {
+    console.log(user);
+    // Automatically fetches next page when needed
+}
+</code></pre>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Iterators provide standard traversal protocol</li>
+                <li>Symbol.iterator makes objects iterable</li>
+                <li>Generators simplify iterator creation</li>
+                <li>Perfect for custom data structures</li>
+                <li>Enable lazy evaluation patterns</li>
+                <li>Work with for...of and spread operator</li>
+                <li>Async iterators for async data sources</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

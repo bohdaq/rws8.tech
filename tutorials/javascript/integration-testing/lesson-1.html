@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Integration Testing - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Integration Testing with Supertest and best practices.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Integration Testing</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Integration Testing</h1>
+            <p class="subtitle">Test Component Interactions</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>What is Integration Testing?</h2>
+            <p>Integration testing verifies that multiple components work together correctly. It tests interactions between modules, APIs, databases, and external services.</p>
+
+            <h2>API Testing with Supertest</h2>
+            <pre><code class="language-javascript">import request from 'supertest';
+import app from './app';
+
+describe('User API', () => {
+    test('GET /users returns all users', async () => {
+        const response = await request(app)
+            .get('/users')
+            .expect(200)
+            .expect('Content-Type', /json/);
+        
+        expect(Array.isArray(response.body)).toBe(true);
+    });
+    
+    test('POST /users creates new user', async () => {
+        const newUser = {
+            name: 'John Doe',
+            email: 'john@example.com'
+        };
+        
+        const response = await request(app)
+            .post('/users')
+            .send(newUser)
+            .expect(201);
+        
+        expect(response.body).toMatchObject(newUser);
+        expect(response.body.id).toBeDefined();
+    });
+    
+    test('GET /users/:id returns specific user', async () => {
+        const response = await request(app)
+            .get('/users/1')
+            .expect(200);
+        
+        expect(response.body.id).toBe(1);
+    });
+    
+    test('PUT /users/:id updates user', async () => {
+        const updates = { name: 'Jane Doe' };
+        
+        const response = await request(app)
+            .put('/users/1')
+            .send(updates)
+            .expect(200);
+        
+        expect(response.body.name).toBe('Jane Doe');
+    });
+    
+    test('DELETE /users/:id removes user', async () => {
+        await request(app)
+            .delete('/users/1')
+            .expect(204);
+    });
+});
+</code></pre>
+
+            <h2>Database Integration Testing</h2>
+            <pre><code class="language-javascript">import { db } from './database';
+import { UserRepository } from './userRepository';
+
+describe('UserRepository Integration', () => {
+    let userRepo;
+    
+    beforeAll(async () => {
+        await db.connect(process.env.TEST_DATABASE_URL);
+        userRepo = new UserRepository(db);
+    });
+    
+    afterAll(async () => {
+        await db.disconnect();
+    });
+    
+    beforeEach(async () => {
+        await db.query('DELETE FROM users');
+    });
+    
+    test('creates and retrieves user', async () => {
+        const userData = {
+            name: 'John Doe',
+            email: 'john@example.com'
+        };
+        
+        const created = await userRepo.create(userData);
+        expect(created.id).toBeDefined();
+        
+        const found = await userRepo.findById(created.id);
+        expect(found.name).toBe(userData.name);
+        expect(found.email).toBe(userData.email);
+    });
+    
+    test('updates user', async () => {
+        const user = await userRepo.create({
+            name: 'John',
+            email: 'john@example.com'
+        });
+        
+        const updated = await userRepo.update(user.id, {
+            name: 'Jane'
+        });
+        
+        expect(updated.name).toBe('Jane');
+        expect(updated.email).toBe('john@example.com');
+    });
+    
+    test('deletes user', async () => {
+        const user = await userRepo.create({
+            name: 'John',
+            email: 'john@example.com'
+        });
+        
+        await userRepo.delete(user.id);
+        
+        const found = await userRepo.findById(user.id);
+        expect(found).toBeNull();
+    });
+});
+</code></pre>
+
+            <h2>Testing External APIs</h2>
+            <pre><code class="language-javascript">import nock from 'nock';
+import { WeatherService } from './weatherService';
+
+describe('WeatherService Integration', () => {
+    let service;
+    
+    beforeEach(() => {
+        service = new WeatherService();
+        nock.cleanAll();
+    });
+    
+    test('fetches weather data', async () => {
+        nock('https://api.weather.com')
+            .get('/forecast')
+            .query({ city: 'London' })
+            .reply(200, {
+                temp: 20,
+                condition: 'sunny',
+                humidity: 65
+            });
+        
+        const weather = await service.getWeather('London');
+        
+        expect(weather.temp).toBe(20);
+        expect(weather.condition).toBe('sunny');
+    });
+    
+    test('handles API errors', async () => {
+        nock('https://api.weather.com')
+            .get('/forecast')
+            .query({ city: 'InvalidCity' })
+            .reply(404, { error: 'City not found' });
+        
+        await expect(service.getWeather('InvalidCity'))
+            .rejects
+            .toThrow('City not found');
+    });
+    
+    test('retries on network failure', async () => {
+        nock('https://api.weather.com')
+            .get('/forecast')
+            .query({ city: 'London' })
+            .replyWithError('Network error')
+            .get('/forecast')
+            .query({ city: 'London' })
+            .reply(200, { temp: 20 });
+        
+        const weather = await service.getWeather('London');
+        expect(weather.temp).toBe(20);
+    });
+});
+</code></pre>
+
+            <h2>Full Stack Integration Test</h2>
+            <pre><code class="language-javascript">import request from 'supertest';
+import app from './app';
+import { db } from './database';
+
+describe('User Management Flow', () => {
+    beforeAll(async () => {
+        await db.connect(process.env.TEST_DATABASE_URL);
+    });
+    
+    afterAll(async () => {
+        await db.disconnect();
+    });
+    
+    beforeEach(async () => {
+        await db.query('DELETE FROM users');
+    });
+    
+    test('complete user lifecycle', async () => {
+        // Create user
+        const createResponse = await request(app)
+            .post('/users')
+            .send({
+                name: 'John Doe',
+                email: 'john@example.com'
+            })
+            .expect(201);
+        
+        const userId = createResponse.body.id;
+        expect(userId).toBeDefined();
+        
+        // Get user
+        const getResponse = await request(app)
+            .get(`/users/${userId}`)
+            .expect(200);
+        
+        expect(getResponse.body.name).toBe('John Doe');
+        
+        // Update user
+        const updateResponse = await request(app)
+            .put(`/users/${userId}`)
+            .send({ name: 'Jane Doe' })
+            .expect(200);
+        
+        expect(updateResponse.body.name).toBe('Jane Doe');
+        
+        // Delete user
+        await request(app)
+            .delete(`/users/${userId}`)
+            .expect(204);
+        
+        // Verify deletion
+        await request(app)
+            .get(`/users/${userId}`)
+            .expect(404);
+    });
+});
+</code></pre>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li><strong>Use test databases</strong> - Separate from production and development</li>
+                <li><strong>Clean up after tests</strong> - Reset state between tests</li>
+                <li><strong>Test realistic scenarios</strong> - Use real data flows</li>
+                <li><strong>Mock external services</strong> - Use nock for HTTP mocking</li>
+                <li><strong>Keep tests independent</strong> - No test should depend on another</li>
+                <li><strong>Test error cases</strong> - Not just happy paths</li>
+                <li><strong>Use transactions</strong> - Rollback database changes</li>
+            </ul>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Integration tests verify component interactions</li>
+                <li>Use supertest for API endpoint testing</li>
+                <li>Test with real databases (test environment)</li>
+                <li>Mock external APIs with nock</li>
+                <li>Clean up state between tests</li>
+                <li>Test complete workflows end-to-end</li>
+                <li>Catch issues unit tests miss</li>
+                <li>Balance speed with coverage</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

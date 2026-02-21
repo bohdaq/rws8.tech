@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript BigInt - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript BigInt - work with arbitrarily large integers beyond Number.MAX_SAFE_INTEGER.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">BigInt</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering BigInt</h1>
+            <p class="subtitle">Arbitrarily Large Integers</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand BigInt primitive type</li>
+                    <li>Create and use BigInt values</li>
+                    <li>Perform BigInt arithmetic</li>
+                    <li>Handle BigInt conversions</li>
+                    <li>Apply BigInt best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is BigInt?</h2>
+
+            <p>BigInt is a primitive type introduced in ES2020 for representing integers larger than Number.MAX_SAFE_INTEGER (2^53 - 1). It allows arbitrary precision integer arithmetic.</p>
+
+            <h2>The Number Limitation Problem</h2>
+
+            <pre><code class="language-javascript">// JavaScript numbers lose precision beyond this
+console.log(Number.MAX_SAFE_INTEGER); // 9007199254740991
+
+// Precision loss
+console.log(9007199254740991 + 1); // 9007199254740992 ✓
+console.log(9007199254740991 + 2); // 9007199254740992 ✗ (should be 993)
+console.log(9007199254740991 + 3); // 9007199254740994 ✓
+
+// BigInt solves this
+console.log(9007199254740991n + 1n); // 9007199254740992n ✓
+console.log(9007199254740991n + 2n); // 9007199254740993n ✓
+console.log(9007199254740991n + 3n); // 9007199254740994n ✓
+</code></pre>
+
+            <h2>Creating BigInt Values</h2>
+
+            <pre><code class="language-javascript">// Literal with 'n' suffix
+const big1 = 123n;
+const big2 = 9007199254740993n;
+
+// BigInt() constructor
+const big3 = BigInt(456);
+const big4 = BigInt("789012345678901234567890");
+
+// From hex, octal, binary
+const hex = BigInt("0x1fffffffffffff");
+const oct = BigInt("0o777");
+const bin = BigInt("0b11111111");
+
+console.log(typeof big1); // "bigint"
+</code></pre>
+
+            <div class="warning-box">
+                <strong>Important:</strong> BigInt() cannot convert non-integers
+                <pre><code class="language-javascript">BigInt(3.14); // Error: Cannot convert 3.14 to a BigInt
+BigInt("3.14"); // Error: Cannot convert "3.14" to a BigInt
+</code></pre>
+            </div>
+
+            <h2>Arithmetic Operations</h2>
+
+            <pre><code class="language-javascript">const a = 100n;
+const b = 50n;
+
+// Basic operations
+console.log(a + b);  // 150n
+console.log(a - b);  // 50n
+console.log(a * b);  // 5000n
+console.log(a / b);  // 2n
+console.log(a % b);  // 0n
+console.log(a ** 2n); // 10000n
+
+// Division truncates (no decimals)
+console.log(7n / 2n);  // 3n (not 3.5)
+console.log(10n / 3n); // 3n (not 3.333...)
+
+// Negative numbers
+console.log(-5n * 3n); // -15n
+console.log(10n / -3n); // -3n
+</code></pre>
+
+            <h2>Comparisons</h2>
+
+            <pre><code class="language-javascript">// Strict equality checks type
+console.log(1n === 1);      // false (different types)
+console.log(1n === BigInt(1)); // true
+
+// Loose equality allows coercion
+console.log(1n == 1);       // true
+console.log(0n == 0);       // true
+
+// Relational operators work across types
+console.log(1n < 2);        // true
+console.log(2n > 1);        // true
+console.log(5n >= 5);       // true
+console.log(10n <= 20);     // true
+
+// Sorting
+const mixed = [5n, 2, 10n, 1, 8n];
+mixed.sort((a, b) => {
+    a = BigInt(a);
+    b = BigInt(b);
+    return a < b ? -1 : a > b ? 1 : 0;
+});
+console.log(mixed); // [1, 2, 5n, 8n, 10n]
+</code></pre>
+
+            <h2>Type Conversion</h2>
+
+            <pre><code class="language-javascript">// BigInt to Number (may lose precision!)
+const big = 123n;
+const num = Number(big); // 123
+console.log(typeof num); // "number"
+
+// Large BigInt loses precision
+const largeBig = 9007199254740993n;
+const largeNum = Number(largeBig); // 9007199254740992 (WRONG!)
+
+// Number to BigInt
+const bigFromNum = BigInt(456); // 456n
+
+// String conversion
+const str = big.toString(); // "123"
+const bigFromStr = BigInt("789"); // 789n
+
+// Boolean conversion
+console.log(Boolean(0n)); // false
+console.log(Boolean(1n)); // true
+console.log(Boolean(-1n)); // true
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Precise Timestamps</h3>
+
+            <pre><code class="language-javascript">// Nanosecond precision timestamps
+class PreciseTimer {
+    constructor() {
+        this.start = process.hrtime.bigint();
+    }
+    
+    elapsed() {
+        const end = process.hrtime.bigint();
+        return end - this.start;
+    }
+    
+    elapsedMs() {
+        return Number(this.elapsed() / 1000000n);
+    }
+}
+
+const timer = new PreciseTimer();
+// ... some operation ...
+console.log(`Elapsed: ${timer.elapsedMs()}ms`);
+</code></pre>
+
+            <h3>Large ID Generation</h3>
+
+            <pre><code class="language-javascript">class IdGenerator {
+    constructor() {
+        this.counter = 0n;
+        this.timestamp = BigInt(Date.now());
+    }
+    
+    generate() {
+        this.counter++;
+        // Combine timestamp and counter
+        return (this.timestamp * 1000000n) + this.counter;
+    }
+}
+
+const generator = new IdGenerator();
+console.log(generator.generate()); // 1234567890123456001n
+console.log(generator.generate()); // 1234567890123456002n
+</code></pre>
+
+            <h3>Factorial of Large Numbers</h3>
+
+            <pre><code class="language-javascript">function factorial(n) {
+    if (n <= 1n) return 1n;
+    let result = 1n;
+    for (let i = 2n; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+console.log(factorial(20n)); // 2432902008176640000n
+console.log(factorial(100n)); // Huge number!
+</code></pre>
+
+            <h2>Limitations and Gotchas</h2>
+
+            <div class="warning-box">
+                <strong>1. Cannot mix BigInt and Number</strong>
+                <pre><code class="language-javascript">// Error: Cannot mix BigInt and other types
+// 1n + 1;
+// 5n * 2;
+
+// Must convert explicitly
+const result = 1n + BigInt(1); // 2n
+const result2 = Number(5n) * 2; // 10
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>2. No Math library support</strong>
+                <pre><code class="language-javascript">// Math methods don't work with BigInt
+// Math.sqrt(4n); // Error
+// Math.pow(2n, 3n); // Error
+
+// Use BigInt operators instead
+console.log(2n ** 3n); // 8n
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>3. JSON doesn't support BigInt</strong>
+                <pre><code class="language-javascript">const obj = { id: 123n };
+
+// Error: Do not know how to serialize a BigInt
+// JSON.stringify(obj);
+
+// Custom serialization
+const json = JSON.stringify(obj, (key, value) =>
+    typeof value === 'bigint' ? value.toString() + 'n' : value
+);
+
+// Custom parsing
+const parsed = JSON.parse(json, (key, value) =>
+    typeof value === 'string' && value.endsWith('n')
+        ? BigInt(value.slice(0, -1))
+        : value
+);
+</code></pre>
+            </div>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use BigInt for large integers only</strong>
+                <pre><code class="language-javascript">// Good - beyond safe integer range
+const largeId = 9007199254740993n;
+
+// Unnecessary - regular number works fine
+const small = 42n; // Just use 42
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Be explicit with conversions</strong>
+                <pre><code class="language-javascript">function add(a, b) {
+    // Convert to BigInt explicitly
+    return BigInt(a) + BigInt(b);
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Handle division carefully</strong>
+                <pre><code class="language-javascript">// Remember: BigInt division truncates
+const result = 7n / 2n; // 3n, not 3.5
+
+// For precision, convert to Number
+const precise = Number(7n) / Number(2n); // 3.5
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>BigInt handles arbitrarily large integers</li>
+                <li>Created with 'n' suffix or BigInt() function</li>
+                <li>Cannot mix with Number without explicit conversion</li>
+                <li>Integer division truncates decimals</li>
+                <li>Perfect for timestamps, IDs, and cryptography</li>
+                <li>No Math library support</li>
+                <li>Requires custom JSON serialization</li>
+                <li>Use only when precision beyond Number is needed</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

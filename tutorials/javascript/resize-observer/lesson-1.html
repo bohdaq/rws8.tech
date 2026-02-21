@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript ResizeObserver - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript ResizeObserver - detect element size changes for responsive components.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">ResizeObserver</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering ResizeObserver</h1>
+            <p class="subtitle">Detect Element Size Changes</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand ResizeObserver API</li>
+                    <li>Detect element size changes</li>
+                    <li>Build responsive components</li>
+                    <li>Handle resize entries</li>
+                    <li>Apply observer best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is ResizeObserver?</h2>
+
+            <p>ResizeObserver provides an efficient way to detect when elements change size. It's more performant than using window resize listeners and polling, and it fires before paint for smooth updates.</p>
+
+            <h2>Basic Usage</h2>
+
+            <pre><code class="language-javascript">const observer = new ResizeObserver((entries) => {
+    entries.forEach(entry => {
+        const { width, height } = entry.contentRect;
+        
+        console.log(`Element resized to: ${width}x${height}`);
+        
+        // React to size changes
+        if (width < 600) {
+            entry.target.classList.add('mobile-layout');
+        } else {
+            entry.target.classList.remove('mobile-layout');
+        }
+    });
+});
+
+// Observe element
+const element = document.querySelector('#myElement');
+observer.observe(element);
+
+// Stop observing specific element
+observer.unobserve(element);
+
+// Disconnect all observations
+observer.disconnect();
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Responsive Component</h3>
+
+            <pre><code class="language-javascript">class ResponsiveCard {
+    constructor(element) {
+        this.element = element;
+        this.breakpoints = {
+            small: 300,
+            medium: 600,
+            large: 900
+        };
+        
+        this.observer = new ResizeObserver(this.handleResize.bind(this));
+        this.observer.observe(element);
+    }
+    
+    handleResize(entries) {
+        const { width } = entries[0].contentRect;
+        
+        // Remove all size classes
+        this.element.classList.remove('small', 'medium', 'large');
+        
+        // Add appropriate class
+        if (width < this.breakpoints.small) {
+            this.element.classList.add('small');
+        } else if (width < this.breakpoints.medium) {
+            this.element.classList.add('medium');
+        } else {
+            this.element.classList.add('large');
+        }
+    }
+    
+    destroy() {
+        this.observer.disconnect();
+    }
+}
+
+// Usage
+const cards = document.querySelectorAll('.responsive-card');
+cards.forEach(card => new ResponsiveCard(card));
+</code></pre>
+
+            <h3>Chart Resizing</h3>
+
+            <pre><code class="language-javascript">class ResponsiveChart {
+    constructor(container, data) {
+        this.container = container;
+        this.data = data;
+        this.chart = null;
+        
+        this.observer = new ResizeObserver(this.handleResize.bind(this));
+        this.observer.observe(container);
+        
+        this.initChart();
+    }
+    
+    initChart() {
+        const { width, height } = this.container.getBoundingClientRect();
+        this.chart = createChart(this.container, width, height, this.data);
+    }
+    
+    handleResize(entries) {
+        const { width, height } = entries[0].contentRect;
+        
+        if (this.chart) {
+            this.chart.resize(width, height);
+        }
+    }
+    
+    destroy() {
+        this.observer.disconnect();
+        if (this.chart) {
+            this.chart.destroy();
+        }
+    }
+}
+</code></pre>
+
+            <h3>Container Queries Pattern</h3>
+
+            <pre><code class="language-javascript">class ContainerQuery {
+    constructor(element, queries) {
+        this.element = element;
+        this.queries = queries;
+        
+        this.observer = new ResizeObserver(this.handleResize.bind(this));
+        this.observer.observe(element);
+    }
+    
+    handleResize(entries) {
+        const { width } = entries[0].contentRect;
+        
+        // Apply matching queries
+        Object.entries(this.queries).forEach(([className, minWidth]) => {
+            if (width >= minWidth) {
+                this.element.classList.add(className);
+            } else {
+                this.element.classList.remove(className);
+            }
+        });
+    }
+    
+    destroy() {
+        this.observer.disconnect();
+    }
+}
+
+// Usage
+const container = document.querySelector('.container');
+new ContainerQuery(container, {
+    'cq-sm': 320,
+    'cq-md': 640,
+    'cq-lg': 1024
+});
+</code></pre>
+
+            <h2>Entry Properties</h2>
+
+            <pre><code class="language-javascript">const observer = new ResizeObserver((entries) => {
+    entries.forEach(entry => {
+        // The observed element
+        console.log(entry.target);
+        
+        // Content box dimensions (excludes padding/border)
+        console.log(entry.contentRect);
+        // { x, y, width, height, top, right, bottom, left }
+        
+        // Border box size (includes padding/border)
+        console.log(entry.borderBoxSize);
+        // [{ blockSize, inlineSize }]
+        
+        // Content box size
+        console.log(entry.contentBoxSize);
+        // [{ blockSize, inlineSize }]
+        
+        // Device pixel content box size
+        console.log(entry.devicePixelContentBoxSize);
+    });
+});
+</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Disconnect when done</strong>
+                <pre><code class="language-javascript">// In cleanup/unmount
+observer.disconnect();
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Debounce expensive operations</strong>
+                <pre><code class="language-javascript">let timeout;
+const observer = new ResizeObserver((entries) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        expensiveOperation(entries);
+    }, 100);
+});
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use for element-specific sizing</strong>
+                <pre><code class="language-javascript">// Good - element-specific
+resizeObserver.observe(sidebar);
+
+// Bad - use window.addEventListener('resize') instead
+resizeObserver.observe(document.body);
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>ResizeObserver detects element size changes efficiently</li>
+                <li>More performant than window resize + polling</li>
+                <li>Perfect for responsive components and container queries</li>
+                <li>Fires before paint for smooth visual updates</li>
+                <li>Provides detailed size information (content, border, device pixel)</li>
+                <li>Always disconnect observers when no longer needed</li>
+                <li>Use for element-specific sizing, not window-level</li>
+                <li>Debounce expensive operations for better performance</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

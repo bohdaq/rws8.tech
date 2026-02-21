@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript LocalStorage - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript LocalStorage - persist data in the browser with the Web Storage API.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">LocalStorage</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering LocalStorage</h1>
+            <p class="subtitle">Browser Data Persistence</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Store and retrieve data with localStorage</li>
+                    <li>Work with JSON data in storage</li>
+                    <li>Understand storage limits and security</li>
+                    <li>Handle storage events</li>
+                    <li>Apply storage best practices</li>
+                </ul>
+            </div>
+
+            <h2>Basic Usage</h2>
+
+            <pre><code class="language-javascript">// Store data (key-value pairs)
+localStorage.setItem('username', 'John');
+localStorage.setItem('theme', 'dark');
+localStorage.setItem('fontSize', '16');
+
+// Retrieve data
+const username = localStorage.getItem('username'); // 'John'
+const theme = localStorage.getItem('theme'); // 'dark'
+
+// Alternative syntax
+localStorage.username = 'Jane';
+const name = localStorage.username;
+
+// Remove specific item
+localStorage.removeItem('fontSize');
+
+// Clear all data
+localStorage.clear();
+
+// Check if key exists
+if (localStorage.getItem('theme')) {
+    console.log('Theme is set');
+}
+
+// Get number of items
+console.log(localStorage.length);
+
+// Get key by index
+const firstKey = localStorage.key(0);
+</code></pre>
+
+            <h2>Storing Objects</h2>
+
+            <div class="warning-box">
+                <strong>Important:</strong> LocalStorage only stores strings. Use JSON.stringify() and JSON.parse() for objects.
+            </div>
+
+            <pre><code class="language-javascript">// Store object
+const user = {
+    name: 'John Doe',
+    email: 'john@example.com',
+    age: 30,
+    preferences: {
+        theme: 'dark',
+        notifications: true
+    }
+};
+
+// Convert to JSON string
+localStorage.setItem('user', JSON.stringify(user));
+
+// Retrieve and parse
+const storedUser = JSON.parse(localStorage.getItem('user'));
+console.log(storedUser.name); // 'John Doe'
+console.log(storedUser.preferences.theme); // 'dark'
+
+// Store array
+const todos = ['Learn JavaScript', 'Build project', 'Deploy'];
+localStorage.setItem('todos', JSON.stringify(todos));
+
+const storedTodos = JSON.parse(localStorage.getItem('todos'));
+console.log(storedTodos[0]); // 'Learn JavaScript'
+</code></pre>
+
+            <h2>Storage Helper Class</h2>
+
+            <pre><code class="language-javascript">class Storage {
+    static set(key, value) {
+        try {
+            const serialized = JSON.stringify(value);
+            localStorage.setItem(key, serialized);
+            return true;
+        } catch (error) {
+            console.error('Storage error:', error);
+            return false;
+        }
+    }
+    
+    static get(key, defaultValue = null) {
+        try {
+            const item = localStorage.getItem(key);
+            return item ? JSON.parse(item) : defaultValue;
+        } catch (error) {
+            console.error('Parse error:', error);
+            return defaultValue;
+        }
+    }
+    
+    static remove(key) {
+        localStorage.removeItem(key);
+    }
+    
+    static clear() {
+        localStorage.clear();
+    }
+    
+    static has(key) {
+        return localStorage.getItem(key) !== null;
+    }
+    
+    static keys() {
+        return Object.keys(localStorage);
+    }
+}
+
+// Usage
+Storage.set('user', { name: 'John', age: 30 });
+const user = Storage.get('user');
+const theme = Storage.get('theme', 'light'); // Default value
+
+if (Storage.has('user')) {
+    console.log('User data exists');
+}
+
+Storage.remove('user');
+</code></pre>
+
+            <h2>Storage with Expiration</h2>
+
+            <pre><code class="language-javascript">function setWithExpiry(key, value, ttl) {
+    const now = new Date();
+    
+    const item = {
+        value: value,
+        expiry: now.getTime() + ttl
+    };
+    
+    localStorage.setItem(key, JSON.stringify(item));
+}
+
+function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key);
+    
+    if (!itemStr) {
+        return null;
+    }
+    
+    const item = JSON.parse(itemStr);
+    const now = new Date();
+    
+    // Check if expired
+    if (now.getTime() > item.expiry) {
+        localStorage.removeItem(key);
+        return null;
+    }
+    
+    return item.value;
+}
+
+// Store for 1 hour (3600000 ms)
+setWithExpiry('authToken', 'abc123xyz', 3600000);
+
+// Retrieve (returns null if expired)
+const token = getWithExpiry('authToken');
+
+if (token) {
+    console.log('Token is valid:', token);
+} else {
+    console.log('Token expired or not found');
+}
+</code></pre>
+
+            <h2>Storage Events</h2>
+
+            <pre><code class="language-javascript">// Listen for storage changes from other tabs/windows
+window.addEventListener('storage', (event) => {
+    console.log('Storage changed!');
+    console.log('Key:', event.key);
+    console.log('Old value:', event.oldValue);
+    console.log('New value:', event.newValue);
+    console.log('URL:', event.url);
+    console.log('Storage area:', event.storageArea);
+    
+    // Sync UI with changes
+    if (event.key === 'theme') {
+        applyTheme(event.newValue);
+    }
+});
+
+// Note: Storage event only fires in OTHER tabs/windows,
+// not in the tab that made the change
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Theme Persistence</h3>
+
+            <pre><code class="language-javascript">class ThemeManager {
+    static THEME_KEY = 'app-theme';
+    
+    static getTheme() {
+        return localStorage.getItem(this.THEME_KEY) || 'light';
+    }
+    
+    static setTheme(theme) {
+        localStorage.setItem(this.THEME_KEY, theme);
+        this.applyTheme(theme);
+    }
+    
+    static applyTheme(theme) {
+        document.body.className = `theme-${theme}`;
+    }
+    
+    static init() {
+        const theme = this.getTheme();
+        this.applyTheme(theme);
+    }
+}
+
+// On page load
+ThemeManager.init();
+
+// Toggle theme
+function toggleTheme() {
+    const current = ThemeManager.getTheme();
+    const newTheme = current === 'light' ? 'dark' : 'light';
+    ThemeManager.setTheme(newTheme);
+}
+</code></pre>
+
+            <h3>Form Data Persistence</h3>
+
+            <pre><code class="language-javascript">class FormPersistence {
+    constructor(formId) {
+        this.form = document.getElementById(formId);
+        this.storageKey = `form-${formId}`;
+        this.init();
+    }
+    
+    init() {
+        // Load saved data
+        this.loadFormData();
+        
+        // Save on input
+        this.form.addEventListener('input', () => {
+            this.saveFormData();
+        });
+        
+        // Clear on submit
+        this.form.addEventListener('submit', () => {
+            this.clearFormData();
+        });
+    }
+    
+    saveFormData() {
+        const formData = new FormData(this.form);
+        const data = Object.fromEntries(formData);
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
+    }
+    
+    loadFormData() {
+        const saved = localStorage.getItem(this.storageKey);
+        if (!saved) return;
+        
+        const data = JSON.parse(saved);
+        Object.keys(data).forEach(key => {
+            const input = this.form.elements[key];
+            if (input) input.value = data[key];
+        });
+    }
+    
+    clearFormData() {
+        localStorage.removeItem(this.storageKey);
+    }
+}
+
+// Usage
+new FormPersistence('contactForm');
+</code></pre>
+
+            <h2>Important Considerations</h2>
+
+            <div class="warning-box">
+                <strong>Storage Limits:</strong>
+                <ul>
+                    <li>~5-10MB per origin (varies by browser)</li>
+                    <li>Synchronous API (blocks main thread)</li>
+                    <li>String-only storage</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>Security:</strong>
+                <ul>
+                    <li>Not encrypted</li>
+                    <li>Accessible via JavaScript</li>
+                    <li>Don't store passwords or tokens</li>
+                    <li>Vulnerable to XSS attacks</li>
+                    <li>Shared across all scripts on origin</li>
+                </ul>
+            </div>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Always use try/catch</strong>
+                <pre><code class="language-javascript">try {
+    localStorage.setItem('key', value);
+} catch (error) {
+    if (error.name === 'QuotaExceededError') {
+        console.error('Storage quota exceeded');
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Validate data before storing</strong>
+                <pre><code class="language-javascript">function safeStore(key, value) {
+    if (!key || value === undefined) return false;
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+    } catch {
+        return false;
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use sessionStorage for temporary data</strong>
+                <pre><code class="language-javascript">// Persists only for session
+sessionStorage.setItem('tempData', 'value');
+
+// Cleared when tab closes
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>LocalStorage persists data across browser sessions</li>
+                <li>Only stores strings - use JSON for objects</li>
+                <li>~5-10MB storage limit per origin</li>
+                <li>Synchronous API - can block main thread</li>
+                <li>Not secure - don't store sensitive data</li>
+                <li>Always use try/catch for error handling</li>
+                <li>Storage events sync data across tabs</li>
+                <li>Use sessionStorage for temporary data</li>
+                <li>Consider IndexedDB for large datasets</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

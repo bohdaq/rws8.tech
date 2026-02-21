@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering Test-Driven Development - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn Test-Driven Development (TDD) with Red-Green-Refactor cycle.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">TDD</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Test-Driven Development</h1>
+            <p class="subtitle">Write Tests First, Code Second</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>What is TDD?</h2>
+            <p>Test-Driven Development is a methodology where you write tests before writing production code. It follows the Red-Green-Refactor cycle to ensure code quality and design.</p>
+
+            <h2>The Red-Green-Refactor Cycle</h2>
+            <pre><code class="language-javascript">// CYCLE:
+// 1. RED: Write a failing test
+// 2. GREEN: Write minimal code to make it pass
+// 3. REFACTOR: Improve code quality
+// 4. Repeat
+
+// Example: Building a String Utility
+
+// Step 1: RED - Write failing test
+describe('capitalize', () => {
+    test('capitalizes first letter', () => {
+        expect(capitalize('hello')).toBe('Hello');
+    });
+});
+// Test fails: capitalize is not defined
+
+// Step 2: GREEN - Make it pass (minimal code)
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+// Test passes!
+
+// Step 3: REFACTOR - Improve (handle edge cases)
+function capitalize(str) {
+    if (!str || typeof str !== 'string') return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+// Test still passes, code is better
+
+// Step 4: Add more tests and repeat
+test('handles empty string', () => {
+    expect(capitalize('')).toBe('');
+});
+
+test('handles non-strings', () => {
+    expect(capitalize(null)).toBe('');
+    expect(capitalize(undefined)).toBe('');
+});
+</code></pre>
+
+            <h2>Complete TDD Example: Shopping Cart</h2>
+            <pre><code class="language-javascript">// Test 1: Create empty cart
+test('creates empty cart', () => {
+    const cart = new ShoppingCart();
+    expect(cart.getTotal()).toBe(0);
+});
+
+// Implementation 1
+class ShoppingCart {
+    constructor() {
+        this.items = [];
+    }
+    
+    getTotal() {
+        return 0;
+    }
+}
+
+// Test 2: Add item
+test('adds item to cart', () => {
+    const cart = new ShoppingCart();
+    cart.addItem({ name: 'Book', price: 10 });
+    expect(cart.getTotal()).toBe(10);
+});
+
+// Implementation 2
+class ShoppingCart {
+    constructor() {
+        this.items = [];
+    }
+    
+    addItem(item) {
+        this.items.push(item);
+    }
+    
+    getTotal() {
+        return this.items.reduce((sum, item) => sum + item.price, 0);
+    }
+}
+
+// Test 3: Add multiple items
+test('adds multiple items', () => {
+    const cart = new ShoppingCart();
+    cart.addItem({ name: 'Book', price: 10 });
+    cart.addItem({ name: 'Pen', price: 2 });
+    expect(cart.getTotal()).toBe(12);
+});
+// Already passes! No changes needed.
+
+// Test 4: Remove item
+test('removes item from cart', () => {
+    const cart = new ShoppingCart();
+    cart.addItem({ name: 'Book', price: 10 });
+    cart.removeItem('Book');
+    expect(cart.getTotal()).toBe(0);
+});
+
+// Implementation 4
+class ShoppingCart {
+    constructor() {
+        this.items = [];
+    }
+    
+    addItem(item) {
+        this.items.push(item);
+    }
+    
+    removeItem(name) {
+        const index = this.items.findIndex(item => item.name === name);
+        if (index !== -1) {
+            this.items.splice(index, 1);
+        }
+    }
+    
+    getTotal() {
+        return this.items.reduce((sum, item) => sum + item.price, 0);
+    }
+}
+
+// Refactor: Extract total calculation
+class ShoppingCart {
+    constructor() {
+        this.items = [];
+    }
+    
+    addItem(item) {
+        this.items.push(item);
+    }
+    
+    removeItem(name) {
+        const index = this.items.findIndex(item => item.name === name);
+        if (index !== -1) {
+            this.items.splice(index, 1);
+        }
+    }
+    
+    getTotal() {
+        return this.calculateTotal();
+    }
+    
+    calculateTotal() {
+        return this.items.reduce((sum, item) => sum + item.price, 0);
+    }
+}
+</code></pre>
+
+            <h2>TDD Benefits</h2>
+            <ul>
+                <li><strong>Better Design</strong> - Tests force you to think about API before implementation</li>
+                <li><strong>Confidence</strong> - Comprehensive test suite catches regressions</li>
+                <li><strong>Documentation</strong> - Tests show how code should be used</li>
+                <li><strong>Less Debugging</strong> - Catch bugs immediately when introduced</li>
+                <li><strong>Refactoring Safety</strong> - Tests ensure behavior is preserved</li>
+                <li><strong>Faster Development</strong> - Less time debugging, more time coding</li>
+            </ul>
+
+            <h2>TDD Best Practices</h2>
+            <ul>
+                <li>Write the smallest possible test</li>
+                <li>Write simplest code to make test pass</li>
+                <li>Refactor only when tests are green</li>
+                <li>Keep tests fast (< 1 second)</li>
+                <li>One logical assertion per test</li>
+                <li>Test behavior, not implementation</li>
+                <li>Don't skip the refactor step</li>
+            </ul>
+
+            <h2>When to Use TDD</h2>
+            <h3>Good For:</h3>
+            <ul>
+                <li>Business logic and algorithms</li>
+                <li>Utility functions and libraries</li>
+                <li>APIs and services</li>
+                <li>Complex data transformations</li>
+            </ul>
+
+            <h3>Less Useful For:</h3>
+            <ul>
+                <li>UI prototyping and exploration</li>
+                <li>Simple CRUD operations</li>
+                <li>Spike solutions</li>
+                <li>Learning new technologies</li>
+            </ul>
+
+            <h2>Common Pitfalls</h2>
+            <ul>
+                <li><strong>Writing too much code</strong> - Only write enough to pass the test</li>
+                <li><strong>Skipping refactor</strong> - Technical debt accumulates</li>
+                <li><strong>Testing implementation</strong> - Test behavior instead</li>
+                <li><strong>Slow tests</strong> - Keep unit tests fast</li>
+                <li><strong>Not running tests frequently</strong> - Run after every change</li>
+            </ul>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Write test first (RED phase)</li>
+                <li>Make it pass with minimal code (GREEN phase)</li>
+                <li>Improve code quality (REFACTOR phase)</li>
+                <li>Repeat cycle for each feature</li>
+                <li>TDD forces better design decisions</li>
+                <li>Provides safety net for refactoring</li>
+                <li>Requires discipline but pays off</li>
+                <li>Not suitable for all situations</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Error Handling - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Error Handling for robust applications.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Error Handling</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Error Handling</h1>
+            <p class="subtitle">Build Robust Applications</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>Why Error Handling Matters</h2>
+            <p>Proper error handling prevents crashes, provides better user experience, and makes debugging easier. It's essential for production-ready applications.</p>
+
+            <h2>Try/Catch/Finally</h2>
+            <pre><code class="language-javascript">try {
+    // Code that might throw an error
+    const data = JSON.parse(userInput);
+    processData(data);
+} catch (error) {
+    // Handle the error
+    console.error('Failed to process:', error.message);
+    showUserError('Invalid data format');
+} finally {
+    // Always executes (cleanup)
+    hideLoadingSpinner();
+}
+</code></pre>
+
+            <h2>Error Types</h2>
+            <pre><code class="language-javascript">// ReferenceError - undefined variable
+try {
+    console.log(undefinedVar);
+} catch (error) {
+    console.log(error.name); // 'ReferenceError'
+    console.log(error.message); // 'undefinedVar is not defined'
+}
+
+// TypeError - wrong type operation
+try {
+    null.toString();
+} catch (error) {
+    console.log(error.name); // 'TypeError'
+}
+
+// RangeError - value out of range
+try {
+    new Array(-1);
+} catch (error) {
+    console.log(error.name); // 'RangeError'
+}
+
+// SyntaxError - invalid syntax
+try {
+    eval('{ invalid syntax');
+} catch (error) {
+    console.log(error.name); // 'SyntaxError'
+}
+</code></pre>
+
+            <h2>Custom Error Classes</h2>
+            <pre><code class="language-javascript">class ValidationError extends Error {
+    constructor(message, field) {
+        super(message);
+        this.name = 'ValidationError';
+        this.field = field;
+    }
+}
+
+class NetworkError extends Error {
+    constructor(message, statusCode) {
+        super(message);
+        this.name = 'NetworkError';
+        this.statusCode = statusCode;
+    }
+}
+
+class DatabaseError extends Error {
+    constructor(message, query) {
+        super(message);
+        this.name = 'DatabaseError';
+        this.query = query;
+    }
+}
+
+// Usage
+function validateEmail(email) {
+    if (!email) {
+        throw new ValidationError('Email is required', 'email');
+    }
+    if (!email.includes('@')) {
+        throw new ValidationError('Invalid email format', 'email');
+    }
+}
+
+try {
+    validateEmail('invalid');
+} catch (error) {
+    if (error instanceof ValidationError) {
+        console.log(`Validation failed for ${error.field}: ${error.message}`);
+    }
+}
+</code></pre>
+
+            <h2>Async Error Handling</h2>
+            <pre><code class="language-javascript">// With async/await
+async function fetchUserData(userId) {
+    try {
+        const response = await fetch(`/api/users/${userId}`);
+        
+        if (!response.ok) {
+            throw new NetworkError(
+                'Failed to fetch user',
+                response.status
+            );
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        if (error instanceof NetworkError) {
+            console.error('Network error:', error.statusCode);
+            // Show user-friendly message
+            showError('Unable to load user data');
+        } else {
+            console.error('Unexpected error:', error);
+            showError('Something went wrong');
+        }
+        throw error; // Re-throw for caller to handle
+    }
+}
+
+// With Promises
+function fetchData(url) {
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new NetworkError('Request failed', response.status);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Failed to fetch:', error);
+            throw error;
+        });
+}
+</code></pre>
+
+            <h2>Error Recovery Strategies</h2>
+            <pre><code class="language-javascript">// Retry with exponential backoff
+async function fetchWithRetry(url, maxRetries = 3) {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new NetworkError('Request failed', response.status);
+            }
+            return await response.json();
+        } catch (error) {
+            const isLastAttempt = attempt === maxRetries - 1;
+            
+            if (isLastAttempt) {
+                throw error;
+            }
+            
+            // Exponential backoff: 1s, 2s, 4s
+            const delay = Math.pow(2, attempt) * 1000;
+            console.log(`Retry ${attempt + 1}/${maxRetries} after ${delay}ms`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+}
+
+// Fallback values
+function getConfigValue(key) {
+    try {
+        const config = JSON.parse(localStorage.getItem('config'));
+        return config[key];
+    } catch (error) {
+        console.warn('Failed to load config, using defaults');
+        return DEFAULT_CONFIG[key];
+    }
+}
+
+// Circuit breaker pattern
+class CircuitBreaker {
+    constructor(threshold = 5, timeout = 60000) {
+        this.failureCount = 0;
+        this.threshold = threshold;
+        this.timeout = timeout;
+        this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
+        this.nextAttempt = Date.now();
+    }
+    
+    async execute(fn) {
+        if (this.state === 'OPEN') {
+            if (Date.now() < this.nextAttempt) {
+                throw new Error('Circuit breaker is OPEN');
+            }
+            this.state = 'HALF_OPEN';
+        }
+        
+        try {
+            const result = await fn();
+            this.onSuccess();
+            return result;
+        } catch (error) {
+            this.onFailure();
+            throw error;
+        }
+    }
+    
+    onSuccess() {
+        this.failureCount = 0;
+        this.state = 'CLOSED';
+    }
+    
+    onFailure() {
+        this.failureCount++;
+        if (this.failureCount >= this.threshold) {
+            this.state = 'OPEN';
+            this.nextAttempt = Date.now() + this.timeout;
+        }
+    }
+}
+</code></pre>
+
+            <h2>Best Practices</h2>
+            <pre><code class="language-javascript">// 1. Always handle errors
+async function loadData() {
+    try {
+        return await fetchData();
+    } catch (error) {
+        console.error('Failed to load:', error);
+        return null; // Or throw, depending on context
+    }
+}
+
+// 2. Provide context in errors
+throw new Error(`Failed to process user ${userId}: ${reason}`);
+
+// 3. Clean up resources
+async function processFile(filename) {
+    const file = await openFile(filename);
+    try {
+        return await processData(file);
+    } finally {
+        await file.close(); // Always cleanup
+    }
+}
+
+// 4. Don't swallow errors
+try {
+    riskyOperation();
+} catch (error) {
+    // Bad: Silent failure
+    // console.log('Error occurred');
+    
+    // Good: Log and handle
+    console.error('Operation failed:', error);
+    notifyUser('Operation failed');
+}
+
+// 5. Validate early
+function processOrder(order) {
+    if (!order || !order.items) {
+        throw new ValidationError('Invalid order');
+    }
+    // Process order...
+}
+</code></pre>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Use try/catch/finally for error handling</li>
+                <li>Create custom error classes for clarity</li>
+                <li>Handle async errors with try/catch or .catch()</li>
+                <li>Implement retry logic for transient failures</li>
+                <li>Always clean up resources in finally blocks</li>
+                <li>Log errors with sufficient context</li>
+                <li>Don't ignore or swallow errors</li>
+                <li>Validate input early to fail fast</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Facade Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Facade Pattern - provide a simplified interface to complex subsystems.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Facade Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Facade Pattern</h1>
+            <p class="subtitle">Simplify Complex Interfaces</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Facade pattern concept</li>
+                    <li>Simplify complex APIs</li>
+                    <li>Hide implementation details</li>
+                    <li>Create unified interfaces</li>
+                    <li>Apply facade best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is the Facade Pattern?</h2>
+
+            <p>A Facade wraps complex subsystems with a simple, unified interface that's easier to use. It hides the complexity and provides a clean API for common tasks.</p>
+
+            <h2>Basic Example</h2>
+
+            <pre><code class="language-javascript">// Complex subsystem with many classes
+class CPU {
+    freeze() { 
+        console.log('CPU frozen'); 
+    }
+    
+    jump(position) { 
+        console.log(`Jumping to position ${position}`); 
+    }
+    
+    execute() { 
+        console.log('Executing instructions'); 
+    }
+}
+
+class Memory {
+    load(position, data) { 
+        console.log(`Loading ${data} at position ${position}`); 
+    }
+}
+
+class HardDrive {
+    read(sector, size) { 
+        console.log(`Reading ${size} bytes from sector ${sector}`);
+        return 'boot data';
+    }
+}
+
+// Facade - provides simple interface
+class ComputerFacade {
+    constructor() {
+        this.cpu = new CPU();
+        this.memory = new Memory();
+        this.hardDrive = new HardDrive();
+    }
+    
+    start() {
+        console.log('Starting computer...');
+        this.cpu.freeze();
+        const bootData = this.hardDrive.read(0, 1024);
+        this.memory.load(0, bootData);
+        this.cpu.jump(0);
+        this.cpu.execute();
+        console.log('Computer started!');
+    }
+}
+
+// Usage - simple and clean!
+const computer = new ComputerFacade();
+computer.start(); // One simple method call
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>API Facade</h3>
+
+            <pre><code class="language-javascript">class ApiFacade {
+    constructor(baseUrl) {
+        this.baseUrl = baseUrl;
+        this.token = null;
+    }
+    
+    setAuthToken(token) {
+        this.token = token;
+    }
+    
+    async request(endpoint, options = {}) {
+        const url = `${this.baseUrl}${endpoint}`;
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers
+        };
+        
+        if (this.token) {
+            headers['Authorization'] = `Bearer ${this.token}`;
+        }
+        
+        const response = await fetch(url, {
+            ...options,
+            headers
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        return response.json();
+    }
+    
+    async getUser(id) {
+        return this.request(`/users/${id}`);
+    }
+    
+    async createUser(userData) {
+        return this.request('/users', {
+            method: 'POST',
+            body: JSON.stringify(userData)
+        });
+    }
+    
+    async updateUser(id, userData) {
+        return this.request(`/users/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(userData)
+        });
+    }
+    
+    async deleteUser(id) {
+        return this.request(`/users/${id}`, {
+            method: 'DELETE'
+        });
+    }
+}
+
+// Usage - simple and consistent
+const api = new ApiFacade('https://api.example.com');
+api.setAuthToken('my-token');
+
+const user = await api.getUser(1);
+const newUser = await api.createUser({ name: 'John' });
+</code></pre>
+
+            <h3>Browser Storage Facade</h3>
+
+            <pre><code class="language-javascript">class StorageFacade {
+    set(key, value, expiresIn = null) {
+        const item = {
+            value,
+            timestamp: Date.now(),
+            expiresIn
+        };
+        
+        try {
+            localStorage.setItem(key, JSON.stringify(item));
+            return true;
+        } catch (error) {
+            console.error('Storage error:', error);
+            return false;
+        }
+    }
+    
+    get(key) {
+        try {
+            const item = JSON.parse(localStorage.getItem(key));
+            
+            if (!item) return null;
+            
+            if (item.expiresIn) {
+                const age = Date.now() - item.timestamp;
+                if (age > item.expiresIn) {
+                    this.remove(key);
+                    return null;
+                }
+            }
+            
+            return item.value;
+        } catch (error) {
+            console.error('Storage error:', error);
+            return null;
+        }
+    }
+    
+    remove(key) {
+        localStorage.removeItem(key);
+    }
+    
+    clear() {
+        localStorage.clear();
+    }
+    
+    has(key) {
+        return this.get(key) !== null;
+    }
+}
+
+// Usage - simple interface
+const storage = new StorageFacade();
+
+storage.set('user', { name: 'John' }, 3600000); // 1 hour expiry
+const user = storage.get('user');
+storage.remove('user');
+</code></pre>
+
+            <h3>Event Handler Facade</h3>
+
+            <pre><code class="language-javascript">class EventFacade {
+    constructor(element) {
+        this.element = element;
+        this.listeners = new Map();
+    }
+    
+    on(event, handler) {
+        if (!this.listeners.has(event)) {
+            this.listeners.set(event, []);
+        }
+        
+        this.listeners.get(event).push(handler);
+        this.element.addEventListener(event, handler);
+        
+        return () => this.off(event, handler);
+    }
+    
+    off(event, handler) {
+        const handlers = this.listeners.get(event);
+        if (handlers) {
+            const index = handlers.indexOf(handler);
+            if (index > -1) {
+                handlers.splice(index, 1);
+            }
+        }
+        
+        this.element.removeEventListener(event, handler);
+    }
+    
+    once(event, handler) {
+        const onceHandler = (e) => {
+            handler(e);
+            this.off(event, onceHandler);
+        };
+        
+        this.on(event, onceHandler);
+    }
+    
+    emit(event, data) {
+        const customEvent = new CustomEvent(event, { detail: data });
+        this.element.dispatchEvent(customEvent);
+    }
+    
+    removeAll(event) {
+        const handlers = this.listeners.get(event);
+        if (handlers) {
+            handlers.forEach(handler => {
+                this.element.removeEventListener(event, handler);
+            });
+            this.listeners.delete(event);
+        }
+    }
+}
+
+// Usage
+const button = document.querySelector('#myButton');
+const events = new EventFacade(button);
+
+const unsubscribe = events.on('click', (e) => {
+    console.log('Clicked!');
+});
+
+events.once('click', () => {
+    console.log('First click only');
+});
+
+unsubscribe(); // Easy cleanup
+</code></pre>
+
+            <h2>When to Use Facade Pattern</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Simplify complex APIs or libraries</li>
+                    <li>Hide implementation details</li>
+                    <li>Provide unified interface to subsystems</li>
+                    <li>Reduce dependencies on internal workings</li>
+                    <li>Improve testability by isolating complexity</li>
+                    <li>Create convenience methods for common tasks</li>
+                </ul>
+            </div>
+
+            <h2>Benefits</h2>
+
+            <ul>
+                <li><strong>Simplicity:</strong> Easy-to-use interface</li>
+                <li><strong>Loose coupling:</strong> Clients don't depend on subsystem details</li>
+                <li><strong>Easy to use:</strong> Common tasks become simple</li>
+                <li><strong>Hides complexity:</strong> Internal details are hidden</li>
+                <li><strong>Flexibility:</strong> Can change subsystem without affecting clients</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Keep facade methods simple</strong>
+                <pre><code class="language-javascript">// Good - simple, focused methods
+class ApiFacade {
+    async getUser(id) {
+        return this.request(`/users/${id}`);
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Don't hide everything</strong>
+                <pre><code class="language-javascript">// Allow access to subsystems if needed
+class Facade {
+    constructor() {
+        this.subsystem = new Subsystem();
+    }
+    
+    // Simple methods for common tasks
+    doCommonTask() {
+        this.subsystem.complexMethod();
+    }
+    
+    // But allow direct access if needed
+    getSubsystem() {
+        return this.subsystem;
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Handle errors gracefully</strong>
+                <pre><code class="language-javascript">async request(endpoint) {
+    try {
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+    } catch (error) {
+        console.error('Request failed:', error);
+        throw error;
+    }
+}
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Facade simplifies complex subsystems</li>
+                <li>Provides unified, easy-to-use interface</li>
+                <li>Hides implementation details from clients</li>
+                <li>Makes code easier to use and test</li>
+                <li>Common in library and framework design</li>
+                <li>Reduces coupling between client and subsystem</li>
+                <li>Don't hide everything - allow access when needed</li>
+                <li>Keep facade methods simple and focused</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

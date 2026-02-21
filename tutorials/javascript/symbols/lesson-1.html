@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Symbols - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Symbols - unique identifiers for object properties and metaprogramming.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Symbols</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Symbols</h1>
+            <p class="subtitle">Unique Identifiers and Metaprogramming</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand Symbol primitive type</li>
+                    <li>Create unique identifiers</li>
+                    <li>Use well-known symbols</li>
+                    <li>Implement private properties</li>
+                    <li>Apply symbol best practices</li>
+                </ul>
+            </div>
+
+            <h2>What are Symbols?</h2>
+
+            <p>Symbols are a primitive data type introduced in ES6 for creating unique identifiers. Every symbol is guaranteed to be unique, making them perfect for property keys that won't collide with other properties.</p>
+
+            <h2>Creating Symbols</h2>
+
+            <pre><code class="language-javascript">// Create unique symbol
+const id = Symbol();
+const id2 = Symbol();
+
+console.log(id === id2); // false - each is unique
+
+// With description (for debugging)
+const userId = Symbol('user id');
+console.log(userId.toString()); // 'Symbol(user id)'
+console.log(userId.description); // 'user id'
+
+// Use as object property
+const user = {
+    name: 'John',
+    [userId]: 123
+};
+
+console.log(user[userId]); // 123
+console.log(user.name); // 'John'
+</code></pre>
+
+            <h2>Private Properties</h2>
+
+            <pre><code class="language-javascript">const _balance = Symbol('balance');
+const _transactions = Symbol('transactions');
+
+class BankAccount {
+    constructor(initialBalance) {
+        this[_balance] = initialBalance;
+        this[_transactions] = [];
+    }
+    
+    deposit(amount) {
+        this[_balance] += amount;
+        this[_transactions].push({ type: 'deposit', amount });
+    }
+    
+    getBalance() {
+        return this[_balance];
+    }
+    
+    getTransactions() {
+        return [...this[_transactions]];
+    }
+}
+
+const account = new BankAccount(1000);
+account.deposit(500);
+
+console.log(account.getBalance()); // 1500
+console.log(account[_balance]); // undefined (not accessible)
+console.log(Object.keys(account)); // [] (symbols not enumerable)
+</code></pre>
+
+            <h2>Well-Known Symbols</h2>
+
+            <h3>Symbol.iterator</h3>
+
+            <pre><code class="language-javascript">const collection = {
+    items: ['a', 'b', 'c'],
+    [Symbol.iterator]() {
+        let index = 0;
+        return {
+            next: () => ({
+                value: this.items[index++],
+                done: index > this.items.length
+            })
+        };
+    }
+};
+
+// Now iterable
+for (const item of collection) {
+    console.log(item); // 'a', 'b', 'c'
+}
+
+// Works with spread
+console.log([...collection]); // ['a', 'b', 'c']
+</code></pre>
+
+            <h3>Symbol.toStringTag</h3>
+
+            <pre><code class="language-javascript">class MyClass {
+    get [Symbol.toStringTag]() {
+        return 'MyClass';
+    }
+}
+
+const obj = new MyClass();
+console.log(Object.prototype.toString.call(obj)); // [object MyClass]
+console.log(obj.toString()); // [object MyClass]
+</code></pre>
+
+            <h3>Symbol.hasInstance</h3>
+
+            <pre><code class="language-javascript">class MyArray {
+    static [Symbol.hasInstance](instance) {
+        return Array.isArray(instance);
+    }
+}
+
+console.log([] instanceof MyArray); // true
+console.log({} instanceof MyArray); // false
+</code></pre>
+
+            <h2>Global Symbol Registry</h2>
+
+            <pre><code class="language-javascript">// Create/retrieve global symbol
+const globalSym = Symbol.for('app.id');
+const sameSym = Symbol.for('app.id');
+
+console.log(globalSym === sameSym); // true
+
+// Get key for symbol
+console.log(Symbol.keyFor(globalSym)); // 'app.id'
+
+// Regular symbols not in registry
+const localSym = Symbol('local');
+console.log(Symbol.keyFor(localSym)); // undefined
+</code></pre>
+
+            <h2>Accessing Symbol Properties</h2>
+
+            <pre><code class="language-javascript">const sym1 = Symbol('sym1');
+const sym2 = Symbol('sym2');
+
+const obj = {
+    name: 'John',
+    [sym1]: 'value1',
+    [sym2]: 'value2'
+};
+
+// Symbols not in Object.keys()
+console.log(Object.keys(obj)); // ['name']
+
+// Get symbol properties
+console.log(Object.getOwnPropertySymbols(obj)); // [Symbol(sym1), Symbol(sym2)]
+
+// Get all property keys
+console.log(Reflect.ownKeys(obj)); // ['name', Symbol(sym1), Symbol(sym2)]
+</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use for truly unique identifiers</strong>
+                <pre><code class="language-javascript">const ID = Symbol('id');
+const user = { [ID]: 123, name: 'John' };
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Implement private properties</strong>
+                <pre><code class="language-javascript">const _private = Symbol('private');
+class MyClass {
+    constructor() {
+        this[_private] = 'secret';
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use Symbol.for() for cross-realm symbols</strong>
+                <pre><code class="language-javascript">const shared = Symbol.for('shared.key');
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Symbols are unique, immutable primitives</li>
+                <li>Perfect for creating private properties</li>
+                <li>Not enumerable in for...in or Object.keys()</li>
+                <li>Well-known symbols enable metaprogramming</li>
+                <li>Symbol.for() creates global symbols</li>
+                <li>Each Symbol() call creates a unique value</li>
+                <li>Use Object.getOwnPropertySymbols() to access</li>
+                <li>Symbol properties don't conflict with string keys</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

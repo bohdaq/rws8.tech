@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript async/await - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript async/await - modern async syntax for cleaner, more readable asynchronous code.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">async/await</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering async/await</h1>
+            <p class="subtitle">Modern Async Syntax Made Simple</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand async functions and await keyword</li>
+                    <li>Handle errors with try/catch</li>
+                    <li>Run async operations in parallel with Promise.all</li>
+                    <li>Master sequential vs parallel patterns</li>
+                    <li>Avoid common async/await pitfalls</li>
+                </ul>
+            </div>
+
+            <h2>The Problem with Promises</h2>
+
+            <p>Promises are great, but chaining can get verbose:</p>
+
+            <pre><code class="language-javascript">fetch('/api/user')
+    .then(response => response.json())
+    .then(user => fetch(`/api/posts/${user.id}`))
+    .then(response => response.json())
+    .then(posts => {
+        console.log(posts);
+    })
+    .catch(error => console.error(error));
+</code></pre>
+
+            <h2>async/await to the Rescue</h2>
+
+            <pre><code class="language-javascript">async function getPosts() {
+    try {
+        const response = await fetch('/api/user');
+        const user = await response.json();
+        
+        const postsResponse = await fetch(`/api/posts/${user.id}`);
+        const posts = await postsResponse.json();
+        
+        console.log(posts);
+    } catch (error) {
+        console.error(error);
+    }
+}
+</code></pre>
+
+            <p>Much cleaner and easier to read!</p>
+
+            <h2>async Functions</h2>
+
+            <p>The <code>async</code> keyword makes a function return a Promise:</p>
+
+            <pre><code class="language-javascript">async function greet() {
+    return 'Hello';
+}
+
+// Equivalent to:
+function greet() {
+    return Promise.resolve('Hello');
+}
+
+// Usage
+greet().then(message => console.log(message)); // "Hello"
+
+// Or with await
+const message = await greet();
+console.log(message); // "Hello"
+</code></pre>
+
+            <h2>await Keyword</h2>
+
+            <p><code>await</code> pauses execution until the Promise resolves:</p>
+
+            <pre><code class="language-javascript">async function fetchData() {
+    console.log('Fetching...');
+    const response = await fetch('/api/data');
+    console.log('Got response');
+    const data = await response.json();
+    console.log('Parsed data');
+    return data;
+}
+</code></pre>
+
+            <div class="warning-box">
+                <strong>Important:</strong> <code>await</code> only works inside <code>async</code> functions!
+                <pre><code class="language-javascript">// Error!
+function getData() {
+    const data = await fetch('/api/data'); // SyntaxError!
+}
+
+// Correct
+async function getData() {
+    const data = await fetch('/api/data'); // Works!
+}
+</code></pre>
+            </div>
+
+            <h2>Error Handling with try/catch</h2>
+
+            <pre><code class="language-javascript">async function fetchUser(id) {
+    try {
+        const response = await fetch(`/api/users/${id}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const user = await response.json();
+        return user;
+    } catch (error) {
+        console.error('Failed to fetch user:', error);
+        return null;
+    }
+}
+</code></pre>
+
+            <h3>Multiple try/catch Blocks</h3>
+
+            <pre><code class="language-javascript">async function processData() {
+    let user;
+    
+    try {
+        user = await fetchUser(1);
+    } catch (error) {
+        console.error('User fetch failed:', error);
+        return;
+    }
+    
+    try {
+        await saveToDatabase(user);
+    } catch (error) {
+        console.error('Database save failed:', error);
+        // Continue with other operations
+    }
+    
+    console.log('Processing complete');
+}
+</code></pre>
+
+            <h2>Sequential vs Parallel Execution</h2>
+
+            <h3>Sequential (Slow)</h3>
+
+            <pre><code class="language-javascript">async function fetchSequential() {
+    const user = await fetchUser(1);      // Wait 1 second
+    const posts = await fetchPosts(1);    // Then wait 1 second
+    const comments = await fetchComments(1); // Then wait 1 second
+    
+    return { user, posts, comments };
+}
+// Total time: 3 seconds (1s + 1s + 1s)
+</code></pre>
+
+            <h3>Parallel (Fast)</h3>
+
+            <pre><code class="language-javascript">async function fetchParallel() {
+    // Start all requests simultaneously
+    const [user, posts, comments] = await Promise.all([
+        fetchUser(1),
+        fetchPosts(1),
+        fetchComments(1)
+    ]);
+    
+    return { user, posts, comments };
+}
+// Total time: 1 second (all run simultaneously)
+</code></pre>
+
+            <h2>Promise.all for Parallel Execution</h2>
+
+            <pre><code class="language-javascript">async function fetchMultipleUsers(ids) {
+    const promises = ids.map(id => fetchUser(id));
+    const users = await Promise.all(promises);
+    return users;
+}
+
+// Fetch users 1, 2, 3 in parallel
+const users = await fetchMultipleUsers([1, 2, 3]);
+console.log(users); // [user1, user2, user3]
+</code></pre>
+
+            <h3>Handle Individual Failures</h3>
+
+            <pre><code class="language-javascript">async function fetchWithFallback(ids) {
+    const promises = ids.map(id => 
+        fetchUser(id).catch(error => ({ 
+            error: error.message,
+            id 
+        }))
+    );
+    
+    const results = await Promise.all(promises);
+    
+    const successful = results.filter(r => !r.error);
+    const failed = results.filter(r => r.error);
+    
+    return { successful, failed };
+}
+</code></pre>
+
+            <h2>Promise.allSettled</h2>
+
+            <p>Get all results, even if some fail:</p>
+
+            <pre><code class="language-javascript">async function fetchAll(ids) {
+    const promises = ids.map(id => fetchUser(id));
+    const results = await Promise.allSettled(promises);
+    
+    results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+            console.log(`User ${ids[index]}:`, result.value);
+        } else {
+            console.error(`User ${ids[index]} failed:`, result.reason);
+        }
+    });
+    
+    return results;
+}
+</code></pre>
+
+            <h2>Promise.race</h2>
+
+            <p>Return first completed Promise:</p>
+
+            <pre><code class="language-javascript">async function fetchWithTimeout(url, timeout = 5000) {
+    const fetchPromise = fetch(url);
+    const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), timeout)
+    );
+    
+    try {
+        const response = await Promise.race([fetchPromise, timeoutPromise]);
+        return await response.json();
+    } catch (error) {
+        if (error.message === 'Timeout') {
+            console.error('Request timed out');
+        }
+        throw error;
+    }
+}
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>API Request with Retry</h3>
+
+            <pre><code class="language-javascript">async function fetchWithRetry(url, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                return await response.json();
+            }
+            throw new Error(`HTTP ${response.status}`);
+        } catch (error) {
+            if (i === retries - 1) throw error;
+            
+            const delay = 1000 * (i + 1);
+            console.log(`Retry ${i + 1} after ${delay}ms`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+}
+</code></pre>
+
+            <h3>Batch Processing</h3>
+
+            <pre><code class="language-javascript">async function processBatch(items, batchSize = 5) {
+    const results = [];
+    
+    for (let i = 0; i < items.length; i += batchSize) {
+        const batch = items.slice(i, i + batchSize);
+        console.log(`Processing batch ${i / batchSize + 1}`);
+        
+        const batchResults = await Promise.all(
+            batch.map(item => processItem(item))
+        );
+        
+        results.push(...batchResults);
+    }
+    
+    return results;
+}
+
+// Process 100 items in batches of 5
+const items = Array.from({ length: 100 }, (_, i) => i);
+const results = await processBatch(items, 5);
+</code></pre>
+
+            <h3>Dependent Async Operations</h3>
+
+            <pre><code class="language-javascript">async function createUserWithProfile(userData) {
+    // These must run sequentially (each depends on previous)
+    const user = await createUser(userData);
+    console.log('User created:', user.id);
+    
+    const profile = await createProfile(user.id, userData.profile);
+    console.log('Profile created');
+    
+    const avatar = await uploadAvatar(user.id, userData.avatar);
+    console.log('Avatar uploaded');
+    
+    return { user, profile, avatar };
+}
+</code></pre>
+
+            <h3>Parallel Independent Operations</h3>
+
+            <pre><code class="language-javascript">async function loadDashboard(userId) {
+    // These can run in parallel (independent)
+    const [user, stats, notifications, recentActivity] = await Promise.all([
+        fetchUser(userId),
+        fetchUserStats(userId),
+        fetchNotifications(userId),
+        fetchRecentActivity(userId)
+    ]);
+    
+    return { user, stats, notifications, recentActivity };
+}
+</code></pre>
+
+            <h2>Common Pitfalls</h2>
+
+            <div class="warning-box">
+                <strong>Pitfall 1: Forgetting await</strong>
+                <pre><code class="language-javascript">// Wrong - returns Promise, not data
+async function getData() {
+    const data = fetch('/api/data'); // Missing await!
+    console.log(data); // Promise, not data
+    return data;
+}
+
+// Right
+async function getData() {
+    const data = await fetch('/api/data');
+    return data;
+}
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 2: Sequential when parallel is better</strong>
+                <pre><code class="language-javascript">// Slow - sequential (3 seconds)
+async function fetchData() {
+    const users = await fetchUsers();    // 1s
+    const posts = await fetchPosts();    // 1s
+    const comments = await fetchComments(); // 1s
+    return { users, posts, comments };
+}
+
+// Fast - parallel (1 second)
+async function fetchData() {
+    const [users, posts, comments] = await Promise.all([
+        fetchUsers(),
+        fetchPosts(),
+        fetchComments()
+    ]);
+    return { users, posts, comments };
+}
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 3: Not handling errors</strong>
+                <pre><code class="language-javascript">// Bad - unhandled errors crash the app
+async function fetchData() {
+    const data = await fetch('/api/data');
+    return data;
+}
+
+// Good - error handling
+async function fetchData() {
+    try {
+        const response = await fetch('/api/data');
+        if (!response.ok) throw new Error('Fetch failed');
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        return null;
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 4: Using await in loops unnecessarily</strong>
+                <pre><code class="language-javascript">// Slow - sequential processing
+async function processUsers(users) {
+    const results = [];
+    for (const user of users) {
+        const result = await processUser(user); // One at a time
+        results.push(result);
+    }
+    return results;
+}
+
+// Fast - parallel processing
+async function processUsers(users) {
+    return await Promise.all(
+        users.map(user => processUser(user))
+    );
+}
+</code></pre>
+            </div>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Always handle errors</strong>
+                <pre><code class="language-javascript">async function safeOperation() {
+    try {
+        return await riskyOperation();
+    } catch (error) {
+        console.error('Operation failed:', error);
+        return defaultValue;
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Use Promise.all for independent operations</strong>
+                <pre><code class="language-javascript">// Good - parallel
+const [user, posts, comments] = await Promise.all([
+    fetchUser(),
+    fetchPosts(),
+    fetchComments()
+]);
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Avoid mixing async/await with .then()</strong>
+                <pre><code class="language-javascript">// Bad - mixing styles
+async function getData() {
+    return await fetch('/api/data')
+        .then(r => r.json());
+}
+
+// Good - consistent style
+async function getData() {
+    const response = await fetch('/api/data');
+    return await response.json();
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>4. Return early on errors</strong>
+                <pre><code class="language-javascript">async function processUser(id) {
+    const user = await fetchUser(id);
+    if (!user) return null;
+    
+    const processed = await processData(user);
+    if (!processed) return null;
+    
+    return processed;
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>5. Use Promise.allSettled for error-tolerant parallel operations</strong>
+                <pre><code class="language-javascript">const results = await Promise.allSettled([
+    fetchUser(1),
+    fetchUser(2),
+    fetchUser(3)
+]);
+
+// All results available, even if some failed
+results.forEach(result => {
+    if (result.status === 'fulfilled') {
+        console.log(result.value);
+    }
+});
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>async functions always return Promises</li>
+                <li>await pauses execution until Promise resolves</li>
+                <li>Use try/catch for error handling</li>
+                <li>Promise.all for parallel execution of independent operations</li>
+                <li>Promise.allSettled to handle all results (success or failure)</li>
+                <li>Promise.race for timeout patterns and racing operations</li>
+                <li>Avoid sequential execution when parallel is possible</li>
+                <li>Always handle errors properly with try/catch</li>
+                <li>Don't forget await keyword</li>
+                <li>Modern standard for async JavaScript</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

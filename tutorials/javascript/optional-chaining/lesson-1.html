@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Optional Chaining - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript optional chaining and nullish coalescing for safe property access.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Optional Chaining</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Optional Chaining</h1>
+            <p class="subtitle">Safe Property Access Without Errors</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Use optional chaining (?.) for safe property access</li>
+                    <li>Apply nullish coalescing (??) for default values</li>
+                    <li>Chain optional calls and array access</li>
+                    <li>Combine with other operators</li>
+                    <li>Avoid common pitfalls</li>
+                </ul>
+            </div>
+
+            <h2>The Problem: Accessing Nested Properties</h2>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John',
+    address: {
+        street: '123 Main St',
+        city: 'New York'
+    }
+};
+
+// This works
+console.log(user.address.city); // 'New York'
+
+// But this crashes
+const user2 = { name: 'Jane' };
+console.log(user2.address.city); // TypeError: Cannot read property 'city' of undefined
+</code></pre>
+
+            <h3>Old Solution: Manual Checks</h3>
+
+            <pre><code class="language-javascript">// Verbose and repetitive
+const city = user2 && user2.address && user2.address.city;
+
+// Or with if statements
+let city;
+if (user2 && user2.address) {
+    city = user2.address.city;
+}
+</code></pre>
+
+            <h2>Optional Chaining (?.) to the Rescue</h2>
+
+            <p>Optional chaining short-circuits and returns <code>undefined</code> if any part is null/undefined:</p>
+
+            <pre><code class="language-javascript">const user = { name: 'Jane' };
+
+// No error! Returns undefined
+const city = user?.address?.city;
+console.log(city); // undefined
+
+// Works when property exists
+const user2 = {
+    name: 'John',
+    address: { city: 'New York' }
+};
+console.log(user2?.address?.city); // 'New York'
+</code></pre>
+
+            <h2>Optional Chaining Syntax</h2>
+
+            <h3>Property Access</h3>
+
+            <pre><code class="language-javascript">obj?.prop
+obj?.[expr]
+</code></pre>
+
+            <h3>Function Calls</h3>
+
+            <pre><code class="language-javascript">func?.()
+obj.method?.()
+</code></pre>
+
+            <h3>Array Access</h3>
+
+            <pre><code class="language-javascript">arr?.[index]
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>API Response Handling</h3>
+
+            <pre><code class="language-javascript">async function fetchUser(id) {
+    const response = await fetch(`/api/users/${id}`);
+    const data = await response.json();
+    
+    // Safe access to nested properties
+    const userName = data?.user?.name;
+    const avatar = data?.user?.profile?.avatar;
+    const firstHobby = data?.user?.hobbies?.[0];
+    
+    return { userName, avatar, firstHobby };
+}
+</code></pre>
+
+            <h3>Optional Method Calls</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John',
+    greet() {
+        return `Hello, ${this.name}!`;
+    }
+};
+
+// Call method if it exists
+console.log(user.greet?.()); // "Hello, John!"
+console.log(user.farewell?.()); // undefined (no error!)
+</code></pre>
+
+            <h3>Event Handlers</h3>
+
+            <pre><code class="language-javascript">// Safe callback invocation
+function processData(data, callback) {
+    const result = transform(data);
+    callback?.(result); // Only calls if callback exists
+}
+
+// Usage
+processData(data); // No error even without callback
+processData(data, (result) => console.log(result)); // Calls callback
+</code></pre>
+
+            <h3>DOM Manipulation</h3>
+
+            <pre><code class="language-javascript">// Safe DOM access
+const button = document.querySelector('#submit-btn');
+button?.addEventListener('click', handleClick);
+
+// Chain multiple optional accesses
+const text = document.querySelector('.container')?.querySelector('.text')?.textContent;
+</code></pre>
+
+            <h2>Nullish Coalescing (??)</h2>
+
+            <p>Returns the right operand when the left is <code>null</code> or <code>undefined</code>:</p>
+
+            <pre><code class="language-javascript">const value = null ?? 'default';
+console.log(value); // 'default'
+
+const value2 = undefined ?? 'default';
+console.log(value2); // 'default'
+
+const value3 = 0 ?? 'default';
+console.log(value3); // 0 (not 'default'!)
+
+const value4 = '' ?? 'default';
+console.log(value4); // '' (not 'default'!)
+</code></pre>
+
+            <h3>?? vs ||</h3>
+
+            <pre><code class="language-javascript">// || treats 0, '', false as falsy
+const count = 0;
+console.log(count || 10); // 10 (wrong!)
+console.log(count ?? 10); // 0 (correct!)
+
+const name = '';
+console.log(name || 'Guest'); // 'Guest' (wrong!)
+console.log(name ?? 'Guest'); // '' (correct!)
+
+// Use || for actual falsy checks
+const name = '';
+console.log(name || 'Guest'); // 'Guest' (correct for this case!)
+</code></pre>
+
+            <h2>Combining ?. and ??</h2>
+
+            <pre><code class="language-javascript">const user = { name: 'John' };
+
+// Get city or default
+const city = user?.address?.city ?? 'Unknown';
+console.log(city); // 'Unknown'
+
+// Get first hobby or default
+const hobby = user?.hobbies?.[0] ?? 'No hobbies';
+console.log(hobby); // 'No hobbies'
+</code></pre>
+
+            <h3>Configuration with Defaults</h3>
+
+            <pre><code class="language-javascript">function createServer(config) {
+    const port = config?.server?.port ?? 3000;
+    const host = config?.server?.host ?? 'localhost';
+    const timeout = config?.timeout ?? 5000;
+    
+    return { port, host, timeout };
+}
+
+// All defaults
+createServer();
+// { port: 3000, host: 'localhost', timeout: 5000 }
+
+// Partial config
+createServer({ server: { port: 8080 } });
+// { port: 8080, host: 'localhost', timeout: 5000 }
+</code></pre>
+
+            <h2>Array and Function Examples</h2>
+
+            <h3>Optional Array Access</h3>
+
+            <pre><code class="language-javascript">const users = [
+    { name: 'John', age: 30 },
+    { name: 'Jane', age: 25 }
+];
+
+// Safe array access
+const firstUser = users?.[0];
+const thirdUser = users?.[2]; // undefined, no error
+
+// Chain with property access
+const firstName = users?.[0]?.name; // 'John'
+const thirdName = users?.[2]?.name; // undefined
+</code></pre>
+
+            <h3>Dynamic Property Access</h3>
+
+            <pre><code class="language-javascript">const user = { name: 'John', age: 30 };
+const prop = 'address';
+
+// Safe dynamic access
+const value = user?.[prop]?.city;
+console.log(value); // undefined
+</code></pre>
+
+            <h3>Optional Function Execution</h3>
+
+            <pre><code class="language-javascript">const api = {
+    fetchUser: (id) => ({ id, name: 'John' })
+};
+
+// Call method if it exists
+const user = api.fetchUser?.(1);
+const posts = api.fetchPosts?.(1); // undefined, no error
+
+// With async
+const data = await api.fetchData?.();
+</code></pre>
+
+            <h2>Common Patterns</h2>
+
+            <h3>Form Validation</h3>
+
+            <pre><code class="language-javascript">function validateForm(form) {
+    const email = form?.elements?.email?.value ?? '';
+    const password = form?.elements?.password?.value ?? '';
+    
+    return email && password;
+}
+</code></pre>
+
+            <h3>localStorage with Fallback</h3>
+
+            <pre><code class="language-javascript">const theme = localStorage.getItem('theme') ?? 'light';
+const user = JSON.parse(localStorage.getItem('user') ?? '{}');
+</code></pre>
+
+            <h3>Environment Variables</h3>
+
+            <pre><code class="language-javascript">const config = {
+    apiUrl: process.env?.API_URL ?? 'http://localhost:3000',
+    debug: process.env?.DEBUG === 'true' ?? false
+};
+</code></pre>
+
+            <h2>Common Pitfalls</h2>
+
+            <div class="warning-box">
+                <strong>Pitfall 1: Overusing optional chaining</strong>
+                <pre><code class="language-javascript">// Too defensive - user should always exist
+function greet(user) {
+    return `Hello, ${user?.name}!`; // Unnecessary
+}
+
+// Better - fail fast if user is missing
+function greet(user) {
+    return `Hello, ${user.name}!`;
+}
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 2: Hiding bugs</strong>
+                <pre><code class="language-javascript">// Silently returns undefined - hard to debug
+const result = calculateTotal?.();
+
+// Better - be explicit about optional behavior
+if (typeof calculateTotal === 'function') {
+    const result = calculateTotal();
+} else {
+    console.warn('calculateTotal is not a function');
+}
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 3: Confusing ?? with ||</strong>
+                <pre><code class="language-javascript">const count = 0;
+
+// Wrong - treats 0 as falsy
+const value = count || 10; // 10
+
+// Right - only null/undefined
+const value = count ?? 10; // 0
+</code></pre>
+            </div>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use for external data</strong>
+                <p>Optional chaining is perfect for API responses and user input:</p>
+                <pre><code class="language-javascript">const userName = apiResponse?.data?.user?.name ?? 'Guest';
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Don't hide required properties</strong>
+                <p>If a property should always exist, don't use optional chaining:</p>
+                <pre><code class="language-javascript">// Bad - hides bugs
+function processUser(user) {
+    return user?.id; // Should error if user is missing
+}
+
+// Good - fails fast
+function processUser(user) {
+    return user.id;
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Combine with destructuring</strong>
+                <pre><code class="language-javascript">const { name, email } = user?.profile ?? {};
+</code></pre>
+            </div>
+
+            <h2>Browser Support</h2>
+
+            <p>Optional chaining and nullish coalescing are supported in:</p>
+            <ul>
+                <li>Chrome 80+</li>
+                <li>Firefox 74+</li>
+                <li>Safari 13.1+</li>
+                <li>Edge 80+</li>
+                <li>Node.js 14+</li>
+            </ul>
+
+            <p>For older browsers, use Babel to transpile.</p>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Optional chaining (?.) safely accesses nested properties</li>
+                <li>Returns undefined instead of throwing errors</li>
+                <li>Works with properties, methods, and arrays</li>
+                <li>Nullish coalescing (??) provides defaults for null/undefined</li>
+                <li>?? only checks null/undefined, not all falsy values</li>
+                <li>Combine ?. and ?? for safe access with defaults</li>
+                <li>Don't overuse - let required properties fail fast</li>
+                <li>Perfect for external data and optional callbacks</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

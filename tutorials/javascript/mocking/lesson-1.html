@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Mocking - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Mocking with Jest and Vitest.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Mocking</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Mocking</h1>
+            <p class="subtitle">Isolate Code and Control Dependencies</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>Why Mocking?</h2>
+            <p>Mocking replaces dependencies with controlled substitutes, enabling isolated testing, faster tests, and predictable behavior without external dependencies.</p>
+
+            <h2>Mock Functions</h2>
+            <pre><code class="language-javascript">import { jest } from '@jest/globals'; // or vitest
+
+// Create mock function
+const mockCallback = jest.fn();
+
+// Use in code
+[1, 2, 3].forEach(mockCallback);
+
+// Verify calls
+expect(mockCallback).toHaveBeenCalledTimes(3);
+expect(mockCallback).toHaveBeenCalledWith(1, 0, [1, 2, 3]);
+expect(mockCallback).toHaveBeenLastCalledWith(3, 2, [1, 2, 3]);
+
+// Check all calls
+expect(mockCallback.mock.calls).toEqual([
+    [1, 0, [1, 2, 3]],
+    [2, 1, [1, 2, 3]],
+    [3, 2, [1, 2, 3]]
+]);
+</code></pre>
+
+            <h2>Mock Return Values</h2>
+            <pre><code class="language-javascript">const mockFn = jest.fn();
+
+// Return specific value
+mockFn.mockReturnValue(42);
+console.log(mockFn()); // 42
+console.log(mockFn()); // 42
+
+// Return different values
+mockFn
+    .mockReturnValueOnce(1)
+    .mockReturnValueOnce(2)
+    .mockReturnValue(3);
+
+console.log(mockFn()); // 1
+console.log(mockFn()); // 2
+console.log(mockFn()); // 3
+console.log(mockFn()); // 3
+</code></pre>
+
+            <h2>Mock Implementation</h2>
+            <pre><code class="language-javascript">const mockFn = jest.fn();
+
+// Custom implementation
+mockFn.mockImplementation((x, y) => x + y);
+console.log(mockFn(2, 3)); // 5
+
+// One-time implementation
+mockFn
+    .mockImplementationOnce((x) => x * 2)
+    .mockImplementationOnce((x) => x * 3);
+
+console.log(mockFn(5)); // 10
+console.log(mockFn(5)); // 15
+console.log(mockFn(5)); // 5 (falls back to original)
+</code></pre>
+
+            <h2>Mocking Async Functions</h2>
+            <pre><code class="language-javascript">// Mock resolved promise
+const mockFetch = jest.fn();
+mockFetch.mockResolvedValue({ data: 'test' });
+
+const result = await mockFetch();
+console.log(result); // { data: 'test' }
+
+// Mock rejected promise
+mockFetch.mockRejectedValue(new Error('Network error'));
+
+try {
+    await mockFetch();
+} catch (error) {
+    console.log(error.message); // 'Network error'
+}
+
+// Different responses per call
+mockFetch
+    .mockResolvedValueOnce({ id: 1 })
+    .mockResolvedValueOnce({ id: 2 })
+    .mockRejectedValueOnce(new Error('Failed'));
+
+console.log(await mockFetch()); // { id: 1 }
+console.log(await mockFetch()); // { id: 2 }
+// await mockFetch(); // throws Error
+</code></pre>
+
+            <h2>Mocking Modules</h2>
+            <pre><code class="language-javascript">// api.js
+export async function fetchUser(id) {
+    const response = await fetch(`/api/users/${id}`);
+    return response.json();
+}
+
+export async function fetchPosts() {
+    const response = await fetch('/api/posts');
+    return response.json();
+}
+
+// userService.js
+import { fetchUser } from './api';
+
+export async function getUserProfile(id) {
+    const user = await fetchUser(id);
+    return {
+        ...user,
+        displayName: `${user.firstName} ${user.lastName}`
+    };
+}
+
+// userService.test.js
+import { getUserProfile } from './userService';
+import { fetchUser } from './api';
+
+jest.mock('./api');
+
+test('formats user profile', async () => {
+    fetchUser.mockResolvedValue({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe'
+    });
+    
+    const profile = await getUserProfile(1);
+    
+    expect(profile.displayName).toBe('John Doe');
+    expect(fetchUser).toHaveBeenCalledWith(1);
+});
+</code></pre>
+
+            <h2>Spies</h2>
+            <pre><code class="language-javascript">// Spy on existing method
+const user = {
+    getName: () => 'John',
+    getAge: () => 30
+};
+
+const nameSpy = jest.spyOn(user, 'getName');
+
+// Original method still works
+console.log(user.getName()); // 'John'
+
+// But we can track calls
+expect(nameSpy).toHaveBeenCalled();
+
+// Override implementation
+nameSpy.mockReturnValue('Jane');
+console.log(user.getName()); // 'Jane'
+
+// Restore original
+nameSpy.mockRestore();
+console.log(user.getName()); // 'John'
+</code></pre>
+
+            <h2>Real-World Example: Testing API Service</h2>
+            <pre><code class="language-javascript">// userService.js
+import { fetchUser, updateUser } from './api';
+
+export class UserService {
+    async getUser(id) {
+        try {
+            return await fetchUser(id);
+        } catch (error) {
+            console.error('Failed to fetch user:', error);
+            return null;
+        }
+    }
+    
+    async updateUserEmail(id, email) {
+        const user = await this.getUser(id);
+        if (!user) throw new Error('User not found');
+        
+        return await updateUser(id, { ...user, email });
+    }
+}
+
+// userService.test.js
+import { UserService } from './userService';
+import { fetchUser, updateUser } from './api';
+
+jest.mock('./api');
+
+describe('UserService', () => {
+    let service;
+    
+    beforeEach(() => {
+        service = new UserService();
+        jest.clearAllMocks();
+    });
+    
+    test('getUser returns user data', async () => {
+        const mockUser = { id: 1, name: 'John' };
+        fetchUser.mockResolvedValue(mockUser);
+        
+        const user = await service.getUser(1);
+        
+        expect(user).toEqual(mockUser);
+        expect(fetchUser).toHaveBeenCalledWith(1);
+    });
+    
+    test('getUser handles errors', async () => {
+        fetchUser.mockRejectedValue(new Error('Network error'));
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+        
+        const user = await service.getUser(1);
+        
+        expect(user).toBeNull();
+        expect(consoleSpy).toHaveBeenCalled();
+        
+        consoleSpy.mockRestore();
+    });
+    
+    test('updateUserEmail updates email', async () => {
+        const mockUser = { id: 1, name: 'John', email: 'old@example.com' };
+        fetchUser.mockResolvedValue(mockUser);
+        updateUser.mockResolvedValue({ ...mockUser, email: 'new@example.com' });
+        
+        const updated = await service.updateUserEmail(1, 'new@example.com');
+        
+        expect(updated.email).toBe('new@example.com');
+        expect(updateUser).toHaveBeenCalledWith(1, {
+            ...mockUser,
+            email: 'new@example.com'
+        });
+    });
+});
+</code></pre>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li><strong>Mock at boundaries</strong> - Mock external dependencies (API, database, filesystem)</li>
+                <li><strong>Don't mock what you don't own</strong> - Mock your code's dependencies, not third-party internals</li>
+                <li><strong>Keep mocks simple</strong> - Complex mocks indicate design issues</li>
+                <li><strong>Verify interactions</strong> - Check mocks were called correctly</li>
+                <li><strong>Reset between tests</strong> - Use beforeEach to clear mocks</li>
+                <li><strong>Use real objects when possible</strong> - Only mock when necessary</li>
+            </ul>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Mocks replace dependencies with controlled substitutes</li>
+                <li>Control return values and implementations</li>
+                <li>Verify function calls and arguments</li>
+                <li>Mock modules for isolated testing</li>
+                <li>Spies track calls on real methods</li>
+                <li>Essential for testing code with external dependencies</li>
+                <li>Keep mocks simple and focused</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

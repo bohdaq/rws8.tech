@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Builder Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Builder Pattern - construct complex objects step by step with fluent interfaces.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Builder Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Builder Pattern</h1>
+            <p class="subtitle">Construct Complex Objects Step by Step</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Builder pattern concept</li>
+                    <li>Implement fluent interfaces</li>
+                    <li>Build complex objects step by step</li>
+                    <li>Use method chaining effectively</li>
+                    <li>Apply builder best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is the Builder Pattern?</h2>
+
+            <p>Builder allows you to construct complex objects step by step using method chaining for a clean, readable API. Instead of passing many parameters to a constructor, you build the object incrementally.</p>
+
+            <h2>Basic Implementation</h2>
+
+            <pre><code class="language-javascript">class User {
+    constructor(builder) {
+        this.name = builder.name;
+        this.email = builder.email;
+        this.age = builder.age;
+        this.address = builder.address;
+        this.phone = builder.phone;
+    }
+}
+
+class UserBuilder {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    setEmail(email) {
+        this.email = email;
+        return this; // Return this for chaining
+    }
+    
+    setAge(age) {
+        this.age = age;
+        return this;
+    }
+    
+    setAddress(address) {
+        this.address = address;
+        return this;
+    }
+    
+    setPhone(phone) {
+        this.phone = phone;
+        return this;
+    }
+    
+    build() {
+        return new User(this);
+    }
+}
+
+// Usage - clean and readable
+const user = new UserBuilder('John Doe')
+    .setEmail('john@example.com')
+    .setAge(30)
+    .setAddress('123 Main St')
+    .setPhone('555-1234')
+    .build();
+
+console.log(user);
+// User { name: 'John Doe', email: 'john@example.com', age: 30, ... }
+</code></pre>
+
+            <h2>Fluent Interface</h2>
+
+            <pre><code class="language-javascript">class QueryBuilder {
+    constructor() {
+        this.query = '';
+        this.params = [];
+    }
+    
+    select(...fields) {
+        this.query = `SELECT ${fields.join(', ')}`;
+        return this;
+    }
+    
+    from(table) {
+        this.query += ` FROM ${table}`;
+        return this;
+    }
+    
+    where(condition, value) {
+        this.query += ` WHERE ${condition}`;
+        this.params.push(value);
+        return this;
+    }
+    
+    and(condition, value) {
+        this.query += ` AND ${condition}`;
+        this.params.push(value);
+        return this;
+    }
+    
+    orderBy(field, direction = 'ASC') {
+        this.query += ` ORDER BY ${field} ${direction}`;
+        return this;
+    }
+    
+    limit(count) {
+        this.query += ` LIMIT ${count}`;
+        return this;
+    }
+    
+    build() {
+        return { 
+            query: this.query, 
+            params: this.params 
+        };
+    }
+}
+
+// Usage
+const query = new QueryBuilder()
+    .select('id', 'name', 'email')
+    .from('users')
+    .where('age > ?', 18)
+    .and('status = ?', 'active')
+    .orderBy('name')
+    .limit(10)
+    .build();
+
+console.log(query);
+// { query: 'SELECT id, name, email FROM users WHERE age > ? AND status = ? ORDER BY name LIMIT 10',
+//   params: [18, 'active'] }
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>HTTP Request Builder</h3>
+
+            <pre><code class="language-javascript">class RequestBuilder {
+    constructor(url) {
+        this.url = url;
+        this.method = 'GET';
+        this.headers = {};
+        this.body = null;
+        this.timeout = 5000;
+    }
+    
+    setMethod(method) {
+        this.method = method.toUpperCase();
+        return this;
+    }
+    
+    setHeader(key, value) {
+        this.headers[key] = value;
+        return this;
+    }
+    
+    setHeaders(headers) {
+        this.headers = { ...this.headers, ...headers };
+        return this;
+    }
+    
+    setBody(body) {
+        this.body = body;
+        return this;
+    }
+    
+    setTimeout(timeout) {
+        this.timeout = timeout;
+        return this;
+    }
+    
+    json() {
+        this.setHeader('Content-Type', 'application/json');
+        return this;
+    }
+    
+    auth(token) {
+        this.setHeader('Authorization', `Bearer ${token}`);
+        return this;
+    }
+    
+    async execute() {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+        
+        try {
+            const response = await fetch(this.url, {
+                method: this.method,
+                headers: this.headers,
+                body: this.body ? JSON.stringify(this.body) : null,
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            return response;
+        } catch (error) {
+            clearTimeout(timeoutId);
+            throw error;
+        }
+    }
+}
+
+// Usage
+const response = await new RequestBuilder('/api/users')
+    .setMethod('POST')
+    .json()
+    .auth('my-token-123')
+    .setBody({ name: 'John', email: 'john@example.com' })
+    .setTimeout(10000)
+    .execute();
+
+const data = await response.json();
+</code></pre>
+
+            <h3>Email Builder</h3>
+
+            <pre><code class="language-javascript">class EmailBuilder {
+    constructor() {
+        this.to = [];
+        this.cc = [];
+        this.bcc = [];
+        this.subject = '';
+        this.body = '';
+        this.attachments = [];
+    }
+    
+    addTo(email) {
+        this.to.push(email);
+        return this;
+    }
+    
+    addCc(email) {
+        this.cc.push(email);
+        return this;
+    }
+    
+    addBcc(email) {
+        this.bcc.push(email);
+        return this;
+    }
+    
+    setSubject(subject) {
+        this.subject = subject;
+        return this;
+    }
+    
+    setBody(body) {
+        this.body = body;
+        return this;
+    }
+    
+    addAttachment(file) {
+        this.attachments.push(file);
+        return this;
+    }
+    
+    build() {
+        if (this.to.length === 0) {
+            throw new Error('Email must have at least one recipient');
+        }
+        if (!this.subject) {
+            throw new Error('Email must have a subject');
+        }
+        
+        return {
+            to: this.to,
+            cc: this.cc,
+            bcc: this.bcc,
+            subject: this.subject,
+            body: this.body,
+            attachments: this.attachments
+        };
+    }
+    
+    async send() {
+        const email = this.build();
+        // Send email logic here
+        console.log('Sending email:', email);
+        return true;
+    }
+}
+
+// Usage
+await new EmailBuilder()
+    .addTo('user1@example.com')
+    .addTo('user2@example.com')
+    .addCc('manager@example.com')
+    .setSubject('Meeting Tomorrow')
+    .setBody('Don\'t forget about our meeting at 2pm')
+    .addAttachment('agenda.pdf')
+    .send();
+</code></pre>
+
+            <h2>When to Use Builder Pattern</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Complex object construction with many parameters</li>
+                    <li>Many optional parameters</li>
+                    <li>Immutable objects</li>
+                    <li>Fluent APIs and DSLs</li>
+                    <li>Query builders</li>
+                    <li>Configuration objects</li>
+                </ul>
+            </div>
+
+            <h2>Benefits</h2>
+
+            <ul>
+                <li><strong>Readable code:</strong> Method chaining is self-documenting</li>
+                <li><strong>Flexible construction:</strong> Build objects in any order</li>
+                <li><strong>Immutability support:</strong> Build once, use forever</li>
+                <li><strong>Method chaining:</strong> Clean, fluent API</li>
+                <li><strong>Clear API:</strong> Easy to understand and use</li>
+                <li><strong>Validation:</strong> Validate in build() method</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Always return this for chaining</strong>
+                <pre><code class="language-javascript">setName(name) {
+    this.name = name;
+    return this; // Essential for chaining
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Validate in build() method</strong>
+                <pre><code class="language-javascript">build() {
+    if (!this.name) {
+        throw new Error('Name is required');
+    }
+    return new User(this);
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use descriptive method names</strong>
+                <pre><code class="language-javascript">// Good
+.setEmail('test@example.com')
+.withTimeout(5000)
+.addHeader('Content-Type', 'application/json')
+
+// Not as clear
+.email('test@example.com')
+.timeout(5000)
+.header('Content-Type', 'application/json')
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Builder constructs complex objects step by step</li>
+                <li>Method chaining creates fluent interfaces</li>
+                <li>Perfect for objects with many optional parameters</li>
+                <li>Always return <code>this</code> for chaining</li>
+                <li>Call <code>build()</code> to create final object</li>
+                <li>Validate in build() method</li>
+                <li>Makes code more readable and maintainable</li>
+                <li>Great for immutable objects</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

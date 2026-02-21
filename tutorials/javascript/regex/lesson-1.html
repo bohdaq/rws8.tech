@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Regular Expressions - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Regular Expressions for pattern matching and validation.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Regular Expressions</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Regular Expressions</h1>
+            <p class="subtitle">Pattern Matching and Validation</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>What are Regular Expressions?</h2>
+            <p>Regular Expressions (regex) are patterns used to match character combinations in strings. They're essential for validation, searching, and text manipulation.</p>
+
+            <h2>Basic Syntax</h2>
+            <pre><code class="language-javascript">// Literal notation
+const regex1 = /hello/;
+const regex2 = /[0-9]+/;
+
+// Constructor
+const regex3 = new RegExp('hello');
+const regex4 = new RegExp('[0-9]+');
+
+// Test method
+console.log(/hello/.test('hello world')); // true
+console.log(/goodbye/.test('hello world')); // false
+</code></pre>
+
+            <h2>Common Validation Patterns</h2>
+            <pre><code class="language-javascript">// Email
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+console.log(emailRegex.test('user@example.com')); // true
+console.log(emailRegex.test('invalid.email')); // false
+
+// Phone (US format)
+const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
+console.log(phoneRegex.test('555-123-4567')); // true
+
+// URL
+const urlRegex = /^https?:\/\/.+/;
+console.log(urlRegex.test('https://example.com')); // true
+
+// Strong password (8+ chars, letter, number, special)
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+console.log(passwordRegex.test('Pass123!')); // true
+</code></pre>
+
+            <h2>Character Classes</h2>
+            <pre><code class="language-javascript">// \d - digit [0-9]
+/\d+/.test('123'); // true
+
+// \w - word character [A-Za-z0-9_]
+/\w+/.test('hello_123'); // true
+
+// \s - whitespace
+/\s/.test(' '); // true
+
+// . - any character (except newline)
+/.+/.test('anything'); // true
+
+// Custom classes
+/[aeiou]/.test('hello'); // true (vowels)
+/[^0-9]/.test('abc'); // true (not digits)
+/[a-z]/.test('hello'); // true (lowercase)
+/[A-Z]/.test('HELLO'); // true (uppercase)
+</code></pre>
+
+            <h2>Quantifiers</h2>
+            <pre><code class="language-javascript">// * - 0 or more
+/ab*c/.test('ac'); // true (0 b's)
+/ab*c/.test('abbc'); // true (2 b's)
+
+// + - 1 or more
+/ab+c/.test('abc'); // true
+/ab+c/.test('ac'); // false
+
+// ? - 0 or 1 (optional)
+/colou?r/.test('color'); // true
+/colou?r/.test('colour'); // true
+
+// {n} - exactly n
+/\d{3}/.test('123'); // true
+/\d{3}/.test('12'); // false
+
+// {n,} - n or more
+/\d{3,}/.test('12345'); // true
+
+// {n,m} - between n and m
+/\d{3,5}/.test('1234'); // true
+</code></pre>
+
+            <h2>Groups and Capturing</h2>
+            <pre><code class="language-javascript">// Capturing groups ()
+const dateRegex = /(\d{4})-(\d{2})-(\d{2})/;
+const match = '2024-02-21'.match(dateRegex);
+console.log(match[0]); // '2024-02-21' (full match)
+console.log(match[1]); // '2024' (year)
+console.log(match[2]); // '02' (month)
+console.log(match[3]); // '21' (day)
+
+// Named groups
+const namedRegex = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/;
+const namedMatch = '2024-02-21'.match(namedRegex);
+console.log(namedMatch.groups.year); // '2024'
+console.log(namedMatch.groups.month); // '02'
+
+// Non-capturing groups (?:)
+const titleRegex = /(?:Mr|Mrs|Ms)\. (\w+)/;
+const result = 'Mr. Smith'.match(titleRegex);
+console.log(result[1]); // 'Smith' (only captured group)
+</code></pre>
+
+            <h2>Methods</h2>
+            <pre><code class="language-javascript">const text = 'The quick brown fox jumps over the lazy dog';
+
+// test() - boolean
+/quick/.test(text); // true
+
+// match() - array of matches
+text.match(/\w+/g); // ['The', 'quick', 'brown', ...]
+
+// matchAll() - iterator of all matches
+const matches = text.matchAll(/\b\w{4}\b/g);
+for (const match of matches) {
+    console.log(match[0]); // 'quick', 'brown', 'over', 'lazy'
+}
+
+// replace() - replace matches
+text.replace(/fox/, 'cat'); // 'The quick brown cat...'
+text.replace(/\b\w{3}\b/g, '***'); // 'The quick brown fox jumps over *** lazy ***'
+
+// search() - index of first match
+text.search(/brown/); // 10
+
+// split() - split by pattern
+text.split(/\s+/); // ['The', 'quick', 'brown', ...]
+</code></pre>
+
+            <h2>Flags</h2>
+            <pre><code class="language-javascript">// g - global (find all matches)
+'aaa'.match(/a/); // ['a'] (first only)
+'aaa'.match(/a/g); // ['a', 'a', 'a'] (all)
+
+// i - case insensitive
+/hello/i.test('HELLO'); // true
+/hello/.test('HELLO'); // false
+
+// m - multiline (^ and $ match line boundaries)
+const multiline = 'line1\nline2\nline3';
+multiline.match(/^line/gm); // ['line', 'line', 'line']
+
+// s - dotAll (. matches newlines)
+/a.b/.test('a\nb'); // false
+/a.b/s.test('a\nb'); // true
+
+// u - unicode
+/\u{1F600}/u.test('😀'); // true
+</code></pre>
+
+            <h2>Real-World Form Validation</h2>
+            <pre><code class="language-javascript">function validateForm(data) {
+    const errors = {};
+    
+    // Email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        errors.email = 'Invalid email format';
+    }
+    
+    // Phone
+    if (!/^\d{3}-\d{3}-\d{4}$/.test(data.phone)) {
+        errors.phone = 'Phone must be XXX-XXX-XXXX';
+    }
+    
+    // Password
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(data.password)) {
+        errors.password = 'Password must be 8+ chars with letter, number, and special char';
+    }
+    
+    // ZIP code
+    if (!/^\d{5}(-\d{4})?$/.test(data.zip)) {
+        errors.zip = 'Invalid ZIP code';
+    }
+    
+    return Object.keys(errors).length === 0 ? null : errors;
+}
+</code></pre>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Regex provides powerful pattern matching</li>
+                <li>Use character classes (\d, \w, \s) for common patterns</li>
+                <li>Quantifiers (+, *, ?, {n,m}) control repetition</li>
+                <li>Groups () capture matched portions</li>
+                <li>Flags (g, i, m, s) modify behavior</li>
+                <li>Essential for validation and text processing</li>
+                <li>Test patterns thoroughly with edge cases</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

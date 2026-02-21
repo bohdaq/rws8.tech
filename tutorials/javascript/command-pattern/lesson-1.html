@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Command Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Command Pattern - encapsulate requests as objects for undo/redo and queuing.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Command Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Command Pattern</h1>
+            <p class="subtitle">Encapsulate Requests as Objects</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Command pattern concept</li>
+                    <li>Encapsulate actions as objects</li>
+                    <li>Implement undo/redo functionality</li>
+                    <li>Create command queues</li>
+                    <li>Apply command best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is the Command Pattern?</h2>
+
+            <p>Command turns requests into stand-alone objects containing all information about the request. This enables undo/redo, queuing, logging, and decoupling of sender and receiver.</p>
+
+            <h2>Basic Example</h2>
+
+            <pre><code class="language-javascript">class Command {
+    execute() {
+        throw new Error('execute() must be implemented');
+    }
+    
+    undo() {
+        throw new Error('undo() must be implemented');
+    }
+}
+
+class AddCommand extends Command {
+    constructor(receiver, value) {
+        super();
+        this.receiver = receiver;
+        this.value = value;
+    }
+    
+    execute() {
+        this.receiver.add(this.value);
+        console.log(`Added ${this.value}`);
+    }
+    
+    undo() {
+        this.receiver.subtract(this.value);
+        console.log(`Undid add of ${this.value}`);
+    }
+}
+
+class SubtractCommand extends Command {
+    constructor(receiver, value) {
+        super();
+        this.receiver = receiver;
+        this.value = value;
+    }
+    
+    execute() {
+        this.receiver.subtract(this.value);
+        console.log(`Subtracted ${this.value}`);
+    }
+    
+    undo() {
+        this.receiver.add(this.value);
+        console.log(`Undid subtract of ${this.value}`);
+    }
+}
+
+class Calculator {
+    constructor() {
+        this.value = 0;
+    }
+    
+    add(val) {
+        this.value += val;
+        console.log(`Current value: ${this.value}`);
+    }
+    
+    subtract(val) {
+        this.value -= val;
+        console.log(`Current value: ${this.value}`);
+    }
+}
+
+// Usage
+const calc = new Calculator();
+const addCmd = new AddCommand(calc, 10);
+const subCmd = new SubtractCommand(calc, 5);
+
+addCmd.execute(); // Added 10, Current value: 10
+subCmd.execute(); // Subtracted 5, Current value: 5
+subCmd.undo();    // Undid subtract of 5, Current value: 10
+addCmd.undo();    // Undid add of 10, Current value: 0
+</code></pre>
+
+            <h2>Undo/Redo Manager</h2>
+
+            <pre><code class="language-javascript">class CommandManager {
+    constructor() {
+        this.history = [];
+        this.current = -1;
+    }
+    
+    execute(command) {
+        // Remove any commands after current position
+        this.history = this.history.slice(0, this.current + 1);
+        
+        command.execute();
+        this.history.push(command);
+        this.current++;
+    }
+    
+    undo() {
+        if (this.current >= 0) {
+            this.history[this.current].undo();
+            this.current--;
+        } else {
+            console.log('Nothing to undo');
+        }
+    }
+    
+    redo() {
+        if (this.current < this.history.length - 1) {
+            this.current++;
+            this.history[this.current].execute();
+        } else {
+            console.log('Nothing to redo');
+        }
+    }
+    
+    getHistory() {
+        return this.history.map((cmd, i) => ({
+            command: cmd.constructor.name,
+            current: i === this.current
+        }));
+    }
+}
+
+// Usage
+const manager = new CommandManager();
+const calc = new Calculator();
+
+manager.execute(new AddCommand(calc, 5));
+manager.execute(new AddCommand(calc, 3));
+manager.execute(new SubtractCommand(calc, 2));
+
+console.log(manager.getHistory());
+// [{ command: 'AddCommand', current: false },
+//  { command: 'AddCommand', current: false },
+//  { command: 'SubtractCommand', current: true }]
+
+manager.undo(); // Undo subtract
+manager.undo(); // Undo second add
+manager.redo(); // Redo second add
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Text Editor Commands</h3>
+
+            <pre><code class="language-javascript">class TextEditor {
+    constructor() {
+        this.content = '';
+    }
+    
+    insert(text, position) {
+        this.content = 
+            this.content.slice(0, position) + 
+            text + 
+            this.content.slice(position);
+    }
+    
+    delete(position, length) {
+        this.content = 
+            this.content.slice(0, position) + 
+            this.content.slice(position + length);
+    }
+    
+    getContent() {
+        return this.content;
+    }
+}
+
+class InsertCommand extends Command {
+    constructor(editor, text, position) {
+        super();
+        this.editor = editor;
+        this.text = text;
+        this.position = position;
+    }
+    
+    execute() {
+        this.editor.insert(this.text, this.position);
+    }
+    
+    undo() {
+        this.editor.delete(this.position, this.text.length);
+    }
+}
+
+class DeleteCommand extends Command {
+    constructor(editor, position, length) {
+        super();
+        this.editor = editor;
+        this.position = position;
+        this.length = length;
+        this.deletedText = '';
+    }
+    
+    execute() {
+        this.deletedText = this.editor.getContent()
+            .slice(this.position, this.position + this.length);
+        this.editor.delete(this.position, this.length);
+    }
+    
+    undo() {
+        this.editor.insert(this.deletedText, this.position);
+    }
+}
+
+// Usage
+const editor = new TextEditor();
+const manager = new CommandManager();
+
+manager.execute(new InsertCommand(editor, 'Hello', 0));
+manager.execute(new InsertCommand(editor, ' World', 5));
+console.log(editor.getContent()); // "Hello World"
+
+manager.undo();
+console.log(editor.getContent()); // "Hello"
+
+manager.redo();
+console.log(editor.getContent()); // "Hello World"
+</code></pre>
+
+            <h3>Command Queue</h3>
+
+            <pre><code class="language-javascript">class CommandQueue {
+    constructor() {
+        this.queue = [];
+        this.isProcessing = false;
+    }
+    
+    add(command) {
+        this.queue.push(command);
+        if (!this.isProcessing) {
+            this.process();
+        }
+    }
+    
+    async process() {
+        this.isProcessing = true;
+        
+        while (this.queue.length > 0) {
+            const command = this.queue.shift();
+            await command.execute();
+        }
+        
+        this.isProcessing = false;
+    }
+}
+
+class AsyncCommand extends Command {
+    constructor(task, delay = 1000) {
+        super();
+        this.task = task;
+        this.delay = delay;
+    }
+    
+    async execute() {
+        console.log(`Starting: ${this.task}`);
+        await new Promise(resolve => setTimeout(resolve, this.delay));
+        console.log(`Completed: ${this.task}`);
+    }
+    
+    undo() {
+        console.log(`Undoing: ${this.task}`);
+    }
+}
+
+// Usage
+const queue = new CommandQueue();
+
+queue.add(new AsyncCommand('Task 1', 1000));
+queue.add(new AsyncCommand('Task 2', 500));
+queue.add(new AsyncCommand('Task 3', 800));
+// Tasks execute sequentially
+</code></pre>
+
+            <h2>When to Use Command Pattern</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Undo/redo functionality</li>
+                    <li>Command queuing and scheduling</li>
+                    <li>Transaction systems</li>
+                    <li>Macro recording and playback</li>
+                    <li>Job scheduling</li>
+                    <li>Logging and auditing</li>
+                </ul>
+            </div>
+
+            <h2>Benefits</h2>
+
+            <ul>
+                <li><strong>Decouples sender/receiver:</strong> Invoker doesn't know about receiver</li>
+                <li><strong>Supports undo/redo:</strong> Easy to implement reversible operations</li>
+                <li><strong>Command queuing:</strong> Queue and execute commands later</li>
+                <li><strong>Logging/auditing:</strong> Track all operations</li>
+                <li><strong>Macro commands:</strong> Combine multiple commands</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Always implement both execute and undo</strong>
+                <pre><code class="language-javascript">class MyCommand extends Command {
+    execute() {
+        // Do something
+    }
+    
+    undo() {
+        // Reverse it
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Store state needed for undo</strong>
+                <pre><code class="language-javascript">class DeleteCommand extends Command {
+    execute() {
+        this.deletedData = this.receiver.getData();
+        this.receiver.delete();
+    }
+    
+    undo() {
+        this.receiver.restore(this.deletedData);
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use command manager for history</strong>
+                <pre><code class="language-javascript">const manager = new CommandManager();
+manager.execute(command); // Adds to history
+manager.undo();
+manager.redo();
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Command encapsulates requests as objects</li>
+                <li>Perfect for undo/redo functionality</li>
+                <li>Supports queuing and logging</li>
+                <li>Decouples invoker from receiver</li>
+                <li>Easy to add new commands</li>
+                <li>Store state needed for undo operations</li>
+                <li>Use command manager for history tracking</li>
+                <li>Common in text editors, graphics apps, transaction systems</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

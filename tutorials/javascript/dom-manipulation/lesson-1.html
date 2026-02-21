@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript DOM Manipulation - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript DOM Manipulation - select, create, modify, and remove elements dynamically.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">DOM Manipulation</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering DOM Manipulation</h1>
+            <p class="subtitle">Dynamic Web Page Control</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Select elements with querySelector and getElementById</li>
+                    <li>Create and append new elements</li>
+                    <li>Modify element content and attributes</li>
+                    <li>Remove and replace elements</li>
+                    <li>Apply DOM manipulation best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is the DOM?</h2>
+
+            <p>The Document Object Model (DOM) is a programming interface for HTML documents. It represents the page as a tree of objects that JavaScript can manipulate to create dynamic, interactive web pages.</p>
+
+            <h2>Selecting Elements</h2>
+
+            <pre><code class="language-javascript">// By ID - fastest method
+const header = document.getElementById('header');
+
+// By CSS selector - most flexible (first match)
+const button = document.querySelector('.btn-primary');
+const firstItem = document.querySelector('#list > li:first-child');
+
+// By CSS selector - all matches
+const items = document.querySelectorAll('.list-item');
+items.forEach(item => console.log(item));
+
+// By class name - returns HTMLCollection
+const cards = document.getElementsByClassName('card');
+
+// By tag name
+const paragraphs = document.getElementsByTagName('p');
+
+// Modern approach - use querySelector/querySelectorAll
+const nav = document.querySelector('nav.navbar');
+const links = document.querySelectorAll('a[href^="http"]');
+</code></pre>
+
+            <h2>Creating Elements</h2>
+
+            <pre><code class="language-javascript">// Create element
+const div = document.createElement('div');
+
+// Set attributes
+div.className = 'container';
+div.id = 'main-container';
+div.setAttribute('data-id', '123');
+
+// Set content
+div.textContent = 'Hello World'; // Text only
+div.innerHTML = '<p>Hello <strong>World</strong></p>'; // HTML
+
+// Create with content
+const paragraph = document.createElement('p');
+paragraph.textContent = 'This is a paragraph';
+
+// Append to DOM
+document.body.appendChild(div);
+div.appendChild(paragraph);
+
+// Insert at specific position
+const parent = document.querySelector('#parent');
+const firstChild = parent.firstChild;
+parent.insertBefore(div, firstChild);
+</code></pre>
+
+            <h2>Modifying Elements</h2>
+
+            <pre><code class="language-javascript">const element = document.querySelector('#myElement');
+
+// Change content
+element.textContent = 'New text content';
+element.innerHTML = '<span>New HTML content</span>';
+
+// Change attributes
+element.setAttribute('data-id', '123');
+element.getAttribute('data-id'); // '123'
+element.removeAttribute('data-id');
+
+// Direct property access
+element.id = 'newId';
+element.className = 'new-class another-class';
+element.href = 'https://example.com';
+
+// Change styles
+element.style.color = 'blue';
+element.style.backgroundColor = '#f0f0f0';
+element.style.fontSize = '16px';
+
+// Better - use CSS classes
+element.classList.add('active');
+element.classList.remove('hidden');
+element.classList.toggle('visible');
+element.classList.contains('active'); // true/false
+
+// Replace class
+element.classList.replace('old-class', 'new-class');
+</code></pre>
+
+            <h2>Removing Elements</h2>
+
+            <pre><code class="language-javascript">// Remove element (modern)
+const element = document.querySelector('#myElement');
+element.remove();
+
+// Remove child (older method)
+const parent = document.querySelector('#parent');
+const child = document.querySelector('#child');
+parent.removeChild(child);
+
+// Clear all children
+parent.innerHTML = '';
+
+// Better performance - remove children one by one
+while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+}
+
+// Replace element
+const newElement = document.createElement('div');
+newElement.textContent = 'New content';
+element.replaceWith(newElement);
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Todo List</h3>
+
+            <pre><code class="language-javascript">function createTodoItem(text) {
+    const li = document.createElement('li');
+    li.className = 'todo-item';
+    
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.addEventListener('change', () => {
+        span.classList.toggle('completed');
+    });
+    
+    const span = document.createElement('span');
+    span.textContent = text;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'btn-delete';
+    deleteBtn.addEventListener('click', () => {
+        li.remove();
+    });
+    
+    li.appendChild(checkbox);
+    li.appendChild(span);
+    li.appendChild(deleteBtn);
+    
+    return li;
+}
+
+function addTodo(text) {
+    const todoList = document.querySelector('#todoList');
+    const item = createTodoItem(text);
+    todoList.appendChild(item);
+}
+
+// Usage
+addTodo('Learn DOM manipulation');
+addTodo('Build a project');
+</code></pre>
+
+            <h3>Dynamic Table</h3>
+
+            <pre><code class="language-javascript">function createTable(data) {
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    
+    // Create header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    
+    Object.keys(data[0]).forEach(key => {
+        const th = document.createElement('th');
+        th.textContent = key;
+        headerRow.appendChild(th);
+    });
+    
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+    
+    // Create body
+    const tbody = document.createElement('tbody');
+    
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        
+        Object.values(row).forEach(value => {
+            const td = document.createElement('td');
+            td.textContent = value;
+            tr.appendChild(td);
+        });
+        
+        tbody.appendChild(tr);
+    });
+    
+    table.appendChild(tbody);
+    return table;
+}
+
+// Usage
+const users = [
+    { name: 'John', age: 30, email: 'john@example.com' },
+    { name: 'Jane', age: 25, email: 'jane@example.com' }
+];
+
+const table = createTable(users);
+document.body.appendChild(table);
+</code></pre>
+
+            <h3>Card Component</h3>
+
+            <pre><code class="language-javascript">function createCard({ title, description, imageUrl, link }) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    
+    if (imageUrl) {
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = title;
+        card.appendChild(img);
+    }
+    
+    const cardBody = document.createElement('div');
+    cardBody.className = 'card-body';
+    
+    const h3 = document.createElement('h3');
+    h3.textContent = title;
+    
+    const p = document.createElement('p');
+    p.textContent = description;
+    
+    cardBody.appendChild(h3);
+    cardBody.appendChild(p);
+    
+    if (link) {
+        const a = document.createElement('a');
+        a.href = link;
+        a.textContent = 'Read more';
+        a.className = 'btn';
+        cardBody.appendChild(a);
+    }
+    
+    card.appendChild(cardBody);
+    return card;
+}
+
+// Usage
+const cardData = {
+    title: 'DOM Manipulation',
+    description: 'Learn how to manipulate the DOM',
+    imageUrl: '/images/dom.jpg',
+    link: '/tutorials/dom'
+};
+
+const card = createCard(cardData);
+document.querySelector('#cards-container').appendChild(card);
+</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Cache DOM references</strong>
+                <pre><code class="language-javascript">// Bad - queries DOM every time
+for (let i = 0; i < 100; i++) {
+    document.querySelector('#list').appendChild(item);
+}
+
+// Good - cache reference
+const list = document.querySelector('#list');
+for (let i = 0; i < 100; i++) {
+    list.appendChild(item);
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Use document fragments for batch updates</strong>
+                <pre><code class="language-javascript">// Better performance
+const fragment = document.createDocumentFragment();
+
+for (let i = 0; i < 100; i++) {
+    const li = document.createElement('li');
+    li.textContent = `Item ${i}`;
+    fragment.appendChild(li);
+}
+
+list.appendChild(fragment); // Single reflow
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use textContent for text, innerHTML for HTML</strong>
+                <pre><code class="language-javascript">// Safe - no XSS risk
+element.textContent = userInput;
+
+// Risky - potential XSS
+element.innerHTML = userInput; // Only if sanitized!
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>4. Use classList instead of className</strong>
+                <pre><code class="language-javascript">// Good
+element.classList.add('active');
+element.classList.remove('hidden');
+element.classList.toggle('visible');
+
+// Less flexible
+element.className = 'active visible';
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>DOM manipulation enables dynamic web pages</li>
+                <li>Use <code>querySelector</code> for modern, flexible element selection</li>
+                <li>Create elements with <code>createElement</code></li>
+                <li>Modify content with <code>textContent</code> (safe) or <code>innerHTML</code> (flexible)</li>
+                <li>Remove elements with <code>remove()</code> or <code>removeChild()</code></li>
+                <li>Cache DOM references for better performance</li>
+                <li>Use document fragments for batch updates</li>
+                <li>Prefer <code>classList</code> over <code>className</code></li>
+                <li>Always sanitize user input before using <code>innerHTML</code></li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

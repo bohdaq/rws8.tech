@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Destructuring - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript destructuring - extract values from arrays and objects with clean, concise syntax.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .objectives-box ul {
+            margin-bottom: 0;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Destructuring</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering JavaScript Destructuring</h1>
+            <p class="subtitle">Clean and Concise Data Access</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Extract values from arrays with array destructuring</li>
+                    <li>Extract properties from objects with object destructuring</li>
+                    <li>Use destructuring in function parameters</li>
+                    <li>Apply default values and renaming</li>
+                    <li>Handle nested destructuring patterns</li>
+                </ul>
+            </div>
+
+            <h2>What is Destructuring?</h2>
+            <p>Destructuring is a JavaScript expression that unpacks values from arrays or properties from objects into distinct variables. It provides a cleaner, more readable way to extract data.</p>
+
+            <h2>Array Destructuring</h2>
+
+            <h3>Basic Array Destructuring</h3>
+
+            <pre><code class="language-javascript">// Without destructuring
+const colors = ['red', 'green', 'blue'];
+const first = colors[0];
+const second = colors[1];
+
+// With destructuring
+const [first, second, third] = colors;
+console.log(first);  // 'red'
+console.log(second); // 'green'
+console.log(third);  // 'blue'
+</code></pre>
+
+            <h3>Skipping Elements</h3>
+
+            <pre><code class="language-javascript">const colors = ['red', 'green', 'blue', 'yellow'];
+
+// Skip elements with commas
+const [first, , third] = colors;
+console.log(first); // 'red'
+console.log(third); // 'blue'
+
+// Get first and rest
+const [primary, ...others] = colors;
+console.log(primary); // 'red'
+console.log(others);  // ['green', 'blue', 'yellow']
+</code></pre>
+
+            <h3>Default Values</h3>
+
+            <pre><code class="language-javascript">const colors = ['red'];
+
+// Without default
+const [first, second] = colors;
+console.log(second); // undefined
+
+// With default
+const [first, second = 'green'] = colors;
+console.log(second); // 'green'
+</code></pre>
+
+            <h3>Swapping Variables</h3>
+
+            <pre><code class="language-javascript">let a = 1;
+let b = 2;
+
+// Old way
+let temp = a;
+a = b;
+b = temp;
+
+// With destructuring
+[a, b] = [b, a];
+console.log(a); // 2
+console.log(b); // 1
+</code></pre>
+
+            <h2>Object Destructuring</h2>
+
+            <h3>Basic Object Destructuring</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John',
+    age: 30,
+    email: 'john@example.com'
+};
+
+// Without destructuring
+const name = user.name;
+const age = user.age;
+
+// With destructuring
+const { name, age, email } = user;
+console.log(name);  // 'John'
+console.log(age);   // 30
+console.log(email); // 'john@example.com'
+</code></pre>
+
+            <h3>Renaming Variables</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John',
+    age: 30
+};
+
+// Rename during destructuring
+const { name: userName, age: userAge } = user;
+console.log(userName); // 'John'
+console.log(userAge);  // 30
+</code></pre>
+
+            <h3>Default Values</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John'
+};
+
+// With default values
+const { name, age = 25, country = 'USA' } = user;
+console.log(name);    // 'John'
+console.log(age);     // 25 (default)
+console.log(country); // 'USA' (default)
+</code></pre>
+
+            <h3>Combining Rename and Default</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John'
+};
+
+const { name: userName, age: userAge = 25 } = user;
+console.log(userName); // 'John'
+console.log(userAge);  // 25
+</code></pre>
+
+            <h2>Nested Destructuring</h2>
+
+            <h3>Nested Objects</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John',
+    address: {
+        street: '123 Main St',
+        city: 'New York',
+        coordinates: {
+            lat: 40.7128,
+            lng: -74.0060
+        }
+    }
+};
+
+// Destructure nested properties
+const {
+    name,
+    address: {
+        city,
+        coordinates: { lat, lng }
+    }
+} = user;
+
+console.log(name); // 'John'
+console.log(city); // 'New York'
+console.log(lat);  // 40.7128
+console.log(lng);  // -74.0060
+
+// Note: 'address' and 'coordinates' are not variables
+// console.log(address); // ReferenceError
+</code></pre>
+
+            <h3>Nested Arrays</h3>
+
+            <pre><code class="language-javascript">const data = [
+    'John',
+    ['red', 'green', 'blue'],
+    { age: 30 }
+];
+
+const [name, [primaryColor, ...otherColors], { age }] = data;
+
+console.log(name);         // 'John'
+console.log(primaryColor); // 'red'
+console.log(otherColors);  // ['green', 'blue']
+console.log(age);          // 30
+</code></pre>
+
+            <h2>Function Parameter Destructuring</h2>
+
+            <h3>Object Parameters</h3>
+
+            <pre><code class="language-javascript">// Without destructuring
+function displayUser(user) {
+    console.log(`${user.name} is ${user.age} years old`);
+}
+
+// With destructuring
+function displayUser({ name, age }) {
+    console.log(`${name} is ${age} years old`);
+}
+
+displayUser({ name: 'John', age: 30 });
+// "John is 30 years old"
+</code></pre>
+
+            <h3>Default Parameter Values</h3>
+
+            <pre><code class="language-javascript">function createUser({ name, age = 18, role = 'user' }) {
+    return { name, age, role };
+}
+
+console.log(createUser({ name: 'John' }));
+// { name: 'John', age: 18, role: 'user' }
+
+console.log(createUser({ name: 'Jane', age: 25, role: 'admin' }));
+// { name: 'Jane', age: 25, role: 'admin' }
+</code></pre>
+
+            <h3>Handling Undefined Parameters</h3>
+
+            <pre><code class="language-javascript">// This will error if called without argument
+function greet({ name }) {
+    console.log(`Hello, ${name}!`);
+}
+
+// greet(); // TypeError: Cannot destructure property 'name' of 'undefined'
+
+// Solution: default to empty object
+function greet({ name } = {}) {
+    console.log(`Hello, ${name || 'Guest'}!`);
+}
+
+greet(); // "Hello, Guest!"
+</code></pre>
+
+            <h2>Rest Operator with Destructuring</h2>
+
+            <h3>Array Rest</h3>
+
+            <pre><code class="language-javascript">const numbers = [1, 2, 3, 4, 5];
+
+const [first, second, ...rest] = numbers;
+console.log(first);  // 1
+console.log(second); // 2
+console.log(rest);   // [3, 4, 5]
+</code></pre>
+
+            <h3>Object Rest</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John',
+    age: 30,
+    email: 'john@example.com',
+    country: 'USA'
+};
+
+const { name, age, ...otherInfo } = user;
+console.log(name);      // 'John'
+console.log(age);       // 30
+console.log(otherInfo); // { email: 'john@example.com', country: 'USA' }
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>API Response Handling</h3>
+
+            <pre><code class="language-javascript">async function fetchUser(id) {
+    const response = await fetch(`/api/users/${id}`);
+    const { data: user, status, message } = await response.json();
+    
+    if (status === 'success') {
+        const { name, email, profile: { avatar } } = user;
+        return { name, email, avatar };
+    }
+    
+    throw new Error(message);
+}
+</code></pre>
+
+            <h3>React Component Props</h3>
+
+            <pre><code class="language-javascript">// Destructure props in function component
+function UserCard({ name, age, email, avatar = '/default-avatar.png' }) {
+    return (
+        &lt;div className="user-card"&gt;
+            &lt;img src={avatar} alt={name} /&gt;
+            &lt;h2&gt;{name}&lt;/h2&gt;
+            &lt;p&gt;Age: {age}&lt;/p&gt;
+            &lt;p&gt;Email: {email}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+}
+</code></pre>
+
+            <h3>Array Methods</h3>
+
+            <pre><code class="language-javascript">const users = [
+    { id: 1, name: 'John', age: 30 },
+    { id: 2, name: 'Jane', age: 25 },
+    { id: 3, name: 'Bob', age: 35 }
+];
+
+// Destructure in map
+const names = users.map(({ name }) => name);
+console.log(names); // ['John', 'Jane', 'Bob']
+
+// Destructure in filter
+const adults = users.filter(({ age }) => age >= 30);
+console.log(adults); // [{ id: 1, ... }, { id: 3, ... }]
+
+// Destructure in forEach
+users.forEach(({ name, age }) => {
+    console.log(`${name} is ${age} years old`);
+});
+</code></pre>
+
+            <h3>Configuration Objects</h3>
+
+            <pre><code class="language-javascript">function initializeApp({
+    apiUrl = 'https://api.example.com',
+    timeout = 5000,
+    retries = 3,
+    headers = {},
+    debug = false
+} = {}) {
+    console.log('Initializing with config:');
+    console.log({ apiUrl, timeout, retries, headers, debug });
+    
+    // Initialize app with config
+}
+
+// Use with custom config
+initializeApp({
+    apiUrl: 'https://custom-api.com',
+    debug: true
+});
+
+// Use with defaults
+initializeApp();
+</code></pre>
+
+            <h2>Common Pitfalls</h2>
+
+            <div class="warning-box">
+                <strong>Pitfall 1: Destructuring undefined/null</strong>
+                <pre><code class="language-javascript">const user = null;
+// const { name } = user; // TypeError!
+
+// Solution: use optional chaining or default
+const { name } = user || {};
+const { name } = user ?? {};
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 2: Variable already declared</strong>
+                <pre><code class="language-javascript">let name = 'Alice';
+// let { name } = user; // SyntaxError: Identifier 'name' has already been declared
+
+// Solution: use different name or reassign
+let { name: userName } = user;
+// or
+({ name } = user); // Note the parentheses!
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 3: Rest must be last</strong>
+                <pre><code class="language-javascript">// Wrong
+// const [...rest, last] = array; // SyntaxError
+
+// Right
+const [first, ...rest] = array;
+</code></pre>
+            </div>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use destructuring for cleaner code</strong>
+                <pre><code class="language-javascript">// Instead of
+function getFullName(user) {
+    return user.firstName + ' ' + user.lastName;
+}
+
+// Use
+function getFullName({ firstName, lastName }) {
+    return `${firstName} ${lastName}`;
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Provide defaults for optional properties</strong>
+                <pre><code class="language-javascript">function createConfig({ port = 3000, host = 'localhost' } = {}) {
+    return { port, host };
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use meaningful variable names when renaming</strong>
+                <pre><code class="language-javascript">// Good
+const { name: userName, id: userId } = user;
+
+// Avoid
+const { name: n, id: i } = user;
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Destructuring extracts values from arrays and objects into variables</li>
+                <li>Array destructuring uses square brackets <code>[]</code></li>
+                <li>Object destructuring uses curly braces <code>{}</code></li>
+                <li>You can provide default values for missing properties</li>
+                <li>Rename variables during destructuring with <code>:</code></li>
+                <li>Rest operator <code>...</code> collects remaining elements</li>
+                <li>Destructuring works in function parameters for cleaner APIs</li>
+                <li>Nested destructuring extracts deeply nested values</li>
+                <li>Always handle undefined/null cases to avoid errors</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

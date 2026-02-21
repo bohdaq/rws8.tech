@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Unit Testing - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Unit Testing with Jest and Vitest.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Unit Testing</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Unit Testing</h1>
+            <p class="subtitle">Write Reliable, Maintainable Tests</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+            <h2>Why Unit Testing?</h2>
+            <p>Unit tests verify individual functions work correctly, catch bugs early, enable refactoring with confidence, and serve as documentation.</p>
+
+            <h2>Basic Test Structure</h2>
+            <pre><code class="language-javascript">// sum.js
+export function sum(a, b) {
+    return a + b;
+}
+
+// sum.test.js
+import { describe, test, expect } from 'vitest'; // or 'jest'
+import { sum } from './sum';
+
+describe('sum function', () => {
+    test('adds two positive numbers', () => {
+        // Arrange
+        const a = 2;
+        const b = 3;
+        
+        // Act
+        const result = sum(a, b);
+        
+        // Assert
+        expect(result).toBe(5);
+    });
+    
+    test('adds negative numbers', () => {
+        expect(sum(-1, -2)).toBe(-3);
+    });
+    
+    test('handles zero', () => {
+        expect(sum(0, 5)).toBe(5);
+        expect(sum(5, 0)).toBe(5);
+    });
+});
+</code></pre>
+
+            <h2>Common Assertions</h2>
+            <pre><code class="language-javascript">// Equality
+expect(2 + 2).toBe(4); // Strict equality (===)
+expect({ a: 1 }).toEqual({ a: 1 }); // Deep equality
+
+// Truthiness
+expect(true).toBeTruthy();
+expect(false).toBeFalsy();
+expect(null).toBeNull();
+expect(undefined).toBeUndefined();
+expect('value').toBeDefined();
+
+// Numbers
+expect(10).toBeGreaterThan(5);
+expect(5).toBeLessThan(10);
+expect(5).toBeGreaterThanOrEqual(5);
+expect(0.1 + 0.2).toBeCloseTo(0.3); // Floating point
+
+// Strings
+expect('Hello World').toMatch(/World/);
+expect('testing').toContain('test');
+
+// Arrays and iterables
+expect([1, 2, 3]).toContain(2);
+expect([1, 2, 3]).toHaveLength(3);
+expect(['a', 'b']).toEqual(expect.arrayContaining(['a']));
+
+// Objects
+expect({ a: 1, b: 2 }).toHaveProperty('a');
+expect({ a: 1, b: 2 }).toHaveProperty('a', 1);
+expect({ a: 1 }).toMatchObject({ a: 1 });
+
+// Exceptions
+expect(() => {
+    throw new Error('fail');
+}).toThrow();
+expect(() => {
+    throw new Error('fail');
+}).toThrow(Error);
+expect(() => {
+    throw new Error('fail');
+}).toThrow('fail');
+</code></pre>
+
+            <h2>Testing Async Code</h2>
+            <pre><code class="language-javascript">// With Promises
+test('fetches user data', () => {
+    return fetchUser(1).then(user => {
+        expect(user.name).toBe('John');
+        expect(user.email).toContain('@');
+    });
+});
+
+// With async/await
+test('fetches user data', async () => {
+    const user = await fetchUser(1);
+    expect(user.name).toBe('John');
+    expect(user.email).toContain('@');
+});
+
+// Testing resolved values
+test('promise resolves with user', async () => {
+    await expect(fetchUser(1)).resolves.toHaveProperty('name');
+});
+
+// Testing rejected promises
+test('promise rejects for invalid ID', async () => {
+    await expect(fetchUser(-1)).rejects.toThrow('Invalid user ID');
+});
+
+// Multiple async assertions
+test('fetches multiple users', async () => {
+    const [user1, user2] = await Promise.all([
+        fetchUser(1),
+        fetchUser(2)
+    ]);
+    
+    expect(user1.id).toBe(1);
+    expect(user2.id).toBe(2);
+});
+</code></pre>
+
+            <h2>Setup and Teardown</h2>
+            <pre><code class="language-javascript">describe('Database operations', () => {
+    let db;
+    
+    // Runs once before all tests in this describe block
+    beforeAll(async () => {
+        db = await connectToDatabase();
+        await db.migrate();
+    });
+    
+    // Runs once after all tests
+    afterAll(async () => {
+        await db.close();
+    });
+    
+    // Runs before each test
+    beforeEach(async () => {
+        await db.clear();
+        await db.seed();
+    });
+    
+    // Runs after each test
+    afterEach(async () => {
+        await db.cleanup();
+    });
+    
+    test('inserts user', async () => {
+        const user = await db.insert({ name: 'John' });
+        expect(user.id).toBeDefined();
+    });
+    
+    test('finds user by id', async () => {
+        const user = await db.insert({ name: 'Jane' });
+        const found = await db.findById(user.id);
+        expect(found.name).toBe('Jane');
+    });
+});
+</code></pre>
+
+            <h2>Test Organization</h2>
+            <pre><code class="language-javascript">describe('Calculator', () => {
+    describe('addition', () => {
+        test('adds positive numbers', () => {
+            expect(add(2, 3)).toBe(5);
+        });
+        
+        test('adds negative numbers', () => {
+            expect(add(-2, -3)).toBe(-5);
+        });
+    });
+    
+    describe('subtraction', () => {
+        test('subtracts positive numbers', () => {
+            expect(subtract(5, 3)).toBe(2);
+        });
+        
+        test('subtracts negative numbers', () => {
+            expect(subtract(-5, -3)).toBe(-2);
+        });
+    });
+});
+</code></pre>
+
+            <h2>Testing Edge Cases</h2>
+            <pre><code class="language-javascript">describe('divide function', () => {
+    test('divides positive numbers', () => {
+        expect(divide(10, 2)).toBe(5);
+    });
+    
+    test('handles division by zero', () => {
+        expect(() => divide(10, 0)).toThrow('Division by zero');
+    });
+    
+    test('handles negative numbers', () => {
+        expect(divide(-10, 2)).toBe(-5);
+    });
+    
+    test('handles decimal results', () => {
+        expect(divide(10, 3)).toBeCloseTo(3.333, 2);
+    });
+    
+    test('handles very large numbers', () => {
+        expect(divide(Number.MAX_SAFE_INTEGER, 2))
+            .toBeLessThan(Number.MAX_SAFE_INTEGER);
+    });
+});
+</code></pre>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li><strong>Test one thing per test</strong> - Each test should verify a single behavior</li>
+                <li><strong>Use descriptive names</strong> - Test names should clearly state what they test</li>
+                <li><strong>Follow AAA pattern</strong> - Arrange, Act, Assert for clarity</li>
+                <li><strong>Keep tests independent</strong> - Tests shouldn't depend on each other</li>
+                <li><strong>Test edge cases</strong> - Empty inputs, null, undefined, boundaries</li>
+                <li><strong>Don't test implementation</strong> - Test behavior, not internals</li>
+                <li><strong>Keep tests fast</strong> - Unit tests should run quickly</li>
+                <li><strong>Aim for high coverage</strong> - But don't obsess over 100%</li>
+            </ul>
+
+            <h2>Key Takeaways</h2>
+            <ul>
+                <li>Unit tests verify individual functions work correctly</li>
+                <li>Use describe/test for test organization</li>
+                <li>Assertions check expected outcomes</li>
+                <li>Test async code with async/await or promises</li>
+                <li>Setup/teardown hooks for test isolation</li>
+                <li>Test edge cases and error conditions</li>
+                <li>Follow testing best practices</li>
+                <li>Keep tests simple, fast, and independent</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <a href="index.html" class="btn btn-secondary">← Back</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

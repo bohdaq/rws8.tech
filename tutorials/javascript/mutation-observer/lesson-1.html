@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript MutationObserver - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript MutationObserver - detect and respond to DOM changes efficiently.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">MutationObserver</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering MutationObserver</h1>
+            <p class="subtitle">Detect and Respond to DOM Changes</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand MutationObserver API</li>
+                    <li>Monitor DOM changes efficiently</li>
+                    <li>Track attributes, children, and subtrees</li>
+                    <li>Handle mutation records</li>
+                    <li>Apply observer best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is MutationObserver?</h2>
+
+            <p>MutationObserver provides an efficient way to watch for changes in the DOM tree. It replaces the deprecated Mutation Events and offers better performance for monitoring dynamic content.</p>
+
+            <h2>Basic Usage</h2>
+
+            <pre><code class="language-javascript">// Create observer with callback
+const observer = new MutationObserver((mutations, observer) => {
+    mutations.forEach(mutation => {
+        console.log('Mutation type:', mutation.type);
+        console.log('Target element:', mutation.target);
+        
+        if (mutation.type === 'childList') {
+            console.log('Added nodes:', mutation.addedNodes);
+            console.log('Removed nodes:', mutation.removedNodes);
+        }
+        
+        if (mutation.type === 'attributes') {
+            console.log('Attribute changed:', mutation.attributeName);
+            console.log('Old value:', mutation.oldValue);
+        }
+    });
+});
+
+// Start observing
+const target = document.querySelector('#myElement');
+observer.observe(target, {
+    childList: true,      // Watch for child additions/removals
+    attributes: true,     // Watch for attribute changes
+    subtree: true,        // Watch descendants too
+    attributeOldValue: true // Record old attribute values
+});
+
+// Stop observing
+observer.disconnect();
+
+// Get pending mutations
+const pending = observer.takeRecords();
+</code></pre>
+
+            <h2>Configuration Options</h2>
+
+            <pre><code class="language-javascript">observer.observe(target, {
+    // What to observe
+    childList: true,          // Child nodes added/removed
+    attributes: true,         // Attribute changes
+    characterData: true,      // Text content changes
+    
+    // Scope
+    subtree: true,           // Observe all descendants
+    
+    // Additional data
+    attributeOldValue: true, // Record old attribute values
+    characterDataOldValue: true, // Record old text values
+    
+    // Filters
+    attributeFilter: ['class', 'id', 'data-*'] // Specific attributes only
+});
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Monitor Child Changes</h3>
+
+            <pre><code class="language-javascript">const listObserver = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+        // Process added nodes
+        mutation.addedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                console.log('Added element:', node.tagName);
+                
+                // Initialize new elements
+                if (node.classList.contains('todo-item')) {
+                    initializeTodoItem(node);
+                }
+            }
+        });
+        
+        // Process removed nodes
+        mutation.removedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                console.log('Removed element:', node.tagName);
+                cleanup(node);
+            }
+        });
+    });
+});
+
+const todoList = document.querySelector('#todoList');
+listObserver.observe(todoList, {
+    childList: true,
+    subtree: false // Only direct children
+});
+</code></pre>
+
+            <h3>Track Attribute Changes</h3>
+
+            <pre><code class="language-javascript">const attrObserver = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+        if (mutation.type === 'attributes') {
+            const element = mutation.target;
+            const attr = mutation.attributeName;
+            const oldValue = mutation.oldValue;
+            const newValue = element.getAttribute(attr);
+            
+            console.log(`${attr} changed from "${oldValue}" to "${newValue}"`);
+            
+            // React to specific changes
+            if (attr === 'class') {
+                handleClassChange(element, oldValue, newValue);
+            }
+        }
+    });
+});
+
+const element = document.querySelector('#myElement');
+attrObserver.observe(element, {
+    attributes: true,
+    attributeOldValue: true,
+    attributeFilter: ['class', 'style', 'data-state']
+});
+</code></pre>
+
+            <h3>Auto-save Content</h3>
+
+            <pre><code class="language-javascript">const editor = document.querySelector('#editor');
+let saveTimeout;
+
+const saveObserver = new MutationObserver(() => {
+    // Debounce saves
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        const content = editor.innerHTML;
+        saveContent(content);
+        console.log('Content auto-saved');
+    }, 1000);
+});
+
+saveObserver.observe(editor, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['style', 'class']
+});
+
+function saveContent(content) {
+    localStorage.setItem('editor-content', content);
+}
+</code></pre>
+
+            <h3>Track Dynamic Content Loading</h3>
+
+            <pre><code class="language-javascript">const contentObserver = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+            // Check if it's an element node
+            if (node.nodeType !== 1) return;
+            
+            // Initialize product cards
+            if (node.matches('.product-card')) {
+                initializeProduct(node);
+            }
+            
+            // Initialize images for lazy loading
+            const images = node.querySelectorAll('img[data-src]');
+            images.forEach(img => {
+                lazyLoadImage(img);
+            });
+        });
+    });
+});
+
+const container = document.querySelector('#products');
+contentObserver.observe(container, {
+    childList: true,
+    subtree: true
+});
+
+function initializeProduct(card) {
+    // Add event listeners, initialize components, etc.
+    const addToCartBtn = card.querySelector('.add-to-cart');
+    addToCartBtn.addEventListener('click', handleAddToCart);
+}
+</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Always disconnect when done</strong>
+                <pre><code class="language-javascript">// When component unmounts or element removed
+observer.disconnect();
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Use specific configuration</strong>
+                <pre><code class="language-javascript">// Good - specific
+observer.observe(element, {
+    attributes: true,
+    attributeFilter: ['class']
+});
+
+// Bad - too broad
+observer.observe(element, {
+    attributes: true,
+    subtree: true,
+    childList: true
+});
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Avoid infinite loops</strong>
+                <pre><code class="language-javascript">const observer = new MutationObserver((mutations) => {
+    // Disconnect before making changes
+    observer.disconnect();
+    
+    // Make changes
+    element.classList.add('processed');
+    
+    // Reconnect
+    observer.observe(element, config);
+});
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>MutationObserver watches DOM changes efficiently</li>
+                <li>Configure what to observe: children, attributes, text</li>
+                <li>Receives mutation records with detailed change information</li>
+                <li>More performant than polling or deprecated mutation events</li>
+                <li>Always disconnect observers when no longer needed</li>
+                <li>Use <code>subtree: true</code> to watch all descendants</li>
+                <li>Use <code>attributeFilter</code> to limit scope and improve performance</li>
+                <li>Avoid infinite loops by disconnecting before making changes</li>
+                <li>Batch processing for better performance</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

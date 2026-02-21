@@ -33,13 +33,55 @@ Whether you're a beginner looking to build a solid foundation or an experienced 
 **Part IV: Asynchronous JavaScript**
 11. JavaScript Event Loop: Master Asynchronous Execution
 12. JavaScript Promises: From Callback Hell to Async Heaven
-13. JavaScript Generators: The Underrated Feature That Will Change How You Code
+13. JavaScript async/await: Modern Asynchronous JavaScript
+14. JavaScript Generators: The Underrated Feature That Will Change How You Code
 
 **Part V: Functional JavaScript**
-14. JavaScript Monads: Master Functional Programming Patterns
-15. JavaScript Functors and Applicatives: Master Functional Patterns
-16. JavaScript Function Composition and Pipelines: Build Complex Logic from Simple Functions
-17. JavaScript Immutability and Pure Functions: Write Predictable, Bug-Free Code
+15. JavaScript Monads: Master Functional Programming Patterns
+16. JavaScript Functors and Applicatives: Master Functional Patterns
+17. JavaScript Function Composition and Pipelines: Build Complex Logic from Simple Functions
+18. JavaScript Immutability and Pure Functions: Write Predictable, Bug-Free Code
+
+**Part VI: Modern JavaScript Syntax**
+19. JavaScript Destructuring: Extract Values with Ease
+20. JavaScript Spread and Rest Operators: Master Array and Object Operations
+21. JavaScript Optional Chaining: Safe Property Access
+22. JavaScript Modules: Organize Your Code
+23. JavaScript Classes: Modern Object-Oriented Programming
+
+**Part VII: Design Patterns**
+24. JavaScript Singleton Pattern: One Instance to Rule Them All
+25. JavaScript Factory Pattern: Object Creation Made Easy
+26. JavaScript Observer Pattern: Event-Driven Architecture
+27. JavaScript Builder Pattern: Construct Complex Objects
+28. JavaScript Module Pattern: Encapsulation and Privacy
+29. JavaScript Decorator Pattern: Extend Functionality Dynamically
+30. JavaScript Facade Pattern: Simplify Complex Interfaces
+31. JavaScript Strategy Pattern: Interchangeable Algorithms
+32. JavaScript Command Pattern: Encapsulate Requests as Objects
+
+**Part VIII: Browser APIs and DOM**
+33. JavaScript DOM Manipulation: Dynamic Web Page Control
+34. JavaScript Event Handling: Respond to User Interactions
+35. JavaScript Fetch API: Modern HTTP Requests
+36. JavaScript LocalStorage: Browser Data Persistence
+37. JavaScript IntersectionObserver: Efficient Visibility Detection
+
+**Part IX: Advanced JavaScript Features**
+38. JavaScript Symbols: Unique Identifiers and Metaprogramming
+39. JavaScript BigInt: Arbitrarily Large Integers
+40. JavaScript Typed Arrays: Efficient Binary Data Handling
+41. JavaScript Regular Expressions: Pattern Matching and Text Manipulation
+42. JavaScript Error Handling: Build Robust Applications
+43. JavaScript Iterators: Custom Iteration Protocols
+44. JavaScript Proxies: Metaprogramming with Interceptors
+
+**Part X: Testing**
+45. JavaScript Unit Testing: Write Reliable, Maintainable Tests
+46. JavaScript Test-Driven Development: Write Tests First, Code Second
+47. JavaScript Mocking: Isolate Code and Control Dependencies
+48. JavaScript Integration Testing: Test Component Interactions
+49. JavaScript End-to-End Testing: Test Complete User Workflows
 
 ---
 
@@ -3044,17 +3086,274 @@ function todosReducer(state = initialState, action) {
             return state;
     }
 }
-```
 
-### Key Takeaways
+---
 
-- Immutability means data cannot be changed after creation
-- Pure functions have no side effects
-- Use spread operator (...) for immutable updates
-- Array methods like map, filter, reduce are immutable
-- Avoid push, pop, splice, and direct property assignment
-- Object.freeze() provides shallow immutability
-- Immutability makes code more predictable and easier to debug
+# Part VI: Modern JavaScript Syntax
+
+---
+
+# Chapter 19: JavaScript Destructuring
+
+## Extract Values with Ease
+
+Destructuring is syntactic sugar that makes extracting values from arrays and objects cleaner and more readable. Learn the full tutorial at [rws8.tech/tutorials/javascript/destructuring](https://rws8.tech/tutorials/javascript/destructuring/).
+
+---
+
+# Chapter 20: JavaScript Spread and Rest Operators
+
+## Master Array and Object Operations
+
+The spread (...) and rest operators provide powerful ways to work with arrays and objects. Learn the full tutorial at [rws8.tech/tutorials/javascript/spread-rest](https://rws8.tech/tutorials/javascript/spread-rest/).
+
+---
+
+# Chapter 21: JavaScript Optional Chaining
+
+## Safe Property Access
+
+Optional chaining (?.) safely accesses nested properties without verbose null checks. Learn the full tutorial at [rws8.tech/tutorials/javascript/optional-chaining](https://rws8.tech/tutorials/javascript/optional-chaining/).
+
+---
+
+# Chapter 22: JavaScript Modules
+
+## Organize Your Code
+
+ES6 modules provide a standard way to organize and share code between files. Learn the full tutorial at [rws8.tech/tutorials/javascript/modules](https://rws8.tech/tutorials/javascript/modules/).
+
+---
+
+# Chapter 23: JavaScript Classes
+
+## Modern Object-Oriented Programming
+
+Classes provide a cleaner syntax for creating objects and implementing inheritance. Learn the full tutorial at [rws8.tech/tutorials/javascript/classes](https://rws8.tech/tutorials/javascript/classes/).
+
+---
+
+# Part VII: Design Patterns
+
+---
+
+# Chapter 24: JavaScript Singleton Pattern
+
+## One Instance to Rule Them All
+
+The Singleton pattern ensures a class has only one instance and provides global access to it. Learn the full tutorial at [rws8.tech/tutorials/javascript/singleton-pattern](https://rws8.tech/tutorials/javascript/singleton-pattern/).
+
+---
+
+# Chapter 25: JavaScript Factory Pattern
+
+## Object Creation Made Easy
+
+The Factory pattern provides an interface for creating objects without specifying their exact classes. Learn the full tutorial at [rws8.tech/tutorials/javascript/factory-pattern](https://rws8.tech/tutorials/javascript/factory-pattern/).
+
+---
+
+# Chapter 26: JavaScript Observer Pattern
+
+## Event-Driven Architecture
+
+The Observer pattern defines a one-to-many dependency between objects for event handling. Learn the full tutorial at [rws8.tech/tutorials/javascript/observer-pattern](https://rws8.tech/tutorials/javascript/observer-pattern/).
+
+---
+
+# Chapter 27: JavaScript Builder Pattern
+
+## Construct Complex Objects
+
+The Builder pattern separates object construction from representation for flexible creation. Learn the full tutorial at [rws8.tech/tutorials/javascript/builder-pattern](https://rws8.tech/tutorials/javascript/builder-pattern/).
+
+---
+
+# Chapter 28: JavaScript Module Pattern
+
+## Encapsulation and Privacy
+
+The Module pattern provides encapsulation and private variables using closures. Learn the full tutorial at [rws8.tech/tutorials/javascript/module-pattern](https://rws8.tech/tutorials/javascript/module-pattern/).
+
+---
+
+# Chapter 29: JavaScript Decorator Pattern
+
+## Extend Functionality Dynamically
+
+The Decorator pattern attaches additional responsibilities to objects dynamically. Learn the full tutorial at [rws8.tech/tutorials/javascript/decorator-pattern](https://rws8.tech/tutorials/javascript/decorator-pattern/).
+
+---
+
+# Chapter 30: JavaScript Facade Pattern
+
+## Simplify Complex Interfaces
+
+The Facade pattern provides a simplified interface to complex subsystems. Learn the full tutorial at [rws8.tech/tutorials/javascript/facade-pattern](https://rws8.tech/tutorials/javascript/facade-pattern/).
+
+---
+
+# Chapter 31: JavaScript Strategy Pattern
+
+## Interchangeable Algorithms
+
+The Strategy pattern defines a family of algorithms and makes them interchangeable. Learn the full tutorial at [rws8.tech/tutorials/javascript/strategy-pattern](https://rws8.tech/tutorials/javascript/strategy-pattern/).
+
+---
+
+# Chapter 32: JavaScript Command Pattern
+
+## Encapsulate Requests as Objects
+
+The Command pattern encapsulates requests as objects for undo/redo and queuing. Learn the full tutorial at [rws8.tech/tutorials/javascript/command-pattern](https://rws8.tech/tutorials/javascript/command-pattern/).
+
+---
+
+# Part VIII: Browser APIs and DOM
+
+---
+
+# Chapter 33: JavaScript DOM Manipulation
+
+## Dynamic Web Page Control
+
+Master the Document Object Model to dynamically select, create, modify, and remove HTML elements. Learn the full tutorial at [rws8.tech/tutorials/javascript/dom-manipulation](https://rws8.tech/tutorials/javascript/dom-manipulation/).
+
+---
+
+# Chapter 34: JavaScript Event Handling
+
+## Respond to User Interactions
+
+Master event handling to create interactive web applications with event listeners and delegation. Learn the full tutorial at [rws8.tech/tutorials/javascript/event-handling](https://rws8.tech/tutorials/javascript/event-handling/).
+
+---
+
+# Chapter 35: JavaScript Fetch API
+
+## Modern HTTP Requests
+
+The Fetch API provides a modern interface for making HTTP requests with async/await. Learn the full tutorial at [rws8.tech/tutorials/javascript/fetch-api](https://rws8.tech/tutorials/javascript/fetch-api/).
+
+---
+
+# Chapter 36: JavaScript LocalStorage
+
+## Browser Data Persistence
+
+LocalStorage provides a simple way to persist data in the browser across sessions. Learn the full tutorial at [rws8.tech/tutorials/javascript/local-storage](https://rws8.tech/tutorials/javascript/local-storage/).
+
+---
+
+# Chapter 37: JavaScript IntersectionObserver
+
+## Efficient Visibility Detection
+
+IntersectionObserver efficiently detects when elements enter or leave the viewport for lazy loading and infinite scroll. Learn the full tutorial at [rws8.tech/tutorials/javascript/intersection-observer](https://rws8.tech/tutorials/javascript/intersection-observer/).
+
+---
+
+# Part IX: Advanced JavaScript Features
+
+---
+
+# Chapter 38: JavaScript Symbols
+
+## Unique Identifiers and Metaprogramming
+
+Symbols are a primitive type for creating unique identifiers. Perfect for private properties, avoiding naming collisions, and implementing metaprogramming patterns. Learn the full tutorial at [rws8.tech/tutorials/javascript/symbols](https://rws8.tech/tutorials/javascript/symbols/).
+
+---
+
+# Chapter 39: JavaScript BigInt
+
+## Arbitrarily Large Integers
+
+BigInt is a primitive type for representing integers larger than Number.MAX_SAFE_INTEGER. Perfect for cryptography, precise timestamps, and calculations requiring arbitrary precision. Learn the full tutorial at [rws8.tech/tutorials/javascript/bigint](https://rws8.tech/tutorials/javascript/bigint/).
+
+---
+
+# Chapter 40: JavaScript Typed Arrays
+
+## Efficient Binary Data Handling
+
+Typed Arrays provide efficient handling of binary data in JavaScript. Perfect for WebGL, file processing, network protocols, and performance-critical operations. Learn the full tutorial at [rws8.tech/tutorials/javascript/typed-arrays](https://rws8.tech/tutorials/javascript/typed-arrays/).
+
+---
+
+# Chapter 41: JavaScript Regular Expressions
+
+## Pattern Matching and Text Manipulation
+
+Regular Expressions provide powerful pattern matching for validation, searching, and text manipulation. Essential for form validation, data parsing, and string processing. Learn the full tutorial at [rws8.tech/tutorials/javascript/regex](https://rws8.tech/tutorials/javascript/regex/).
+
+---
+
+# Chapter 42: JavaScript Error Handling
+
+## Build Robust Applications
+
+Proper error handling is essential for building robust, production-ready applications. Master try/catch, custom errors, async error handling, and recovery strategies. Learn the full tutorial at [rws8.tech/tutorials/javascript/error-handling](https://rws8.tech/tutorials/javascript/error-handling/).
+
+---
+
+# Chapter 43: JavaScript Iterators
+
+## Custom Iteration Protocols
+
+Iterators provide a standard way to traverse data structures. Master iteration protocols to create custom iterables, implement lazy evaluation, and build powerful data abstractions. Learn the full tutorial at [rws8.tech/tutorials/javascript/iterators](https://rws8.tech/tutorials/javascript/iterators/).
+
+---
+
+# Chapter 44: JavaScript Proxies
+
+## Metaprogramming with Interceptors
+
+Proxies enable intercepting and customizing fundamental object operations. Perfect for validation, logging, data binding, and building reactive frameworks. Learn the full tutorial at [rws8.tech/tutorials/javascript/proxies](https://rws8.tech/tutorials/javascript/proxies/).
+
+---
+
+# Part X: Testing
+
+---
+
+# Chapter 45: JavaScript Unit Testing
+
+## Write Reliable, Maintainable Tests
+
+Unit testing ensures code reliability and maintainability. Master testing fundamentals, frameworks like Jest and Vitest, and best practices for writing effective tests. Learn the full tutorial at [rws8.tech/tutorials/javascript/unit-testing](https://rws8.tech/tutorials/javascript/unit-testing/).
+
+---
+
+# Chapter 46: JavaScript Test-Driven Development
+
+## Write Tests First, Code Second
+
+Test-Driven Development is a methodology where you write tests before writing production code. Follow the Red-Green-Refactor cycle to build reliable, well-designed software. Learn the full tutorial at [rws8.tech/tutorials/javascript/tdd](https://rws8.tech/tutorials/javascript/tdd/).
+
+---
+
+# Chapter 47: JavaScript Mocking
+
+## Isolate Code and Control Dependencies
+
+Mocking isolates code under test by replacing dependencies with controlled substitutes. Master mock functions, spies, stubs, and mocking strategies for better tests. Learn the full tutorial at [rws8.tech/tutorials/javascript/mocking](https://rws8.tech/tutorials/javascript/mocking/).
+
+---
+
+# Chapter 48: JavaScript Integration Testing
+
+## Test Component Interactions
+
+Integration testing verifies that components work together correctly. Test API endpoints, database interactions, and system integration to catch issues unit tests miss. Learn the full tutorial at [rws8.tech/tutorials/javascript/integration-testing](https://rws8.tech/tutorials/javascript/integration-testing/).
+
+---
+
+# Chapter 49: JavaScript End-to-End Testing
+
+## Test Complete User Workflows
+
+End-to-End testing verifies complete user workflows from start to finish. Master Playwright and Cypress to test real user scenarios and catch integration issues. Learn the full tutorial at [rws8.tech/tutorials/javascript/e2e-testing](https://rws8.tech/tutorials/javascript/e2e-testing/).
 
 ---
 

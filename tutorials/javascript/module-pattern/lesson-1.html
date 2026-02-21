@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Module Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Module Pattern - encapsulate code with private and public members.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Module Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Module Pattern</h1>
+            <p class="subtitle">Encapsulation and Privacy</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Module pattern concept</li>
+                    <li>Create private and public members</li>
+                    <li>Use IIFE for encapsulation</li>
+                    <li>Implement revealing module pattern</li>
+                    <li>Apply module best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is the Module Pattern?</h2>
+
+            <p>Module pattern uses IIFE (Immediately Invoked Function Expression) and closures to create private scope and expose only what's needed. It was the primary way to achieve encapsulation before ES6 modules.</p>
+
+            <h2>Basic Implementation</h2>
+
+            <pre><code class="language-javascript">const Counter = (function() {
+    // Private variable - not accessible outside
+    let count = 0;
+    
+    // Private function
+    function log() {
+        console.log(`Current count: ${count}`);
+    }
+    
+    // Public API - returned object
+    return {
+        increment() {
+            count++;
+            log();
+            return this;
+        },
+        
+        decrement() {
+            count--;
+            log();
+            return this;
+        },
+        
+        getCount() {
+            return count;
+        },
+        
+        reset() {
+            count = 0;
+            log();
+        }
+    };
+})();
+
+// Usage
+Counter.increment(); // Current count: 1
+Counter.increment(); // Current count: 2
+Counter.decrement(); // Current count: 1
+
+console.log(Counter.getCount()); // 1
+console.log(Counter.count); // undefined (private!)
+
+// Method chaining
+Counter.increment().increment().increment();
+</code></pre>
+
+            <h2>Revealing Module Pattern</h2>
+
+            <p>A cleaner variation that defines all functions first, then reveals them:</p>
+
+            <pre><code class="language-javascript">const Calculator = (function() {
+    let result = 0;
+    
+    function add(x) {
+        result += x;
+        return this;
+    }
+    
+    function subtract(x) {
+        result -= x;
+        return this;
+    }
+    
+    function multiply(x) {
+        result *= x;
+        return this;
+    }
+    
+    function divide(x) {
+        if (x === 0) {
+            throw new Error('Cannot divide by zero');
+        }
+        result /= x;
+        return this;
+    }
+    
+    function getResult() {
+        return result;
+    }
+    
+    function reset() {
+        result = 0;
+        return this;
+    }
+    
+    // Reveal only what's needed
+    return {
+        add,
+        subtract,
+        multiply,
+        divide,
+        getResult,
+        reset
+    };
+})();
+
+// Usage
+Calculator
+    .add(10)
+    .multiply(2)
+    .subtract(5)
+    .divide(3);
+
+console.log(Calculator.getResult()); // 5
+Calculator.reset();
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>User Manager Module</h3>
+
+            <pre><code class="language-javascript">const UserManager = (function() {
+    const users = [];
+    let nextId = 1;
+    
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    
+    function findById(id) {
+        return users.find(user => user.id === id);
+    }
+    
+    function addUser(name, email) {
+        if (!validateEmail(email)) {
+            throw new Error('Invalid email');
+        }
+        
+        const user = {
+            id: nextId++,
+            name,
+            email,
+            createdAt: new Date()
+        };
+        
+        users.push(user);
+        return user;
+    }
+    
+    function removeUser(id) {
+        const index = users.findIndex(user => user.id === id);
+        if (index === -1) {
+            throw new Error('User not found');
+        }
+        return users.splice(index, 1)[0];
+    }
+    
+    function getUser(id) {
+        const user = findById(id);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return { ...user }; // Return copy
+    }
+    
+    function getAllUsers() {
+        return users.map(user => ({ ...user }));
+    }
+    
+    return {
+        addUser,
+        removeUser,
+        getUser,
+        getAllUsers
+    };
+})();
+
+// Usage
+const user1 = UserManager.addUser('John', 'john@example.com');
+const user2 = UserManager.addUser('Jane', 'jane@example.com');
+
+console.log(UserManager.getAllUsers());
+// [{ id: 1, name: 'John', ... }, { id: 2, name: 'Jane', ... }]
+
+console.log(UserManager.users); // undefined (private!)
+</code></pre>
+
+            <h3>API Client Module</h3>
+
+            <pre><code class="language-javascript">const ApiClient = (function() {
+    const baseUrl = 'https://api.example.com';
+    let authToken = null;
+    
+    async function request(endpoint, options = {}) {
+        const url = `${baseUrl}${endpoint}`;
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers
+        };
+        
+        if (authToken) {
+            headers['Authorization'] = `Bearer ${authToken}`;
+        }
+        
+        const response = await fetch(url, {
+            ...options,
+            headers
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        return response.json();
+    }
+    
+    function setAuthToken(token) {
+        authToken = token;
+    }
+    
+    function clearAuthToken() {
+        authToken = null;
+    }
+    
+    async function get(endpoint) {
+        return request(endpoint, { method: 'GET' });
+    }
+    
+    async function post(endpoint, data) {
+        return request(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+    
+    async function put(endpoint, data) {
+        return request(endpoint, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+    
+    async function del(endpoint) {
+        return request(endpoint, { method: 'DELETE' });
+    }
+    
+    return {
+        setAuthToken,
+        clearAuthToken,
+        get,
+        post,
+        put,
+        delete: del
+    };
+})();
+
+// Usage
+ApiClient.setAuthToken('my-token-123');
+const users = await ApiClient.get('/users');
+const newUser = await ApiClient.post('/users', { name: 'John' });
+</code></pre>
+
+            <h2>When to Use Module Pattern</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Encapsulation and privacy</li>
+                    <li>Private state management</li>
+                    <li>Namespace management</li>
+                    <li>Legacy code (pre-ES6)</li>
+                    <li>Single instance utilities</li>
+                </ul>
+            </div>
+
+            <h2>Benefits</h2>
+
+            <ul>
+                <li><strong>Privacy:</strong> True private members via closures</li>
+                <li><strong>Encapsulation:</strong> Hide implementation details</li>
+                <li><strong>Clean API:</strong> Expose only what's needed</li>
+                <li><strong>Namespace protection:</strong> Avoid global pollution</li>
+                <li><strong>Single instance:</strong> One instance per module</li>
+            </ul>
+
+            <h2>Module Pattern vs ES6 Modules</h2>
+
+            <pre><code class="language-javascript">// Module Pattern (old way)
+const MyModule = (function() {
+    const private = 'private';
+    
+    return {
+        public() {
+            return private;
+        }
+    };
+})();
+
+// ES6 Modules (modern way)
+// mymodule.js
+const private = 'private';
+
+export function public() {
+    return private;
+}
+
+// app.js
+import { public } from './mymodule.js';
+</code></pre>
+
+            <div class="tip-box">
+                <strong>Modern Recommendation:</strong> Use ES6 modules for new code. Module pattern is still useful for:
+                <ul>
+                    <li>Legacy browser support</li>
+                    <li>Single-file scripts</li>
+                    <li>Understanding closures</li>
+                    <li>Maintaining old code</li>
+                </ul>
+            </div>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use revealing module pattern for clarity</strong>
+                <pre><code class="language-javascript">// Define all functions first
+function method1() {}
+function method2() {}
+
+// Then reveal
+return { method1, method2 };
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Return copies of private data</strong>
+                <pre><code class="language-javascript">function getUsers() {
+    return users.map(u => ({ ...u })); // Copy
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use descriptive names</strong>
+                <pre><code class="language-javascript">const UserManager = (function() {
+    // Clear purpose
+})();
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Module pattern creates private scope with IIFE</li>
+                <li>Uses closures for privacy</li>
+                <li>Exposes public API via returned object</li>
+                <li>Revealing pattern is cleaner and more readable</li>
+                <li>Modern ES6 modules are preferred for new code</li>
+                <li>Still useful for understanding encapsulation</li>
+                <li>Great for single-instance utilities</li>
+                <li>Prevents global namespace pollution</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

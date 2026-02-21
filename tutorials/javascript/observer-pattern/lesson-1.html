@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Observer Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Observer Pattern - react to state changes with publish-subscribe mechanisms.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Observer Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Observer Pattern</h1>
+            <p class="subtitle">React to State Changes</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Observer pattern concept</li>
+                    <li>Implement publish-subscribe mechanisms</li>
+                    <li>Use observers for event systems</li>
+                    <li>Apply reactive programming patterns</li>
+                    <li>Build state management with observers</li>
+                </ul>
+            </div>
+
+            <h2>What is the Observer Pattern?</h2>
+
+            <p>An Observer (subscriber) registers with a Subject (publisher) to receive notifications when the subject's state changes. It's a one-to-many relationship where one object notifies many dependents.</p>
+
+            <h2>Basic Implementation</h2>
+
+            <pre><code class="language-javascript">class Subject {
+    constructor() {
+        this.observers = [];
+    }
+    
+    subscribe(observer) {
+        this.observers.push(observer);
+    }
+    
+    unsubscribe(observer) {
+        this.observers = this.observers.filter(obs => obs !== observer);
+    }
+    
+    notify(data) {
+        this.observers.forEach(observer => observer.update(data));
+    }
+}
+
+class Observer {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    update(data) {
+        console.log(`${this.name} received:`, data);
+    }
+}
+
+// Usage
+const subject = new Subject();
+const observer1 = new Observer('Observer 1');
+const observer2 = new Observer('Observer 2');
+
+subject.subscribe(observer1);
+subject.subscribe(observer2);
+
+subject.notify('Hello observers!');
+// Observer 1 received: Hello observers!
+// Observer 2 received: Hello observers!
+
+subject.unsubscribe(observer1);
+subject.notify('Only one observer now');
+// Observer 2 received: Only one observer now
+</code></pre>
+
+            <h2>Event Emitter Pattern</h2>
+
+            <pre><code class="language-javascript">class EventEmitter {
+    constructor() {
+        this.events = {};
+    }
+    
+    on(event, listener) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(listener);
+        
+        // Return unsubscribe function
+        return () => this.off(event, listener);
+    }
+    
+    off(event, listener) {
+        if (!this.events[event]) return;
+        this.events[event] = this.events[event].filter(l => l !== listener);
+    }
+    
+    emit(event, data) {
+        if (!this.events[event]) return;
+        this.events[event].forEach(listener => listener(data));
+    }
+    
+    once(event, listener) {
+        const onceWrapper = (data) => {
+            listener(data);
+            this.off(event, onceWrapper);
+        };
+        this.on(event, onceWrapper);
+    }
+}
+
+// Usage
+const emitter = new EventEmitter();
+
+const unsubscribe = emitter.on('data', (data) => {
+    console.log('Received:', data);
+});
+
+emitter.on('data', (data) => {
+    console.log('Also received:', data);
+});
+
+emitter.emit('data', { message: 'Hello' });
+// Received: { message: 'Hello' }
+// Also received: { message: 'Hello' }
+
+// Use once for one-time listeners
+emitter.once('init', () => {
+    console.log('Initialized once');
+});
+
+emitter.emit('init'); // Logs once
+emitter.emit('init'); // Doesn't log
+
+unsubscribe(); // Remove first listener
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>State Management Store</h3>
+
+            <pre><code class="language-javascript">class Store {
+    constructor(initialState = {}) {
+        this.state = initialState;
+        this.listeners = [];
+    }
+    
+    getState() {
+        return { ...this.state };
+    }
+    
+    setState(newState) {
+        const prevState = this.state;
+        this.state = { ...this.state, ...newState };
+        this.notify(this.state, prevState);
+    }
+    
+    subscribe(listener) {
+        this.listeners.push(listener);
+        
+        // Return unsubscribe function
+        return () => {
+            this.listeners = this.listeners.filter(l => l !== listener);
+        };
+    }
+    
+    notify(state, prevState) {
+        this.listeners.forEach(listener => listener(state, prevState));
+    }
+}
+
+// Usage
+const store = new Store({ count: 0, user: null });
+
+const unsubscribe = store.subscribe((state, prevState) => {
+    console.log('State changed from', prevState, 'to', state);
+});
+
+store.setState({ count: 1 });
+// State changed from { count: 0, user: null } to { count: 1, user: null }
+
+store.setState({ user: { name: 'John' } });
+// State changed from { count: 1, user: null } to { count: 1, user: { name: 'John' } }
+
+unsubscribe(); // Stop listening
+</code></pre>
+
+            <h3>DOM Observer</h3>
+
+            <pre><code class="language-javascript">class DOMObserver {
+    constructor(element) {
+        this.element = element;
+        this.observers = [];
+        this.events = new Set();
+    }
+    
+    observe(event) {
+        if (this.events.has(event)) return;
+        
+        this.events.add(event);
+        this.element.addEventListener(event, (e) => {
+            this.notify(event, e);
+        });
+    }
+    
+    subscribe(callback) {
+        this.observers.push(callback);
+        
+        return () => {
+            this.observers = this.observers.filter(obs => obs !== callback);
+        };
+    }
+    
+    notify(event, data) {
+        this.observers.forEach(observer => observer(event, data));
+    }
+}
+
+// Usage
+const button = document.querySelector('#myButton');
+const domObserver = new DOMObserver(button);
+
+domObserver.observe('click');
+domObserver.observe('mouseover');
+
+const unsubscribe = domObserver.subscribe((event, data) => {
+    console.log(`Button ${event}:`, data);
+});
+</code></pre>
+
+            <h3>News Publisher</h3>
+
+            <pre><code class="language-javascript">class NewsPublisher {
+    constructor() {
+        this.subscribers = [];
+        this.articles = [];
+    }
+    
+    subscribe(subscriber) {
+        this.subscribers.push(subscriber);
+        console.log(`${subscriber.name} subscribed`);
+    }
+    
+    unsubscribe(subscriber) {
+        this.subscribers = this.subscribers.filter(sub => sub !== subscriber);
+        console.log(`${subscriber.name} unsubscribed`);
+    }
+    
+    publish(article) {
+        this.articles.push(article);
+        this.notifySubscribers(article);
+    }
+    
+    notifySubscribers(article) {
+        this.subscribers.forEach(subscriber => {
+            subscriber.receive(article);
+        });
+    }
+}
+
+class Subscriber {
+    constructor(name) {
+        this.name = name;
+        this.articles = [];
+    }
+    
+    receive(article) {
+        this.articles.push(article);
+        console.log(`${this.name} received: ${article.title}`);
+    }
+}
+
+// Usage
+const publisher = new NewsPublisher();
+
+const subscriber1 = new Subscriber('Alice');
+const subscriber2 = new Subscriber('Bob');
+
+publisher.subscribe(subscriber1);
+publisher.subscribe(subscriber2);
+
+publisher.publish({
+    title: 'Breaking News',
+    content: 'Something important happened'
+});
+// Alice received: Breaking News
+// Bob received: Breaking News
+
+publisher.unsubscribe(subscriber1);
+
+publisher.publish({
+    title: 'Update',
+    content: 'More news'
+});
+// Bob received: Update
+</code></pre>
+
+            <h2>When to Use Observer Pattern</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Event systems and event handling</li>
+                    <li>State management (Redux, MobX)</li>
+                    <li>Real-time updates and notifications</li>
+                    <li>Reactive programming</li>
+                    <li>Pub-sub messaging systems</li>
+                    <li>Model-View updates (MVC)</li>
+                </ul>
+            </div>
+
+            <h2>Benefits</h2>
+
+            <ul>
+                <li><strong>Loose coupling:</strong> Subjects and observers are independent</li>
+                <li><strong>Dynamic relationships:</strong> Add/remove observers at runtime</li>
+                <li><strong>Broadcast communication:</strong> One-to-many notifications</li>
+                <li><strong>Easy to extend:</strong> Add new observers without changing subject</li>
+                <li><strong>Reactive:</strong> Automatic updates when state changes</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Return unsubscribe function</strong>
+                <pre><code class="language-javascript">subscribe(listener) {
+    this.listeners.push(listener);
+    return () => this.unsubscribe(listener);
+}
+
+const unsubscribe = store.subscribe(listener);
+unsubscribe(); // Easy cleanup
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Prevent memory leaks</strong>
+                <pre><code class="language-javascript">class Component {
+    constructor() {
+        this.unsubscribers = [];
+    }
+    
+    mount() {
+        const unsub = store.subscribe(this.handleChange);
+        this.unsubscribers.push(unsub);
+    }
+    
+    unmount() {
+        this.unsubscribers.forEach(unsub => unsub());
+        this.unsubscribers = [];
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use weak references for DOM</strong>
+                <pre><code class="language-javascript">class DOMObserver {
+    constructor() {
+        this.observers = new WeakMap();
+    }
+}
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Observer pattern enables reactive systems</li>
+                <li>Subject notifies observers of state changes</li>
+                <li>Event emitters are a form of observer pattern</li>
+                <li>Perfect for state management and event systems</li>
+                <li>Foundation of reactive programming</li>
+                <li>Promotes loose coupling</li>
+                <li>Always provide unsubscribe mechanism</li>
+                <li>Watch for memory leaks with DOM observers</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

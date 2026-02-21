@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Web Workers - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Web Workers - run scripts in background threads for better performance.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Web Workers</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Web Workers</h1>
+            <p class="subtitle">Background Thread Processing</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand Web Workers API</li>
+                    <li>Create and communicate with workers</li>
+                    <li>Handle worker messages and errors</li>
+                    <li>Use workers for performance</li>
+                    <li>Apply worker best practices</li>
+                </ul>
+            </div>
+
+            <h2>What are Web Workers?</h2>
+
+            <p>Web Workers enable running JavaScript in background threads, separate from the main execution thread. This prevents UI blocking during CPU-intensive operations, keeping your application responsive.</p>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Web Workers cannot access the DOM, window object, or parent page directly. They communicate via message passing.
+            </div>
+
+            <h2>Basic Usage</h2>
+
+            <pre><code class="language-javascript">// Main thread (main.js)
+const worker = new Worker('worker.js');
+
+// Send data to worker
+worker.postMessage({ 
+    action: 'calculate',
+    data: [1, 2, 3, 4, 5] 
+});
+
+// Receive result from worker
+worker.onmessage = (event) => {
+    console.log('Result from worker:', event.data);
+};
+
+// Handle errors
+worker.onerror = (error) => {
+    console.error('Worker error:', error.message);
+    console.error('File:', error.filename);
+    console.error('Line:', error.lineno);
+};
+
+// Terminate worker when done
+worker.terminate();
+</code></pre>
+
+            <pre><code class="language-javascript">// Worker thread (worker.js)
+self.onmessage = (event) => {
+    const { action, data } = event.data;
+    
+    if (action === 'calculate') {
+        // Perform heavy computation
+        const result = data.reduce((sum, n) => sum + n, 0);
+        
+        // Send result back to main thread
+        self.postMessage(result);
+    }
+};
+
+// Handle errors in worker
+self.onerror = (error) => {
+    console.error('Error in worker:', error);
+};
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Data Processing</h3>
+
+            <pre><code class="language-javascript">// Main thread
+const dataWorker = new Worker('data-processor.js');
+
+fetch('/api/large-dataset')
+    .then(r => r.json())
+    .then(data => {
+        dataWorker.postMessage({ data, operation: 'filter' });
+    });
+
+dataWorker.onmessage = (event) => {
+    const processedData = event.data;
+    renderChart(processedData);
+};
+</code></pre>
+
+            <pre><code class="language-javascript">// data-processor.js
+self.onmessage = (event) => {
+    const { data, operation } = event.data;
+    
+    let result;
+    
+    switch (operation) {
+        case 'filter':
+            result = data.filter(item => item.value > 100);
+            break;
+        case 'sort':
+            result = data.sort((a, b) => b.value - a.value);
+            break;
+        case 'aggregate':
+            result = aggregateData(data);
+            break;
+    }
+    
+    self.postMessage(result);
+};
+
+function aggregateData(data) {
+    // Complex aggregation logic
+    return data.reduce((acc, item) => {
+        // ... heavy computation
+        return acc;
+    }, {});
+}
+</code></pre>
+
+            <h3>Image Processing</h3>
+
+            <pre><code class="language-javascript">// Main thread
+const imageWorker = new Worker('image-processor.js');
+
+canvas.toBlob(blob => {
+    blob.arrayBuffer().then(buffer => {
+        imageWorker.postMessage({
+            imageData: buffer,
+            filter: 'blur',
+            intensity: 5
+        }, [buffer]); // Transfer ownership
+    });
+});
+
+imageWorker.onmessage = (event) => {
+    const processedImage = event.data;
+    displayImage(processedImage);
+};
+</code></pre>
+
+            <h2>Transferable Objects</h2>
+
+            <pre><code class="language-javascript">// Transfer ownership for better performance
+const buffer = new ArrayBuffer(1024 * 1024); // 1MB
+const view = new Uint8Array(buffer);
+
+// Fill with data
+for (let i = 0; i < view.length; i++) {
+    view[i] = i % 256;
+}
+
+// Transfer buffer to worker (zero-copy)
+worker.postMessage({ buffer }, [buffer]);
+
+// buffer is now unusable in main thread
+console.log(buffer.byteLength); // 0
+</code></pre>
+
+            <h2>Worker Pool</h2>
+
+            <pre><code class="language-javascript">class WorkerPool {
+    constructor(workerScript, poolSize = 4) {
+        this.workers = [];
+        this.queue = [];
+        
+        for (let i = 0; i < poolSize; i++) {
+            const worker = new Worker(workerScript);
+            worker.busy = false;
+            worker.onmessage = this.handleMessage.bind(this, worker);
+            this.workers.push(worker);
+        }
+    }
+    
+    execute(data) {
+        return new Promise((resolve, reject) => {
+            const task = { data, resolve, reject };
+            
+            const availableWorker = this.workers.find(w => !w.busy);
+            
+            if (availableWorker) {
+                this.runTask(availableWorker, task);
+            } else {
+                this.queue.push(task);
+            }
+        });
+    }
+    
+    runTask(worker, task) {
+        worker.busy = true;
+        worker.currentTask = task;
+        worker.postMessage(task.data);
+    }
+    
+    handleMessage(worker, event) {
+        worker.currentTask.resolve(event.data);
+        worker.busy = false;
+        
+        if (this.queue.length > 0) {
+            const nextTask = this.queue.shift();
+            this.runTask(worker, nextTask);
+        }
+    }
+    
+    terminate() {
+        this.workers.forEach(w => w.terminate());
+    }
+}
+
+// Usage
+const pool = new WorkerPool('worker.js', 4);
+
+const tasks = Array.from({ length: 100 }, (_, i) => i);
+const results = await Promise.all(
+    tasks.map(task => pool.execute(task))
+);
+
+pool.terminate();
+</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use for CPU-intensive tasks</strong>
+                <p>Perfect for: data processing, image manipulation, complex calculations, parsing large files</p>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Transfer large data efficiently</strong>
+                <pre><code class="language-javascript">// Use Transferable Objects
+worker.postMessage({ buffer }, [buffer]);
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Terminate workers when done</strong>
+                <pre><code class="language-javascript">worker.terminate();
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>4. Limit number of workers</strong>
+                <pre><code class="language-javascript">// Use navigator.hardwareConcurrency
+const maxWorkers = navigator.hardwareConcurrency || 4;
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Web Workers run JavaScript in background threads</li>
+                <li>Prevent UI blocking during heavy computations</li>
+                <li>Communicate via <code>postMessage</code> and <code>onmessage</code></li>
+                <li>Cannot access DOM or window object</li>
+                <li>Use Transferable Objects for large data</li>
+                <li>Always terminate workers to free resources</li>
+                <li>Use worker pools for multiple tasks</li>
+                <li>Perfect for data processing, calculations, and parsing</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

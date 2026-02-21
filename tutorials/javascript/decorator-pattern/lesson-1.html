@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Decorator Pattern - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn the JavaScript Decorator Pattern - add functionality to objects dynamically without modifying their structure.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Decorator Pattern</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering the Decorator Pattern</h1>
+            <p class="subtitle">Extend Functionality Dynamically</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the Decorator pattern concept</li>
+                    <li>Add functionality without inheritance</li>
+                    <li>Use function decorators and wrappers</li>
+                    <li>Implement class decorators</li>
+                    <li>Apply decorator best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is the Decorator Pattern?</h2>
+
+            <p>Decorators wrap objects to add new behavior without modifying the original object's code. They provide a flexible alternative to subclassing for extending functionality.</p>
+
+            <h2>Function Decorator</h2>
+
+            <pre><code class="language-javascript">function logger(fn) {
+    return function(...args) {
+        console.log(`Calling ${fn.name} with`, args);
+        const result = fn(...args);
+        console.log(`Result:`, result);
+        return result;
+    };
+}
+
+function add(a, b) {
+    return a + b;
+}
+
+const loggedAdd = logger(add);
+loggedAdd(2, 3);
+// Calling add with [2, 3]
+// Result: 5
+// Returns: 5
+</code></pre>
+
+            <h2>Memoization Decorator</h2>
+
+            <pre><code class="language-javascript">function memoize(fn) {
+    const cache = new Map();
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        
+        if (cache.has(key)) {
+            console.log('From cache');
+            return cache.get(key);
+        }
+        
+        console.log('Computing...');
+        const result = fn(...args);
+        cache.set(key, result);
+        return result;
+    };
+}
+
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+const memoizedFib = memoize(fibonacci);
+
+console.log(memoizedFib(10)); // Computing... 55
+console.log(memoizedFib(10)); // From cache 55
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>API Retry Decorator</h3>
+
+            <pre><code class="language-javascript">function retry(fn, retries = 3, delay = 1000) {
+    return async function(...args) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                return await fn(...args);
+            } catch (error) {
+                console.log(`Attempt ${i + 1} failed`);
+                
+                if (i === retries - 1) {
+                    throw error;
+                }
+                
+                await new Promise(resolve => 
+                    setTimeout(resolve, delay * (i + 1))
+                );
+            }
+        }
+    };
+}
+
+async function fetchUser(id) {
+    const response = await fetch(`/api/users/${id}`);
+    if (!response.ok) throw new Error('Fetch failed');
+    return response.json();
+}
+
+const fetchUserWithRetry = retry(fetchUser, 3, 1000);
+
+try {
+    const user = await fetchUserWithRetry(1);
+} catch (error) {
+    console.error('All retries failed');
+}
+</code></pre>
+
+            <h3>Timing Decorator</h3>
+
+            <pre><code class="language-javascript">function timing(fn) {
+    return async function(...args) {
+        const start = performance.now();
+        const result = await fn(...args);
+        const end = performance.now();
+        
+        console.log(`${fn.name} took ${(end - start).toFixed(2)}ms`);
+        return result;
+    };
+}
+
+async function processData(data) {
+    await new Promise(r => setTimeout(r, 1000));
+    return data.map(x => x * 2);
+}
+
+const timedProcess = timing(processData);
+await timedProcess([1, 2, 3]);
+// processData took 1002.34ms
+</code></pre>
+
+            <h3>Authorization Decorator</h3>
+
+            <pre><code class="language-javascript">function requireAuth(fn) {
+    return function(...args) {
+        const user = getCurrentUser();
+        
+        if (!user) {
+            throw new Error('Authentication required');
+        }
+        
+        return fn.call(this, ...args);
+    };
+}
+
+function requireRole(role) {
+    return function(fn) {
+        return function(...args) {
+            const user = getCurrentUser();
+            
+            if (!user || !user.roles.includes(role)) {
+                throw new Error(`Role ${role} required`);
+            }
+            
+            return fn.call(this, ...args);
+        };
+    };
+}
+
+class UserService {
+    deleteUser(id) {
+        console.log(`Deleting user ${id}`);
+    }
+}
+
+UserService.prototype.deleteUser = requireAuth(
+    requireRole('admin')(UserService.prototype.deleteUser)
+);
+</code></pre>
+
+            <h3>Rate Limiting Decorator</h3>
+
+            <pre><code class="language-javascript">function rateLimit(fn, limit, window) {
+    const calls = [];
+    
+    return function(...args) {
+        const now = Date.now();
+        
+        // Remove old calls outside window
+        while (calls.length && calls[0] < now - window) {
+            calls.shift();
+        }
+        
+        if (calls.length >= limit) {
+            throw new Error('Rate limit exceeded');
+        }
+        
+        calls.push(now);
+        return fn(...args);
+    };
+}
+
+function sendEmail(to, subject) {
+    console.log(`Sending email to ${to}`);
+}
+
+const limitedSendEmail = rateLimit(sendEmail, 5, 60000); // 5 per minute
+
+// Can call 5 times
+for (let i = 0; i < 5; i++) {
+    limitedSendEmail('user@example.com', 'Hello');
+}
+
+// 6th call throws error
+limitedSendEmail('user@example.com', 'Hello'); // Error: Rate limit exceeded
+</code></pre>
+
+            <h2>Composing Decorators</h2>
+
+            <pre><code class="language-javascript">function compose(...decorators) {
+    return function(fn) {
+        return decorators.reduceRight((decorated, decorator) => {
+            return decorator(decorated);
+        }, fn);
+    };
+}
+
+// Compose multiple decorators
+const enhance = compose(
+    logger,
+    timing,
+    memoize,
+    retry
+);
+
+async function fetchData(url) {
+    const response = await fetch(url);
+    return response.json();
+}
+
+const enhancedFetch = enhance(fetchData);
+</code></pre>
+
+            <h2>When to Use Decorator Pattern</h2>
+
+            <div class="tip-box">
+                <strong>Good use cases:</strong>
+                <ul>
+                    <li>Add logging/monitoring to functions</li>
+                    <li>Caching and memoization</li>
+                    <li>Input validation</li>
+                    <li>Authorization and authentication</li>
+                    <li>Rate limiting and throttling</li>
+                    <li>Error handling and retry logic</li>
+                    <li>Performance measurement</li>
+                </ul>
+            </div>
+
+            <h2>Benefits</h2>
+
+            <ul>
+                <li><strong>Open/Closed Principle:</strong> Extend without modifying</li>
+                <li><strong>Single Responsibility:</strong> Each decorator has one job</li>
+                <li><strong>Composable:</strong> Combine multiple decorators</li>
+                <li><strong>Flexible:</strong> Add/remove at runtime</li>
+                <li><strong>Reusable:</strong> Use across different functions</li>
+            </ul>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Preserve function signature</strong>
+                <pre><code class="language-javascript">function decorator(fn) {
+    return function(...args) {
+        // Preserve original behavior
+        return fn(...args);
+    };
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Use descriptive names</strong>
+                <pre><code class="language-javascript">// Good
+const loggedFetch = logger(fetch);
+const cachedFetch = memoize(fetch);
+
+// Not as clear
+const f1 = logger(fetch);
+const f2 = memoize(fetch);
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Keep decorators focused</strong>
+                <pre><code class="language-javascript">// Good - single responsibility
+function logger(fn) { /* just logging */ }
+function timer(fn) { /* just timing */ }
+
+// Bad - doing too much
+function loggerAndTimer(fn) { /* logging and timing */ }
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Decorators add behavior without modifying original code</li>
+                <li>Wrap functions/objects to extend functionality</li>
+                <li>Composable and reusable across codebase</li>
+                <li>Alternative to inheritance for extending behavior</li>
+                <li>Great for cross-cutting concerns (logging, caching, auth)</li>
+                <li>Follow Open/Closed and Single Responsibility principles</li>
+                <li>Can be composed for powerful combinations</li>
+                <li>Preserve original function signatures</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Spread and Rest Operators - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript spread and rest operators - master the three dots for cleaner, more powerful code.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Spread and Rest</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering Spread and Rest Operators</h1>
+            <p class="subtitle">Master the Three Dots</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand spread vs rest operators</li>
+                    <li>Use spread with arrays and objects</li>
+                    <li>Apply rest parameters in functions</li>
+                    <li>Clone and merge data structures</li>
+                    <li>Master practical patterns</li>
+                </ul>
+            </div>
+
+            <h2>Spread vs Rest: Same Syntax, Different Purpose</h2>
+            <p>Both use three dots (<code>...</code>), but they work in opposite ways:</p>
+            <ul>
+                <li><strong>Spread:</strong> Expands an array/object into individual elements</li>
+                <li><strong>Rest:</strong> Collects multiple elements into an array</li>
+            </ul>
+
+            <pre><code class="language-javascript">// Spread - expands array
+const arr = [1, 2, 3];
+console.log(...arr); // 1 2 3
+
+// Rest - collects into array
+function sum(...numbers) {
+    return numbers.reduce((a, b) => a + b);
+}
+</code></pre>
+
+            <h2>Spread Operator with Arrays</h2>
+
+            <h3>Copy Arrays</h3>
+
+            <pre><code class="language-javascript">const original = [1, 2, 3];
+const copy = [...original];
+
+copy.push(4);
+console.log(original); // [1, 2, 3] - unchanged
+console.log(copy);     // [1, 2, 3, 4]
+</code></pre>
+
+            <h3>Merge Arrays</h3>
+
+            <pre><code class="language-javascript">const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+
+// Old way
+const merged = arr1.concat(arr2);
+
+// With spread
+const merged = [...arr1, ...arr2];
+console.log(merged); // [1, 2, 3, 4, 5, 6]
+
+// Insert in middle
+const combined = [...arr1, 99, ...arr2];
+console.log(combined); // [1, 2, 3, 99, 4, 5, 6]
+</code></pre>
+
+            <h3>Add Elements</h3>
+
+            <pre><code class="language-javascript">const numbers = [2, 3, 4];
+
+// Add to beginning
+const withStart = [1, ...numbers];
+console.log(withStart); // [1, 2, 3, 4]
+
+// Add to end
+const withEnd = [...numbers, 5];
+console.log(withEnd); // [2, 3, 4, 5]
+
+// Add to both
+const withBoth = [0, ...numbers, 5, 6];
+console.log(withBoth); // [0, 2, 3, 4, 5, 6]
+</code></pre>
+
+            <h3>Convert to Array</h3>
+
+            <pre><code class="language-javascript">// String to array
+const str = 'hello';
+const chars = [...str];
+console.log(chars); // ['h', 'e', 'l', 'l', 'o']
+
+// NodeList to array
+const divs = document.querySelectorAll('div');
+const divsArray = [...divs];
+
+// Set to array
+const set = new Set([1, 2, 3]);
+const arr = [...set];
+</code></pre>
+
+            <h3>Math Operations</h3>
+
+            <pre><code class="language-javascript">const numbers = [5, 2, 8, 1, 9];
+
+console.log(Math.max(...numbers)); // 9
+console.log(Math.min(...numbers)); // 1
+
+// Without spread (old way)
+console.log(Math.max.apply(null, numbers));
+</code></pre>
+
+            <h2>Spread Operator with Objects</h2>
+
+            <h3>Copy Objects</h3>
+
+            <pre><code class="language-javascript">const original = { name: 'John', age: 30 };
+const copy = { ...original };
+
+copy.age = 31;
+console.log(original.age); // 30 - unchanged
+console.log(copy.age);     // 31
+</code></pre>
+
+            <h3>Merge Objects</h3>
+
+            <pre><code class="language-javascript">const defaults = { theme: 'light', language: 'en' };
+const userPrefs = { theme: 'dark' };
+
+const settings = { ...defaults, ...userPrefs };
+console.log(settings);
+// { theme: 'dark', language: 'en' }
+// userPrefs overwrites defaults
+</code></pre>
+
+            <h3>Add/Update Properties</h3>
+
+            <pre><code class="language-javascript">const user = { name: 'John', age: 30 };
+
+// Add property
+const withEmail = { ...user, email: 'john@example.com' };
+
+// Update property
+const olderUser = { ...user, age: 31 };
+
+// Add multiple
+const fullUser = {
+    ...user,
+    email: 'john@example.com',
+    country: 'USA'
+};
+</code></pre>
+
+            <h3>Conditional Properties</h3>
+
+            <pre><code class="language-javascript">const includeEmail = true;
+
+const user = {
+    name: 'John',
+    age: 30,
+    ...(includeEmail && { email: 'john@example.com' })
+};
+
+console.log(user);
+// { name: 'John', age: 30, email: 'john@example.com' }
+</code></pre>
+
+            <h2>Rest Parameters</h2>
+
+            <h3>Variable Number of Arguments</h3>
+
+            <pre><code class="language-javascript">function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3));       // 6
+console.log(sum(1, 2, 3, 4, 5)); // 15
+</code></pre>
+
+            <h3>Rest with Named Parameters</h3>
+
+            <pre><code class="language-javascript">function greet(greeting, ...names) {
+    return `${greeting} ${names.join(', ')}!`;
+}
+
+console.log(greet('Hello', 'John'));
+// "Hello John!"
+
+console.log(greet('Hello', 'John', 'Jane', 'Bob'));
+// "Hello John, Jane, Bob!"
+</code></pre>
+
+            <h3>Rest Must Be Last</h3>
+
+            <pre><code class="language-javascript">// Valid
+function fn(a, b, ...rest) {}
+
+// Invalid
+// function fn(...rest, a, b) {} // SyntaxError
+// function fn(a, ...rest, b) {} // SyntaxError
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Immutable Array Operations</h3>
+
+            <pre><code class="language-javascript">const todos = [
+    { id: 1, text: 'Learn JS', done: false },
+    { id: 2, text: 'Build app', done: false }
+];
+
+// Add todo
+const addTodo = (todos, newTodo) => [...todos, newTodo];
+
+// Remove todo
+const removeTodo = (todos, id) => 
+    todos.filter(todo => todo.id !== id);
+
+// Update todo
+const updateTodo = (todos, id, updates) =>
+    todos.map(todo =>
+        todo.id === id ? { ...todo, ...updates } : todo
+    );
+
+const updated = updateTodo(todos, 1, { done: true });
+</code></pre>
+
+            <h3>React State Updates</h3>
+
+            <pre><code class="language-javascript">// Add item to array
+setItems([...items, newItem]);
+
+// Update object
+setUser({ ...user, name: 'Jane' });
+
+// Update nested object
+setUser({
+    ...user,
+    address: {
+        ...user.address,
+        city: 'Boston'
+    }
+});
+</code></pre>
+
+            <h3>Function Composition</h3>
+
+            <pre><code class="language-javascript">function compose(...fns) {
+    return (x) => fns.reduceRight((acc, fn) => fn(acc), x);
+}
+
+const double = x => x * 2;
+const addTen = x => x + 10;
+const square = x => x * x;
+
+const compute = compose(square, addTen, double);
+console.log(compute(5)); // ((5 * 2) + 10)^2 = 400
+</code></pre>
+
+            <h3>API Request Builder</h3>
+
+            <pre><code class="language-javascript">function buildRequest(url, options = {}) {
+    const defaults = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    return {
+        ...defaults,
+        ...options,
+        headers: {
+            ...defaults.headers,
+            ...options.headers
+        }
+    };
+}
+
+const request = buildRequest('/api/users', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer token' }
+});
+</code></pre>
+
+            <h3>Logger Function</h3>
+
+            <pre><code class="language-javascript">function log(level, ...messages) {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] [${level}]`, ...messages);
+}
+
+log('INFO', 'User logged in');
+log('ERROR', 'Failed to fetch', { userId: 123 });
+</code></pre>
+
+            <h3>Merge Configurations</h3>
+
+            <pre><code class="language-javascript">const defaultConfig = {
+    port: 3000,
+    host: 'localhost',
+    database: {
+        host: 'localhost',
+        port: 5432
+    }
+};
+
+const userConfig = {
+    port: 8080,
+    database: {
+        host: 'db.example.com'
+    }
+};
+
+// Deep merge
+const config = {
+    ...defaultConfig,
+    ...userConfig,
+    database: {
+        ...defaultConfig.database,
+        ...userConfig.database
+    }
+};
+</code></pre>
+
+            <h2>Performance Considerations</h2>
+
+            <div class="tip-box">
+                <strong>Shallow Copy Only</strong>
+                <p>Spread creates shallow copies. Nested objects/arrays are still referenced:</p>
+                <pre><code class="language-javascript">const original = { user: { name: 'John' } };
+const copy = { ...original };
+
+copy.user.name = 'Jane';
+console.log(original.user.name); // 'Jane' - modified!
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>Performance with Large Arrays</strong>
+                <p>Spread is fast for small to medium arrays, but for very large arrays, consider other methods:</p>
+                <pre><code class="language-javascript">// For large arrays
+const merged = arr1.concat(arr2); // Faster
+// vs
+const merged = [...arr1, ...arr2]; // Slower for huge arrays
+</code></pre>
+            </div>
+
+            <h2>Common Patterns</h2>
+
+            <h3>Remove Item from Array</h3>
+
+            <pre><code class="language-javascript">const items = [1, 2, 3, 4, 5];
+const index = 2;
+
+const newItems = [
+    ...items.slice(0, index),
+    ...items.slice(index + 1)
+];
+console.log(newItems); // [1, 2, 4, 5]
+</code></pre>
+
+            <h3>Toggle Boolean Property</h3>
+
+            <pre><code class="language-javascript">const user = { name: 'John', active: false };
+
+const toggled = { ...user, active: !user.active };
+</code></pre>
+
+            <h3>Flatten Array One Level</h3>
+
+            <pre><code class="language-javascript">const nested = [[1, 2], [3, 4], [5, 6]];
+const flat = [].concat(...nested);
+console.log(flat); // [1, 2, 3, 4, 5, 6]
+
+// Or use flat()
+const flat = nested.flat();
+</code></pre>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Spread (<code>...</code>) expands arrays/objects into individual elements</li>
+                <li>Rest (<code>...</code>) collects elements into an array</li>
+                <li>Use spread to copy, merge, and add elements</li>
+                <li>Use rest for variable-length function parameters</li>
+                <li>Spread creates shallow copies only</li>
+                <li>Rest parameters must be last in function signature</li>
+                <li>Both enable immutable data patterns</li>
+                <li>Essential for modern JavaScript and React development</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

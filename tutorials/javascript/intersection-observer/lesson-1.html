@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript IntersectionObserver - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript IntersectionObserver - efficiently detect element visibility for lazy loading and infinite scroll.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">IntersectionObserver</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering IntersectionObserver</h1>
+            <p class="subtitle">Efficient Visibility Detection</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand IntersectionObserver API</li>
+                    <li>Implement lazy loading for images</li>
+                    <li>Create infinite scroll functionality</li>
+                    <li>Trigger animations on scroll</li>
+                    <li>Apply observer best practices</li>
+                </ul>
+            </div>
+
+            <h2>What is IntersectionObserver?</h2>
+
+            <p>IntersectionObserver provides an efficient way to detect when elements enter or leave the viewport. It's more performant than scroll event listeners because it runs asynchronously and doesn't block the main thread.</p>
+
+            <h2>Basic Usage</h2>
+
+            <pre><code class="language-javascript">// Create observer with callback
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            console.log('Element is visible!');
+            console.log('Target:', entry.target);
+            console.log('Intersection ratio:', entry.intersectionRatio);
+        } else {
+            console.log('Element is not visible');
+        }
+    });
+});
+
+// Observe element
+const element = document.querySelector('#myElement');
+observer.observe(element);
+
+// Observe multiple elements
+document.querySelectorAll('.observe-me').forEach(el => {
+    observer.observe(el);
+});
+
+// Stop observing specific element
+observer.unobserve(element);
+
+// Disconnect all observations
+observer.disconnect();
+</code></pre>
+
+            <h2>Observer Options</h2>
+
+            <pre><code class="language-javascript">const options = {
+    // Root element (null = viewport)
+    root: null,
+    
+    // Margin around root (can be negative)
+    rootMargin: '0px 0px -100px 0px', // top right bottom left
+    
+    // Threshold(s) to trigger callback
+    // 0 = any pixel visible
+    // 1 = 100% visible
+    // [0, 0.5, 1] = trigger at 0%, 50%, 100%
+    threshold: 0.5
+};
+
+const observer = new IntersectionObserver(callback, options);
+</code></pre>
+
+            <h2>Entry Properties</h2>
+
+            <pre><code class="language-javascript">const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        // The observed element
+        console.log(entry.target);
+        
+        // Is element intersecting with root?
+        console.log(entry.isIntersecting); // true/false
+        
+        // How much is visible (0-1)
+        console.log(entry.intersectionRatio); // 0.5 = 50%
+        
+        // Rectangles
+        console.log(entry.intersectionRect);  // Visible portion
+        console.log(entry.boundingClientRect); // Element bounds
+        console.log(entry.rootBounds);        // Root bounds
+        
+        // Timestamp
+        console.log(entry.time);
+    });
+});
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>Lazy Loading Images</h3>
+
+            <pre><code class="language-javascript">// HTML: &lt;img data-src="image.jpg" alt="Description"&gt;
+
+const imageObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const img = entry.target;
+            
+            // Load the image
+            img.src = img.dataset.src;
+            
+            // Add loaded class
+            img.classList.add('loaded');
+            
+            // Stop observing this image
+            imageObserver.unobserve(img);
+        }
+    });
+}, {
+    rootMargin: '50px' // Start loading 50px before visible
+});
+
+// Observe all images with data-src
+document.querySelectorAll('img[data-src]').forEach(img => {
+    imageObserver.observe(img);
+});
+</code></pre>
+
+            <h3>Infinite Scroll</h3>
+
+            <pre><code class="language-javascript">// HTML: &lt;div id="sentinel"&gt;&lt;/div&gt; at bottom of list
+
+let page = 1;
+let loading = false;
+
+const sentinel = document.querySelector('#sentinel');
+
+const infiniteObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !loading) {
+            loadMoreContent();
+        }
+    });
+}, {
+    rootMargin: '100px' // Load before reaching bottom
+});
+
+infiniteObserver.observe(sentinel);
+
+async function loadMoreContent() {
+    loading = true;
+    
+    try {
+        const response = await fetch(`/api/posts?page=${page}`);
+        const data = await response.json();
+        
+        if (data.posts.length === 0) {
+            infiniteObserver.disconnect();
+            return;
+        }
+        
+        renderPosts(data.posts);
+        page++;
+    } catch (error) {
+        console.error('Failed to load:', error);
+    } finally {
+        loading = false;
+    }
+}
+
+function renderPosts(posts) {
+    const container = document.querySelector('#posts');
+    posts.forEach(post => {
+        const div = document.createElement('div');
+        div.className = 'post';
+        div.innerHTML = `
+            <h3>${post.title}</h3>
+            <p>${post.excerpt}</p>
+        `;
+        container.insertBefore(div, sentinel);
+    });
+}
+</code></pre>
+
+            <h3>Scroll Animations</h3>
+
+            <pre><code class="language-javascript">const animateObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            // Add animation class
+            entry.target.classList.add('animate-in');
+            
+            // Stop observing (animate once)
+            animateObserver.unobserve(entry.target);
+        }
+    });
+}, {
+    threshold: 0.5, // 50% visible
+    rootMargin: '0px 0px -100px 0px' // Trigger earlier
+});
+
+// Observe all elements with animation class
+document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    animateObserver.observe(el);
+});
+</code></pre>
+
+            <h3>Sticky Header Detection</h3>
+
+            <pre><code class="language-javascript">const header = document.querySelector('header');
+const sentinel = document.querySelector('#header-sentinel');
+
+const stickyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) {
+            header.classList.add('sticky');
+        } else {
+            header.classList.remove('sticky');
+        }
+    });
+}, {
+    threshold: 0
+});
+
+stickyObserver.observe(sentinel);
+</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Unobserve after loading</strong>
+                <pre><code class="language-javascript">if (entry.isIntersecting) {
+    loadImage(entry.target);
+    observer.unobserve(entry.target); // Stop observing
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Use rootMargin for early loading</strong>
+                <pre><code class="language-javascript">const observer = new IntersectionObserver(callback, {
+    rootMargin: '100px' // Load 100px before visible
+});
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Set appropriate thresholds</strong>
+                <pre><code class="language-javascript">// Trigger at multiple points
+threshold: [0, 0.25, 0.5, 0.75, 1]
+
+// Trigger when fully visible
+threshold: 1.0
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>4. Disconnect when done</strong>
+                <pre><code class="language-javascript">// Clean up
+observer.disconnect();
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>IntersectionObserver detects element visibility efficiently</li>
+                <li>More performant than scroll event listeners</li>
+                <li>Perfect for lazy loading images and content</li>
+                <li>Great for infinite scroll implementations</li>
+                <li>Use for scroll-triggered animations</li>
+                <li>Configure with root, rootMargin, threshold</li>
+                <li>Always unobserve elements when done</li>
+                <li>Check <code>isIntersecting</code> for visibility</li>
+                <li>Use <code>rootMargin</code> for early/late triggers</li>
+                <li>Disconnect observer when no longer needed</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

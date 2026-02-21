@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering JavaScript Classes - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript ES6 classes - modern object-oriented programming with clean syntax.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Classes</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Mastering JavaScript Classes</h1>
+            <p class="subtitle">Modern Object-Oriented Programming</p>
+        </div>
+    </header>
+
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Create classes with constructor and methods</li>
+                    <li>Use static methods and properties</li>
+                    <li>Implement getters and setters</li>
+                    <li>Apply inheritance with extends</li>
+                    <li>Understand private fields and methods</li>
+                </ul>
+            </div>
+
+            <h2>Basic Class Syntax</h2>
+
+            <pre><code class="language-javascript">class User {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    greet() {
+        return `Hello, I'm ${this.name}`;
+    }
+}
+
+const user = new User('John', 30);
+console.log(user.greet()); // "Hello, I'm John"
+console.log(user.name);    // "John"
+console.log(user.age);     // 30
+</code></pre>
+
+            <h2>Constructor</h2>
+
+            <p>The <code>constructor</code> method is called when creating a new instance:</p>
+
+            <pre><code class="language-javascript">class User {
+    constructor(name, email) {
+        this.name = name;
+        this.email = email;
+        this.createdAt = new Date();
+        this.posts = [];
+    }
+}
+
+const user = new User('John', 'john@example.com');
+console.log(user.createdAt); // Current date
+console.log(user.posts);     // []
+</code></pre>
+
+            <h2>Methods</h2>
+
+            <p>Define methods directly in the class:</p>
+
+            <pre><code class="language-javascript">class Calculator {
+    add(a, b) {
+        return a + b;
+    }
+    
+    subtract(a, b) {
+        return a - b;
+    }
+    
+    multiply(a, b) {
+        return a * b;
+    }
+    
+    divide(a, b) {
+        if (b === 0) {
+            throw new Error('Division by zero');
+        }
+        return a / b;
+    }
+}
+
+const calc = new Calculator();
+console.log(calc.add(5, 3));      // 8
+console.log(calc.multiply(4, 5)); // 20
+</code></pre>
+
+            <h2>Static Methods</h2>
+
+            <p>Called on the class itself, not instances:</p>
+
+            <pre><code class="language-javascript">class MathUtils {
+    static add(a, b) {
+        return a + b;
+    }
+    
+    static max(...numbers) {
+        return Math.max(...numbers);
+    }
+    
+    static random(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+}
+
+// Call on class, not instance
+console.log(MathUtils.add(5, 3));        // 8
+console.log(MathUtils.max(1, 5, 3, 9));  // 9
+console.log(MathUtils.random(1, 10));    // Random number 1-10
+
+// Cannot call on instance
+const utils = new MathUtils();
+// utils.add(5, 3); // TypeError!
+</code></pre>
+
+            <h2>Getters and Setters</h2>
+
+            <pre><code class="language-javascript">class User {
+    constructor(firstName, lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    
+    get fullName() {
+        return `${this.firstName} ${this.lastName}`;
+    }
+    
+    set fullName(name) {
+        [this.firstName, this.lastName] = name.split(' ');
+    }
+    
+    get initials() {
+        return `${this.firstName[0]}${this.lastName[0]}`;
+    }
+}
+
+const user = new User('John', 'Doe');
+console.log(user.fullName); // "John Doe" (getter)
+console.log(user.initials); // "JD"
+
+user.fullName = 'Jane Smith'; // (setter)
+console.log(user.firstName); // "Jane"
+console.log(user.lastName);  // "Smith"
+</code></pre>
+
+            <h2>Inheritance with extends</h2>
+
+            <pre><code class="language-javascript">class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+    
+    move() {
+        return `${this.name} moves`;
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name); // Call parent constructor
+        this.breed = breed;
+    }
+    
+    speak() {
+        return `${this.name} barks`;
+    }
+    
+    fetch() {
+        return `${this.name} fetches the ball`;
+    }
+}
+
+const dog = new Dog('Rex', 'German Shepherd');
+console.log(dog.speak());  // "Rex barks" (overridden)
+console.log(dog.move());   // "Rex moves" (inherited)
+console.log(dog.fetch());  // "Rex fetches the ball"
+console.log(dog.breed);    // "German Shepherd"
+</code></pre>
+
+            <h2>super Keyword</h2>
+
+            <p>Call parent class methods:</p>
+
+            <pre><code class="language-javascript">class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+}
+
+class Cat extends Animal {
+    speak() {
+        const parentSpeak = super.speak();
+        return `${parentSpeak} and meows`;
+    }
+}
+
+const cat = new Cat('Whiskers');
+console.log(cat.speak());
+// "Whiskers makes a sound and meows"
+</code></pre>
+
+            <h2>Private Fields</h2>
+
+            <p>Use <code>#</code> for private fields (ES2022):</p>
+
+            <pre><code class="language-javascript">class BankAccount {
+    #balance = 0;
+    #pin;
+    
+    constructor(initialBalance, pin) {
+        this.#balance = initialBalance;
+        this.#pin = pin;
+    }
+    
+    deposit(amount) {
+        if (amount > 0) {
+            this.#balance += amount;
+            return true;
+        }
+        return false;
+    }
+    
+    withdraw(amount, pin) {
+        if (pin !== this.#pin) {
+            throw new Error('Invalid PIN');
+        }
+        if (amount > this.#balance) {
+            throw new Error('Insufficient funds');
+        }
+        this.#balance -= amount;
+        return amount;
+    }
+    
+    getBalance(pin) {
+        if (pin !== this.#pin) {
+            throw new Error('Invalid PIN');
+        }
+        return this.#balance;
+    }
+}
+
+const account = new BankAccount(1000, '1234');
+account.deposit(500);
+console.log(account.getBalance('1234')); // 1500
+// console.log(account.#balance); // SyntaxError!
+</code></pre>
+
+            <h2>Private Methods</h2>
+
+            <pre><code class="language-javascript">class User {
+    #password;
+    
+    constructor(name, password) {
+        this.name = name;
+        this.#password = this.#hashPassword(password);
+    }
+    
+    #hashPassword(password) {
+        // Private method - only accessible inside class
+        return btoa(password); // Simple encoding for demo
+    }
+    
+    verifyPassword(password) {
+        return this.#hashPassword(password) === this.#password;
+    }
+    
+    changePassword(oldPassword, newPassword) {
+        if (!this.verifyPassword(oldPassword)) {
+            throw new Error('Invalid password');
+        }
+        this.#password = this.#hashPassword(newPassword);
+    }
+}
+
+const user = new User('John', 'secret123');
+console.log(user.verifyPassword('secret123')); // true
+console.log(user.verifyPassword('wrong'));     // false
+// user.#hashPassword('test'); // SyntaxError!
+</code></pre>
+
+            <h2>Static Properties</h2>
+
+            <pre><code class="language-javascript">class Config {
+    static apiUrl = 'https://api.example.com';
+    static timeout = 5000;
+    static version = '1.0.0';
+    
+    static getConfig() {
+        return {
+            apiUrl: this.apiUrl,
+            timeout: this.timeout,
+            version: this.version
+        };
+    }
+}
+
+console.log(Config.apiUrl);      // "https://api.example.com"
+console.log(Config.getConfig()); // { apiUrl: ..., timeout: ..., version: ... }
+</code></pre>
+
+            <h2>Real-World Examples</h2>
+
+            <h3>User Management</h3>
+
+            <pre><code class="language-javascript">class User {
+    constructor(name, email) {
+        this.name = name;
+        this.email = email;
+        this.createdAt = new Date();
+        this.id = User.generateId();
+    }
+    
+    static #nextId = 1;
+    
+    static generateId() {
+        return this.#nextId++;
+    }
+    
+    static fromJSON(json) {
+        return new User(json.name, json.email);
+    }
+    
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+            email: this.email,
+            createdAt: this.createdAt
+        };
+    }
+}
+
+const user1 = new User('John', 'john@example.com');
+const user2 = User.fromJSON({ name: 'Jane', email: 'jane@example.com' });
+console.log(user1.toJSON());
+</code></pre>
+
+            <h3>Todo List</h3>
+
+            <pre><code class="language-javascript">class TodoList {
+    #todos = [];
+    
+    add(text) {
+        this.#todos.push({
+            id: Date.now(),
+            text,
+            done: false,
+            createdAt: new Date()
+        });
+    }
+    
+    toggle(id) {
+        const todo = this.#todos.find(t => t.id === id);
+        if (todo) {
+            todo.done = !todo.done;
+        }
+    }
+    
+    remove(id) {
+        this.#todos = this.#todos.filter(t => t.id !== id);
+    }
+    
+    get completed() {
+        return this.#todos.filter(t => t.done);
+    }
+    
+    get pending() {
+        return this.#todos.filter(t => !t.done);
+    }
+    
+    get all() {
+        return [...this.#todos];
+    }
+}
+
+const todos = new TodoList();
+todos.add('Learn JavaScript');
+todos.add('Build app');
+console.log(todos.pending.length); // 2
+</code></pre>
+
+            <h3>API Client</h3>
+
+            <pre><code class="language-javascript">class ApiClient {
+    constructor(baseUrl, options = {}) {
+        this.baseUrl = baseUrl;
+        this.timeout = options.timeout || 5000;
+        this.headers = options.headers || {};
+    }
+    
+    async request(endpoint, options = {}) {
+        const url = `${this.baseUrl}${endpoint}`;
+        const config = {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...this.headers,
+                ...options.headers
+            }
+        };
+        
+        const response = await fetch(url, config);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+    }
+    
+    async get(endpoint) {
+        return this.request(endpoint);
+    }
+    
+    async post(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+    
+    async put(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+    
+    async delete(endpoint) {
+        return this.request(endpoint, {
+            method: 'DELETE'
+        });
+    }
+}
+
+const api = new ApiClient('https://api.example.com');
+const users = await api.get('/users');
+const newUser = await api.post('/users', { name: 'John' });
+</code></pre>
+
+            <h2>Class vs Function Constructor</h2>
+
+            <h3>Old Way (Function Constructor)</h3>
+
+            <pre><code class="language-javascript">function User(name, age) {
+    this.name = name;
+    this.age = age;
+}
+
+User.prototype.greet = function() {
+    return `Hello, I'm ${this.name}`;
+};
+
+User.createGuest = function() {
+    return new User('Guest', 0);
+};
+
+const user = new User('John', 30);
+</code></pre>
+
+            <h3>Modern Way (Class)</h3>
+
+            <pre><code class="language-javascript">class User {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    greet() {
+        return `Hello, I'm ${this.name}`;
+    }
+    
+    static createGuest() {
+        return new User('Guest', 0);
+    }
+}
+
+const user = new User('John', 30);
+</code></pre>
+
+            <p>Classes are cleaner and more intuitive!</p>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Use PascalCase for class names</strong>
+                <pre><code class="language-javascript">class UserAccount { }  // Good
+class userAccount { }  // Bad
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Initialize properties in constructor</strong>
+                <pre><code class="language-javascript">class User {
+    constructor(name) {
+        this.name = name;
+        this.posts = [];     // Initialize
+        this.followers = []; // Initialize
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Use static methods for utilities</strong>
+                <pre><code class="language-javascript">class DateUtils {
+    static format(date) {
+        return date.toISOString();
+    }
+    
+    static parse(str) {
+        return new Date(str);
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>4. Use private fields for encapsulation</strong>
+                <pre><code class="language-javascript">class Counter {
+    #count = 0;
+    
+    increment() {
+        this.#count++;
+    }
+    
+    get value() {
+        return this.#count;
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>5. Call super() first in child constructor</strong>
+                <pre><code class="language-javascript">class Dog extends Animal {
+    constructor(name, breed) {
+        super(name); // Must be first!
+        this.breed = breed;
+    }
+}
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Classes provide clean OOP syntax</li>
+                <li>Constructor initializes instances</li>
+                <li>Methods define behavior</li>
+                <li>Static methods/properties belong to class, not instances</li>
+                <li>Getters/setters provide computed properties</li>
+                <li>extends enables inheritance</li>
+                <li>super calls parent class constructor/methods</li>
+                <li>Private fields (#) enforce encapsulation</li>
+                <li>Classes are syntactic sugar over prototypes</li>
+                <li>Modern standard for OOP in JavaScript</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>
