@@ -37,6 +37,9 @@ Whether you're a beginner looking to build a solid foundation or an experienced 
 
 **Part V: Functional JavaScript**
 14. JavaScript Monads: Master Functional Programming Patterns
+15. JavaScript Functors and Applicatives: Master Functional Patterns
+16. JavaScript Function Composition and Pipelines: Build Complex Logic from Simple Functions
+17. JavaScript Immutability and Pure Functions: Write Predictable, Bug-Free Code
 
 ---
 
@@ -2751,6 +2754,307 @@ Not everything needs to be a monad. Use them when they solve a real problem (nul
 - IO monad defers side effects, keeping functions pure
 - Use `map` for transformations, `flatMap` for operations that return monads
 - Monads make code more composable, testable, and predictable
+
+---
+
+# Chapter 15: JavaScript Functors and Applicatives
+
+## Master Functional Patterns
+
+Functors and Applicatives are fundamental patterns in functional programming that let you work with values in containers without unwrapping them.
+
+### What is a Functor?
+
+A functor is a container that implements a `map` method. The `map` method applies a function to the value(s) inside the container and returns a new container with the transformed value(s).
+
+**Implementation:**
+
+```javascript
+class Box {
+    constructor(value) {
+        this.value = value;
+    }
+
+    map(fn) {
+        return new Box(fn(this.value));
+    }
+}
+
+const box = new Box(5);
+const result = box.map(x => x * 2).map(x => x + 10);
+console.log(result); // Box(20)
+```
+
+Each `map` transforms the value inside the box and returns a new box. You never directly access the value.
+
+### The Functor Laws
+
+1. **Identity:** `box.map(x => x)` should equal `box`
+2. **Composition:** `box.map(f).map(g)` should equal `box.map(x => g(f(x)))`
+
+### What is an Applicative Functor?
+
+An applicative functor can apply a wrapped function to a wrapped value. It has `of` and `ap` methods.
+
+**Implementation:**
+
+```javascript
+class Box {
+    static of(value) {
+        return new Box(value);
+    }
+
+    map(fn) {
+        return Box.of(fn(this.value));
+    }
+
+    ap(boxWithFunction) {
+        return boxWithFunction.map(fn => fn(this.value));
+    }
+}
+
+const add = a => b => a + b;
+const result = Box.of(5).map(add).ap(Box.of(10));
+console.log(result); // Box(15)
+```
+
+### Real-World Example: Form Validation
+
+```javascript
+class Validation {
+    constructor(value, isValid = true) {
+        this.value = value;
+        this.isValid = isValid;
+    }
+
+    static success(value) {
+        return new Validation(value, true);
+    }
+
+    static failure(error) {
+        return new Validation(error, false);
+    }
+
+    map(fn) {
+        return this.isValid ? Validation.success(fn(this.value)) : this;
+    }
+
+    ap(validationWithFn) {
+        if (!this.isValid) return this;
+        if (!validationWithFn.isValid) return validationWithFn;
+        return this.map(validationWithFn.value);
+    }
+}
+
+const createUser = name => email => age => ({ name, email, age });
+
+const user = validateName('John')
+    .map(createUser)
+    .ap(validateEmail('john@example.com'))
+    .ap(validateAge(25));
+```
+
+### Key Takeaways
+
+- Functors implement `map` to transform wrapped values
+- Applicatives add `ap` to apply wrapped functions to wrapped values
+- Use applicatives to combine multiple wrapped values
+- Curry functions to use them with applicatives
+- Every monad is an applicative, every applicative is a functor
+
+---
+
+# Chapter 16: JavaScript Function Composition and Pipelines
+
+## Build Complex Logic from Simple Functions
+
+Function composition is the process of combining two or more functions to create a new function. It's one of the most powerful patterns in functional programming.
+
+### The compose Function
+
+Compose applies functions from right to left:
+
+```javascript
+const compose = (...fns) => x => 
+    fns.reduceRight((acc, fn) => fn(acc), x);
+
+const double = x => x * 2;
+const addTen = x => x + 10;
+
+const doubleThenAddTen = compose(addTen, double);
+console.log(doubleThenAddTen(5)); // 20
+```
+
+### The pipe Function
+
+Pipe applies functions from left to right:
+
+```javascript
+const pipe = (...fns) => x => 
+    fns.reduce((acc, fn) => fn(acc), x);
+
+const doubleThenAddTen = pipe(double, addTen);
+console.log(doubleThenAddTen(5)); // 20
+```
+
+### Real-World Example: Data Transformation
+
+```javascript
+const trim = str => str.trim();
+const toLowerCase = str => str.toLowerCase();
+const removeSpaces = str => str.replace(/\s+/g, '-');
+const addPrefix = prefix => str => `${prefix}${str}`;
+
+const createSlug = pipe(
+    trim,
+    toLowerCase,
+    removeSpaces,
+    addPrefix('blog-')
+);
+
+console.log(createSlug('  Hello World  ')); // "blog-hello-world"
+```
+
+### Point-Free Style
+
+Point-free style means writing functions without mentioning their arguments:
+
+```javascript
+const prop = key => obj => obj[key];
+const map = fn => array => array.map(fn);
+
+const getNames = map(prop('name'));
+
+const users = [{ name: 'Alice' }, { name: 'Bob' }];
+console.log(getNames(users)); // ['Alice', 'Bob']
+```
+
+### Async Function Composition
+
+```javascript
+const asyncPipe = (...fns) => x =>
+    fns.reduce((promise, fn) => promise.then(fn), Promise.resolve(x));
+
+const greetUser = asyncPipe(
+    fetchUser,
+    extractName,
+    toUpperCase,
+    addGreeting
+);
+
+greetUser(1).then(console.log); // "Hello, JOHN!"
+```
+
+### Key Takeaways
+
+- Composition combines functions to create new functions
+- `compose` applies functions right-to-left
+- `pipe` applies functions left-to-right
+- Curry functions to make them composable
+- Point-free style eliminates argument noise
+- Use `asyncPipe` for async function composition
+
+---
+
+# Chapter 17: JavaScript Immutability and Pure Functions
+
+## Write Predictable, Bug-Free Code
+
+Immutability means data cannot be changed after creation. Pure functions always return the same output for the same input and have no side effects.
+
+### Immutable Array Operations
+
+```javascript
+const arr = [1, 2, 3];
+
+// Mutable (BAD)
+arr.push(4);
+
+// Immutable (GOOD)
+const newArr = [...arr, 4];
+const withoutLast = arr.slice(0, -1);
+const updated = arr.map((val, i) => i === 2 ? 99 : val);
+```
+
+### Immutable Object Operations
+
+```javascript
+const user = { name: 'John', age: 30 };
+
+// Mutable (BAD)
+user.age = 31;
+
+// Immutable (GOOD)
+const updatedUser = { ...user, age: 31 };
+
+// Nested updates
+const updated = {
+    ...user,
+    address: {
+        ...user.address,
+        city: 'Boston'
+    }
+};
+```
+
+### Object.freeze()
+
+```javascript
+const user = Object.freeze({ name: 'John', age: 30 });
+user.age = 31; // Fails silently
+console.log(user); // { name: 'John', age: 30 }
+```
+
+### Pure Functions
+
+```javascript
+// Impure - modifies external state
+let total = 0;
+function addToTotal(value) {
+    total += value;
+    return total;
+}
+
+// Pure - no side effects
+function add(a, b) {
+    return a + b;
+}
+```
+
+### Real-World Example: Redux Reducer
+
+```javascript
+function todosReducer(state = initialState, action) {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return {
+                ...state,
+                todos: [...state.todos, { id: Date.now(), text: action.text }]
+            };
+        case 'TOGGLE_TODO':
+            return {
+                ...state,
+                todos: state.todos.map(todo =>
+                    todo.id === action.id
+                        ? { ...todo, completed: !todo.completed }
+                        : todo
+                )
+            };
+        default:
+            return state;
+    }
+}
+```
+
+### Key Takeaways
+
+- Immutability means data cannot be changed after creation
+- Pure functions have no side effects
+- Use spread operator (...) for immutable updates
+- Array methods like map, filter, reduce are immutable
+- Avoid push, pop, splice, and direct property assignment
+- Object.freeze() provides shallow immutability
+- Immutability makes code more predictable and easier to debug
 
 ---
 

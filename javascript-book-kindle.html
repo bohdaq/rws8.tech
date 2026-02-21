@@ -235,6 +235,9 @@
                 <strong>Part V: Functional JavaScript</strong>
                 <ol>
                     <li><a href="#chapter14">Chapter 14: JavaScript Monads</a></li>
+                    <li><a href="#chapter15">Chapter 15: JavaScript Functors and Applicatives</a></li>
+                    <li><a href="#chapter16">Chapter 16: JavaScript Function Composition</a></li>
+                    <li><a href="#chapter17">Chapter 17: JavaScript Immutability</a></li>
                 </ol>
             </li>
             <li><a href="#conclusion">Conclusion</a></li>
@@ -3462,6 +3465,317 @@ Maybe.of(5).flatMap(x => Maybe.of(x * 2)); // Maybe(10)
         </ul>
     </div>
 
+    <!-- Chapter 15 -->
+    <div id="chapter15" class="page-break">
+        <h1>Chapter 15: JavaScript Functors and Applicatives</h1>
+        <h2>Master Functional Patterns</h2>
+
+        <p>Functors and Applicatives are fundamental patterns in functional programming that let you work with values in
+            containers without unwrapping them.</p>
+
+        <h3>What is a Functor?</h3>
+
+        <p>A functor is a container that implements a <code>map</code> method. The <code>map</code> method applies a
+            function to the value(s) inside the container and returns a new container with the transformed value(s).</p>
+
+        <p><strong>Implementation:</strong></p>
+
+        <pre><code class="language-javascript">class Box {
+    constructor(value) {
+        this.value = value;
+    }
+
+    map(fn) {
+        return new Box(fn(this.value));
+    }
+}
+
+const box = new Box(5);
+const result = box.map(x => x * 2).map(x => x + 10);
+console.log(result); // Box(20)
+</code></pre>
+
+        <p>Each <code>map</code> transforms the value inside the box and returns a new box. You never directly access
+            the
+            value.</p>
+
+        <h3>The Functor Laws</h3>
+
+        <ol>
+            <li><strong>Identity:</strong> <code>box.map(x => x)</code> should equal <code>box</code></li>
+            <li><strong>Composition:</strong> <code>box.map(f).map(g)</code> should equal
+                <code>box.map(x => g(f(x)))</code>
+            </li>
+        </ol>
+
+        <h3>What is an Applicative Functor?</h3>
+
+        <p>An applicative functor can apply a wrapped function to a wrapped value. It has <code>of</code> and
+            <code>ap</code> methods.
+        </p>
+
+        <p><strong>Implementation:</strong></p>
+
+        <pre><code class="language-javascript">class Box {
+    static of(value) {
+        return new Box(value);
+    }
+
+    map(fn) {
+        return Box.of(fn(this.value));
+    }
+
+    ap(boxWithFunction) {
+        return boxWithFunction.map(fn => fn(this.value));
+    }
+}
+
+const add = a => b => a + b;
+const result = Box.of(5).map(add).ap(Box.of(10));
+console.log(result); // Box(15)
+</code></pre>
+
+        <h3>Real-World Example: Form Validation</h3>
+
+        <pre><code class="language-javascript">class Validation {
+    constructor(value, isValid = true) {
+        this.value = value;
+        this.isValid = isValid;
+    }
+
+    static success(value) {
+        return new Validation(value, true);
+    }
+
+    static failure(error) {
+        return new Validation(error, false);
+    }
+
+    map(fn) {
+        return this.isValid ? Validation.success(fn(this.value)) : this;
+    }
+
+    ap(validationWithFn) {
+        if (!this.isValid) return this;
+        if (!validationWithFn.isValid) return validationWithFn;
+        return this.map(validationWithFn.value);
+    }
+}
+
+const createUser = name => email => age => ({ name, email, age });
+
+const user = validateName('John')
+    .map(createUser)
+    .ap(validateEmail('john@example.com'))
+    .ap(validateAge(25));
+</code></pre>
+
+        <h3>Key Takeaways</h3>
+
+        <ul>
+            <li>Functors implement <code>map</code> to transform wrapped values</li>
+            <li>Applicatives add <code>ap</code> to apply wrapped functions to wrapped values</li>
+            <li>Use applicatives to combine multiple wrapped values</li>
+            <li>Curry functions to use them with applicatives</li>
+            <li>Every monad is an applicative, every applicative is a functor</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 16 -->
+    <div id="chapter16" class="page-break">
+        <h1>Chapter 16: JavaScript Function Composition and Pipelines</h1>
+        <h2>Build Complex Logic from Simple Functions</h2>
+
+        <p>Function composition is the process of combining two or more functions to create a new function. It's one of
+            the most powerful patterns in functional programming.</p>
+
+        <h3>The compose Function</h3>
+
+        <p>Compose applies functions from right to left:</p>
+
+        <pre><code class="language-javascript">const compose = (...fns) => x => 
+    fns.reduceRight((acc, fn) => fn(acc), x);
+
+const double = x => x * 2;
+const addTen = x => x + 10;
+
+const doubleThenAddTen = compose(addTen, double);
+console.log(doubleThenAddTen(5)); // 20
+</code></pre>
+
+        <h3>The pipe Function</h3>
+
+        <p>Pipe applies functions from left to right:</p>
+
+        <pre><code class="language-javascript">const pipe = (...fns) => x => 
+    fns.reduce((acc, fn) => fn(acc), x);
+
+const doubleThenAddTen = pipe(double, addTen);
+console.log(doubleThenAddTen(5)); // 20
+</code></pre>
+
+        <h3>Real-World Example: Data Transformation</h3>
+
+        <pre><code class="language-javascript">const trim = str => str.trim();
+const toLowerCase = str => str.toLowerCase();
+const removeSpaces = str => str.replace(/\s+/g, '-');
+const addPrefix = prefix => str => `${prefix}${str}`;
+
+const createSlug = pipe(
+    trim,
+    toLowerCase,
+    removeSpaces,
+    addPrefix('blog-')
+);
+
+console.log(createSlug('  Hello World  ')); // "blog-hello-world"
+</code></pre>
+
+        <h3>Point-Free Style</h3>
+
+        <p>Point-free style means writing functions without mentioning their arguments:</p>
+
+        <pre><code class="language-javascript">// Impure - modifies external state
+let total = 0;
+function addToTotal(value) {
+    total += value;
+    return total;
+}
+
+// Pure - no side effects
+function add(a, b) {
+    return a + b;
+}
+</code></pre>
+
+        <h3>Async Function Composition</h3>
+
+        <pre><code class="language-javascript">const asyncPipe = (...fns) => x =>
+    fns.reduce((promise, fn) => promise.then(fn), Promise.resolve(x));
+
+const greetUser = asyncPipe(
+    fetchUser,
+    extractName,
+    toUpperCase,
+    addGreeting
+);
+
+greetUser(1).then(console.log); // "Hello, JOHN!"
+</code></pre>
+
+        <h3>Key Takeaways</h3>
+
+        <ul>
+            <li>Composition combines functions to create new functions</li>
+            <li><code>compose</code> applies functions right-to-left</li>
+            <li><code>pipe</code> applies functions left-to-right</li>
+            <li>Curry functions to make them composable</li>
+            <li>Point-free style eliminates argument noise</li>
+            <li>Use <code>asyncPipe</code> for async function composition</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 17 -->
+    <div id="chapter17" class="page-break">
+        <h1>Chapter 17: JavaScript Immutability and Pure Functions</h1>
+        <h2>Write Predictable, Bug-Free Code</h2>
+
+        <p>Immutability means data cannot be changed after creation. Pure functions always return the same output for
+            the
+            same input and have no side effects.</p>
+
+        <h3>Immutable Array Operations</h3>
+
+        <pre><code class="language-javascript">const arr = [1, 2, 3];
+
+// Mutable (BAD)
+arr.push(4);
+
+// Immutable (GOOD)
+const newArr = [...arr, 4];
+const withoutLast = arr.slice(0, -1);
+const updated = arr.map((val, i) => i === 2 ? 99 : val);
+</code></pre>
+
+        <h3>Immutable Object Operations</h3>
+
+        <pre><code class="language-javascript">const user = { name: 'John', age: 30 };
+
+// Mutable (BAD)
+user.age = 31;
+
+// Immutable (GOOD)
+const updatedUser = { ...user, age: 31 };
+
+// Nested updates
+const updated = {
+    ...user,
+    address: {
+        ...user.address,
+        city: 'Boston'
+    }
+};
+</code></pre>
+
+        <h3>Object.freeze()</h3>
+
+        <pre><code class="language-javascript">const user = Object.freeze({ name: 'John', age: 30 });
+user.age = 31; // Fails silently
+console.log(user); // { name: 'John', age: 30 }
+</code></pre>
+
+        <h3>Pure Functions</h3>
+
+        <pre><code class="language-javascript">// Impure - modifies external state
+let total = 0;
+function addToTotal(value) {
+    total += value;
+    return total;
+}
+
+// Pure - no side effects
+function add(a, b) {
+    return a + b;
+}
+</code></pre>
+
+        <h3>Real-World Example: Redux Reducer</h3>
+
+        <pre><code class="language-javascript">function todosReducer(state = initialState, action) {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return {
+                ...state,
+                todos: [...state.todos, { id: Date.now(), text: action.text }]
+            };
+        case 'TOGGLE_TODO':
+            return {
+                ...state,
+                todos: state.todos.map(todo =>
+                    todo.id === action.id
+                        ? { ...todo, completed: !todo.completed }
+                        : todo
+                )
+            };
+        default:
+            return state;
+    }
+}
+</code></pre>
+
+        <h3>Key Takeaways</h3>
+
+        <ul>
+            <li>Immutability means data cannot be changed after creation</li>
+            <li>Pure functions have no side effects</li>
+            <li>Use spread operator (...) for immutable updates</li>
+            <li>Array methods like map, filter, reduce are immutable</li>
+            <li>Avoid push, pop, splice, and direct property assignment</li>
+            <li>Object.freeze() provides shallow immutability</li>
+            <li>Immutability makes code more predictable and easier to debug</li>
+        </ul>
+    </div>
+
 
     <!-- Conclusion -->
     <div id="conclusion" class="page-break">
@@ -3469,7 +3783,8 @@ Maybe.of(5).flatMap(x => Maybe.of(x * 2)); // Maybe(10)
 
         <p>Congratulations! You've completed this journey through essential JavaScript concepts. From understanding data
             types and hoisting to mastering closures, currying, the <code>this</code> keyword, Promises, generators,
-            and monads - you now have a solid foundation in JavaScript.</p>
+            monads, functors, composition, and immutability - you now have a solid foundation in JavaScript and
+            functional programming.</p>
 
         <h3>What's Next?</h3>
 

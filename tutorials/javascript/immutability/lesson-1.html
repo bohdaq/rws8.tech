@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding JavaScript Immutability - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Immutability and Pure Functions - write predictable, bug-free code with immutable data structures.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .objectives-box ul {
+            margin-bottom: 0;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .code-explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Immutability</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Understanding JavaScript Immutability</h1>
+            <p class="subtitle">Write Predictable, Bug-Free Code</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand immutability and pure functions</li>
+                    <li>Write pure functions without side effects</li>
+                    <li>Use immutable array and object operations</li>
+                    <li>Apply Object.freeze and deep cloning</li>
+                    <li>Implement immutable state management patterns</li>
+                </ul>
+            </div>
+
+            <h2>What is Immutability?</h2>
+            <p>Immutability means that once data is created, it cannot be changed. Instead of modifying existing data, you create new data with the desired changes.</p>
+
+            <h3>Mutable vs Immutable</h3>
+
+            <pre><code class="language-javascript">// Mutable - modifies original array
+const numbers = [1, 2, 3];
+numbers.push(4);
+console.log(numbers); // [1, 2, 3, 4] - original changed!
+
+// Immutable - creates new array
+const numbers = [1, 2, 3];
+const newNumbers = [...numbers, 4];
+console.log(numbers);    // [1, 2, 3] - original unchanged
+console.log(newNumbers); // [1, 2, 3, 4] - new array
+</code></pre>
+
+            <h2>What are Pure Functions?</h2>
+
+            <p>A pure function is a function that:</p>
+            <ul>
+                <li>Always returns the same output for the same input</li>
+                <li>Has no side effects (doesn't modify external state)</li>
+            </ul>
+
+            <h3>Impure vs Pure Functions</h3>
+
+            <pre><code class="language-javascript">// Impure - modifies external state
+let total = 0;
+function addToTotal(value) {
+    total += value; // Side effect!
+    return total;
+}
+
+// Pure - no side effects
+function add(a, b) {
+    return a + b; // Always returns same result for same inputs
+}
+
+console.log(add(5, 3)); // 8
+console.log(add(5, 3)); // 8 - always the same!
+</code></pre>
+
+            <h2>Immutable Array Operations</h2>
+
+            <p>JavaScript provides many non-mutating array methods:</p>
+
+            <h3>Adding Elements</h3>
+
+            <pre><code class="language-javascript">const arr = [1, 2, 3];
+
+// Mutable (BAD)
+arr.push(4);
+
+// Immutable (GOOD)
+const newArr = [...arr, 4];
+const newArr2 = arr.concat(4);
+
+// Add to beginning
+const withStart = [0, ...arr];
+
+// Add in middle
+const withMiddle = [...arr.slice(0, 2), 2.5, ...arr.slice(2)];
+console.log(withMiddle); // [1, 2, 2.5, 3]
+</code></pre>
+
+            <h3>Removing Elements</h3>
+
+            <pre><code class="language-javascript">const arr = [1, 2, 3, 4, 5];
+
+// Mutable (BAD)
+arr.pop();
+arr.shift();
+arr.splice(1, 1);
+
+// Immutable (GOOD)
+const withoutLast = arr.slice(0, -1);
+const withoutFirst = arr.slice(1);
+const withoutIndex = arr.filter((_, i) => i !== 2);
+
+console.log(withoutLast);  // [1, 2, 3, 4]
+console.log(withoutFirst); // [2, 3, 4, 5]
+console.log(withoutIndex); // [1, 2, 4, 5]
+</code></pre>
+
+            <h3>Updating Elements</h3>
+
+            <pre><code class="language-javascript">const arr = [1, 2, 3, 4, 5];
+
+// Mutable (BAD)
+arr[2] = 99;
+
+// Immutable (GOOD)
+const updated = arr.map((val, i) => i === 2 ? 99 : val);
+const updated2 = [...arr.slice(0, 2), 99, ...arr.slice(3)];
+
+console.log(updated); // [1, 2, 99, 4, 5]
+</code></pre>
+
+            <h3>Transforming Arrays</h3>
+
+            <pre><code class="language-javascript">const numbers = [1, 2, 3, 4, 5];
+
+// map, filter, reduce are all immutable
+const doubled = numbers.map(x => x * 2);
+const evens = numbers.filter(x => x % 2 === 0);
+const sum = numbers.reduce((acc, x) => acc + x, 0);
+
+console.log(numbers); // [1, 2, 3, 4, 5] - unchanged
+console.log(doubled); // [2, 4, 6, 8, 10]
+console.log(evens);   // [2, 4]
+console.log(sum);     // 15
+</code></pre>
+
+            <h2>Immutable Object Operations</h2>
+
+            <h3>Updating Object Properties</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John',
+    age: 30,
+    email: 'john@example.com'
+};
+
+// Mutable (BAD)
+user.age = 31;
+
+// Immutable (GOOD)
+const updatedUser = {
+    ...user,
+    age: 31
+};
+
+// Update multiple properties
+const updatedUser2 = {
+    ...user,
+    age: 31,
+    email: 'newemail@example.com'
+};
+
+console.log(user);         // { name: 'John', age: 30, ... }
+console.log(updatedUser);  // { name: 'John', age: 31, ... }
+</code></pre>
+
+            <h3>Adding and Removing Properties</h3>
+
+            <pre><code class="language-javascript">const user = { name: 'John', age: 30 };
+
+// Add property
+const withPhone = {
+    ...user,
+    phone: '555-1234'
+};
+
+// Remove property
+const { age, ...withoutAge } = user;
+
+console.log(withPhone);     // { name: 'John', age: 30, phone: '555-1234' }
+console.log(withoutAge);    // { name: 'John' }
+console.log(user);          // { name: 'John', age: 30 } - unchanged
+</code></pre>
+
+            <h3>Nested Object Updates</h3>
+
+            <pre><code class="language-javascript">const user = {
+    name: 'John',
+    address: {
+        street: '123 Main St',
+        city: 'New York'
+    }
+};
+
+// Update nested property
+const updated = {
+    ...user,
+    address: {
+        ...user.address,
+        city: 'Boston'
+    }
+};
+
+console.log(user.address.city);    // 'New York' - unchanged
+console.log(updated.address.city); // 'Boston'
+</code></pre>
+
+            <h2>Object.freeze()</h2>
+
+            <p><code>Object.freeze()</code> makes an object immutable (shallow freeze only):</p>
+
+            <pre><code class="language-javascript">const user = Object.freeze({
+    name: 'John',
+    age: 30
+});
+
+// These will fail silently (or throw in strict mode)
+user.age = 31;
+user.email = 'test@example.com';
+delete user.name;
+
+console.log(user); // { name: 'John', age: 30 } - unchanged
+
+// Nested objects are NOT frozen
+const data = Object.freeze({
+    user: { name: 'John' }
+});
+
+data.user.name = 'Jane'; // This works! (shallow freeze)
+console.log(data.user.name); // 'Jane'
+</code></pre>
+
+            <h3>Deep Freeze</h3>
+
+            <pre><code class="language-javascript">function deepFreeze(obj) {
+    Object.freeze(obj);
+    
+    Object.values(obj).forEach(value => {
+        if (typeof value === 'object' && value !== null) {
+            deepFreeze(value);
+        }
+    });
+    
+    return obj;
+}
+
+const data = deepFreeze({
+    user: { name: 'John', address: { city: 'NYC' } }
+});
+
+// All levels are frozen
+data.user.name = 'Jane';           // Fails
+data.user.address.city = 'Boston'; // Fails
+console.log(data.user.name);       // 'John'
+</code></pre>
+
+            <h2>Real-World Example: Redux Reducer</h2>
+
+            <pre><code class="language-javascript">// Initial state
+const initialState = {
+    todos: [],
+    filter: 'all'
+};
+
+// Pure reducer function
+function todosReducer(state = initialState, action) {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return {
+                ...state,
+                todos: [
+                    ...state.todos,
+                    {
+                        id: Date.now(),
+                        text: action.text,
+                        completed: false
+                    }
+                ]
+            };
+        
+        case 'TOGGLE_TODO':
+            return {
+                ...state,
+                todos: state.todos.map(todo =>
+                    todo.id === action.id
+                        ? { ...todo, completed: !todo.completed }
+                        : todo
+                )
+            };
+        
+        case 'DELETE_TODO':
+            return {
+                ...state,
+                todos: state.todos.filter(todo => todo.id !== action.id)
+            };
+        
+        case 'SET_FILTER':
+            return {
+                ...state,
+                filter: action.filter
+            };
+        
+        default:
+            return state;
+    }
+}
+
+// Usage
+let state = initialState;
+state = todosReducer(state, { type: 'ADD_TODO', text: 'Learn Redux' });
+state = todosReducer(state, { type: 'ADD_TODO', text: 'Build app' });
+state = todosReducer(state, { type: 'TOGGLE_TODO', id: state.todos[0].id });
+
+console.log(state);
+// {
+//   todos: [
+//     { id: ..., text: 'Learn Redux', completed: true },
+//     { id: ..., text: 'Build app', completed: false }
+//   ],
+//   filter: 'all'
+// }
+</code></pre>
+
+            <h2>Real-World Example: React State Updates</h2>
+
+            <pre><code class="language-javascript">// React component with immutable state updates
+function TodoList() {
+    const [todos, setTodos] = useState([]);
+
+    const addTodo = (text) => {
+        // Immutable - create new array
+        setTodos([...todos, { id: Date.now(), text, done: false }]);
+    };
+
+    const toggleTodo = (id) => {
+        // Immutable - map to new array
+        setTodos(todos.map(todo =>
+            todo.id === id
+                ? { ...todo, done: !todo.done }
+                : todo
+        ));
+    };
+
+    const deleteTodo = (id) => {
+        // Immutable - filter to new array
+        setTodos(todos.filter(todo => todo.id !== id));
+    };
+
+    return (
+        // JSX here
+    );
+}
+</code></pre>
+
+            <h2>Immutable Update Patterns</h2>
+
+            <h3>Update Array of Objects</h3>
+
+            <pre><code class="language-javascript">const users = [
+    { id: 1, name: 'John', active: true },
+    { id: 2, name: 'Jane', active: false },
+    { id: 3, name: 'Bob', active: true }
+];
+
+// Update one user
+const updated = users.map(user =>
+    user.id === 2
+        ? { ...user, active: true }
+        : user
+);
+
+// Update multiple users
+const allActive = users.map(user => ({ ...user, active: true }));
+</code></pre>
+
+            <h3>Merge Objects</h3>
+
+            <pre><code class="language-javascript">const defaults = { theme: 'light', language: 'en' };
+const userPrefs = { theme: 'dark' };
+
+// Merge with spread
+const settings = { ...defaults, ...userPrefs };
+console.log(settings); // { theme: 'dark', language: 'en' }
+
+// Merge with Object.assign
+const settings2 = Object.assign({}, defaults, userPrefs);
+</code></pre>
+
+            <h3>Deep Clone</h3>
+
+            <pre><code class="language-javascript">// Shallow clone (only top level)
+const shallow = { ...original };
+
+// Deep clone (all levels) - simple approach
+const deep = JSON.parse(JSON.stringify(original));
+
+// Deep clone - better approach (handles dates, functions, etc.)
+function deepClone(obj) {
+    if (obj === null || typeof obj !== 'object') return obj;
+    if (obj instanceof Date) return new Date(obj);
+    if (obj instanceof Array) return obj.map(item => deepClone(item));
+    
+    const cloned = {};
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            cloned[key] = deepClone(obj[key]);
+        }
+    }
+    return cloned;
+}
+</code></pre>
+
+            <h2>Performance Considerations</h2>
+
+            <div class="tip-box">
+                <strong>When Immutability Helps Performance:</strong>
+                <ul>
+                    <li>React's shouldComponentUpdate and React.memo</li>
+                    <li>Redux's shallow equality checks</li>
+                    <li>Easier change detection</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>When Immutability May Hurt Performance:</strong>
+                <ul>
+                    <li>Very large arrays/objects (lots of copying)</li>
+                    <li>Frequent updates to large data structures</li>
+                    <li>Deep cloning complex nested structures</li>
+                </ul>
+                <p><strong>Solution:</strong> Use libraries like Immer or Immutable.js for better performance with large data.</p>
+            </div>
+
+            <h2>Using Immer for Easier Immutability</h2>
+
+            <pre><code class="language-javascript">import produce from 'immer';
+
+const state = {
+    todos: [
+        { id: 1, text: 'Learn Immer', done: false }
+    ]
+};
+
+// With Immer, write "mutable" code that produces immutable results
+const nextState = produce(state, draft => {
+    draft.todos.push({ id: 2, text: 'Use Immer', done: false });
+    draft.todos[0].done = true;
+});
+
+console.log(state === nextState);           // false (new object)
+console.log(state.todos === nextState.todos); // false (new array)
+console.log(state.todos[0]);                // { id: 1, text: '...', done: false }
+console.log(nextState.todos[0]);            // { id: 1, text: '...', done: true }
+</code></pre>
+
+            <h2>Common Pitfalls</h2>
+
+            <div class="warning-box">
+                <strong>Pitfall 1: Shallow copying nested objects</strong>
+                <pre><code class="language-javascript">// Wrong - nested objects are still shared
+const copy = { ...original };
+copy.nested.value = 'changed'; // Mutates original!
+
+// Right - deep copy nested objects
+const copy = {
+    ...original,
+    nested: { ...original.nested }
+};
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 2: Forgetting to return new state</strong>
+                <pre><code class="language-javascript">// Wrong - modifies and returns original
+function reducer(state, action) {
+    state.count++;
+    return state;
+}
+
+// Right - returns new state
+function reducer(state, action) {
+    return { ...state, count: state.count + 1 };
+}
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 3: Using mutating array methods</strong>
+                <pre><code class="language-javascript">// Mutating methods (avoid):
+push, pop, shift, unshift, splice, sort, reverse
+
+// Non-mutating alternatives:
+concat, slice, map, filter, reduce, spread operator
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Immutability means data cannot be changed after creation</li>
+                <li>Pure functions have no side effects and always return the same output for the same input</li>
+                <li>Use spread operator (...) for immutable updates</li>
+                <li>Array methods like map, filter, reduce are immutable</li>
+                <li>Avoid push, pop, splice, and direct property assignment</li>
+                <li>Object.freeze() provides shallow immutability</li>
+                <li>Deep updates require spreading at each level</li>
+                <li>Immutability makes code more predictable and easier to debug</li>
+                <li>Use Immer for complex immutable updates</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

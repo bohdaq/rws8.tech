@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding JavaScript Function Composition - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Function Composition and Pipelines - combine small functions into powerful, reusable operations.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .objectives-box ul {
+            margin-bottom: 0;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .code-explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Function Composition</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Understanding JavaScript Function Composition</h1>
+            <p class="subtitle">Build Complex Logic from Simple Functions</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand function composition fundamentals</li>
+                    <li>Implement compose and pipe utilities</li>
+                    <li>Build data transformation pipelines</li>
+                    <li>Use point-free style programming</li>
+                    <li>Compose async functions</li>
+                </ul>
+            </div>
+
+            <h2>What is Function Composition?</h2>
+            <p>Function composition is the process of combining two or more functions to create a new function. When you compose functions, the output of one function becomes the input of the next.</p>
+
+            <p>In mathematics: <code>(f ∘ g)(x) = f(g(x))</code></p>
+
+            <h3>Basic Example</h3>
+
+            <pre><code class="language-javascript">// Two simple functions
+const double = x => x * 2;
+const addTen = x => x + 10;
+
+// Manual composition
+const doubleThenAddTen = x => addTen(double(x));
+
+console.log(doubleThenAddTen(5)); // 20
+// double(5) = 10, then addTen(10) = 20
+</code></pre>
+
+            <h2>The compose Function</h2>
+
+            <p>Instead of manually composing functions, we can create a <code>compose</code> utility that does it for us. Compose applies functions from right to left:</p>
+
+            <pre><code class="language-javascript">const compose = (...fns) => x => 
+    fns.reduceRight((acc, fn) => fn(acc), x);
+
+// Usage
+const doubleThenAddTen = compose(addTen, double);
+
+console.log(doubleThenAddTen(5)); // 20
+// Reads right-to-left: double(5) = 10, then addTen(10) = 20
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>How it works:</strong> <code>compose</code> takes any number of functions and returns a new function. When called, it applies the functions from right to left using <code>reduceRight</code>.
+            </div>
+
+            <h2>The pipe Function</h2>
+
+            <p>Pipe is like compose, but applies functions from left to right, which many find more intuitive:</p>
+
+            <pre><code class="language-javascript">const pipe = (...fns) => x => 
+    fns.reduce((acc, fn) => fn(acc), x);
+
+// Usage
+const doubleThenAddTen = pipe(double, addTen);
+
+console.log(doubleThenAddTen(5)); // 20
+// Reads left-to-right: double(5) = 10, then addTen(10) = 20
+</code></pre>
+
+            <div class="tip-box">
+                <strong>Compose vs Pipe:</strong>
+                <ul>
+                    <li><strong>compose:</strong> Right-to-left (mathematical notation)</li>
+                    <li><strong>pipe:</strong> Left-to-right (more intuitive for many)</li>
+                    <li>Both do the same thing, just in different order</li>
+                </ul>
+            </div>
+
+            <h2>Real-World Example: Data Transformation</h2>
+
+            <pre><code class="language-javascript">// Individual transformation functions
+const trim = str => str.trim();
+const toLowerCase = str => str.toLowerCase();
+const removeSpaces = str => str.replace(/\s+/g, '-');
+const addPrefix = prefix => str => `${prefix}${str}`;
+
+// Compose them into a slug generator
+const createSlug = pipe(
+    trim,
+    toLowerCase,
+    removeSpaces,
+    addPrefix('blog-')
+);
+
+console.log(createSlug('  Hello World  '));
+// "blog-hello-world"
+</code></pre>
+
+            <h2>Point-Free Style</h2>
+
+            <p>Point-free style means writing functions without mentioning their arguments. Composition enables this style:</p>
+
+            <pre><code class="language-javascript">// With points (arguments mentioned)
+const getNames = users => users.map(user => user.name);
+
+// Point-free (no arguments mentioned)
+const prop = key => obj => obj[key];
+const map = fn => array => array.map(fn);
+
+const getNames = map(prop('name'));
+
+// Usage
+const users = [
+    { name: 'Alice', age: 25 },
+    { name: 'Bob', age: 30 }
+];
+
+console.log(getNames(users)); // ['Alice', 'Bob']
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>Benefits:</strong> Point-free style reduces noise, makes code more declarative, and emphasizes function composition over implementation details.
+            </div>
+
+            <h2>Currying for Composition</h2>
+
+            <p>Currying makes functions more composable by allowing partial application:</p>
+
+            <pre><code class="language-javascript">// Not composable - takes multiple arguments
+const add = (a, b) => a + b;
+
+// Composable - curried
+const add = a => b => a + b;
+
+// Now we can partially apply
+const add10 = add(10);
+const add20 = add(20);
+
+const pipeline = pipe(
+    add10,
+    add20,
+    x => x * 2
+);
+
+console.log(pipeline(5)); // 70
+// 5 + 10 = 15, 15 + 20 = 35, 35 * 2 = 70
+</code></pre>
+
+            <h2>Real-World Example: User Data Processing</h2>
+
+            <pre><code class="language-javascript">// Utility functions
+const map = fn => array => array.map(fn);
+const filter = predicate => array => array.filter(predicate);
+const prop = key => obj => obj[key];
+const sortBy = key => array => 
+    [...array].sort((a, b) => a[key] > b[key] ? 1 : -1);
+
+// Data transformations
+const users = [
+    { name: 'Alice', age: 25, active: true },
+    { name: 'Bob', age: 17, active: false },
+    { name: 'Charlie', age: 30, active: true },
+    { name: 'David', age: 22, active: true }
+];
+
+// Build a pipeline
+const getActiveAdultNames = pipe(
+    filter(user => user.active),
+    filter(user => user.age >= 18),
+    sortBy('name'),
+    map(prop('name'))
+);
+
+console.log(getActiveAdultNames(users));
+// ['Alice', 'Charlie', 'David']
+</code></pre>
+
+            <h2>Composing with Multiple Arguments</h2>
+
+            <p>When functions need multiple arguments, curry them first:</p>
+
+            <pre><code class="language-javascript">// Curried utilities
+const multiply = a => b => a * b;
+const divide = a => b => b / a;
+const subtract = a => b => b - a;
+
+// Calculate: ((x * 2) / 4) - 10
+const calculate = pipe(
+    multiply(2),
+    divide(4),
+    subtract(10)
+);
+
+console.log(calculate(20)); // 0
+// 20 * 2 = 40, 40 / 4 = 10, 10 - 10 = 0
+</code></pre>
+
+            <h2>Async Function Composition</h2>
+
+            <p>Composing async functions requires handling promises:</p>
+
+            <pre><code class="language-javascript">const asyncPipe = (...fns) => x =>
+    fns.reduce(
+        (promise, fn) => promise.then(fn),
+        Promise.resolve(x)
+    );
+
+// Async functions
+const fetchUser = async id => {
+    const response = await fetch(`/api/users/${id}`);
+    return response.json();
+};
+
+const extractName = user => user.name;
+
+const toUpperCase = str => str.toUpperCase();
+
+const addGreeting = name => `Hello, ${name}!`;
+
+// Compose async pipeline
+const greetUser = asyncPipe(
+    fetchUser,
+    extractName,
+    toUpperCase,
+    addGreeting
+);
+
+// Usage
+greetUser(1).then(console.log);
+// "Hello, JOHN!"
+</code></pre>
+
+            <h2>Real-World Example: API Data Pipeline</h2>
+
+            <pre><code class="language-javascript">// API transformation pipeline
+const asyncPipe = (...fns) => x =>
+    fns.reduce((p, fn) => p.then(fn), Promise.resolve(x));
+
+// Transform functions
+const fetchData = async url => {
+    const response = await fetch(url);
+    return response.json();
+};
+
+const extractItems = data => data.items;
+
+const filterActive = items => 
+    items.filter(item => item.status === 'active');
+
+const mapToViewModel = items =>
+    items.map(item => ({
+        id: item.id,
+        title: item.title,
+        displayDate: new Date(item.createdAt).toLocaleDateString()
+    }));
+
+const sortByDate = items =>
+    items.sort((a, b) => 
+        new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+// Build the pipeline
+const getActiveItems = asyncPipe(
+    fetchData,
+    extractItems,
+    filterActive,
+    sortByDate,
+    mapToViewModel
+);
+
+// Usage
+getActiveItems('/api/items')
+    .then(items => console.log(items))
+    .catch(error => console.error(error));
+</code></pre>
+
+            <h2>Debugging Composed Functions</h2>
+
+            <p>Add a trace function to see intermediate values:</p>
+
+            <pre><code class="language-javascript">const trace = label => value => {
+    console.log(`${label}:`, value);
+    return value;
+};
+
+const pipeline = pipe(
+    double,
+    trace('after double'),
+    addTen,
+    trace('after addTen'),
+    x => x * 3,
+    trace('final result')
+);
+
+pipeline(5);
+// after double: 10
+// after addTen: 20
+// final result: 60
+</code></pre>
+
+            <h2>Practical Patterns</h2>
+
+            <h3>Validation Pipeline</h3>
+
+            <pre><code class="language-javascript">const validate = (...validators) => value =>
+    validators.reduce(
+        (result, validator) => result && validator(value),
+        true
+    );
+
+const isString = x => typeof x === 'string';
+const isNotEmpty = x => x.length > 0;
+const isEmail = x => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(x);
+
+const isValidEmail = validate(isString, isNotEmpty, isEmail);
+
+console.log(isValidEmail('test@example.com')); // true
+console.log(isValidEmail('invalid')); // false
+</code></pre>
+
+            <h3>Data Normalization</h3>
+
+            <pre><code class="language-javascript">const normalizeUser = pipe(
+    user => ({ ...user, name: user.name.trim() }),
+    user => ({ ...user, email: user.email.toLowerCase() }),
+    user => ({ ...user, createdAt: new Date(user.createdAt) }),
+    user => ({ ...user, id: parseInt(user.id) })
+);
+
+const rawUser = {
+    id: '123',
+    name: '  John Doe  ',
+    email: 'JOHN@EXAMPLE.COM',
+    createdAt: '2024-01-01'
+};
+
+console.log(normalizeUser(rawUser));
+// {
+//   id: 123,
+//   name: 'John Doe',
+//   email: 'john@example.com',
+//   createdAt: Date object
+// }
+</code></pre>
+
+            <h2>Common Pitfalls</h2>
+
+            <div class="warning-box">
+                <strong>Pitfall 1: Mixing sync and async</strong>
+                <pre><code class="language-javascript">// Wrong - mixing sync and async functions
+const bad = pipe(
+    syncFn,
+    asyncFn,  // Returns a promise!
+    syncFn    // Won't work as expected
+);
+
+// Right - use asyncPipe for async functions
+const good = asyncPipe(
+    syncFn,
+    asyncFn,
+    syncFn
+);
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 2: Not currying multi-argument functions</strong>
+                <pre><code class="language-javascript">// Wrong - can't compose
+const add = (a, b) => a + b;
+
+// Right - curry it
+const add = a => b => a + b;
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 3: Over-composing</strong>
+                <p>Don't compose just for the sake of it. If a simple function is clearer, use it:</p>
+                <pre><code class="language-javascript">// Over-engineered
+const getName = pipe(prop('user'), prop('name'));
+
+// Simpler
+const getName = data => data.user.name;
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Composition combines functions to create new functions</li>
+                <li><code>compose</code> applies functions right-to-left</li>
+                <li><code>pipe</code> applies functions left-to-right</li>
+                <li>Curry functions to make them composable</li>
+                <li>Point-free style eliminates argument noise</li>
+                <li>Use <code>asyncPipe</code> for async function composition</li>
+                <li>Add <code>trace</code> functions for debugging pipelines</li>
+                <li>Composition makes code more modular, testable, and reusable</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

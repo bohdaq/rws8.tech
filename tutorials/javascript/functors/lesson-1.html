@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding JavaScript Functors and Applicatives - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Functors and Applicatives - map over wrapped values and apply wrapped functions for powerful functional programming.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .objectives-box ul {
+            margin-bottom: 0;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .code-explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Functors and Applicatives</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Understanding JavaScript Functors and Applicatives</h1>
+            <p class="subtitle">Master Functional Programming Patterns</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand what functors are and the functor laws</li>
+                    <li>Implement functors with map</li>
+                    <li>Learn applicative functors and their laws</li>
+                    <li>Apply wrapped functions to wrapped values</li>
+                    <li>Use functors and applicatives in real-world scenarios</li>
+                </ul>
+            </div>
+
+            <h2>What is a Functor?</h2>
+            <p>A functor is a container that implements a <code>map</code> method. The <code>map</code> method applies a function to the value(s) inside the container and returns a new container with the transformed value(s).</p>
+
+            <p>Think of it as a box with a value inside. You can transform what's in the box without opening it.</p>
+
+            <h3>Functor Implementation</h3>
+
+            <pre><code class="language-javascript">class Box {
+    constructor(value) {
+        this.value = value;
+    }
+
+    map(fn) {
+        return new Box(fn(this.value));
+    }
+
+    inspect() {
+        return `Box(${this.value})`;
+    }
+}
+
+// Usage
+const box = new Box(5);
+const result = box
+    .map(x => x * 2)
+    .map(x => x + 10);
+
+console.log(result.inspect()); // Box(20)
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>How it works:</strong> Each <code>map</code> transforms the value inside the box and returns a new box. You never directly access the value - you always work through <code>map</code>.
+            </div>
+
+            <h2>The Functor Laws</h2>
+
+            <p>For something to be a functor, it must follow two laws:</p>
+
+            <h3>1. Identity Law</h3>
+            <pre><code class="language-javascript">// Mapping with the identity function should do nothing
+const identity = x => x;
+
+box.map(identity) === box.map(x => x)
+// Both return Box(value) unchanged
+</code></pre>
+
+            <h3>2. Composition Law</h3>
+            <pre><code class="language-javascript">// Mapping with composed functions should be the same as
+// mapping with each function separately
+const f = x => x * 2;
+const g = x => x + 10;
+const compose = (f, g) => x => f(g(x));
+
+box.map(compose(f, g)) === box.map(g).map(f)
+// Both give the same result
+</code></pre>
+
+            <h2>Real-World Functor Example: Safe Division</h2>
+
+            <pre><code class="language-javascript">class Maybe {
+    constructor(value) {
+        this.value = value;
+    }
+
+    static of(value) {
+        return new Maybe(value);
+    }
+
+    isNothing() {
+        return this.value === null || this.value === undefined;
+    }
+
+    map(fn) {
+        return this.isNothing() 
+            ? Maybe.of(null) 
+            : Maybe.of(fn(this.value));
+    }
+
+    getOrElse(defaultValue) {
+        return this.isNothing() ? defaultValue : this.value;
+    }
+}
+
+// Safe calculation chain
+function calculate(a, b, c) {
+    return Maybe.of(a)
+        .map(x => x / b)  // Could be division by zero
+        .map(x => x * c)
+        .map(x => x + 100)
+        .getOrElse(0);
+}
+
+console.log(calculate(10, 2, 5)); // 125
+console.log(calculate(10, 0, 5)); // 0 (safe!)
+</code></pre>
+
+            <h2>What is an Applicative Functor?</h2>
+
+            <p>An applicative functor is a functor that can apply a wrapped function to a wrapped value. It has two key methods:</p>
+            <ul>
+                <li><code>of</code> (or <code>pure</code>) - Wraps a value in the functor</li>
+                <li><code>ap</code> (apply) - Applies a wrapped function to a wrapped value</li>
+            </ul>
+
+            <h3>Applicative Implementation</h3>
+
+            <pre><code class="language-javascript">class Box {
+    constructor(value) {
+        this.value = value;
+    }
+
+    static of(value) {
+        return new Box(value);
+    }
+
+    map(fn) {
+        return Box.of(fn(this.value));
+    }
+
+    ap(boxWithFunction) {
+        return boxWithFunction.map(fn => fn(this.value));
+    }
+
+    inspect() {
+        return `Box(${this.value})`;
+    }
+}
+
+// Usage
+const add = a => b => a + b;
+
+const result = Box.of(5)
+    .map(add)  // Box(b => 5 + b)
+    .ap(Box.of(10));  // Box(15)
+
+console.log(result.inspect()); // Box(15)
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>How it works:</strong> <code>map(add)</code> creates a box containing a partially applied function. <code>ap</code> applies that function to another boxed value.
+            </div>
+
+            <h2>Lifting Functions with Applicatives</h2>
+
+            <p>Applicatives let you "lift" regular functions to work with wrapped values:</p>
+
+            <pre><code class="language-javascript">// Regular function
+const add3 = (a, b, c) => a + b + c;
+
+// Curried version for applicatives
+const add3Curried = a => b => c => a + b + c;
+
+// Lift it to work with Box values
+const result = Box.of(add3Curried)
+    .ap(Box.of(1))
+    .ap(Box.of(2))
+    .ap(Box.of(3));
+
+console.log(result.inspect()); // Box(6)
+
+// Or using map + ap
+const result2 = Box.of(1)
+    .map(add3Curried)
+    .ap(Box.of(2))
+    .ap(Box.of(3));
+
+console.log(result2.inspect()); // Box(6)
+</code></pre>
+
+            <h2>Real-World Example: Form Validation</h2>
+
+            <pre><code class="language-javascript">class Validation {
+    constructor(value, isValid = true) {
+        this.value = value;
+        this.isValid = isValid;
+    }
+
+    static success(value) {
+        return new Validation(value, true);
+    }
+
+    static failure(error) {
+        return new Validation(error, false);
+    }
+
+    map(fn) {
+        return this.isValid 
+            ? Validation.success(fn(this.value))
+            : this;
+    }
+
+    ap(validationWithFn) {
+        if (!this.isValid) return this;
+        if (!validationWithFn.isValid) return validationWithFn;
+        return this.map(validationWithFn.value);
+    }
+
+    static of(value) {
+        return Validation.success(value);
+    }
+}
+
+// Validation functions
+const validateEmail = email => 
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+        ? Validation.success(email)
+        : Validation.failure('Invalid email');
+
+const validateAge = age =>
+    age >= 18
+        ? Validation.success(age)
+        : Validation.failure('Must be 18 or older');
+
+const validateName = name =>
+    name.length >= 2
+        ? Validation.success(name)
+        : Validation.failure('Name too short');
+
+// Create user object from validated inputs
+const createUser = name => email => age => ({
+    name,
+    email,
+    age,
+    createdAt: new Date()
+});
+
+// Combine validations
+const user = validateName('John')
+    .map(createUser)
+    .ap(validateEmail('john@example.com'))
+    .ap(validateAge(25));
+
+console.log(user);
+// Validation { value: { name: 'John', email: '...', age: 25, ... }, isValid: true }
+
+// With invalid data
+const invalidUser = validateName('J')
+    .map(createUser)
+    .ap(validateEmail('invalid-email'))
+    .ap(validateAge(16));
+
+console.log(invalidUser);
+// Validation { value: 'Name too short', isValid: false }
+</code></pre>
+
+            <h2>Applicative Laws</h2>
+
+            <p>Applicatives must follow four laws:</p>
+
+            <h3>1. Identity</h3>
+            <pre><code class="language-javascript">// Applying the identity function wrapped does nothing
+Box.of(x).ap(Box.of(identity)) === Box.of(x)
+</code></pre>
+
+            <h3>2. Homomorphism</h3>
+            <pre><code class="language-javascript">// Applying a wrapped function to a wrapped value is the same as
+// applying the function to the value and wrapping the result
+Box.of(x).ap(Box.of(f)) === Box.of(f(x))
+</code></pre>
+
+            <h3>3. Interchange</h3>
+            <pre><code class="language-javascript">// The order of application doesn't matter
+Box.of(y).ap(u) === u.ap(Box.of(f => f(y)))
+</code></pre>
+
+            <h3>4. Composition</h3>
+            <pre><code class="language-javascript">// Composing wrapped functions works as expected
+const compose = f => g => x => f(g(x));
+u.ap(v.ap(w)) === u.ap(v.map(compose).ap(w))
+</code></pre>
+
+            <h2>Practical Example: Async Operations</h2>
+
+            <pre><code class="language-javascript">class Task {
+    constructor(fork) {
+        this.fork = fork;
+    }
+
+    static of(value) {
+        return new Task((reject, resolve) => resolve(value));
+    }
+
+    map(fn) {
+        return new Task((reject, resolve) => 
+            this.fork(reject, value => resolve(fn(value)))
+        );
+    }
+
+    ap(taskWithFn) {
+        return new Task((reject, resolve) => {
+            let fn, val;
+            let fnDone = false, valDone = false;
+
+            const guardResolve = () => {
+                if (fnDone && valDone) {
+                    resolve(fn(val));
+                }
+            };
+
+            taskWithFn.fork(reject, f => {
+                fn = f;
+                fnDone = true;
+                guardResolve();
+            });
+
+            this.fork(reject, v => {
+                val = v;
+                valDone = true;
+                guardResolve();
+            });
+        });
+    }
+}
+
+// Simulate async operations
+const fetchUser = id => new Task((reject, resolve) => {
+    setTimeout(() => resolve({ id, name: 'John' }), 100);
+});
+
+const fetchPosts = userId => new Task((reject, resolve) => {
+    setTimeout(() => resolve([{ userId, title: 'Post 1' }]), 100);
+});
+
+// Combine async operations
+const combineData = user => posts => ({ user, posts });
+
+const result = fetchUser(1)
+    .map(combineData)
+    .ap(fetchPosts(1));
+
+result.fork(
+    error => console.error('Error:', error),
+    data => console.log('Success:', data)
+);
+// Success: { user: { id: 1, name: 'John' }, posts: [...] }
+</code></pre>
+
+            <h2>Key Differences: Functor vs Applicative vs Monad</h2>
+
+            <div class="tip-box">
+                <strong>Functor:</strong>
+                <ul>
+                    <li>Has <code>map</code></li>
+                    <li>Transforms values inside containers</li>
+                    <li>Example: <code>Box(5).map(x => x * 2)</code></li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>Applicative:</strong>
+                <ul>
+                    <li>Has <code>map</code> and <code>ap</code></li>
+                    <li>Applies wrapped functions to wrapped values</li>
+                    <li>Example: <code>Box(5).map(add).ap(Box(10))</code></li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>Monad:</strong>
+                <ul>
+                    <li>Has <code>map</code>, <code>ap</code>, and <code>flatMap</code></li>
+                    <li>Flattens nested containers</li>
+                    <li>Example: <code>Box(5).flatMap(x => Box(x * 2))</code></li>
+                </ul>
+            </div>
+
+            <h2>When to Use What</h2>
+
+            <div class="tip-box">
+                <strong>Use Functors when:</strong>
+                <ul>
+                    <li>You need to transform a single wrapped value</li>
+                    <li>You're chaining simple transformations</li>
+                    <li>You don't need to combine multiple wrapped values</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>Use Applicatives when:</strong>
+                <ul>
+                    <li>You need to combine multiple wrapped values</li>
+                    <li>You're validating multiple fields</li>
+                    <li>You're running independent async operations in parallel</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>Use Monads when:</strong>
+                <ul>
+                    <li>Operations depend on previous results</li>
+                    <li>You need to flatten nested containers</li>
+                    <li>You're chaining dependent async operations</li>
+                </ul>
+            </div>
+
+            <h2>Common Pitfalls</h2>
+
+            <div class="warning-box">
+                <strong>Pitfall 1: Not currying functions</strong>
+                <pre><code class="language-javascript">// Wrong - can't use with ap
+const add = (a, b) => a + b;
+
+// Right - curried for ap
+const add = a => b => a + b;
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 2: Using flatMap when map + ap would work</strong>
+                <pre><code class="language-javascript">// Overcomplicated with flatMap
+Box.of(5).flatMap(a => Box.of(10).map(b => a + b));
+
+// Simpler with applicative
+Box.of(5).map(a => b => a + b).ap(Box.of(10));
+</code></pre>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Functors implement <code>map</code> to transform wrapped values</li>
+                <li>Functors must follow identity and composition laws</li>
+                <li>Applicatives add <code>ap</code> to apply wrapped functions to wrapped values</li>
+                <li>Applicatives let you combine multiple wrapped values</li>
+                <li>Use applicatives for parallel operations and independent validations</li>
+                <li>Curry functions to use them with applicatives</li>
+                <li>Every monad is an applicative, every applicative is a functor</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>
