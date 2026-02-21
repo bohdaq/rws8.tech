@@ -226,8 +226,15 @@
             <li>
                 <strong>Part IV: Asynchronous JavaScript</strong>
                 <ol>
-                    <li><a href="#chapter11">Chapter 11: JavaScript Promises</a></li>
-                    <li><a href="#chapter12">Chapter 12: JavaScript Generators</a></li>
+                    <li><a href="#chapter11">Chapter 11: JavaScript Event Loop</a></li>
+                    <li><a href="#chapter12">Chapter 12: JavaScript Promises</a></li>
+                    <li><a href="#chapter13">Chapter 13: JavaScript Generators</a></li>
+                </ol>
+            </li>
+            <li>
+                <strong>Part V: Functional JavaScript</strong>
+                <ol>
+                    <li><a href="#chapter14">Chapter 14: JavaScript Monads</a></li>
                 </ol>
             </li>
             <li><a href="#conclusion">Conclusion</a></li>
@@ -2481,10 +2488,207 @@ describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
         <h2 class="center">Asynchronous JavaScript</h2>
     </div>
 
-
     <!-- Chapter 11 -->
     <div id="chapter11" class="page-break">
-        <h1>Chapter 11: JavaScript Promises</h1>
+        <h1>Chapter 11: JavaScript Event Loop</h1>
+        <h2>Master Asynchronous Execution</h2>
+
+        <p>JavaScript is single-threaded, meaning it can only execute one piece of code at a time. Yet it handles
+            asynchronous operations like network requests, timers, and user interactions without blocking. How? The
+            <strong>Event Loop</strong>.
+        </p>
+
+        <p>The Event Loop is a mechanism that coordinates the execution of code, handling events, and executing queued
+            tasks. It's what makes JavaScript's non-blocking asynchronous behavior possible.</p>
+
+        <h3>The Components</h3>
+
+        <p><strong>1. The Call Stack</strong></p>
+        <p>The call stack is where JavaScript keeps track of function execution. When a function is called, it's pushed
+            onto the stack. When it returns, it's popped off.</p>
+
+        <pre><code class="language-javascript">function first() {
+    console.log('First');
+}
+
+function second() {
+    first();
+    console.log('Second');
+}
+
+second();
+// Call stack: second() → first() → pops → second() pops
+</code></pre>
+
+        <p><strong>2. Web APIs / Browser APIs</strong></p>
+        <p>When you call <code>setTimeout</code>, make a fetch request, or add an event listener, these operations are
+            handled by the browser's Web APIs, not JavaScript itself.</p>
+
+        <pre><code class="language-javascript">console.log('Start');
+setTimeout(() => console.log('Timeout'), 0);
+console.log('End');
+
+// Output: Start, End, Timeout (even with 0ms delay!)
+</code></pre>
+
+        <p><strong>3. The Task Queue (Macrotask Queue)</strong></p>
+        <p>When Web APIs complete, their callbacks are placed in the task queue. The Event Loop moves tasks from the
+            queue to the stack when the stack is empty.</p>
+        <p>Macrotasks include: <code>setTimeout</code>, <code>setInterval</code>, I/O operations, UI rendering.</p>
+
+        <p><strong>4. The Microtask Queue</strong></p>
+        <p>Microtasks have <strong>higher priority</strong> than macrotasks. After each macrotask, the Event Loop
+            processes <em>all</em> microtasks before moving to the next macrotask.</p>
+        <p>Microtasks include: Promise callbacks (<code>.then</code>, <code>.catch</code>, <code>.finally</code>),
+            <code>queueMicrotask()</code>, <code>MutationObserver</code>.
+        </p>
+
+        <h3>The Event Loop in Action</h3>
+
+        <pre><code class="language-javascript">console.log('1: Sync');
+
+setTimeout(() => {
+    console.log('2: setTimeout');
+}, 0);
+
+Promise.resolve().then(() => {
+    console.log('3: Promise');
+});
+
+console.log('4: Sync');
+
+// Output:
+// 1: Sync
+// 4: Sync
+// 3: Promise
+// 2: setTimeout
+</code></pre>
+
+        <p><strong>Execution order:</strong></p>
+        <ol>
+            <li>Synchronous code executes first</li>
+            <li>Call stack is empty, check microtask queue</li>
+            <li>Promise callback executes</li>
+            <li>Microtask queue empty, check task queue</li>
+            <li>setTimeout callback executes</li>
+        </ol>
+
+        <h3>Complex Example</h3>
+
+        <pre><code class="language-javascript">console.log('Start');
+
+setTimeout(() => {
+    console.log('Timeout 1');
+    Promise.resolve().then(() => console.log('Promise in Timeout 1'));
+}, 0);
+
+Promise.resolve()
+    .then(() => {
+        console.log('Promise 1');
+        setTimeout(() => console.log('Timeout in Promise 1'), 0);
+    })
+    .then(() => console.log('Promise 2'));
+
+setTimeout(() => console.log('Timeout 2'), 0);
+
+console.log('End');
+
+// Output:
+// Start, End
+// Promise 1, Promise 2
+// Timeout 1, Promise in Timeout 1
+// Timeout in Promise 1, Timeout 2
+</code></pre>
+
+        <h3>Async/Await and the Event Loop</h3>
+
+        <p><code>async/await</code> is syntactic sugar over Promises, so it follows the same microtask rules:</p>
+
+        <pre><code class="language-javascript">console.log('1');
+
+async function asyncFunc() {
+    console.log('2');
+    await Promise.resolve();
+    console.log('3'); // This is a microtask
+}
+
+asyncFunc();
+Promise.resolve().then(() => console.log('4'));
+console.log('5');
+
+// Output: 1, 2, 5, 3, 4
+</code></pre>
+
+        <p>Everything after <code>await</code> is scheduled as a microtask, just like <code>.then()</code>.</p>
+
+        <h3>Common Pitfalls</h3>
+
+        <p><strong>Pitfall 1: Assuming setTimeout(fn, 0) executes immediately</strong></p>
+        <p>It doesn't! It's queued as a macrotask and waits for the call stack and all microtasks to clear.</p>
+
+        <p><strong>Pitfall 2: Infinite microtask loops</strong></p>
+        <pre><code class="language-javascript">function recursiveMicrotask() {
+    Promise.resolve().then(recursiveMicrotask);
+}
+recursiveMicrotask(); // Blocks the Event Loop!
+</code></pre>
+        <p>This creates an infinite microtask queue, preventing macrotasks (like UI updates) from ever executing.</p>
+
+        <p><strong>Pitfall 3: Blocking the main thread</strong></p>
+        <pre><code class="language-javascript">// Bad: blocks for 3 seconds
+const start = Date.now();
+while (Date.now() - start < 3000) {}
+console.log('Done'); // UI is frozen
+</code></pre>
+
+        <h3>Best Practices</h3>
+
+        <p><strong>1. Break up long tasks</strong></p>
+        <pre><code class="language-javascript">async function processItems(items) {
+    for (let i = 0; i < items.length; i += 100) {
+        const batch = items.slice(i, i + 100);
+        await processBatch(batch);
+        // Yields to Event Loop between batches
+    }
+}
+</code></pre>
+
+        <p><strong>2. Use microtasks for high-priority work</strong></p>
+        <pre><code class="language-javascript">// High priority
+queueMicrotask(() => {
+    // Executes before next macrotask
+});
+
+// Lower priority
+setTimeout(() => {
+    // Executes after microtasks
+}, 0);
+</code></pre>
+
+        <p><strong>3. Understand execution order for debugging</strong></p>
+        <p>When debugging async issues, trace through:</p>
+        <ol>
+            <li>All synchronous code</li>
+            <li>All microtasks (Promises, async/await)</li>
+            <li>One macrotask (setTimeout, etc.)</li>
+            <li>Repeat steps 2-3</li>
+        </ol>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>JavaScript is single-threaded but non-blocking thanks to the Event Loop</li>
+            <li>The call stack executes synchronous code</li>
+            <li>Web APIs handle async operations in parallel</li>
+            <li>Microtasks (Promises) have higher priority than macrotasks (setTimeout)</li>
+            <li>The Event Loop processes: sync code → all microtasks → one macrotask → repeat</li>
+            <li>Understanding the Event Loop helps you write better async code and debug timing issues</li>
+            <li>Avoid blocking the main thread with long-running synchronous operations</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 12 -->
+    <div id="chapter12" class="page-break">
+        <h1>Chapter 12: JavaScript Promises</h1>
         <h2>From Callback Hell to Async Heaven</h2>
 
         <p>Remember the days of callback pyramids that looked like the Leaning Tower of Pisa? If you've been writing
@@ -2769,9 +2973,9 @@ fetch('/api/data')
     </div>
 
 
-    <!-- Chapter 12 -->
-    <div id="chapter12" class="page-break">
-        <h1>Chapter 12: JavaScript Generators</h1>
+    <!-- Chapter 13 -->
+    <div id="chapter13" class="page-break">
+        <h1>Chapter 13: JavaScript Generators</h1>
         <h2>The Underrated Feature That Will Change How You Code</h2>
 
         <p>If you've been writing JavaScript for a while, you've probably heard of generators. Maybe you've even seen
@@ -3013,14 +3217,259 @@ console.log([...gen]); // [1, 2, 3, 4]</code></pre>
         </ul>
     </div>
 
+    <!-- PART V -->
+    <div class="page-break">
+        <h1 class="center">Part V</h1>
+        <h2 class="center">Functional JavaScript</h2>
+    </div>
+
+    <!-- Chapter 14 -->
+    <div id="chapter14" class="page-break">
+        <h1>Chapter 14: JavaScript Monads</h1>
+        <h2>Master Functional Programming Patterns</h2>
+
+        <p>Monads sound intimidating, but they're just a design pattern for handling values in a predictable way. They
+            help you write safer code by making error handling, null checks, and side effects explicit and composable.
+        </p>
+
+        <h3>What is a Monad?</h3>
+
+        <p>A monad is a design pattern that wraps a value and provides a way to chain operations on that value. Think of
+            it as a box that:</p>
+        <ul>
+            <li>Contains a value</li>
+            <li>Provides a way to transform the value (<code>map</code>)</li>
+            <li>Provides a way to chain operations that return new monads (<code>flatMap</code> or <code>chain</code>)
+            </li>
+        </ul>
+
+        <p>Monads help you handle edge cases (null, errors, side effects) in a consistent, composable way.</p>
+
+        <h3>The Maybe Monad: Handling Null Safety</h3>
+
+        <p>The Maybe monad handles values that might be null or undefined.</p>
+
+        <p><strong>Implementation:</strong></p>
+
+        <pre><code class="language-javascript">class Maybe {
+    constructor(value) {
+        this.value = value;
+    }
+
+    static of(value) {
+        return new Maybe(value);
+    }
+
+    isNothing() {
+        return this.value === null || this.value === undefined;
+    }
+
+    map(fn) {
+        return this.isNothing() ? this : Maybe.of(fn(this.value));
+    }
+
+    flatMap(fn) {
+        return this.isNothing() ? this : fn(this.value);
+    }
+
+    getOrElse(defaultValue) {
+        return this.isNothing() ? defaultValue : this.value;
+    }
+}
+</code></pre>
+
+        <p><strong>Usage Example:</strong></p>
+
+        <pre><code class="language-javascript">// Without Maybe - lots of null checks
+function getUserDiscount(userId) {
+    const user = findUser(userId);
+    if (!user) return 0;
+    const membership = user.membership;
+    if (!membership) return 0;
+    const discount = membership.discount;
+    if (!discount) return 0;
+    return discount;
+}
+
+// With Maybe - clean and safe
+function getUserDiscount(userId) {
+    return Maybe.of(findUser(userId))
+        .map(user => user.membership)
+        .map(membership => membership.discount)
+        .getOrElse(0);
+}
+</code></pre>
+
+        <p>If any step returns null/undefined, <code>map</code> stops executing and returns <code>Nothing</code>. No
+            null
+            checks needed!</p>
+
+        <h3>The Either Monad: Handling Errors</h3>
+
+        <p>The Either monad represents a value that can be one of two types: <code>Left</code> (error) or
+            <code>Right</code> (success).
+        </p>
+
+        <p><strong>Implementation:</strong></p>
+
+        <pre><code class="language-javascript">class Either {
+    constructor(value, isLeft = false) {
+        this.value = value;
+        this.isLeft = isLeft;
+    }
+
+    static left(value) {
+        return new Either(value, true);
+    }
+
+    static right(value) {
+        return new Either(value, false);
+    }
+
+    map(fn) {
+        return this.isLeft ? this : Either.right(fn(this.value));
+    }
+
+    flatMap(fn) {
+        return this.isLeft ? this : fn(this.value);
+    }
+
+    fold(leftFn, rightFn) {
+        return this.isLeft ? leftFn(this.value) : rightFn(this.value);
+    }
+}
+</code></pre>
+
+        <p><strong>Usage Example:</strong></p>
+
+        <pre><code class="language-javascript">function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email)
+        ? Either.right(email)
+        : Either.left('Invalid email format');
+}
+
+function validateAge(age) {
+    return age >= 18
+        ? Either.right(age)
+        : Either.left('Must be 18 or older');
+}
+
+function createUser(email, age) {
+    return validateEmail(email)
+        .flatMap(() => validateAge(age))
+        .map(() => ({ email, age, createdAt: new Date() }))
+        .fold(
+            error => ({ success: false, error }),
+            user => ({ success: true, user })
+        );
+}
+</code></pre>
+
+        <p>If any step returns <code>Left</code> (error), the chain stops and the error propagates. Only
+            <code>Right</code> values continue.
+        </p>
+
+        <h3>The IO Monad: Handling Side Effects</h3>
+
+        <p>The IO monad wraps side effects to keep your functions pure. The side effect doesn't execute until you
+            explicitly run it.</p>
+
+        <p><strong>Implementation:</strong></p>
+
+        <pre><code class="language-javascript">class IO {
+    constructor(effect) {
+        this.effect = effect;
+    }
+
+    static of(value) {
+        return new IO(() => value);
+    }
+
+    map(fn) {
+        return new IO(() => fn(this.effect()));
+    }
+
+    flatMap(fn) {
+        return new IO(() => fn(this.effect()).effect());
+    }
+
+    run() {
+        return this.effect();
+    }
+}
+</code></pre>
+
+        <p><strong>Usage Example:</strong></p>
+
+        <pre><code class="language-javascript">function fetchUserIO(userId) {
+    return new IO(() => fetch(`/api/users/${userId}`).then(r => r.json()));
+}
+
+function displayDataIO(data) {
+    return new IO(() => {
+        document.getElementById('output').textContent = JSON.stringify(data);
+    });
+}
+
+// Build the program (no side effects yet)
+const program = fetchUserIO(1).flatMap(displayDataIO);
+
+// Execute when ready
+document.getElementById('loadBtn').addEventListener('click', () => {
+    program.run();
+});
+</code></pre>
+
+        <p>The IO monad lets you compose side effects without executing them, making your code testable.</p>
+
+        <h3>Common Pitfalls</h3>
+
+        <p><strong>Pitfall 1: Forgetting to run IO</strong></p>
+
+        <pre><code class="language-javascript">// Wrong - IO never executes
+const io = new IO(() => console.log('Hello'));
+
+// Right - call run()
+io.run();
+</code></pre>
+
+        <p><strong>Pitfall 2: Using map instead of flatMap</strong></p>
+
+        <pre><code class="language-javascript">// Wrong - creates nested monads
+Maybe.of(5).map(x => Maybe.of(x * 2)); // Maybe(Maybe(10))
+
+// Right - use flatMap to flatten
+Maybe.of(5).flatMap(x => Maybe.of(x * 2)); // Maybe(10)
+</code></pre>
+
+        <p><strong>Pitfall 3: Overusing monads</strong></p>
+
+        <p>Not everything needs to be a monad. Use them when they solve a real problem (null safety, error handling,
+            side
+            effects).</p>
+
+        <h3>Key Takeaways</h3>
+
+        <ul>
+            <li>Monads are containers that provide <code>map</code> and <code>flatMap</code> for chaining operations
+            </li>
+            <li>Maybe monad handles null/undefined values safely</li>
+            <li>Either monad handles errors functionally without try-catch</li>
+            <li>IO monad defers side effects, keeping functions pure</li>
+            <li>Use <code>map</code> for transformations, <code>flatMap</code> for operations that return monads</li>
+            <li>Monads make code more composable, testable, and predictable</li>
+        </ul>
+    </div>
+
 
     <!-- Conclusion -->
     <div id="conclusion" class="page-break">
         <h1>Conclusion</h1>
 
         <p>Congratulations! You've completed this journey through essential JavaScript concepts. From understanding data
-            types and hoisting to mastering closures, currying, the <code>this</code> keyword, Promises, and generators
-            - you now have a solid foundation in JavaScript.</p>
+            types and hoisting to mastering closures, currying, the <code>this</code> keyword, Promises, generators,
+            and monads - you now have a solid foundation in JavaScript.</p>
 
         <h3>What's Next?</h3>
 

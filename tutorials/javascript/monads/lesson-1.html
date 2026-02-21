@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding JavaScript Monads - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn JavaScript Monads - understand Maybe, Either, and IO monads for safer, more predictable functional programming.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .objectives-box ul {
+            margin-bottom: 0;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .code-explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Monads</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Understanding JavaScript Monads</h1>
+            <p class="subtitle">Master Functional Programming Patterns</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand what monads are and why they matter</li>
+                    <li>Learn the three monad laws</li>
+                    <li>Implement Maybe, Either, and IO monads</li>
+                    <li>Apply monads to real-world problems</li>
+                </ul>
+            </div>
+
+            <h2>What is a Monad?</h2>
+            <p>A monad is a design pattern that wraps a value and provides a way to chain operations on that value. Think of it as a box that:</p>
+            <ul>
+                <li>Contains a value</li>
+                <li>Provides a way to transform the value (<code>map</code>)</li>
+                <li>Provides a way to chain operations that return new monads (<code>flatMap</code> or <code>chain</code>)</li>
+            </ul>
+
+            <p>Monads help you handle edge cases (null, errors, side effects) in a consistent, composable way.</p>
+
+            <h2>The Monad Laws</h2>
+
+            <p>For something to be a monad, it must follow three laws:</p>
+
+            <h3>1. Left Identity</h3>
+            <pre><code class="language-javascript">// If you wrap a value and immediately chain a function,
+// it should be the same as just calling the function
+Monad.of(value).chain(f) === f(value)
+</code></pre>
+
+            <h3>2. Right Identity</h3>
+            <pre><code class="language-javascript">// Chaining with Monad.of should do nothing
+monad.chain(Monad.of) === monad
+</code></pre>
+
+            <h3>3. Associativity</h3>
+            <pre><code class="language-javascript">// The order of chaining doesn't matter
+monad.chain(f).chain(g) === monad.chain(x => f(x).chain(g))
+</code></pre>
+
+            <h2>The Maybe Monad: Handling Null Safety</h2>
+
+            <p>The Maybe monad handles values that might be null or undefined. It has two variants: <code>Just</code> (has a value) and <code>Nothing</code> (no value).</p>
+
+            <h3>Implementation</h3>
+
+            <pre><code class="language-javascript">class Maybe {
+    constructor(value) {
+        this.value = value;
+    }
+
+    static of(value) {
+        return new Maybe(value);
+    }
+
+    isNothing() {
+        return this.value === null || this.value === undefined;
+    }
+
+    map(fn) {
+        return this.isNothing() ? this : Maybe.of(fn(this.value));
+    }
+
+    flatMap(fn) {
+        return this.isNothing() ? this : fn(this.value);
+    }
+
+    getOrElse(defaultValue) {
+        return this.isNothing() ? defaultValue : this.value;
+    }
+}
+</code></pre>
+
+            <h3>Usage Example</h3>
+
+            <pre><code class="language-javascript">// Without Maybe - lots of null checks
+function getUserDiscount(userId) {
+    const user = findUser(userId);
+    if (!user) return 0;
+    
+    const membership = user.membership;
+    if (!membership) return 0;
+    
+    const discount = membership.discount;
+    if (!discount) return 0;
+    
+    return discount;
+}
+
+// With Maybe - clean and safe
+function getUserDiscount(userId) {
+    return Maybe.of(findUser(userId))
+        .map(user => user.membership)
+        .map(membership => membership.discount)
+        .getOrElse(0);
+}
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>How it works:</strong> If any step returns null/undefined, <code>map</code> stops executing and returns <code>Nothing</code>. No null checks needed!
+            </div>
+
+            <h3>Real-World Example: Safe Property Access</h3>
+
+            <pre><code class="language-javascript">const data = {
+    user: {
+        profile: {
+            address: {
+                city: 'San Francisco'
+            }
+        }
+    }
+};
+
+// Unsafe - throws if any property is missing
+const city = data.user.profile.address.city;
+
+// Safe with Maybe
+const safeCity = Maybe.of(data)
+    .map(d => d.user)
+    .map(u => u.profile)
+    .map(p => p.address)
+    .map(a => a.city)
+    .getOrElse('Unknown');
+
+console.log(safeCity); // "San Francisco"
+
+// If data is incomplete
+const incompleteData = { user: {} };
+const result = Maybe.of(incompleteData)
+    .map(d => d.user)
+    .map(u => u.profile)
+    .map(p => p.address)
+    .map(a => a.city)
+    .getOrElse('Unknown');
+
+console.log(result); // "Unknown"
+</code></pre>
+
+            <h2>The Either Monad: Handling Errors</h2>
+
+            <p>The Either monad represents a value that can be one of two types: <code>Left</code> (error) or <code>Right</code> (success). By convention, Right is the "right" (correct) path.</p>
+
+            <h3>Implementation</h3>
+
+            <pre><code class="language-javascript">class Either {
+    constructor(value, isLeft = false) {
+        this.value = value;
+        this.isLeft = isLeft;
+    }
+
+    static left(value) {
+        return new Either(value, true);
+    }
+
+    static right(value) {
+        return new Either(value, false);
+    }
+
+    map(fn) {
+        return this.isLeft ? this : Either.right(fn(this.value));
+    }
+
+    flatMap(fn) {
+        return this.isLeft ? this : fn(this.value);
+    }
+
+    getOrElse(defaultValue) {
+        return this.isLeft ? defaultValue : this.value;
+    }
+
+    fold(leftFn, rightFn) {
+        return this.isLeft ? leftFn(this.value) : rightFn(this.value);
+    }
+}
+</code></pre>
+
+            <h3>Usage Example</h3>
+
+            <pre><code class="language-javascript">// Without Either - try-catch everywhere
+function processUser(userId) {
+    try {
+        const user = findUser(userId);
+        if (!user) throw new Error('User not found');
+        
+        const validated = validateUser(user);
+        if (!validated) throw new Error('Invalid user');
+        
+        return saveUser(validated);
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+// With Either - functional error handling
+function findUserEither(userId) {
+    const user = findUser(userId);
+    return user 
+        ? Either.right(user) 
+        : Either.left('User not found');
+}
+
+function validateUserEither(user) {
+    return validateUser(user)
+        ? Either.right(user)
+        : Either.left('Invalid user');
+}
+
+function saveUserEither(user) {
+    try {
+        const saved = saveUser(user);
+        return Either.right(saved);
+    } catch (error) {
+        return Either.left(error.message);
+    }
+}
+
+function processUser(userId) {
+    return findUserEither(userId)
+        .flatMap(validateUserEither)
+        .flatMap(saveUserEither)
+        .fold(
+            error => console.error('Error:', error),
+            user => console.log('Success:', user)
+        );
+}
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>How it works:</strong> If any step returns <code>Left</code> (error), the chain stops and the error propagates. Only <code>Right</code> values continue through the chain.
+            </div>
+
+            <h3>Real-World Example: Form Validation</h3>
+
+            <pre><code class="language-javascript">function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email)
+        ? Either.right(email)
+        : Either.left('Invalid email format');
+}
+
+function validateAge(age) {
+    return age >= 18
+        ? Either.right(age)
+        : Either.left('Must be 18 or older');
+}
+
+function createUser(email, age) {
+    return validateEmail(email)
+        .flatMap(() => validateAge(age))
+        .map(() => ({ email, age, createdAt: new Date() }))
+        .fold(
+            error => ({ success: false, error }),
+            user => ({ success: true, user })
+        );
+}
+
+console.log(createUser('test@example.com', 25));
+// { success: true, user: { email: '...', age: 25, createdAt: ... } }
+
+console.log(createUser('invalid-email', 25));
+// { success: false, error: 'Invalid email format' }
+
+console.log(createUser('test@example.com', 16));
+// { success: false, error: 'Must be 18 or older' }
+</code></pre>
+
+            <h2>The IO Monad: Handling Side Effects</h2>
+
+            <p>The IO monad wraps side effects (like reading files, making API calls, or logging) to keep your functions pure. The side effect doesn't execute until you explicitly run it.</p>
+
+            <h3>Implementation</h3>
+
+            <pre><code class="language-javascript">class IO {
+    constructor(effect) {
+        this.effect = effect;
+    }
+
+    static of(value) {
+        return new IO(() => value);
+    }
+
+    map(fn) {
+        return new IO(() => fn(this.effect()));
+    }
+
+    flatMap(fn) {
+        return new IO(() => fn(this.effect()).effect());
+    }
+
+    run() {
+        return this.effect();
+    }
+}
+</code></pre>
+
+            <h3>Usage Example</h3>
+
+            <pre><code class="language-javascript">// Impure function - side effect happens immediately
+function getUserName() {
+    return prompt('Enter your name:'); // Side effect!
+}
+
+function greetUser() {
+    const name = getUserName();
+    console.log(`Hello, ${name}!`); // Another side effect!
+}
+
+// Pure function with IO - side effects are deferred
+function getUserNameIO() {
+    return new IO(() => prompt('Enter your name:'));
+}
+
+function greetUserIO(name) {
+    return new IO(() => console.log(`Hello, ${name}!`));
+}
+
+// Build the program (no side effects yet)
+const program = getUserNameIO()
+    .flatMap(name => greetUserIO(name));
+
+// Execute when ready (side effects happen here)
+program.run();
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>Why this matters:</strong> The IO monad lets you compose side effects without executing them. This makes your code testable and allows you to control when side effects happen.
+            </div>
+
+            <h3>Real-World Example: API Calls</h3>
+
+            <pre><code class="language-javascript">function fetchUserIO(userId) {
+    return new IO(() => fetch(`/api/users/${userId}`).then(r => r.json()));
+}
+
+function fetchPostsIO(userId) {
+    return new IO(() => fetch(`/api/posts?userId=${userId}`).then(r => r.json()));
+}
+
+function displayDataIO(data) {
+    return new IO(() => {
+        document.getElementById('output').textContent = JSON.stringify(data);
+    });
+}
+
+// Compose the program
+const program = fetchUserIO(1)
+    .flatMap(user => 
+        fetchPostsIO(user.id)
+            .map(posts => ({ user, posts }))
+    )
+    .flatMap(displayDataIO);
+
+// Execute when ready (e.g., on button click)
+document.getElementById('loadBtn').addEventListener('click', () => {
+    program.run();
+});
+</code></pre>
+
+            <h2>Chaining Monads Together</h2>
+
+            <pre><code class="language-javascript">// Combining Maybe and Either
+function safeDivide(a, b) {
+    return Maybe.of(b)
+        .map(divisor => divisor !== 0 ? Either.right(a / divisor) : Either.left('Division by zero'))
+        .getOrElse(Either.left('Invalid divisor'));
+}
+
+const result1 = safeDivide(10, 2);
+console.log(result1.getOrElse(0)); // 5
+
+const result2 = safeDivide(10, 0);
+console.log(result2.fold(err => `Error: ${err}`, val => val));
+// "Error: Division by zero"
+</code></pre>
+
+            <h2>Practical Tips</h2>
+
+            <div class="tip-box">
+                <strong>When to use Maybe:</strong>
+                <ul>
+                    <li>Accessing nested object properties</li>
+                    <li>Working with optional values</li>
+                    <li>Avoiding null/undefined checks</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>When to use Either:</strong>
+                <ul>
+                    <li>Form validation</li>
+                    <li>API error handling</li>
+                    <li>Any operation that can fail with a reason</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <strong>When to use IO:</strong>
+                <ul>
+                    <li>File system operations</li>
+                    <li>Network requests</li>
+                    <li>DOM manipulation</li>
+                    <li>Any side effect you want to defer</li>
+                </ul>
+            </div>
+
+            <h2>Common Pitfalls</h2>
+
+            <div class="warning-box">
+                <strong>Pitfall 1: Forgetting to run IO</strong>
+                <pre><code class="language-javascript">// Wrong - IO never executes
+const io = new IO(() => console.log('Hello'));
+
+// Right - call run()
+io.run();
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 2: Using map instead of flatMap</strong>
+                <pre><code class="language-javascript">// Wrong - creates nested monads
+Maybe.of(5).map(x => Maybe.of(x * 2)); // Maybe(Maybe(10))
+
+// Right - use flatMap to flatten
+Maybe.of(5).flatMap(x => Maybe.of(x * 2)); // Maybe(10)
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 3: Overusing monads</strong>
+                <p>Not everything needs to be a monad. Use them when they solve a real problem (null safety, error handling, side effects), not just for the sake of being "functional."</p>
+            </div>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>Monads are containers that provide <code>map</code> and <code>flatMap</code> for chaining operations</li>
+                <li>Maybe monad handles null/undefined values safely</li>
+                <li>Either monad handles errors functionally without try-catch</li>
+                <li>IO monad defers side effects, keeping functions pure</li>
+                <li>Monads must follow three laws: Left Identity, Right Identity, Associativity</li>
+                <li>Use <code>map</code> for transformations, <code>flatMap</code> for operations that return monads</li>
+                <li>Monads make code more composable, testable, and predictable</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>

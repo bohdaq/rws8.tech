@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the JavaScript Event Loop - Lesson 1 | rws8.tech</title>
+    <meta name="description" content="Learn how the JavaScript Event Loop works - understand the call stack, task queue, microtask queue, and how asynchronous code executes.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .lesson-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .objectives-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .objectives-box ul {
+            margin-bottom: 0;
+        }
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .code-explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .tip-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">rws8.tech</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/tutorials.html">Tutorials</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <a href="/">Home</a> &gt; 
+            <a href="/tutorials.html">Tutorials</a> &gt; 
+            <a href="/tutorials/javascript/index.html">JavaScript</a> &gt; 
+            <a href="index.html">Event Loop</a> &gt; 
+            <span>Lesson 1</span>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Understanding the JavaScript Event Loop</h1>
+            <p class="subtitle">Master Asynchronous Execution</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-section">
+        <div class="lesson-content">
+            <div class="objectives-box">
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Understand the components of the Event Loop</li>
+                    <li>Learn how the call stack, task queue, and microtask queue work</li>
+                    <li>Master the execution order of async code</li>
+                    <li>Predict how setTimeout, Promises, and async/await execute</li>
+                </ul>
+            </div>
+
+            <h2>What is the Event Loop?</h2>
+            <p>JavaScript is single-threaded, meaning it can only execute one piece of code at a time. Yet it handles asynchronous operations like network requests, timers, and user interactions without blocking. How? The <strong>Event Loop</strong>.</p>
+
+            <p>The Event Loop is a mechanism that coordinates the execution of code, handling events, and executing queued tasks. It's what makes JavaScript's non-blocking asynchronous behavior possible.</p>
+
+            <h2>The Components</h2>
+
+            <h3>1. The Call Stack</h3>
+            <p>The call stack is where JavaScript keeps track of function execution. When a function is called, it's pushed onto the stack. When it returns, it's popped off.</p>
+
+            <pre><code class="language-javascript">function first() {
+    console.log('First');
+}
+
+function second() {
+    first();
+    console.log('Second');
+}
+
+second();
+
+// Call stack progression:
+// 1. second() pushed
+// 2. first() pushed
+// 3. first() pops (logs "First")
+// 4. second() pops (logs "Second")
+</code></pre>
+
+            <h3>2. Web APIs / Browser APIs</h3>
+            <p>When you call <code>setTimeout</code>, make a fetch request, or add an event listener, these operations are handled by the browser's Web APIs, not JavaScript itself. This is how JavaScript can be non-blocking.</p>
+
+            <pre><code class="language-javascript">console.log('Start');
+
+setTimeout(() => {
+    console.log('Timeout');
+}, 0);
+
+console.log('End');
+
+// Output:
+// Start
+// End
+// Timeout (even though delay is 0!)
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>Why does this happen?</strong> Even with a 0ms delay, <code>setTimeout</code> is handed off to the Web API, and its callback goes to the task queue, which only executes after the call stack is empty.
+            </div>
+
+            <h3>3. The Task Queue (Macrotask Queue)</h3>
+            <p>When Web APIs complete (like a timer finishing or a network request returning), their callbacks are placed in the <strong>task queue</strong>. The Event Loop checks if the call stack is empty, then moves tasks from the queue to the stack.</p>
+
+            <p><strong>Macrotasks include:</strong></p>
+            <ul>
+                <li><code>setTimeout</code></li>
+                <li><code>setInterval</code></li>
+                <li><code>setImmediate</code> (Node.js)</li>
+                <li>I/O operations</li>
+                <li>UI rendering</li>
+            </ul>
+
+            <h3>4. The Microtask Queue</h3>
+            <p>Microtasks have <strong>higher priority</strong> than macrotasks. After each macrotask, the Event Loop processes <em>all</em> microtasks before moving to the next macrotask.</p>
+
+            <p><strong>Microtasks include:</strong></p>
+            <ul>
+                <li>Promise callbacks (<code>.then</code>, <code>.catch</code>, <code>.finally</code>)</li>
+                <li><code>queueMicrotask()</code></li>
+                <li><code>MutationObserver</code></li>
+                <li><code>process.nextTick()</code> (Node.js - even higher priority)</li>
+            </ul>
+
+            <h2>The Event Loop in Action</h2>
+
+            <pre><code class="language-javascript">console.log('1: Sync');
+
+setTimeout(() => {
+    console.log('2: setTimeout');
+}, 0);
+
+Promise.resolve().then(() => {
+    console.log('3: Promise');
+});
+
+console.log('4: Sync');
+
+// Output:
+// 1: Sync
+// 4: Sync
+// 3: Promise
+// 2: setTimeout
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>Execution order:</strong>
+                <ol>
+                    <li>Synchronous code executes first: "1: Sync", "4: Sync"</li>
+                    <li>Call stack is empty, check microtask queue</li>
+                    <li>Promise callback executes: "3: Promise"</li>
+                    <li>Microtask queue empty, check task queue</li>
+                    <li>setTimeout callback executes: "2: setTimeout"</li>
+                </ol>
+            </div>
+
+            <h2>Complex Example: Mixing Everything</h2>
+
+            <pre><code class="language-javascript">console.log('Start');
+
+setTimeout(() => {
+    console.log('Timeout 1');
+    Promise.resolve().then(() => console.log('Promise in Timeout 1'));
+}, 0);
+
+Promise.resolve()
+    .then(() => {
+        console.log('Promise 1');
+        setTimeout(() => console.log('Timeout in Promise 1'), 0);
+    })
+    .then(() => console.log('Promise 2'));
+
+setTimeout(() => console.log('Timeout 2'), 0);
+
+console.log('End');
+
+// Output:
+// Start
+// End
+// Promise 1
+// Promise 2
+// Timeout 1
+// Promise in Timeout 1
+// Timeout in Promise 1
+// Timeout 2
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>Step-by-step breakdown:</strong>
+                <ol>
+                    <li><strong>Sync code:</strong> "Start", "End"</li>
+                    <li><strong>Microtasks:</strong> "Promise 1", "Promise 2" (all microtasks before next macrotask)</li>
+                    <li><strong>Macrotask 1:</strong> "Timeout 1" executes</li>
+                    <li><strong>Microtask from Timeout 1:</strong> "Promise in Timeout 1"</li>
+                    <li><strong>Macrotask 2:</strong> "Timeout in Promise 1"</li>
+                    <li><strong>Macrotask 3:</strong> "Timeout 2"</li>
+                </ol>
+            </div>
+
+            <h2>Async/Await and the Event Loop</h2>
+
+            <p><code>async/await</code> is syntactic sugar over Promises, so it follows the same microtask rules:</p>
+
+            <pre><code class="language-javascript">console.log('1');
+
+async function asyncFunc() {
+    console.log('2');
+    await Promise.resolve();
+    console.log('3'); // This is a microtask
+}
+
+asyncFunc();
+
+Promise.resolve().then(() => console.log('4'));
+
+console.log('5');
+
+// Output:
+// 1
+// 2
+// 5
+// 3
+// 4
+</code></pre>
+
+            <div class="code-explanation">
+                <strong>Why this order?</strong> Everything after <code>await</code> is scheduled as a microtask, just like <code>.then()</code>. The microtasks execute in the order they were queued.
+            </div>
+
+            <h2>Common Pitfalls</h2>
+
+            <div class="warning-box">
+                <strong>Pitfall 1: Assuming setTimeout(fn, 0) executes immediately</strong>
+                <p>It doesn't! It's queued as a macrotask and waits for the call stack and all microtasks to clear.</p>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 2: Infinite microtask loops</strong>
+                <pre><code class="language-javascript">function recursiveMicrotask() {
+    Promise.resolve().then(recursiveMicrotask);
+}
+recursiveMicrotask(); // Blocks the Event Loop!
+</code></pre>
+                <p>This creates an infinite microtask queue, preventing macrotasks (like UI updates) from ever executing.</p>
+            </div>
+
+            <div class="warning-box">
+                <strong>Pitfall 3: Blocking the main thread</strong>
+                <pre><code class="language-javascript">// Bad: blocks for 3 seconds
+const start = Date.now();
+while (Date.now() - start < 3000) {}
+console.log('Done'); // UI is frozen during this time
+</code></pre>
+                <p>Long-running synchronous code blocks the Event Loop, freezing the UI.</p>
+            </div>
+
+            <h2>Best Practices</h2>
+
+            <div class="tip-box">
+                <strong>1. Break up long tasks</strong>
+                <pre><code class="language-javascript">// Instead of processing 10,000 items at once:
+async function processItems(items) {
+    for (let i = 0; i < items.length; i += 100) {
+        const batch = items.slice(i, i + 100);
+        await processBatch(batch);
+        // Yields to Event Loop between batches
+    }
+}
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>2. Use microtasks for high-priority work</strong>
+                <pre><code class="language-javascript">// High priority: use Promise or queueMicrotask
+queueMicrotask(() => {
+    // Executes before next macrotask
+});
+
+// Lower priority: use setTimeout
+setTimeout(() => {
+    // Executes after microtasks
+}, 0);
+</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <strong>3. Understand execution order for debugging</strong>
+                <p>When debugging async issues, trace through:</p>
+                <ol>
+                    <li>All synchronous code</li>
+                    <li>All microtasks (Promises, async/await)</li>
+                    <li>One macrotask (setTimeout, etc.)</li>
+                    <li>Repeat steps 2-3</li>
+                </ol>
+            </div>
+
+            <h2>Real-World Example: Debouncing</h2>
+
+            <pre><code class="language-javascript">function debounce(func, delay) {
+    let timeoutId;
+    
+    return function(...args) {
+        // Clear previous timeout (macrotask)
+        clearTimeout(timeoutId);
+        
+        // Schedule new timeout (macrotask)
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
+// Usage: search input
+const searchInput = document.querySelector('#search');
+const debouncedSearch = debounce((query) => {
+    console.log('Searching for:', query);
+    // API call here
+}, 300);
+
+searchInput.addEventListener('input', (e) => {
+    debouncedSearch(e.target.value);
+});
+</code></pre>
+
+            <h2>Visualizing the Event Loop</h2>
+
+            <p>Think of the Event Loop as a restaurant:</p>
+            <ul>
+                <li><strong>Call Stack:</strong> The chef cooking one dish at a time</li>
+                <li><strong>Web APIs:</strong> Other kitchen staff (timers, dishwashers) working in parallel</li>
+                <li><strong>Microtask Queue:</strong> Urgent orders that must be done before the next main dish</li>
+                <li><strong>Task Queue:</strong> Regular orders waiting to be cooked</li>
+                <li><strong>Event Loop:</strong> The head chef deciding what to cook next</li>
+            </ul>
+
+            <h2>Key Takeaways</h2>
+
+            <ul>
+                <li>JavaScript is single-threaded but non-blocking thanks to the Event Loop</li>
+                <li>The call stack executes synchronous code</li>
+                <li>Web APIs handle async operations in parallel</li>
+                <li>Microtasks (Promises) have higher priority than macrotasks (setTimeout)</li>
+                <li>The Event Loop processes: sync code → all microtasks → one macrotask → repeat</li>
+                <li>Understanding the Event Loop helps you write better async code and debug timing issues</li>
+                <li>Avoid blocking the main thread with long-running synchronous operations</li>
+            </ul>
+
+            <div class="lesson-nav">
+                <a href="index.html" class="btn btn-secondary">← Back to Overview</a>
+                <a href="/tutorials/javascript/index.html" class="btn btn-primary">More JavaScript Tutorials →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 rws8.tech. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/bohdaq" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/bohdan-tsap/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>
