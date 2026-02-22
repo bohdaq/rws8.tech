@@ -235,10 +235,10 @@
             <li>
                 <strong>Part III: Object-Oriented JavaScript</strong>
                 <ol>
-                    <li>Chapter 8: JavaScript Encapsulation</li>
-                    <li>Chapter 9: JavaScript Inheritance</li>
-                    <li>Chapter 10: JavaScript Polymorphism</li>
-                    <li>Chapter 11: JavaScript Classes</li>
+                    <li>Chapter 8: JavaScript Classes</li>
+                    <li>Chapter 9: JavaScript Encapsulation</li>
+                    <li>Chapter 10: JavaScript Inheritance</li>
+                    <li>Chapter 11: JavaScript Polymorphism</li>
                 </ol>
             </li>
             <li>
@@ -277,16 +277,15 @@
                     <li>Chapter 27: JavaScript Regular Expressions</li>
                     <li>Chapter 28: JavaScript Proxies</li>
                     <li>Chapter 29: JavaScript Iterators</li>
-                    <li>Chapter 30: JavaScript Encapsulation</li>
                 </ul>
             </li>
             <li>
                 <strong>Part VIII: Functional JavaScript</strong>
                 <ul>
-                    <li>Chapter 31: JavaScript Immutability and Pure Functions</li>
-                    <li>Chapter 32: JavaScript Function Composition and Pipelines</li>
-                    <li>Chapter 33: JavaScript Functors and Applicatives</li>
-                    <li>Chapter 34: JavaScript Monads</li>
+                    <li>Chapter 30: JavaScript Immutability and Pure Functions</li>
+                    <li>Chapter 31: JavaScript Function Composition and Pipelines</li>
+                    <li>Chapter 32: JavaScript Functors and Applicatives</li>
+                    <li>Chapter 33: JavaScript Monads</li>
                 </ul>
             </li>
             <li>Conclusion</li>
@@ -328,11 +327,6 @@
         <p>Let's dive in!</p>
     </div>
 
-    <!-- PART I -->
-    <div class="page-break">
-        <h1 class="center">Part I</h1>
-        <h2 class="center">JavaScript Fundamentals</h2>
-    </div>
 
 
     <!-- PART I -->
@@ -1945,615 +1939,9 @@ add(1, 2, 3);     // 6 - all work!</code></pre>
         <h2 class="center">Object-Oriented JavaScript</h2>
     </div>
 
-    <!-- Chapter 8 -->
+    <!-- Chapter 8: Classes -->
     <div id="chapter8" class="page-break">
-        <h1>Chapter 8: JavaScript Encapsulation</h1>
-        <h2>Master Data Hiding and Private Variables</h2>
-
-        <p>Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical
-            once you understand it. If you've ever wanted to protect your data from being accidentally modified or
-            create
-            cleaner APIs for your code, encapsulation is the answer.</p>
-
-        <h3>What is Encapsulation?</h3>
-        <p>Encapsulation is the practice of bundling data and methods together while hiding internal implementation
-            details
-            from the outside world. It's one of the four fundamental principles of object-oriented programming (along
-            with
-            inheritance, polymorphism, and abstraction).</p>
-
-        <p>In JavaScript, encapsulation helps you protect data, control access, reduce coupling, and improve
-            maintainability.</p>
-
-        <pre><code class="language-javascript">// Without encapsulation - data is exposed
-const account = {
-    balance: 1000
-};
-account.balance = -500; // Oops! No validation
-
-// With encapsulation - data is protected
-function createAccount(initialBalance) {
-    let balance = initialBalance; // Private
-    
-    return {
-        deposit(amount) {
-            if (amount > 0) {
-                balance += amount;
-                return true;
-            }
-            return false;
-        },
-        getBalance() {
-            return balance;
-        }
-    };
-}
-
-const myAccount = createAccount(1000);
-myAccount.deposit(500);
-console.log(myAccount.getBalance()); // 1500
-myAccount.balance = -500;            // Has no effect!</code></pre>
-
-        <h3>Private Variables with Closures</h3>
-        <p>Before ES2022, closures were the primary way to create private variables in JavaScript:</p>
-
-        <pre><code class="language-javascript">function Counter() {
-    let count = 0; // Private variable
-    
-    this.increment = function() {
-        count++;
-        return count;
-    };
-    
-    this.getCount = function() {
-        return count;
-    };
-}
-
-const counter = new Counter();
-counter.increment(); // 1
-counter.increment(); // 2
-console.log(counter.count); // undefined - private!</code></pre>
-
-        <h3>ES2022 Private Fields</h3>
-        <p>Modern JavaScript introduced true private fields using the <code>#</code> prefix:</p>
-
-        <pre><code class="language-javascript">class BankAccount {
-    #balance; // Private field
-    
-    constructor(initialBalance) {
-        this.#balance = initialBalance;
-    }
-    
-    deposit(amount) {
-        if (amount <= 0) {
-            throw new Error('Amount must be positive');
-        }
-        this.#balance += amount;
-        return this.#balance;
-    }
-    
-    getBalance() {
-        return this.#balance;
-    }
-}
-
-const account = new BankAccount(1000);
-account.deposit(500);
-console.log(account.getBalance()); // 1500
-// account.#balance; // SyntaxError!</code></pre>
-
-        <p>Private fields are truly private - attempting to access them from outside the class results in a syntax
-            error.
-        </p>
-
-        <h3>The Module Pattern</h3>
-        <p>The Module Pattern uses an IIFE to create a private scope:</p>
-
-        <pre><code class="language-javascript">const Calculator = (function() {
-    // Private
-    let history = [];
-    
-    function log(operation, result) {
-        history.push({ operation, result });
-    }
-    
-    // Public API
-    return {
-        add(a, b) {
-            const result = a + b;
-            log(`${a} + ${b}`, result);
-            return result;
-        },
-        getHistory() {
-            return [...history];
-        }
-    };
-})();
-
-Calculator.add(5, 3); // 8
-console.log(Calculator.history); // undefined - private!</code></pre>
-
-        <h3>Getters and Setters</h3>
-        <p>Getters and setters provide controlled access with validation:</p>
-
-        <pre><code class="language-javascript">class Temperature {
-    #celsius;
-    
-    get celsius() {
-        return this.#celsius;
-    }
-    
-    set celsius(value) {
-        if (value < -273.15) {
-            throw new Error('Below absolute zero');
-        }
-        this.#celsius = value;
-    }
-    
-    get fahrenheit() {
-        return (this.#celsius * 9/5) + 32;
-    }
-}
-
-const temp = new Temperature();
-temp.celsius = 25;
-console.log(temp.fahrenheit); // 77</code></pre>
-
-        <h3>Best Practices</h3>
-        <ol>
-            <li><strong>Make everything private by default</strong> - Only expose what's necessary</li>
-            <li><strong>Use getters for computed properties</strong> - Calculate values on demand</li>
-            <li><strong>Validate in setters</strong> - Ensure data integrity</li>
-            <li><strong>Return copies, not references</strong> - Prevent external modification</li>
-            <li><strong>Use meaningful method names</strong> - Make your API clear</li>
-        </ol>
-
-        <h3>When to Use Encapsulation</h3>
-        <p><strong>Use it when:</strong></p>
-        <ul>
-            <li>You need to protect data integrity</li>
-            <li>You want to control how data is accessed</li>
-            <li>You're building reusable components</li>
-            <li>You need validation before changes</li>
-        </ul>
-
-        <p><strong>Skip it when:</strong></p>
-        <ul>
-            <li>You're building simple data structures</li>
-            <li>The code is only used internally</li>
-            <li>The data doesn't need protection</li>
-        </ul>
-
-        <h3>Key Takeaways</h3>
-        <ul>
-            <li>Encapsulation bundles data and methods while hiding implementation</li>
-            <li>Use closures for private variables in functions</li>
-            <li>ES2022 private fields (#) are the modern way for classes</li>
-            <li>The Module Pattern creates singletons with private state</li>
-            <li>Getters and setters provide controlled access</li>
-            <li>Always return copies of internal data, not references</li>
-            <li>Make everything private by default</li>
-            <li>Don't over-encapsulate simple structures</li>
-        </ul>
-    </div>
-
-
-
-    <!-- Chapter 9 -->
-    <div id="chapter9" class="page-break">
-        <h1>Chapter 9: JavaScript Inheritance</h1>
-        <h2>Master Prototypal Inheritance and ES6 Classes</h2>
-
-        <p>Inheritance is one of those concepts that sounds complicated but is actually quite natural once you
-            understand
-            it. If you've been writing JavaScript for a while, you've probably used inheritance without even realizing
-            it.
-            Let me show you how it works and why it matters.</p>
-
-        <h3>What is Inheritance?</h3>
-        <p>Inheritance is a mechanism that allows one object to acquire properties and methods from another object. It's
-            like saying "a Dog is an Animal" - the Dog inherits all the characteristics of an Animal, plus adds its own
-            specific behaviors.</p>
-
-        <p>Unlike classical languages like Java or C++ that use class-based inheritance, JavaScript uses
-            <strong>prototypal
-                inheritance</strong>. Every object in JavaScript has an internal link to another object called its
-            prototype. When you try to access a property on an object, JavaScript first looks at the object itself, then
-            walks up the prototype chain until it finds the property or reaches the end of the chain.
-        </p>
-
-        <pre><code class="language-javascript">const animal = {
-    eats: true,
-    walk() {
-        console.log('Animal walks');
-    }
-};
-
-const rabbit = {
-    jumps: true
-};
-
-rabbit.__proto__ = animal;
-
-console.log(rabbit.eats);  // true (inherited)
-console.log(rabbit.jumps); // true (own property)
-rabbit.walk();             // "Animal walks"</code></pre>
-
-        <p>When we access <code>rabbit.eats</code>, JavaScript doesn't find it on the rabbit object, so it looks at
-            rabbit's prototype (animal) and finds it there. This is the prototype chain in action.</p>
-
-        <h3>ES6 Classes: The Modern Way</h3>
-        <p>ES6 introduced class syntax that makes inheritance much cleaner and more intuitive:</p>
-
-        <pre><code class="language-javascript">class Animal {
-    constructor(name) {
-        this.name = name;
-    }
-    
-    speak() {
-        console.log(`${this.name} makes a sound`);
-    }
-}
-
-class Dog extends Animal {
-    constructor(name, breed) {
-        super(name); // Call parent constructor
-        this.breed = breed;
-    }
-    
-    speak() {
-        console.log(`${this.name} barks`);
-    }
-    
-    fetch() {
-        console.log(`${this.name} fetches the ball`);
-    }
-}
-
-const rex = new Dog('Rex', 'German Shepherd');
-rex.speak();  // "Rex barks"
-rex.fetch();  // "Rex fetches the ball"</code></pre>
-
-        <p>The <code>extends</code> keyword sets up the inheritance, and <code>super()</code> calls the parent
-            constructor.
-            Much cleaner than the old constructor function approach!</p>
-
-        <h3>The super Keyword</h3>
-        <p>The <code>super</code> keyword is your gateway to parent class functionality:</p>
-
-        <pre><code class="language-javascript">class Animal {
-    constructor(name) {
-        this.name = name;
-    }
-    
-    speak() {
-        return `${this.name} makes a sound`;
-    }
-}
-
-class Dog extends Animal {
-    speak() {
-        const parentMessage = super.speak();
-        return `${parentMessage} - specifically, a bark!`;
-    }
-}
-
-const dog = new Dog('Buddy');
-console.log(dog.speak()); 
-// "Buddy makes a sound - specifically, a bark!"</code></pre>
-
-        <p><strong>Important:</strong> You must call <code>super()</code> before using <code>this</code> in a child
-            constructor. The parent needs to initialize the object first.</p>
-
-        <h3>Real-World Example: User Roles</h3>
-        <p>Here's a practical example showing inheritance in action:</p>
-
-        <pre><code class="language-javascript">class User {
-    constructor(name, email) {
-        this.name = name;
-        this.email = email;
-    }
-    
-    getInfo() {
-        return `${this.name} (${this.email})`;
-    }
-    
-    canEdit() {
-        return false;
-    }
-}
-
-class Admin extends User {
-    constructor(name, email, department) {
-        super(name, email);
-        this.department = department;
-    }
-    
-    canEdit() {
-        return true;
-    }
-    
-    getInfo() {
-        return `${super.getInfo()} - Admin (${this.department})`;
-    }
-}
-
-const admin = new Admin('Bob', 'bob@example.com', 'IT');
-console.log(admin.getInfo()); // "Bob (bob@example.com) - Admin (IT)"
-console.log(admin.canEdit());  // true</code></pre>
-
-        <h3>Method Overriding</h3>
-        <p>Child classes can override parent methods to provide specialized behavior:</p>
-
-        <pre><code class="language-javascript">class Shape {
-    constructor(color) {
-        this.color = color;
-    }
-    
-    getArea() {
-        return 0;
-    }
-}
-
-class Circle extends Shape {
-    constructor(color, radius) {
-        super(color);
-        this.radius = radius;
-    }
-    
-    getArea() {
-        return Math.PI * this.radius ** 2;
-    }
-}
-
-const circle = new Circle('red', 5);
-console.log(circle.getArea()); // 78.54...</code></pre>
-
-        <h3>Best Practices</h3>
-        <ol>
-            <li><strong>Keep hierarchies shallow</strong> - Limit inheritance to 2-3 levels maximum</li>
-            <li><strong>Favor composition over inheritance</strong> - Don't create deep inheritance trees</li>
-            <li><strong>Use clear "is-a" relationships</strong> - Dog is-a Animal makes sense</li>
-            <li><strong>Document your hierarchy</strong> - Use JSDoc to document inheritance relationships</li>
-        </ol>
-
-        <h3>When to Use Inheritance</h3>
-        <p><strong>Use it when:</strong></p>
-        <ul>
-            <li>You have a clear "is-a" relationship</li>
-            <li>Child classes are specialized versions of the parent</li>
-            <li>You want to share common behavior</li>
-            <li>You're modeling real-world hierarchies</li>
-        </ul>
-
-        <p><strong>Avoid it when:</strong></p>
-        <ul>
-            <li>You have a "has-a" relationship (use composition)</li>
-            <li>The hierarchy would be more than 3 levels deep</li>
-            <li>Classes don't share meaningful behavior</li>
-        </ul>
-
-        <h3>Key Takeaways</h3>
-        <ul>
-            <li>JavaScript uses prototypal inheritance, not classical inheritance</li>
-            <li>ES6 classes provide clean syntax but use prototypes under the hood</li>
-            <li>Use <code>extends</code> to create child classes</li>
-            <li>Always call <code>super()</code> before using <code>this</code> in child constructors</li>
-            <li>Use <code>super.method()</code> to call parent methods</li>
-            <li>Child classes can override parent methods</li>
-            <li>Keep inheritance hierarchies shallow</li>
-            <li>Favor composition over inheritance for complex relationships</li>
-        </ul>
-    </div>
-
-
-
-    <!-- Chapter 10 -->
-    <div id="chapter10" class="page-break">
-        <h1>Chapter 10: JavaScript Polymorphism</h1>
-        <h2>Write Flexible, Reusable Code</h2>
-
-        <p>If you've been writing JavaScript for a while, you've probably used polymorphism without even realizing it.
-            It's one of those concepts that sounds intimidating but is actually quite natural in JavaScript. Let me show
-            you why it matters and how to use it effectively.</p>
-
-        <h3>What is Polymorphism?</h3>
-        <p>Polymorphism comes from Greek: "poly" (many) + "morph" (form), meaning "many forms." In programming, it means
-            writing code that works with different types of objects through a common interface.</p>
-
-        <p>Unlike Java or C++ where polymorphism relies on inheritance and strict type hierarchies, JavaScript uses
-            <strong>duck typing</strong>: "If it walks like a duck and quacks like a duck, it's a duck." JavaScript
-            doesn't care about an object's type—only what methods it has.
-        </p>
-
-        <pre><code class="language-javascript">// Different objects with the same interface
-const dog = {
-    speak() { return 'Woof!'; }
-};
-
-const cat = {
-    speak() { return 'Meow!'; }
-};
-
-const robot = {
-    speak() { return 'Beep boop!'; }
-};
-
-// Polymorphic function - works with any object that has speak()
-function makeItSpeak(animal) {
-    console.log(animal.speak());
-}
-
-makeItSpeak(dog);    // Woof!
-makeItSpeak(cat);    // Meow!
-makeItSpeak(robot);  // Beep boop!</code></pre>
-
-        <p>The <code>makeItSpeak</code> function doesn't check types. It only cares that the object has a
-            <code>speak()</code> method. This is polymorphism in action.
-        </p>
-
-        <h3>Duck Typing in Practice</h3>
-        <p>Duck typing makes JavaScript incredibly flexible. Instead of checking an object's type, you check for
-            specific
-            methods or properties:</p>
-
-        <pre><code class="language-javascript">function draw(shape) {
-    if (typeof shape.draw === 'function') {
-        shape.draw();
-    } else {
-        console.error('Object is not drawable');
-    }
-}
-
-const circle = {
-    radius: 5,
-    draw() {
-        console.log(`Drawing circle with radius ${this.radius}`);
-    }
-};
-
-const square = {
-    side: 10,
-    draw() {
-        console.log(`Drawing square with side ${this.side}`);
-    }
-};
-
-draw(circle);  // Drawing circle with radius 5
-draw(square);  // Drawing square with side 10</code></pre>
-
-        <p>This pattern is everywhere in JavaScript. Promises work with any "thenable" (object with a
-            <code>then()</code>
-            method). Iterators work with any object that has a <code>next()</code> method. Array methods work with any
-            array-like object.
-        </p>
-
-        <h3>Real-World Example: Payment Processing</h3>
-        <p>Here's a practical example that shows polymorphism's power:</p>
-
-        <pre><code class="language-javascript">class PaymentProcessor {
-    processPayment(paymentMethod, amount) {
-        if (typeof paymentMethod.pay !== 'function') {
-            throw new Error('Invalid payment method');
-        }
-        return paymentMethod.pay(amount);
-    }
-}
-
-class CreditCard {
-    constructor(cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-    
-    pay(amount) {
-        console.log(`Charging $${amount} to card ending in ${this.cardNumber.slice(-4)}`);
-        return { success: true, method: 'credit_card' };
-    }
-}
-
-class PayPal {
-    constructor(email) {
-        this.email = email;
-    }
-    
-    pay(amount) {
-        console.log(`Processing $${amount} PayPal payment for ${this.email}`);
-        return { success: true, method: 'paypal' };
-    }
-}
-
-// Usage
-const processor = new PaymentProcessor();
-processor.processPayment(new CreditCard('1234567890123456'), 100);
-processor.processPayment(new PayPal('user@example.com'), 50);</code></pre>
-
-        <p>The <code>PaymentProcessor</code> doesn't need to know about specific payment types. It only needs objects
-            with
-            a <code>pay()</code> method. Adding new payment methods requires zero changes to the processor.</p>
-
-        <h3>Polymorphism with Classes</h3>
-        <p>You can also use ES6 classes for more traditional OOP-style polymorphism:</p>
-
-        <pre><code class="language-javascript">class Animal {
-    constructor(name) {
-        this.name = name;
-    }
-    
-    speak() {
-        return `${this.name} makes a sound`;
-    }
-}
-
-class Dog extends Animal {
-    speak() {
-        return `${this.name} barks`;
-    }
-}
-
-class Cat extends Animal {
-    speak() {
-        return `${this.name} meows`;
-    }
-}
-
-function describeAnimal(animal) {
-    console.log(animal.speak());
-}
-
-describeAnimal(new Dog('Rex'));      // Rex barks
-describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
-
-        <p>Each subclass overrides <code>speak()</code> with its own implementation. The <code>describeAnimal</code>
-            function works with any Animal, regardless of the specific subclass.</p>
-
-        <h3>Best Practices</h3>
-        <ol>
-            <li><strong>Design around interfaces</strong> - Think about what methods objects need, not what type they
-                are
-            </li>
-            <li><strong>Use consistent method names</strong> - If objects do similar things, give them the same method
-                names</li>
-            <li><strong>Validate interfaces</strong> - Always check that objects have the methods you need</li>
-            <li><strong>Document expectations</strong> - Use JSDoc to document what methods objects should implement
-            </li>
-            <li><strong>Consider TypeScript</strong> - For large projects, TypeScript's interfaces provide compile-time
-                checking</li>
-        </ol>
-
-        <h3>When to Use Polymorphism</h3>
-        <p><strong>Use it when:</strong></p>
-        <ul>
-            <li>You have multiple objects that do similar things differently</li>
-            <li>You want functions that work with many types</li>
-            <li>You're building plugin systems or extensible architectures</li>
-            <li>You want to reduce code duplication</li>
-        </ul>
-
-        <p><strong>Avoid it when:</strong></p>
-        <ul>
-            <li>You only have one type of object</li>
-            <li>Objects don't share common behavior</li>
-            <li>Simple conditional logic is clearer</li>
-            <li>It adds unnecessary complexity</li>
-        </ul>
-
-        <h3>Key Takeaways</h3>
-        <ul>
-            <li>Polymorphism lets different objects be treated through a common interface</li>
-            <li>JavaScript uses duck typing - objects are defined by their methods, not types</li>
-            <li>Design around interfaces (sets of methods) rather than specific types</li>
-            <li>Always validate that objects have the methods you need</li>
-            <li>Use consistent method names across similar objects</li>
-            <li>Don't over-engineer - use polymorphism where it adds value</li>
-        </ul>
-    </div>
-
-
-
-    <!-- Chapter 11: Classes -->
-    <div id="chapter11" class="page-break">
-        <h1>Chapter 11: JavaScript Classes</h1>
+        <h1>Chapter 8: JavaScript Classes</h1>
         <h2>Modern Object-Oriented Programming</h2>
 
         <p>JavaScript classes, introduced in ES6, provide a cleaner, more intuitive syntax for object-oriented
@@ -2771,6 +2159,612 @@ const newUser = await api.post('/users', { name: 'John' });
             <li>Modern standard for OOP in JavaScript</li>
         </ul>
     </div>
+
+
+    <!-- Chapter 9: Encapsulation -->
+    <div id="chapter9" class="page-break">
+        <h1>Chapter 9: JavaScript Encapsulation</h1>
+        <h2>Master Data Hiding and Private Variables</h2>
+
+        <p>Encapsulation is one of those programming principles that sounds intimidating but is actually quite practical
+            once you understand it. If you've ever wanted to protect your data from being accidentally modified or
+            create
+            cleaner APIs for your code, encapsulation is the answer.</p>
+
+        <h3>What is Encapsulation?</h3>
+        <p>Encapsulation is the practice of bundling data and methods together while hiding internal implementation
+            details
+            from the outside world. It's one of the four fundamental principles of object-oriented programming (along
+            with
+            inheritance, polymorphism, and abstraction).</p>
+
+        <p>In JavaScript, encapsulation helps you protect data, control access, reduce coupling, and improve
+            maintainability.</p>
+
+        <pre><code class="language-javascript">// Without encapsulation - data is exposed
+const account = {
+    balance: 1000
+};
+account.balance = -500; // Oops! No validation
+
+// With encapsulation - data is protected
+function createAccount(initialBalance) {
+    let balance = initialBalance; // Private
+    
+    return {
+        deposit(amount) {
+            if (amount > 0) {
+                balance += amount;
+                return true;
+            }
+            return false;
+        },
+        getBalance() {
+            return balance;
+        }
+    };
+}
+
+const myAccount = createAccount(1000);
+myAccount.deposit(500);
+console.log(myAccount.getBalance()); // 1500
+myAccount.balance = -500;            // Has no effect!</code></pre>
+
+        <h3>Private Variables with Closures</h3>
+        <p>Before ES2022, closures were the primary way to create private variables in JavaScript:</p>
+
+        <pre><code class="language-javascript">function Counter() {
+    let count = 0; // Private variable
+    
+    this.increment = function() {
+        count++;
+        return count;
+    };
+    
+    this.getCount = function() {
+        return count;
+    };
+}
+
+const counter = new Counter();
+counter.increment(); // 1
+counter.increment(); // 2
+console.log(counter.count); // undefined - private!</code></pre>
+
+        <h3>ES2022 Private Fields</h3>
+        <p>Modern JavaScript introduced true private fields using the <code>#</code> prefix:</p>
+
+        <pre><code class="language-javascript">class BankAccount {
+    #balance; // Private field
+    
+    constructor(initialBalance) {
+        this.#balance = initialBalance;
+    }
+    
+    deposit(amount) {
+        if (amount <= 0) {
+            throw new Error('Amount must be positive');
+        }
+        this.#balance += amount;
+        return this.#balance;
+    }
+    
+    getBalance() {
+        return this.#balance;
+    }
+}
+
+const account = new BankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance()); // 1500
+// account.#balance; // SyntaxError!</code></pre>
+
+        <p>Private fields are truly private - attempting to access them from outside the class results in a syntax
+            error.
+        </p>
+
+        <h3>The Module Pattern</h3>
+        <p>The Module Pattern uses an IIFE to create a private scope:</p>
+
+        <pre><code class="language-javascript">const Calculator = (function() {
+    // Private
+    let history = [];
+    
+    function log(operation, result) {
+        history.push({ operation, result });
+    }
+    
+    // Public API
+    return {
+        add(a, b) {
+            const result = a + b;
+            log(`${a} + ${b}`, result);
+            return result;
+        },
+        getHistory() {
+            return [...history];
+        }
+    };
+})();
+
+Calculator.add(5, 3); // 8
+console.log(Calculator.history); // undefined - private!</code></pre>
+
+        <h3>Getters and Setters</h3>
+        <p>Getters and setters provide controlled access with validation:</p>
+
+        <pre><code class="language-javascript">class Temperature {
+    #celsius;
+    
+    get celsius() {
+        return this.#celsius;
+    }
+    
+    set celsius(value) {
+        if (value < -273.15) {
+            throw new Error('Below absolute zero');
+        }
+        this.#celsius = value;
+    }
+    
+    get fahrenheit() {
+        return (this.#celsius * 9/5) + 32;
+    }
+}
+
+const temp = new Temperature();
+temp.celsius = 25;
+console.log(temp.fahrenheit); // 77</code></pre>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Make everything private by default</strong> - Only expose what's necessary</li>
+            <li><strong>Use getters for computed properties</strong> - Calculate values on demand</li>
+            <li><strong>Validate in setters</strong> - Ensure data integrity</li>
+            <li><strong>Return copies, not references</strong> - Prevent external modification</li>
+            <li><strong>Use meaningful method names</strong> - Make your API clear</li>
+        </ol>
+
+        <h3>When to Use Encapsulation</h3>
+        <p><strong>Use it when:</strong></p>
+        <ul>
+            <li>You need to protect data integrity</li>
+            <li>You want to control how data is accessed</li>
+            <li>You're building reusable components</li>
+            <li>You need validation before changes</li>
+        </ul>
+
+        <p><strong>Skip it when:</strong></p>
+        <ul>
+            <li>You're building simple data structures</li>
+            <li>The code is only used internally</li>
+            <li>The data doesn't need protection</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Encapsulation bundles data and methods while hiding implementation</li>
+            <li>Use closures for private variables in functions</li>
+            <li>ES2022 private fields (#) are the modern way for classes</li>
+            <li>The Module Pattern creates singletons with private state</li>
+            <li>Getters and setters provide controlled access</li>
+            <li>Always return copies of internal data, not references</li>
+            <li>Make everything private by default</li>
+            <li>Don't over-encapsulate simple structures</li>
+        </ul>
+    </div>
+
+
+
+    <!-- Chapter 10: Inheritance -->
+    <div id="chapter10" class="page-break">
+        <h1>Chapter 10: JavaScript Inheritance</h1>
+        <h2>Master Prototypal Inheritance and ES6 Classes</h2>
+
+        <p>Inheritance is one of those concepts that sounds complicated but is actually quite natural once you
+            understand
+            it. If you've been writing JavaScript for a while, you've probably used inheritance without even realizing
+            it.
+            Let me show you how it works and why it matters.</p>
+
+        <h3>What is Inheritance?</h3>
+        <p>Inheritance is a mechanism that allows one object to acquire properties and methods from another object. It's
+            like saying "a Dog is an Animal" - the Dog inherits all the characteristics of an Animal, plus adds its own
+            specific behaviors.</p>
+
+        <p>Unlike classical languages like Java or C++ that use class-based inheritance, JavaScript uses
+            <strong>prototypal
+                inheritance</strong>. Every object in JavaScript has an internal link to another object called its
+            prototype. When you try to access a property on an object, JavaScript first looks at the object itself, then
+            walks up the prototype chain until it finds the property or reaches the end of the chain.
+        </p>
+
+        <pre><code class="language-javascript">const animal = {
+    eats: true,
+    walk() {
+        console.log('Animal walks');
+    }
+};
+
+const rabbit = {
+    jumps: true
+};
+
+rabbit.__proto__ = animal;
+
+console.log(rabbit.eats);  // true (inherited)
+console.log(rabbit.jumps); // true (own property)
+rabbit.walk();             // "Animal walks"</code></pre>
+
+        <p>When we access <code>rabbit.eats</code>, JavaScript doesn't find it on the rabbit object, so it looks at
+            rabbit's prototype (animal) and finds it there. This is the prototype chain in action.</p>
+
+        <h3>ES6 Classes: The Modern Way</h3>
+        <p>ES6 introduced class syntax that makes inheritance much cleaner and more intuitive:</p>
+
+        <pre><code class="language-javascript">class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        console.log(`${this.name} makes a sound`);
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name); // Call parent constructor
+        this.breed = breed;
+    }
+    
+    speak() {
+        console.log(`${this.name} barks`);
+    }
+    
+    fetch() {
+        console.log(`${this.name} fetches the ball`);
+    }
+}
+
+const rex = new Dog('Rex', 'German Shepherd');
+rex.speak();  // "Rex barks"
+rex.fetch();  // "Rex fetches the ball"</code></pre>
+
+        <p>The <code>extends</code> keyword sets up the inheritance, and <code>super()</code> calls the parent
+            constructor.
+            Much cleaner than the old constructor function approach!</p>
+
+        <h3>The super Keyword</h3>
+        <p>The <code>super</code> keyword is your gateway to parent class functionality:</p>
+
+        <pre><code class="language-javascript">class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        const parentMessage = super.speak();
+        return `${parentMessage} - specifically, a bark!`;
+    }
+}
+
+const dog = new Dog('Buddy');
+console.log(dog.speak()); 
+// "Buddy makes a sound - specifically, a bark!"</code></pre>
+
+        <p><strong>Important:</strong> You must call <code>super()</code> before using <code>this</code> in a child
+            constructor. The parent needs to initialize the object first.</p>
+
+        <h3>Real-World Example: User Roles</h3>
+        <p>Here's a practical example showing inheritance in action:</p>
+
+        <pre><code class="language-javascript">class User {
+    constructor(name, email) {
+        this.name = name;
+        this.email = email;
+    }
+    
+    getInfo() {
+        return `${this.name} (${this.email})`;
+    }
+    
+    canEdit() {
+        return false;
+    }
+}
+
+class Admin extends User {
+    constructor(name, email, department) {
+        super(name, email);
+        this.department = department;
+    }
+    
+    canEdit() {
+        return true;
+    }
+    
+    getInfo() {
+        return `${super.getInfo()} - Admin (${this.department})`;
+    }
+}
+
+const admin = new Admin('Bob', 'bob@example.com', 'IT');
+console.log(admin.getInfo()); // "Bob (bob@example.com) - Admin (IT)"
+console.log(admin.canEdit());  // true</code></pre>
+
+        <h3>Method Overriding</h3>
+        <p>Child classes can override parent methods to provide specialized behavior:</p>
+
+        <pre><code class="language-javascript">class Shape {
+    constructor(color) {
+        this.color = color;
+    }
+    
+    getArea() {
+        return 0;
+    }
+}
+
+class Circle extends Shape {
+    constructor(color, radius) {
+        super(color);
+        this.radius = radius;
+    }
+    
+    getArea() {
+        return Math.PI * this.radius ** 2;
+    }
+}
+
+const circle = new Circle('red', 5);
+console.log(circle.getArea()); // 78.54...</code></pre>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Keep hierarchies shallow</strong> - Limit inheritance to 2-3 levels maximum</li>
+            <li><strong>Favor composition over inheritance</strong> - Don't create deep inheritance trees</li>
+            <li><strong>Use clear "is-a" relationships</strong> - Dog is-a Animal makes sense</li>
+            <li><strong>Document your hierarchy</strong> - Use JSDoc to document inheritance relationships</li>
+        </ol>
+
+        <h3>When to Use Inheritance</h3>
+        <p><strong>Use it when:</strong></p>
+        <ul>
+            <li>You have a clear "is-a" relationship</li>
+            <li>Child classes are specialized versions of the parent</li>
+            <li>You want to share common behavior</li>
+            <li>You're modeling real-world hierarchies</li>
+        </ul>
+
+        <p><strong>Avoid it when:</strong></p>
+        <ul>
+            <li>You have a "has-a" relationship (use composition)</li>
+            <li>The hierarchy would be more than 3 levels deep</li>
+            <li>Classes don't share meaningful behavior</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>JavaScript uses prototypal inheritance, not classical inheritance</li>
+            <li>ES6 classes provide clean syntax but use prototypes under the hood</li>
+            <li>Use <code>extends</code> to create child classes</li>
+            <li>Always call <code>super()</code> before using <code>this</code> in child constructors</li>
+            <li>Use <code>super.method()</code> to call parent methods</li>
+            <li>Child classes can override parent methods</li>
+            <li>Keep inheritance hierarchies shallow</li>
+            <li>Favor composition over inheritance for complex relationships</li>
+        </ul>
+    </div>
+
+
+
+    <!-- Chapter 11: Polymorphism -->
+    <div id="chapter11" class="page-break">
+        <h1>Chapter 11: JavaScript Polymorphism</h1>
+        <h2>Write Flexible, Reusable Code</h2>
+
+        <p>If you've been writing JavaScript for a while, you've probably used polymorphism without even realizing it.
+            It's one of those concepts that sounds intimidating but is actually quite natural in JavaScript. Let me show
+            you why it matters and how to use it effectively.</p>
+
+        <h3>What is Polymorphism?</h3>
+        <p>Polymorphism comes from Greek: "poly" (many) + "morph" (form), meaning "many forms." In programming, it means
+            writing code that works with different types of objects through a common interface.</p>
+
+        <p>Unlike Java or C++ where polymorphism relies on inheritance and strict type hierarchies, JavaScript uses
+            <strong>duck typing</strong>: "If it walks like a duck and quacks like a duck, it's a duck." JavaScript
+            doesn't care about an object's type—only what methods it has.
+        </p>
+
+        <pre><code class="language-javascript">// Different objects with the same interface
+const dog = {
+    speak() { return 'Woof!'; }
+};
+
+const cat = {
+    speak() { return 'Meow!'; }
+};
+
+const robot = {
+    speak() { return 'Beep boop!'; }
+};
+
+// Polymorphic function - works with any object that has speak()
+function makeItSpeak(animal) {
+    console.log(animal.speak());
+}
+
+makeItSpeak(dog);    // Woof!
+makeItSpeak(cat);    // Meow!
+makeItSpeak(robot);  // Beep boop!</code></pre>
+
+        <p>The <code>makeItSpeak</code> function doesn't check types. It only cares that the object has a
+            <code>speak()</code> method. This is polymorphism in action.
+        </p>
+
+        <h3>Duck Typing in Practice</h3>
+        <p>Duck typing makes JavaScript incredibly flexible. Instead of checking an object's type, you check for
+            specific
+            methods or properties:</p>
+
+        <pre><code class="language-javascript">function draw(shape) {
+    if (typeof shape.draw === 'function') {
+        shape.draw();
+    } else {
+        console.error('Object is not drawable');
+    }
+}
+
+const circle = {
+    radius: 5,
+    draw() {
+        console.log(`Drawing circle with radius ${this.radius}`);
+    }
+};
+
+const square = {
+    side: 10,
+    draw() {
+        console.log(`Drawing square with side ${this.side}`);
+    }
+};
+
+draw(circle);  // Drawing circle with radius 5
+draw(square);  // Drawing square with side 10</code></pre>
+
+        <p>This pattern is everywhere in JavaScript. Promises work with any "thenable" (object with a
+            <code>then()</code>
+            method). Iterators work with any object that has a <code>next()</code> method. Array methods work with any
+            array-like object.
+        </p>
+
+        <h3>Real-World Example: Payment Processing</h3>
+        <p>Here's a practical example that shows polymorphism's power:</p>
+
+        <pre><code class="language-javascript">class PaymentProcessor {
+    processPayment(paymentMethod, amount) {
+        if (typeof paymentMethod.pay !== 'function') {
+            throw new Error('Invalid payment method');
+        }
+        return paymentMethod.pay(amount);
+    }
+}
+
+class CreditCard {
+    constructor(cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+    
+    pay(amount) {
+        console.log(`Charging $${amount} to card ending in ${this.cardNumber.slice(-4)}`);
+        return { success: true, method: 'credit_card' };
+    }
+}
+
+class PayPal {
+    constructor(email) {
+        this.email = email;
+    }
+    
+    pay(amount) {
+        console.log(`Processing $${amount} PayPal payment for ${this.email}`);
+        return { success: true, method: 'paypal' };
+    }
+}
+
+// Usage
+const processor = new PaymentProcessor();
+processor.processPayment(new CreditCard('1234567890123456'), 100);
+processor.processPayment(new PayPal('user@example.com'), 50);</code></pre>
+
+        <p>The <code>PaymentProcessor</code> doesn't need to know about specific payment types. It only needs objects
+            with
+            a <code>pay()</code> method. Adding new payment methods requires zero changes to the processor.</p>
+
+        <h3>Polymorphism with Classes</h3>
+        <p>You can also use ES6 classes for more traditional OOP-style polymorphism:</p>
+
+        <pre><code class="language-javascript">class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound`;
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        return `${this.name} barks`;
+    }
+}
+
+class Cat extends Animal {
+    speak() {
+        return `${this.name} meows`;
+    }
+}
+
+function describeAnimal(animal) {
+    console.log(animal.speak());
+}
+
+describeAnimal(new Dog('Rex'));      // Rex barks
+describeAnimal(new Cat('Whiskers')); // Whiskers meows</code></pre>
+
+        <p>Each subclass overrides <code>speak()</code> with its own implementation. The <code>describeAnimal</code>
+            function works with any Animal, regardless of the specific subclass.</p>
+
+        <h3>Best Practices</h3>
+        <ol>
+            <li><strong>Design around interfaces</strong> - Think about what methods objects need, not what type they
+                are
+            </li>
+            <li><strong>Use consistent method names</strong> - If objects do similar things, give them the same method
+                names</li>
+            <li><strong>Validate interfaces</strong> - Always check that objects have the methods you need</li>
+            <li><strong>Document expectations</strong> - Use JSDoc to document what methods objects should implement
+            </li>
+            <li><strong>Consider TypeScript</strong> - For large projects, TypeScript's interfaces provide compile-time
+                checking</li>
+        </ol>
+
+        <h3>When to Use Polymorphism</h3>
+        <p><strong>Use it when:</strong></p>
+        <ul>
+            <li>You have multiple objects that do similar things differently</li>
+            <li>You want functions that work with many types</li>
+            <li>You're building plugin systems or extensible architectures</li>
+            <li>You want to reduce code duplication</li>
+        </ul>
+
+        <p><strong>Avoid it when:</strong></p>
+        <ul>
+            <li>You only have one type of object</li>
+            <li>Objects don't share common behavior</li>
+            <li>Simple conditional logic is clearer</li>
+            <li>It adds unnecessary complexity</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Polymorphism lets different objects be treated through a common interface</li>
+            <li>JavaScript uses duck typing - objects are defined by their methods, not types</li>
+            <li>Design around interfaces (sets of methods) rather than specific types</li>
+            <li>Always validate that objects have the methods you need</li>
+            <li>Use consistent method names across similar objects</li>
+            <li>Don't over-engineer - use polymorphism where it adds value</li>
+        </ul>
+    </div>
+
 
 
     <!-- PART IV -->
@@ -5148,73 +5142,6 @@ for (let num of range) {
     </div>
 
 
-    <!-- Chapter 30: Encapsulation -->
-    <div id="chapter30" class="page-break">
-        <h1>Chapter 30: JavaScript Encapsulation</h1>
-        <h2>Data Hiding</h2>
-
-        <p>Encapsulation is a fundamental principle of object-oriented programming that bundles data and methods
-            together while hiding internal implementation details. In JavaScript, encapsulation prevents external code
-            from directly accessing or modifying an object's internal state, reducing coupling and making code more
-            maintainable and less prone to bugs.</p>
-
-        <p>Modern JavaScript provides multiple ways to achieve encapsulation: private fields (using #), closures,
-            WeakMaps, and symbols. Each approach has trade-offs in terms of syntax, performance, and compatibility.
-            Private fields are now the standard approach, offering true privacy with clean syntax.</p>
-
-        <h3>Private Fields</h3>
-
-        <p>Private fields, denoted by a # prefix, are truly private and inaccessible from outside the class. They're
-            part of the class syntax and provide compile-time privacy guarantees.</p>
-
-        <pre><code class="language-javascript">class BankAccount {
-    #balance = 0;
-    
-    deposit(amount) {
-        if (amount > 0) {
-            this.#balance += amount;
-        }
-    }
-    
-    getBalance() {
-        return this.#balance;
-    }
-}
-
-const account = new BankAccount();
-account.deposit(100);
-console.log(account.getBalance()); // 100
-// console.log(account.#balance); // SyntaxError
-</code></pre>
-
-        <h3>Closures</h3>
-
-        <pre><code class="language-javascript">function createCounter() {
-    let count = 0; // Private
-    
-    return {
-        increment() { count++; },
-        decrement() { count--; },
-        getCount() { return count; }
-    };
-}
-
-const counter = createCounter();
-counter.increment();
-console.log(counter.getCount()); // 1
-// console.log(counter.count); // undefined
-</code></pre>
-
-        <h3>Key Takeaways</h3>
-        <ul>
-            <li>Private fields use # prefix</li>
-            <li>Closures create private variables</li>
-            <li>Encapsulation improves maintainability</li>
-            <li>Exposes minimal public interface</li>
-        </ul>
-    </div>
-
-
     <!-- PART VIII -->
     <div class="page-break">
         <h1 class="center">Part VII</h1>
@@ -5222,8 +5149,8 @@ console.log(counter.getCount()); // 1
     </div>
 
     <!-- Chapter 31 -->
-    <div id="chapter31" class="page-break">
-        <h1>Chapter 31: JavaScript Immutability and Pure Functions</h1>
+    <div id="chapter30" class="page-break">
+        <h1>Chapter 30: JavaScript Immutability and Pure Functions</h1>
         <h2>Write Predictable, Bug-Free Code</h2>
 
         <p>Immutability means data cannot be changed after creation. Pure functions always return the same output for
@@ -5324,8 +5251,8 @@ function add(a, b) {
 
 
     <!-- Chapter 32 -->
-    <div id="chapter32" class="page-break">
-        <h1>Chapter 32: JavaScript Function Composition and Pipelines</h1>
+    <div id="chapter31" class="page-break">
+        <h1>Chapter 31: JavaScript Function Composition and Pipelines</h1>
         <h2>Build Complex Logic from Simple Functions</h2>
 
         <p>Function composition is the process of combining two or more functions to create a new function. It's one of
@@ -5419,8 +5346,8 @@ greetUser(1).then(console.log); // "Hello, JOHN!"
 
 
     <!-- Chapter 33 -->
-    <div id="chapter31" class="page-break">
-        <h1>Chapter 33: JavaScript Functors and Applicatives</h1>
+    <div id="chapter30" class="page-break">
+        <h1>Chapter 32: JavaScript Functors and Applicatives</h1>
         <h2>Master Functional Patterns</h2>
 
         <p>Functors and Applicatives are fundamental patterns in functional programming that let you work with values in
@@ -5536,8 +5463,8 @@ const user = validateName('John')
 
 
     <!-- Chapter 34 -->
-    <div id="chapter34" class="page-break">
-        <h1>Chapter 34: JavaScript Monads</h1>
+    <div id="chapter33" class="page-break">
+        <h1>Chapter 33: JavaScript Monads</h1>
         <h2>Master Functional Programming Patterns</h2>
 
         <p>Monads sound intimidating, but they're just a design pattern for handling values in a predictable way. They
