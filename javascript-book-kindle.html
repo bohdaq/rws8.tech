@@ -270,49 +270,61 @@
                 </ul>
             </li>
             <li>
-                <strong>Part VII: Design Patterns</strong>
-                <ol>
-                    <li>Chapter 25: JavaScript Singleton Pattern</li>
-                    <li>Chapter 26: JavaScript Factory Pattern</li>
-                    <li>Chapter 27: JavaScript Observer Pattern</li>
-                    <li>Chapter 28: JavaScript Builder Pattern</li>
-                    <li>Chapter 29: JavaScript Module Pattern</li>
-                    <li>Chapter 30: JavaScript Decorator Pattern</li>
-                    <li>Chapter 31: JavaScript Facade Pattern</li>
-                    <li>Chapter 32: JavaScript Strategy Pattern</li>
-                    <li>Chapter 33: JavaScript Command Pattern</li>
-                </ol>
-            </li>
-            <li>
-                <strong>Part VIII: Advanced JavaScript Features</strong>
+                <strong>Part VII: Algorithms and Data Structures</strong>
                 <ul>
-                    <li>Chapter 34: JavaScript Symbols</li>
-                    <li>Chapter 35: JavaScript BigInt</li>
-                    <li>Chapter 36: JavaScript Error Handling</li>
-                    <li>Chapter 37: JavaScript Regular Expressions</li>
-                    <li>Chapter 38: JavaScript Typed Arrays</li>
-                    <li>Chapter 39: JavaScript Iterators</li>
-                    <li>Chapter 40: JavaScript Proxies</li>
+                    <li>Chapter 25: JavaScript Arrays and Array Methods</li>
+                    <li>Chapter 26: JavaScript Stacks and Queues</li>
+                    <li>Chapter 27: JavaScript Linked Lists</li>
+                    <li>Chapter 28: JavaScript Trees and Binary Search Trees</li>
+                    <li>Chapter 29: JavaScript Hash Tables and Maps</li>
+                    <li>Chapter 30: JavaScript Sorting Algorithms</li>
+                    <li>Chapter 31: JavaScript Searching Algorithms</li>
                 </ul>
             </li>
             <li>
-                <strong>Part IX: Functional JavaScript</strong>
+                <strong>Part VIII: Design Patterns</strong>
                 <ul>
-                    <li>Chapter 41: JavaScript Immutability</li>
-                    <li>Chapter 42: JavaScript Function Composition</li>
-                    <li>Chapter 43: JavaScript Functors and Applicatives</li>
-                    <li>Chapter 44: JavaScript Monads</li>
+                    <li>Chapter 32: JavaScript Singleton Pattern</li>
+                    <li>Chapter 33: JavaScript Factory Pattern</li>
+                    <li>Chapter 34: JavaScript Observer Pattern</li>
+                    <li>Chapter 35: JavaScript Builder Pattern</li>
+                    <li>Chapter 36: JavaScript Module Pattern</li>
+                    <li>Chapter 37: JavaScript Decorator Pattern</li>
+                    <li>Chapter 38: JavaScript Facade Pattern</li>
+                    <li>Chapter 39: JavaScript Strategy Pattern</li>
+                    <li>Chapter 40: JavaScript Command Pattern</li>
                 </ul>
             </li>
             <li>
-                <strong>Part X: Testing</strong>
-                <ol>
-                    <li>Chapter 45: JavaScript Unit Testing</li>
-                    <li>Chapter 46: JavaScript Test-Driven Development</li>
-                    <li>Chapter 47: JavaScript Mocking</li>
-                    <li>Chapter 48: JavaScript Integration Testing</li>
-                    <li>Chapter 49: JavaScript End-to-End Testing</li>
-                </ol>
+                <strong>Part IX: Advanced JavaScript Features</strong>
+                <ul>
+                    <li>Chapter 41: JavaScript Symbols</li>
+                    <li>Chapter 42: JavaScript BigInt</li>
+                    <li>Chapter 43: JavaScript Error Handling</li>
+                    <li>Chapter 44: JavaScript Regular Expressions</li>
+                    <li>Chapter 45: JavaScript Typed Arrays</li>
+                    <li>Chapter 46: JavaScript Iterators</li>
+                    <li>Chapter 47: JavaScript Proxies</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Part X: Functional JavaScript</strong>
+                <ul>
+                    <li>Chapter 48: JavaScript Immutability</li>
+                    <li>Chapter 49: JavaScript Function Composition</li>
+                    <li>Chapter 50: JavaScript Functors and Applicatives</li>
+                    <li>Chapter 51: JavaScript Monads</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Part XI: Testing</strong>
+                <ul>
+                    <li>Chapter 52: JavaScript Unit Testing</li>
+                    <li>Chapter 53: JavaScript Test-Driven Development</li>
+                    <li>Chapter 54: JavaScript Mocking</li>
+                    <li>Chapter 55: JavaScript Integration Testing</li>
+                    <li>Chapter 56: JavaScript End-to-End Testing</li>
+                </ul>
             </li>
             <li>Conclusion</li>
             <li>About the Author</li>
@@ -1964,7 +1976,7 @@ add(1, 2, 3);     // 6 - all work!</code></pre>
 
 
 
-<!-- PART III -->
+    <!-- PART III -->
     <div class="page-break">
         <h1 class="center">Part III</h1>
         <h2 class="center">Object-Oriented JavaScript</h2>
@@ -3591,7 +3603,7 @@ console.log([...gen]); // [1, 2, 3, 4]</code></pre>
     </div>
 
 
-<!-- PART V -->
+    <!-- PART V -->
     <div class="page-break">
         <h1 class="center">Part V</h1>
         <h2 class="center">Modern JavaScript Syntax</h2>
@@ -4782,15 +4794,855 @@ async function loadMoreContent() {
     </div>
 
 
-<!-- PART VII -->
+
+    <!-- PART VII -->
+    <div class="page-break">
+        <h1 class="center">Part VII</h1>
+        <h2 class="center">Algorithms and Data Structures</h2>
+    </div>
+
+    <!-- Chapter 25: Arrays and Array Methods -->
+    <div id="chapter25" class="page-break">
+        <h1>Chapter 25: JavaScript Arrays and Array Methods</h1>
+        <h2>Master Array Manipulation</h2>
+
+        <p>Arrays are one of the most fundamental data structures in JavaScript. Understanding array methods and
+            manipulation techniques is essential for writing efficient, readable code. JavaScript provides a rich set of
+            built-in array methods that enable functional programming patterns and make data transformation elegant.</p>
+
+        <h3>Common Array Methods</h3>
+
+        <pre><code class="language-javascript">// Transformation
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map(n => n * 2); // [2, 4, 6, 8, 10]
+
+// Filtering
+const evens = numbers.filter(n => n % 2 === 0); // [2, 4]
+
+// Reduction
+const sum = numbers.reduce((acc, n) => acc + n, 0); // 15
+
+// Finding
+const firstEven = numbers.find(n => n % 2 === 0); // 2
+const hasNegative = numbers.some(n => n < 0); // false
+const allPositive = numbers.every(n => n > 0); // true</code></pre>
+
+        <h3>Array Iteration</h3>
+
+        <pre><code class="language-javascript">const fruits = ['apple', 'banana', 'orange'];
+
+// forEach - side effects
+fruits.forEach((fruit, index) => {
+    console.log(`${index}: ${fruit}`);
+});
+
+// for...of - modern iteration
+for (const fruit of fruits) {
+    console.log(fruit);
+}
+
+// Traditional for loop - when you need index control
+for (let i = 0; i < fruits.length; i++) {
+    console.log(fruits[i]);
+}</code></pre>
+
+        <h3>Array Manipulation</h3>
+
+        <pre><code class="language-javascript">const arr = [1, 2, 3];
+
+// Adding elements
+arr.push(4);        // Add to end: [1, 2, 3, 4]
+arr.unshift(0);     // Add to start: [0, 1, 2, 3, 4]
+
+// Removing elements
+arr.pop();          // Remove from end: [0, 1, 2, 3]
+arr.shift();        // Remove from start: [1, 2, 3]
+
+// Immutable alternatives
+const withAdded = [...arr, 4];           // [1, 2, 3, 4]
+const withRemoved = arr.slice(0, -1);    // [1, 2]</code></pre>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Use <code>map()</code>, <code>filter()</code>, <code>reduce()</code> for transformations</li>
+            <li>Prefer immutable methods for predictable code</li>
+            <li><code>find()</code> and <code>findIndex()</code> for searching</li>
+            <li><code>some()</code> and <code>every()</code> for validation</li>
+            <li>Spread operator for immutable operations</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 26: Stacks and Queues -->
+    <div id="chapter26" class="page-break">
+        <h1>Chapter 26: JavaScript Stacks and Queues</h1>
+        <h2>LIFO and FIFO Data Structures</h2>
+
+        <p>Stacks and queues are fundamental data structures that control the order of element access. Stacks follow
+            Last-In-First-Out (LIFO), while queues follow First-In-First-Out (FIFO). Both are essential for algorithms,
+            browser history, undo/redo functionality, and task scheduling.</p>
+
+        <h3>Stack Implementation</h3>
+
+        <pre><code class="language-javascript">class Stack {
+    constructor() {
+        this.items = [];
+    }
+
+    push(element) {
+        this.items.push(element);
+    }
+
+    pop() {
+        if (this.isEmpty()) return null;
+        return this.items.pop();
+    }
+
+    peek() {
+        if (this.isEmpty()) return null;
+        return this.items[this.items.length - 1];
+    }
+
+    isEmpty() {
+        return this.items.length === 0;
+    }
+
+    size() {
+        return this.items.length;
+    }
+}
+
+// Usage
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.pop());  // 3 (LIFO)
+console.log(stack.peek()); // 2</code></pre>
+
+        <h3>Queue Implementation</h3>
+
+        <pre><code class="language-javascript">class Queue {
+    constructor() {
+        this.items = [];
+    }
+
+    enqueue(element) {
+        this.items.push(element);
+    }
+
+    dequeue() {
+        if (this.isEmpty()) return null;
+        return this.items.shift();
+    }
+
+    front() {
+        if (this.isEmpty()) return null;
+        return this.items[0];
+    }
+
+    isEmpty() {
+        return this.items.length === 0;
+    }
+
+    size() {
+        return this.items.length;
+    }
+}
+
+// Usage
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+console.log(queue.dequeue()); // 1 (FIFO)
+console.log(queue.front());   // 2</code></pre>
+
+        <h3>Real-World Applications</h3>
+
+        <pre><code class="language-javascript">// Undo/Redo with Stacks
+class UndoManager {
+    constructor() {
+        this.undoStack = new Stack();
+        this.redoStack = new Stack();
+    }
+
+    execute(action) {
+        action.execute();
+        this.undoStack.push(action);
+        this.redoStack = new Stack(); // Clear redo
+    }
+
+    undo() {
+        const action = this.undoStack.pop();
+        if (action) {
+            action.undo();
+            this.redoStack.push(action);
+        }
+    }
+
+    redo() {
+        const action = this.redoStack.pop();
+        if (action) {
+            action.execute();
+            this.undoStack.push(action);
+        }
+    }
+}</code></pre>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Stack: LIFO - last in, first out</li>
+            <li>Queue: FIFO - first in, first out</li>
+            <li>Use stacks for undo/redo, backtracking, parsing</li>
+            <li>Use queues for task scheduling, breadth-first search</li>
+            <li>Both have O(1) insertion and removal</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 27: Linked Lists -->
+    <div id="chapter27" class="page-break">
+        <h1>Chapter 27: JavaScript Linked Lists</h1>
+        <h2>Dynamic Data Structures</h2>
+
+        <p>Linked lists are dynamic data structures where elements (nodes) are connected via pointers. Unlike arrays,
+            linked lists don't require contiguous memory and allow efficient insertion/deletion at any position. They're
+            fundamental for understanding more complex data structures.</p>
+
+        <h3>Singly Linked List</h3>
+
+        <pre><code class="language-javascript">class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
+
+    // Add to end
+    append(data) {
+        const newNode = new Node(data);
+        
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        this.size++;
+    }
+
+    // Add to beginning
+    prepend(data) {
+        const newNode = new Node(data);
+        newNode.next = this.head;
+        this.head = newNode;
+        this.size++;
+    }
+
+    // Remove by value
+    remove(data) {
+        if (!this.head) return null;
+
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            this.size--;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.data === data) {
+                current.next = current.next.next;
+                this.size--;
+                return;
+            }
+            current = current.next;
+        }
+    }
+
+    // Find node
+    find(data) {
+        let current = this.head;
+        while (current) {
+            if (current.data === data) return current;
+            current = current.next;
+        }
+        return null;
+    }
+
+    // Print list
+    print() {
+        const values = [];
+        let current = this.head;
+        while (current) {
+            values.push(current.data);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
+    }
+}
+
+// Usage
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.prepend(0);
+list.print(); // 0 -> 1 -> 2 -> 3</code></pre>
+
+        <h3>Advantages vs Arrays</h3>
+        <ul>
+            <li><strong>Dynamic size</strong> - No need to specify size upfront</li>
+            <li><strong>Efficient insertion/deletion</strong> - O(1) at beginning</li>
+            <li><strong>No memory waste</strong> - Only allocates what's needed</li>
+        </ul>
+
+        <h3>Disadvantages vs Arrays</h3>
+        <ul>
+            <li><strong>No random access</strong> - Must traverse from head</li>
+            <li><strong>Extra memory</strong> - Stores pointers</li>
+            <li><strong>Not cache-friendly</strong> - Nodes scattered in memory</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Linked lists use nodes connected by pointers</li>
+            <li>O(1) insertion/deletion at head</li>
+            <li>O(n) search and access</li>
+            <li>Good for frequent insertions/deletions</li>
+            <li>Poor for random access</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 28: Trees and Binary Search Trees -->
+    <div id="chapter28" class="page-break">
+        <h1>Chapter 28: JavaScript Trees and Binary Search Trees</h1>
+        <h2>Hierarchical Data Structures</h2>
+
+        <p>Trees are hierarchical data structures with a root node and child nodes. Binary Search Trees (BST) are a
+            special type where each node has at most two children, and the left child is smaller while the right child
+            is larger. BSTs enable efficient searching, insertion, and deletion.</p>
+
+        <h3>Binary Search Tree Implementation</h3>
+
+        <pre><code class="language-javascript">class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value) {
+        const newNode = new TreeNode(value);
+        
+        if (!this.root) {
+            this.root = newNode;
+            return;
+        }
+
+        let current = this.root;
+        while (true) {
+            if (value < current.value) {
+                if (!current.left) {
+                    current.left = newNode;
+                    return;
+                }
+                current = current.left;
+            } else {
+                if (!current.right) {
+                    current.right = newNode;
+                    return;
+                }
+                current = current.right;
+            }
+        }
+    }
+
+    search(value) {
+        let current = this.root;
+        while (current) {
+            if (value === current.value) return true;
+            if (value < current.value) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+        return false;
+    }
+
+    // In-order traversal (sorted order)
+    inOrder(node = this.root, result = []) {
+        if (node) {
+            this.inOrder(node.left, result);
+            result.push(node.value);
+            this.inOrder(node.right, result);
+        }
+        return result;
+    }
+
+    // Pre-order traversal
+    preOrder(node = this.root, result = []) {
+        if (node) {
+            result.push(node.value);
+            this.preOrder(node.left, result);
+            this.preOrder(node.right, result);
+        }
+        return result;
+    }
+
+    // Post-order traversal
+    postOrder(node = this.root, result = []) {
+        if (node) {
+            this.postOrder(node.left, result);
+            this.postOrder(node.right, result);
+            result.push(node.value);
+        }
+        return result;
+    }
+}
+
+// Usage
+const bst = new BinarySearchTree();
+bst.insert(50);
+bst.insert(30);
+bst.insert(70);
+bst.insert(20);
+bst.insert(40);
+bst.insert(60);
+bst.insert(80);
+
+console.log(bst.search(40));     // true
+console.log(bst.inOrder());      // [20, 30, 40, 50, 60, 70, 80]</code></pre>
+
+        <h3>Tree Traversal Methods</h3>
+        <ul>
+            <li><strong>In-order</strong> - Left, Root, Right (sorted for BST)</li>
+            <li><strong>Pre-order</strong> - Root, Left, Right (copy tree)</li>
+            <li><strong>Post-order</strong> - Left, Right, Root (delete tree)</li>
+            <li><strong>Level-order</strong> - Breadth-first (use queue)</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>BST maintains sorted order</li>
+            <li>Average O(log n) search, insert, delete</li>
+            <li>Worst case O(n) if unbalanced</li>
+            <li>In-order traversal gives sorted output</li>
+            <li>Used in databases, file systems, autocomplete</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 29: Hash Tables and Maps -->
+    <div id="chapter29" class="page-break">
+        <h1>Chapter 29: JavaScript Hash Tables and Maps</h1>
+        <h2>Fast Key-Value Storage</h2>
+
+        <p>Hash tables provide O(1) average-case lookup, insertion, and deletion by using a hash function to map keys to
+            array indices. JavaScript's Map and Object are built on hash table concepts, offering efficient key-value
+            storage.</p>
+
+        <h3>JavaScript Map</h3>
+
+        <pre><code class="language-javascript">// Map - modern key-value storage
+const map = new Map();
+
+// Set values
+map.set('name', 'Alice');
+map.set('age', 30);
+map.set(1, 'number key');
+map.set({id: 1}, 'object key');
+
+// Get values
+console.log(map.get('name')); // 'Alice'
+
+// Check existence
+console.log(map.has('age')); // true
+
+// Delete
+map.delete('age');
+
+// Iterate
+for (const [key, value] of map) {
+    console.log(`${key}: ${value}`);
+}
+
+// Size
+console.log(map.size); // 3</code></pre>
+
+        <h3>Simple Hash Table Implementation</h3>
+
+        <pre><code class="language-javascript">class HashTable {
+    constructor(size = 53) {
+        this.keyMap = new Array(size);
+    }
+
+    _hash(key) {
+        let total = 0;
+        const PRIME = 31;
+        for (let i = 0; i < Math.min(key.length, 100); i++) {
+            const char = key[i];
+            const value = char.charCodeAt(0) - 96;
+            total = (total * PRIME + value) % this.keyMap.length;
+        }
+        return total;
+    }
+
+    set(key, value) {
+        const index = this._hash(key);
+        if (!this.keyMap[index]) {
+            this.keyMap[index] = [];
+        }
+        // Handle collisions with chaining
+        this.keyMap[index].push([key, value]);
+    }
+
+    get(key) {
+        const index = this._hash(key);
+        if (this.keyMap[index]) {
+            for (const [k, v] of this.keyMap[index]) {
+                if (k === key) return v;
+            }
+        }
+        return undefined;
+    }
+
+    keys() {
+        const keys = [];
+        for (const bucket of this.keyMap) {
+            if (bucket) {
+                for (const [key] of bucket) {
+                    keys.push(key);
+                }
+            }
+        }
+        return keys;
+    }
+
+    values() {
+        const values = [];
+        for (const bucket of this.keyMap) {
+            if (bucket) {
+                for (const [, value] of bucket) {
+                    if (!values.includes(value)) {
+                        values.push(value);
+                    }
+                }
+            }
+        }
+        return values;
+    }
+}
+
+// Usage
+const ht = new HashTable();
+ht.set('hello', 'world');
+ht.set('foo', 'bar');
+console.log(ht.get('hello')); // 'world'</code></pre>
+
+        <h3>Map vs Object</h3>
+        <ul>
+            <li><strong>Map</strong> - Any type as key, maintains insertion order, has size property</li>
+            <li><strong>Object</strong> - String/Symbol keys only, no guaranteed order, no size property</li>
+            <li>Use Map for frequent additions/deletions</li>
+            <li>Use Object for simple key-value pairs</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Hash tables provide O(1) average lookup</li>
+            <li>Hash function converts keys to indices</li>
+            <li>Collisions handled by chaining or open addressing</li>
+            <li>Map is preferred over Object for dynamic data</li>
+            <li>Essential for caching, indexing, counting</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 30: Sorting Algorithms -->
+    <div id="chapter30" class="page-break">
+        <h1>Chapter 30: JavaScript Sorting Algorithms</h1>
+        <h2>Organize Data Efficiently</h2>
+
+        <p>Sorting algorithms arrange data in a specific order. Understanding different sorting algorithms helps you
+            choose the right one for your use case and appreciate the built-in <code>Array.sort()</code> method.</p>
+
+        <h3>Bubble Sort - O(n²)</h3>
+
+        <pre><code class="language-javascript">function bubbleSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            }
+        }
+    }
+    return arr;
+}
+
+console.log(bubbleSort([64, 34, 25, 12, 22]));
+// [12, 22, 25, 34, 64]</code></pre>
+
+        <h3>Quick Sort - O(n log n) average</h3>
+
+        <pre><code class="language-javascript">function quickSort(arr) {
+    if (arr.length <= 1) return arr;
+    
+    const pivot = arr[arr.length - 1];
+    const left = [];
+    const right = [];
+    
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+    
+    return [...quickSort(left), pivot, ...quickSort(right)];
+}
+
+console.log(quickSort([64, 34, 25, 12, 22]));
+// [12, 22, 25, 34, 64]</code></pre>
+
+        <h3>Merge Sort - O(n log n)</h3>
+
+        <pre><code class="language-javascript">function mergeSort(arr) {
+    if (arr.length <= 1) return arr;
+    
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
+    
+    return merge(left, right);
+}
+
+function merge(left, right) {
+    const result = [];
+    let i = 0, j = 0;
+    
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i++]);
+        } else {
+            result.push(right[j++]);
+        }
+    }
+    
+    return result.concat(left.slice(i)).concat(right.slice(j));
+}
+
+console.log(mergeSort([64, 34, 25, 12, 22]));
+// [12, 22, 25, 34, 64]</code></pre>
+
+        <h3>Built-in Array.sort()</h3>
+
+        <pre><code class="language-javascript">// Default (converts to strings)
+const nums = [10, 5, 40, 25, 1000, 1];
+nums.sort(); // [1, 10, 1000, 25, 40, 5] - WRONG!
+
+// Correct numeric sort
+nums.sort((a, b) => a - b); // [1, 5, 10, 25, 40, 1000]
+
+// Descending
+nums.sort((a, b) => b - a); // [1000, 40, 25, 10, 5, 1]
+
+// Sort objects
+const users = [
+    {name: 'Bob', age: 30},
+    {name: 'Alice', age: 25},
+    {name: 'Charlie', age: 35}
+];
+users.sort((a, b) => a.age - b.age);
+// [{name: 'Alice', age: 25}, {name: 'Bob', age: 30}, {name: 'Charlie', age: 35}]</code></pre>
+
+        <h3>Algorithm Comparison</h3>
+        <ul>
+            <li><strong>Bubble Sort</strong> - O(n²), simple but slow</li>
+            <li><strong>Quick Sort</strong> - O(n log n) average, fast in practice</li>
+            <li><strong>Merge Sort</strong> - O(n log n) guaranteed, stable</li>
+            <li><strong>Array.sort()</strong> - Usually Timsort (hybrid), O(n log n)</li>
+        </ul>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Use built-in <code>Array.sort()</code> for most cases</li>
+            <li>Always provide comparator for numeric sorting</li>
+            <li>Understand time complexity: O(n²) vs O(n log n)</li>
+            <li>Merge sort is stable (preserves order of equal elements)</li>
+            <li>Quick sort is fast but not stable</li>
+        </ul>
+    </div>
+
+    <!-- Chapter 31: Searching Algorithms -->
+    <div id="chapter31" class="page-break">
+        <h1>Chapter 31: JavaScript Searching Algorithms</h1>
+        <h2>Find Data Efficiently</h2>
+
+        <p>Searching algorithms find specific elements in data structures. Understanding different search strategies
+            helps you write efficient code and choose the right approach for your data.</p>
+
+        <h3>Linear Search - O(n)</h3>
+
+        <pre><code class="language-javascript">function linearSearch(arr, target) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === target) {
+            return i; // Return index
+        }
+    }
+    return -1; // Not found
+}
+
+const arr = [5, 2, 8, 1, 9];
+console.log(linearSearch(arr, 8)); // 2
+console.log(linearSearch(arr, 7)); // -1</code></pre>
+
+        <h3>Binary Search - O(log n)</h3>
+
+        <pre><code class="language-javascript">// Requires sorted array
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    
+    return -1;
+}
+
+const sorted = [1, 2, 5, 8, 9];
+console.log(binarySearch(sorted, 8)); // 3
+console.log(binarySearch(sorted, 7)); // -1</code></pre>
+
+        <h3>Binary Search (Recursive)</h3>
+
+        <pre><code class="language-javascript">function binarySearchRecursive(arr, target, left = 0, right = arr.length - 1) {
+    if (left > right) return -1;
+    
+    const mid = Math.floor((left + right) / 2);
+    
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, right);
+    } else {
+        return binarySearchRecursive(arr, target, left, mid - 1);
+    }
+}
+
+console.log(binarySearchRecursive([1, 2, 5, 8, 9], 8)); // 3</code></pre>
+
+        <h3>Built-in Array Methods</h3>
+
+        <pre><code class="language-javascript">const arr = [1, 2, 3, 4, 5];
+
+// indexOf - linear search
+console.log(arr.indexOf(3));        // 2
+console.log(arr.indexOf(10));       // -1
+
+// includes - linear search (returns boolean)
+console.log(arr.includes(3));       // true
+console.log(arr.includes(10));      // false
+
+// find - linear search (returns element)
+const users = [
+    {id: 1, name: 'Alice'},
+    {id: 2, name: 'Bob'},
+    {id: 3, name: 'Charlie'}
+];
+const user = users.find(u => u.id === 2);
+console.log(user); // {id: 2, name: 'Bob'}
+
+// findIndex - linear search (returns index)
+const index = users.findIndex(u => u.name === 'Charlie');
+console.log(index); // 2</code></pre>
+
+        <h3>When to Use Each</h3>
+        <ul>
+            <li><strong>Linear Search</strong> - Unsorted data, small arrays</li>
+            <li><strong>Binary Search</strong> - Sorted data, large arrays</li>
+            <li><strong>indexOf/includes</strong> - Simple value search</li>
+            <li><strong>find/findIndex</strong> - Complex conditions, objects</li>
+        </ul>
+
+        <h3>Search Optimization</h3>
+
+        <pre><code class="language-javascript">// Bad - O(n²) - searching in loop
+function findPairs(arr, target) {
+    const pairs = [];
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[i] + arr[j] === target) {
+                pairs.push([arr[i], arr[j]]);
+            }
+        }
+    }
+    return pairs;
+}
+
+// Good - O(n) - using hash table
+function findPairsOptimized(arr, target) {
+    const pairs = [];
+    const seen = new Set();
+    
+    for (const num of arr) {
+        const complement = target - num;
+        if (seen.has(complement)) {
+            pairs.push([complement, num]);
+        }
+        seen.add(num);
+    }
+    
+    return pairs;
+}
+
+console.log(findPairsOptimized([1, 2, 3, 4, 5], 6));
+// [[1, 5], [2, 4]]</code></pre>
+
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Linear search: O(n), works on any array</li>
+            <li>Binary search: O(log n), requires sorted array</li>
+            <li>Use built-in methods for simple searches</li>
+            <li>Hash tables can optimize search to O(1)</li>
+            <li>Choose algorithm based on data characteristics</li>
+        </ul>
+    </div>
+
+    <!-- PART VIII -->
     <div class="page-break">
         <h1 class="center">Part VII</h1>
         <h2 class="center">Design Patterns</h2>
     </div>
 
-    <!-- Chapter 25: Singleton Pattern -->
-    <div id="chapter25" class="page-break">
-        <h1>Chapter 25: JavaScript Singleton Pattern</h1>
+    <!-- Chapter 32: Singleton Pattern -->
+    <div id="chapter32" class="page-break">
+        <h1>Chapter 32: JavaScript Singleton Pattern</h1>
         <h2>One Instance to Rule Them All</h2>
 
         <p>The Singleton pattern is one of the most widely used design patterns in software development. It ensures that
@@ -4996,9 +5848,9 @@ const resource = HeavyResource.getInstance();
     </div>
 
 
-    <!-- Chapter 26: Factory Pattern -->
-    <div id="chapter26" class="page-break">
-        <h1>Chapter 26: JavaScript Factory Pattern</h1>
+    <!-- Chapter 33: Factory Pattern -->
+    <div id="chapter33" class="page-break">
+        <h1>Chapter 33: JavaScript Factory Pattern</h1>
         <h2>Object Creation Made Easy</h2>
 
         <p>The Factory pattern is a creational design pattern that provides an interface for creating objects without
@@ -5120,9 +5972,9 @@ const db = DatabaseFactory.createConnection('postgres', {
     </div>
 
 
-    <!-- Chapter 27: Observer Pattern -->
-    <div id="chapter27" class="page-break">
-        <h1>Chapter 27: JavaScript Observer Pattern</h1>
+    <!-- Chapter 34: Observer Pattern -->
+    <div id="chapter34" class="page-break">
+        <h1>Chapter 34: JavaScript Observer Pattern</h1>
         <h2>Event-Driven Architecture</h2>
 
         <p>The Observer pattern, also known as the Publish-Subscribe pattern, is fundamental to event-driven
@@ -5260,9 +6112,9 @@ store.setState({ count: 1 });
     </div>
 
 
-    <!-- Chapter 28: Builder Pattern -->
-    <div id="chapter28" class="page-break">
-        <h1>Chapter 28: JavaScript Builder Pattern</h1>
+    <!-- Chapter 35: Builder Pattern -->
+    <div id="chapter35" class="page-break">
+        <h1>Chapter 35: JavaScript Builder Pattern</h1>
         <h2>Construct Complex Objects</h2>
 
         <p>The Builder pattern addresses the problem of constructing complex objects with many optional parameters.
@@ -5416,9 +6268,9 @@ const response = await new RequestBuilder('/api/users')
     </div>
 
 
-    <!-- Chapter 29: Module Pattern -->
-    <div id="chapter29" class="page-break">
-        <h1>Chapter 29: JavaScript Module Pattern</h1>
+    <!-- Chapter 36: Module Pattern -->
+    <div id="chapter36" class="page-break">
+        <h1>Chapter 36: JavaScript Module Pattern</h1>
         <h2>Encapsulation and Privacy</h2>
 
         <p>The Module pattern is a classic JavaScript design pattern that predates ES6 modules. It uses closures and
@@ -5517,9 +6369,9 @@ console.log(Calculator.getResult()); // 6
     </div>
 
 
-    <!-- Chapter 30: Decorator Pattern -->
-    <div id="chapter30" class="page-break">
-        <h1>Chapter 30: JavaScript Decorator Pattern</h1>
+    <!-- Chapter 37: Decorator Pattern -->
+    <div id="chapter37" class="page-break">
+        <h1>Chapter 37: JavaScript Decorator Pattern</h1>
         <h2>Extend Functionality Dynamically</h2>
 
         <p>The Decorator pattern allows you to add new behavior to objects or functions dynamically without modifying
@@ -5610,9 +6462,9 @@ const fetchWithRetry = retry(fetch);
     </div>
 
 
-    <!-- Chapter 31: Facade Pattern -->
-    <div id="chapter31" class="page-break">
-        <h1>Chapter 31: JavaScript Facade Pattern</h1>
+    <!-- Chapter 38: Facade Pattern -->
+    <div id="chapter38" class="page-break">
+        <h1>Chapter 38: JavaScript Facade Pattern</h1>
         <h2>Simplify Complex Interfaces</h2>
 
         <p>The Facade pattern provides a simplified, unified interface to a complex subsystem. It acts as a high-level
@@ -5706,9 +6558,9 @@ const user = await api.getUser(1); // Simple!
     </div>
 
 
-    <!-- Chapter 32: Strategy Pattern -->
-    <div id="chapter32" class="page-break">
-        <h1>Chapter 32: JavaScript Strategy Pattern</h1>
+    <!-- Chapter 39: Strategy Pattern -->
+    <div id="chapter39" class="page-break">
+        <h1>Chapter 39: JavaScript Strategy Pattern</h1>
         <h2>Interchangeable Algorithms</h2>
 
         <p>The Strategy pattern defines a family of algorithms, encapsulates each one in a separate class or function,
@@ -5806,9 +6658,9 @@ console.log(validator.validate('test@example.com')); // true
     </div>
 
 
-    <!-- Chapter 33: Command Pattern -->
-    <div id="chapter33" class="page-break">
-        <h1>Chapter 33: JavaScript Command Pattern</h1>
+    <!-- Chapter 40: Command Pattern -->
+    <div id="chapter40" class="page-break">
+        <h1>Chapter 40: JavaScript Command Pattern</h1>
         <h2>Encapsulate Requests as Objects</h2>
 
         <p>The Command pattern turns requests into stand-alone objects that contain all information about the request.
@@ -5919,15 +6771,15 @@ manager.redo();
     </div>
 
 
-    <!-- PART VIII -->
+    <!-- PART IX -->
     <div class="page-break">
         <h1 class="center">Part VIII</h1>
         <h2 class="center">Advanced JavaScript Features</h2>
     </div>
 
-    <!-- Chapter 34: Symbols -->
-    <div id="chapter34" class="page-break">
-        <h1>Chapter 34: JavaScript Symbols</h1>
+    <!-- Chapter 41: Symbols -->
+    <div id="chapter41" class="page-break">
+        <h1>Chapter 41: JavaScript Symbols</h1>
         <h2>Unique Identifiers</h2>
 
         <p>Symbols are a primitive data type introduced in ES6 that creates unique, immutable identifiers. Unlike
@@ -5992,9 +6844,9 @@ Object.getOwnPropertySymbols(user); // [Symbol(id)]
     </div>
 
 
-    <!-- Chapter 35: BigInt -->
-    <div id="chapter35" class="page-break">
-        <h1>Chapter 35: JavaScript BigInt</h1>
+    <!-- Chapter 42: BigInt -->
+    <div id="chapter42" class="page-break">
+        <h1>Chapter 42: JavaScript BigInt</h1>
         <h2>Arbitrary Precision Integers</h2>
 
         <p>BigInt is a primitive type that allows you to work with integers of arbitrary size, beyond JavaScript's safe
@@ -6052,9 +6904,9 @@ console.log(10n == 10); // true (loose equality)
     </div>
 
 
-    <!-- Chapter 38: Typed Arrays -->
-    <div id="chapter38" class="page-break">
-        <h1>Chapter 38: JavaScript Typed Arrays</h1>
+    <!-- Chapter 45: Typed Arrays -->
+    <div id="chapter45" class="page-break">
+        <h1>Chapter 45: JavaScript Typed Arrays</h1>
         <h2>Binary Data Handling</h2>
 
         <p>Typed Arrays provide a mechanism for accessing raw binary data efficiently. Unlike regular JavaScript arrays
@@ -6113,9 +6965,9 @@ const float64 = new Float64Array(4);
     </div>
 
 
-    <!-- Chapter 37: Regular Expressions -->
-    <div id="chapter37" class="page-break">
-        <h1>Chapter 37: JavaScript Regular Expressions</h1>
+    <!-- Chapter 44: Regular Expressions -->
+    <div id="chapter44" class="page-break">
+        <h1>Chapter 44: JavaScript Regular Expressions</h1>
         <h2>Pattern Matching</h2>
 
         <p>Regular expressions (regex) are patterns used to match character combinations in strings. They provide a
@@ -6182,9 +7034,9 @@ console.log(newText); // 'hi world'
     </div>
 
 
-    <!-- Chapter 40: Proxies -->
-    <div id="chapter40" class="page-break">
-        <h1>Chapter 40: JavaScript Proxies</h1>
+    <!-- Chapter 47: Proxies -->
+    <div id="chapter47" class="page-break">
+        <h1>Chapter 47: JavaScript Proxies</h1>
         <h2>Intercept Object Operations</h2>
 
         <p>Proxies are a powerful metaprogramming feature that allows you to intercept and redefine fundamental
@@ -6256,9 +7108,9 @@ person.age = 30; // OK
     </div>
 
 
-    <!-- Chapter 39: Iterators -->
-    <div id="chapter39" class="page-break">
-        <h1>Chapter 39: JavaScript Iterators</h1>
+    <!-- Chapter 46: Iterators -->
+    <div id="chapter46" class="page-break">
+        <h1>Chapter 46: JavaScript Iterators</h1>
         <h2>Custom Iteration</h2>
 
         <p>Iterators are objects that define a sequence and potentially a return value upon completion. They implement
@@ -6309,9 +7161,9 @@ for (let num of range) {
     </div>
 
 
-    <!-- Chapter 40: Encapsulation -->
-    <div id="chapter40" class="page-break">
-        <h1>Chapter 40: JavaScript Encapsulation</h1>
+    <!-- Chapter 47: Encapsulation -->
+    <div id="chapter47" class="page-break">
+        <h1>Chapter 47: JavaScript Encapsulation</h1>
         <h2>Data Hiding</h2>
 
         <p>Encapsulation is a fundamental principle of object-oriented programming that bundles data and methods
@@ -6376,15 +7228,15 @@ console.log(counter.getCount()); // 1
     </div>
 
 
-    <!-- PART IX -->
+    <!-- PART X -->
     <div class="page-break">
         <h1 class="center">Part IX</h1>
         <h2 class="center">Functional JavaScript</h2>
     </div>
 
-    <!-- Chapter 41 -->
-    <div id="chapter41" class="page-break">
-        <h1>Chapter 41: JavaScript Immutability and Pure Functions</h1>
+    <!-- Chapter 48 -->
+    <div id="chapter48" class="page-break">
+        <h1>Chapter 48: JavaScript Immutability and Pure Functions</h1>
         <h2>Write Predictable, Bug-Free Code</h2>
 
         <p>Immutability means data cannot be changed after creation. Pure functions always return the same output for
@@ -6484,9 +7336,9 @@ function add(a, b) {
     </div>
 
 
-    <!-- Chapter 42 -->
-    <div id="chapter42" class="page-break">
-        <h1>Chapter 42: JavaScript Function Composition and Pipelines</h1>
+    <!-- Chapter 49 -->
+    <div id="chapter49" class="page-break">
+        <h1>Chapter 49: JavaScript Function Composition and Pipelines</h1>
         <h2>Build Complex Logic from Simple Functions</h2>
 
         <p>Function composition is the process of combining two or more functions to create a new function. It's one of
@@ -6579,9 +7431,9 @@ greetUser(1).then(console.log); // "Hello, JOHN!"
     </div>
 
 
-    <!-- Chapter 43 -->
-    <div id="chapter41" class="page-break">
-        <h1>Chapter 43: JavaScript Functors and Applicatives</h1>
+    <!-- Chapter 50 -->
+    <div id="chapter48" class="page-break">
+        <h1>Chapter 50: JavaScript Functors and Applicatives</h1>
         <h2>Master Functional Patterns</h2>
 
         <p>Functors and Applicatives are fundamental patterns in functional programming that let you work with values in
@@ -6696,9 +7548,9 @@ const user = validateName('John')
     </div>
 
 
-    <!-- Chapter 44 -->
-    <div id="chapter44" class="page-break">
-        <h1>Chapter 44: JavaScript Monads</h1>
+    <!-- Chapter 51 -->
+    <div id="chapter51" class="page-break">
+        <h1>Chapter 51: JavaScript Monads</h1>
         <h2>Master Functional Programming Patterns</h2>
 
         <p>Monads sound intimidating, but they're just a design pattern for handling values in a predictable way. They
@@ -6936,15 +7788,15 @@ Maybe.of(5).flatMap(x => Maybe.of(x * 2)); // Maybe(10)
     </div>
 
 
-    <!-- PART X -->
+    <!-- PART XI -->
     <div class="page-break">
         <h1 class="center">Part X</h1>
         <h2 class="center">Testing</h2>
     </div>
 
-    <!-- Chapter 45: Unit Testing -->
-    <div id="chapter45" class="page-break">
-        <h1>Chapter 45: JavaScript Unit Testing</h1>
+    <!-- Chapter 52: Unit Testing -->
+    <div id="chapter52" class="page-break">
+        <h1>Chapter 52: JavaScript Unit Testing</h1>
         <h2>Test Individual Functions</h2>
 
         <p>Unit testing is the practice of testing individual units of code (functions, methods, classes) in isolation
@@ -6998,9 +7850,9 @@ describe('Calculator', () => {
     </div>
 
 
-    <!-- Chapter 46: Integration Testing -->
-    <div id="chapter46" class="page-break">
-        <h1>Chapter 46: JavaScript Integration Testing</h1>
+    <!-- Chapter 53: Integration Testing -->
+    <div id="chapter53" class="page-break">
+        <h1>Chapter 53: JavaScript Integration Testing</h1>
         <h2>Test Component Interactions</h2>
 
         <p>Integration testing verifies that different parts of your application work together correctly. While unit
@@ -7044,9 +7896,9 @@ test('creates and retrieves user', async () => {
     </div>
 
 
-    <!-- Chapter 47: Mocking -->
-    <div id="chapter47" class="page-break">
-        <h1>Chapter 47: JavaScript Mocking</h1>
+    <!-- Chapter 54: Mocking -->
+    <div id="chapter54" class="page-break">
+        <h1>Chapter 54: JavaScript Mocking</h1>
         <h2>Isolate Tests</h2>
 
         <p>Mocking is the practice of replacing real dependencies with controlled substitutes during testing. Mocks
@@ -7089,9 +7941,9 @@ expect(mockCallback).toHaveBeenCalledTimes(3);
     </div>
 
 
-    <!-- Chapter 48: TDD -->
-    <div id="chapter48" class="page-break">
-        <h1>Chapter 48: Test-Driven Development</h1>
+    <!-- Chapter 55: TDD -->
+    <div id="chapter55" class="page-break">
+        <h1>Chapter 55: Test-Driven Development</h1>
         <h2>Write Tests First</h2>
 
         <p>Test-Driven Development (TDD) is a software development methodology where you write tests before writing the
@@ -7132,9 +7984,9 @@ function isValidEmail(email) {
     </div>
 
 
-    <!-- Chapter 49: E2E Testing -->
-    <div id="chapter49" class="page-break">
-        <h1>Chapter 49: End-to-End Testing</h1>
+    <!-- Chapter 56: E2E Testing -->
+    <div id="chapter56" class="page-break">
+        <h1>Chapter 56: End-to-End Testing</h1>
         <h2>Test Complete User Flows</h2>
 
         <p>End-to-End (E2E) testing simulates real user scenarios by testing your application from start to finish in a
