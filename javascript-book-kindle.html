@@ -255,37 +255,38 @@
                 <ol>
                     <li>Chapter 16: JavaScript Destructuring</li>
                     <li>Chapter 17: JavaScript Spread and Rest Operators</li>
-                    <li>Chapter 18: JavaScript Modules</li>
+                    <li>Chapter 18: JavaScript Optional Chaining and Nullish Coalescing</li>
+                    <li>Chapter 19: JavaScript Modules</li>
                 </ol>
             </li>
             <li>
                 <strong>Part VI: Browser APIs and DOM</strong>
                 <ul>
-                    <li>Chapter 19: JavaScript DOM Manipulation</li>
-                    <li>Chapter 20: JavaScript Event Handling</li>
-                    <li>Chapter 21: JavaScript LocalStorage</li>
-                    <li>Chapter 22: JavaScript Fetch API</li>
-                    <li>Chapter 23: JavaScript IntersectionObserver</li>
+                    <li>Chapter 20: JavaScript DOM Manipulation</li>
+                    <li>Chapter 21: JavaScript Event Handling</li>
+                    <li>Chapter 22: JavaScript LocalStorage</li>
+                    <li>Chapter 23: JavaScript Fetch API</li>
+                    <li>Chapter 24: JavaScript IntersectionObserver</li>
                 </ul>
             </li>
             <li>
                 <strong>Part VII: Advanced JavaScript Features</strong>
                 <ul>
-                    <li>Chapter 24: JavaScript Symbols</li>
-                    <li>Chapter 25: JavaScript BigInt</li>
-                    <li>Chapter 26: JavaScript Typed Arrays</li>
-                    <li>Chapter 27: JavaScript Regular Expressions</li>
-                    <li>Chapter 28: JavaScript Proxies</li>
-                    <li>Chapter 29: JavaScript Iterators</li>
+                    <li>Chapter 25: JavaScript Symbols</li>
+                    <li>Chapter 26: JavaScript BigInt</li>
+                    <li>Chapter 27: JavaScript Typed Arrays</li>
+                    <li>Chapter 28: JavaScript Regular Expressions</li>
+                    <li>Chapter 29: JavaScript Proxies</li>
+                    <li>Chapter 30: JavaScript Iterators</li>
                 </ul>
             </li>
             <li>
                 <strong>Part VIII: Functional JavaScript</strong>
                 <ul>
-                    <li>Chapter 30: JavaScript Immutability and Pure Functions</li>
-                    <li>Chapter 31: JavaScript Function Composition and Pipelines</li>
-                    <li>Chapter 32: JavaScript Functors and Applicatives</li>
-                    <li>Chapter 33: JavaScript Monads</li>
+                    <li>Chapter 31: JavaScript Immutability and Pure Functions</li>
+                    <li>Chapter 32: JavaScript Function Composition and Pipelines</li>
+                    <li>Chapter 33: JavaScript Functors and Applicatives</li>
+                    <li>Chapter 34: JavaScript Monads</li>
                 </ul>
             </li>
             <li>Conclusion</li>
@@ -3966,6 +3967,18 @@ setUser({
         </ul>
     </div>
 
+    <!-- Chapter 18: Optional Chaining -->
+    <div id="chapter18" class="page-break">
+        <h1>Chapter 18: JavaScript Optional Chaining and Nullish Coalescing</h1>
+        <h2>Safe Property Access</h2>
+
+        <p>Optional chaining and nullish coalescing are modern JavaScript features that solve common pain points when
+            working with nested objects and default values. They make code more concise, readable, and less error-prone.
+        </p>
+
+        <h3>The Problem</h3>
+
+        <pre><code class="language-javascript">const user = {
     name: 'John',
     address: {
     street: '123 Main St',
@@ -3984,14 +3997,15 @@ setUser({
     const city = user2 && user2.address && user2.address.city;
     </code></pre>
 
-    <h3>Optional Chaining Solution</h3>
+        <h3>Optional Chaining Solution</h3>
 
-    <p>With optional chaining, you can safely access nested properties in a single, readable expression. If any part of
-        the chain is <code>null</code> or <code>undefined</code>, the entire expression evaluates to
-        <code>undefined</code> without throwing an error.
-    </p>
+        <p>With optional chaining, you can safely access nested properties in a single, readable expression. If any part
+            of
+            the chain is <code>null</code> or <code>undefined</code>, the entire expression evaluates to
+            <code>undefined</code> without throwing an error.
+        </p>
 
-    <pre><code class="language-javascript">const user = { name: 'Jane' };
+        <pre><code class="language-javascript">const user = { name: 'Jane' };
 
 // No error! Returns undefined
 const city = user?.address?.city;
@@ -4005,12 +4019,13 @@ const user2 = {
 console.log(user2?.address?.city); // 'New York'
 </code></pre>
 
-    <h3>Optional Method Calls</h3>
+        <h3>Optional Method Calls</h3>
 
-    <p>Optional chaining isn't limited to property access - it also works with method calls. This is incredibly useful
-        when dealing with optional callbacks or methods that might not exist on an object.</p>
+        <p>Optional chaining isn't limited to property access - it also works with method calls. This is incredibly
+            useful
+            when dealing with optional callbacks or methods that might not exist on an object.</p>
 
-    <pre><code class="language-javascript">const user = {
+        <pre><code class="language-javascript">const user = {
     name: 'John',
     greet() {
         return `Hello, ${this.name}!`;
@@ -4022,9 +4037,9 @@ console.log(user.greet?.()); // "Hello, John!"
 console.log(user.farewell?.()); // undefined (no error!)
 </code></pre>
 
-    <h3>Optional Array Access</h3>
+        <h3>Optional Array Access</h3>
 
-    <pre><code class="language-javascript">const users = [
+        <pre><code class="language-javascript">const users = [
     { name: 'John', age: 30 },
     { name: 'Jane', age: 25 }
 ];
@@ -4038,16 +4053,17 @@ const firstName = users?.[0]?.name; // 'John'
 const thirdName = users?.[2]?.name; // undefined
 </code></pre>
 
-    <h3>Nullish Coalescing (??)</h3>
+        <h3>Nullish Coalescing (??)</h3>
 
-    <p>The nullish coalescing operator (<code>??</code>) is the perfect companion to optional chaining. While optional
-        chaining safely accesses properties, nullish coalescing provides default values when those properties are
-        <code>null</code> or <code>undefined</code>. Importantly, it only treats <code>null</code> and
-        <code>undefined</code> as nullish - unlike the <code>||</code> operator, which treats all falsy values
-        (including <code>0</code>, <code>''</code>, and <code>false</code>) as falsy.
-    </p>
+        <p>The nullish coalescing operator (<code>??</code>) is the perfect companion to optional chaining. While
+            optional
+            chaining safely accesses properties, nullish coalescing provides default values when those properties are
+            <code>null</code> or <code>undefined</code>. Importantly, it only treats <code>null</code> and
+            <code>undefined</code> as nullish - unlike the <code>||</code> operator, which treats all falsy values
+            (including <code>0</code>, <code>''</code>, and <code>false</code>) as falsy.
+        </p>
 
-    <pre><code class="language-javascript">const value = null ?? 'default';
+        <pre><code class="language-javascript">const value = null ?? 'default';
 console.log(value); // 'default'
 
 const value2 = 0 ?? 'default';
@@ -4059,13 +4075,15 @@ console.log(count || 10); // 10 (wrong!)
 console.log(count ?? 10); // 0 (correct!)
 </code></pre>
 
-    <h3>Combining ?. and ??</h3>
+        <h3>Combining ?. and ??</h3>
 
-    <p>The real power comes from combining optional chaining with nullish coalescing. This pattern allows you to safely
-        access nested properties and provide sensible defaults in a single, readable expression. It's become a standard
-        pattern in modern JavaScript applications.</p>
+        <p>The real power comes from combining optional chaining with nullish coalescing. This pattern allows you to
+            safely
+            access nested properties and provide sensible defaults in a single, readable expression. It's become a
+            standard
+            pattern in modern JavaScript applications.</p>
 
-    <pre><code class="language-javascript">const user = { name: 'John' };
+        <pre><code class="language-javascript">const user = { name: 'John' };
 
 // Get city or default
 const city = user?.address?.city ?? 'Unknown';
@@ -4081,11 +4099,11 @@ function createServer(config) {
 }
 </code></pre>
 
-    <h3>Real-World Examples</h3>
+        <h3>Real-World Examples</h3>
 
-    <p><strong>API Response Handling:</strong></p>
+        <p><strong>API Response Handling:</strong></p>
 
-    <pre><code class="language-javascript">async function fetchUser(id) {
+        <pre><code class="language-javascript">async function fetchUser(id) {
     const response = await fetch(`/api/users/${id}`);
     const data = await response.json();
     
@@ -4098,9 +4116,9 @@ function createServer(config) {
 }
 </code></pre>
 
-    <p><strong>Event Handlers:</strong></p>
+        <p><strong>Event Handlers:</strong></p>
 
-    <pre><code class="language-javascript">// Safe callback invocation
+        <pre><code class="language-javascript">// Safe callback invocation
 function processData(data, callback) {
     const result = transform(data);
     callback?.(result); // Only calls if callback exists
@@ -4111,22 +4129,22 @@ processData(data); // No error even without callback
 processData(data, (result) => console.log(result));
 </code></pre>
 
-    <h3>Key Takeaways</h3>
-    <ul>
-        <li>Optional chaining (?.) safely accesses nested properties</li>
-        <li>Returns undefined instead of throwing errors</li>
-        <li>Works with properties, methods, and array indices</li>
-        <li>Nullish coalescing (??) provides default values</li>
-        <li>?? only treats null/undefined as nullish (not 0, '', false)</li>
-        <li>Combine ?. and ?? for safe access with defaults</li>
-        <li>Perfect for API responses and optional callbacks</li>
-    </ul>
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li>Optional chaining (?.) safely accesses nested properties</li>
+            <li>Returns undefined instead of throwing errors</li>
+            <li>Works with properties, methods, and array indices</li>
+            <li>Nullish coalescing (??) provides default values</li>
+            <li>?? only treats null/undefined as nullish (not 0, '', false)</li>
+            <li>Combine ?. and ?? for safe access with defaults</li>
+            <li>Perfect for API responses and optional callbacks</li>
+        </ul>
+    </div>
     </div>
 
-
-    <!-- Chapter 18: Modules -->
-    <div id="chapter18" class="page-break">
-        <h1>Chapter 18: JavaScript Modules</h1>
+    <!-- Chapter 19: Modules -->
+    <div id="chapter19" class="page-break">
+        <h1>Chapter 19: JavaScript Modules</h1>
         <h2>Organize Your Code</h2>
 
         <p>ES6 modules revolutionized JavaScript development by providing a standardized, built-in module system. Before
@@ -4312,9 +4330,9 @@ export async function createUser(userData) {
         <h2 class="center">Browser APIs and DOM</h2>
     </div>
 
-    <!-- Chapter 19: DOM Manipulation -->
-    <div id="chapter19" class="page-break">
-        <h1>Chapter 19: JavaScript DOM Manipulation</h1>
+    <!-- Chapter 20: DOM Manipulation -->
+    <div id="chapter20" class="page-break">
+        <h1>Chapter 20: JavaScript DOM Manipulation</h1>
         <h2>Control the Document Structure</h2>
 
         <p>The Document Object Model (DOM) is the programming interface for HTML documents. It represents the page as a
@@ -4391,9 +4409,9 @@ element.classList.contains('active'); // true/false
     </div>
 
 
-    <!-- Chapter 20: Event Handling -->
-    <div id="chapter20" class="page-break">
-        <h1>Chapter 20: JavaScript Event Handling</h1>
+    <!-- Chapter 21: Event Handling -->
+    <div id="chapter21" class="page-break">
+        <h1>Chapter 21: JavaScript Event Handling</h1>
         <h2>Respond to User Interactions</h2>
 
         <p>Event handling is the mechanism that makes web pages interactive. Events are actions or occurrences that
@@ -4473,9 +4491,9 @@ link.addEventListener('click', (event) => {
     </div>
 
 
-    <!-- Chapter 22: LocalStorage -->
-    <div id="chapter21" class="page-break">
-        <h1>Chapter 21: JavaScript LocalStorage</h1>
+    <!-- Chapter 23: LocalStorage -->
+    <div id="chapter22" class="page-break">
+        <h1>Chapter 22: JavaScript LocalStorage</h1>
         <h2>Browser Data Persistence</h2>
 
         <p>LocalStorage is a web storage API that allows you to store data in the browser that persists even after the
@@ -4569,9 +4587,9 @@ const settings = storage.get('settings', { theme: 'light' });
     </div>
 
 
-    <!-- Chapter 21: Fetch API -->
-    <div id="chapter21" class="page-break">
-        <h1>Chapter 22: JavaScript Fetch API</h1>
+    <!-- Chapter 22: Fetch API -->
+    <div id="chapter22" class="page-break">
+        <h1>Chapter 23: JavaScript Fetch API</h1>
         <h2>Modern HTTP Requests</h2>
 
         <p>The Fetch API is the modern standard for making HTTP requests in JavaScript. It replaces the older
@@ -4665,9 +4683,9 @@ const newUser = await createUser({
     </div>
 
 
-    <!-- Chapter 23: IntersectionObserver -->
-    <div id="chapter23" class="page-break">
-        <h1>Chapter 23: JavaScript IntersectionObserver</h1>
+    <!-- Chapter 24: IntersectionObserver -->
+    <div id="chapter24" class="page-break">
+        <h1>Chapter 24: JavaScript IntersectionObserver</h1>
         <h2>Efficient Visibility Detection</h2>
 
         <p>IntersectionObserver is a powerful browser API that asynchronously observes changes in the intersection of a
@@ -4758,9 +4776,9 @@ async function loadMoreContent() {
         <h2 class="center">Advanced JavaScript Features</h2>
     </div>
 
-    <!-- Chapter 24: Symbols -->
-    <div id="chapter24" class="page-break">
-        <h1>Chapter 24: JavaScript Symbols</h1>
+    <!-- Chapter 25: Symbols -->
+    <div id="chapter25" class="page-break">
+        <h1>Chapter 25: JavaScript Symbols</h1>
         <h2>Unique Identifiers</h2>
 
         <p>Symbols are a primitive data type introduced in ES6 that creates unique, immutable identifiers. Unlike
@@ -4825,9 +4843,9 @@ Object.getOwnPropertySymbols(user); // [Symbol(id)]
     </div>
 
 
-    <!-- Chapter 25: BigInt -->
-    <div id="chapter25" class="page-break">
-        <h1>Chapter 25: JavaScript BigInt</h1>
+    <!-- Chapter 26: BigInt -->
+    <div id="chapter26" class="page-break">
+        <h1>Chapter 26: JavaScript BigInt</h1>
         <h2>Arbitrary Precision Integers</h2>
 
         <p>BigInt is a primitive type that allows you to work with integers of arbitrary size, beyond JavaScript's safe
@@ -4885,9 +4903,9 @@ console.log(10n == 10); // true (loose equality)
     </div>
 
 
-    <!-- Chapter 26: Typed Arrays -->
-    <div id="chapter26" class="page-break">
-        <h1>Chapter 26: JavaScript Typed Arrays</h1>
+    <!-- Chapter 27: Typed Arrays -->
+    <div id="chapter27" class="page-break">
+        <h1>Chapter 27: JavaScript Typed Arrays</h1>
         <h2>Binary Data Handling</h2>
 
         <p>Typed Arrays provide a mechanism for accessing raw binary data efficiently. Unlike regular JavaScript arrays
@@ -4946,9 +4964,9 @@ const float64 = new Float64Array(4);
     </div>
 
 
-    <!-- Chapter 27: Regular Expressions -->
-    <div id="chapter27" class="page-break">
-        <h1>Chapter 27: JavaScript Regular Expressions</h1>
+    <!-- Chapter 28: Regular Expressions -->
+    <div id="chapter28" class="page-break">
+        <h1>Chapter 28: JavaScript Regular Expressions</h1>
         <h2>Pattern Matching</h2>
 
         <p>Regular expressions (regex) are patterns used to match character combinations in strings. They provide a
@@ -5015,9 +5033,9 @@ console.log(newText); // 'hi world'
     </div>
 
 
-    <!-- Chapter 28: Proxies -->
-    <div id="chapter28" class="page-break">
-        <h1>Chapter 28: JavaScript Proxies</h1>
+    <!-- Chapter 29: Proxies -->
+    <div id="chapter29" class="page-break">
+        <h1>Chapter 29: JavaScript Proxies</h1>
         <h2>Intercept Object Operations</h2>
 
         <p>Proxies are a powerful metaprogramming feature that allows you to intercept and redefine fundamental
@@ -5089,9 +5107,9 @@ person.age = 30; // OK
     </div>
 
 
-    <!-- Chapter 29: Iterators -->
-    <div id="chapter29" class="page-break">
-        <h1>Chapter 29: JavaScript Iterators</h1>
+    <!-- Chapter 30: Iterators -->
+    <div id="chapter30" class="page-break">
+        <h1>Chapter 30: JavaScript Iterators</h1>
         <h2>Custom Iteration</h2>
 
         <p>Iterators are objects that define a sequence and potentially a return value upon completion. They implement
@@ -5149,8 +5167,8 @@ for (let num of range) {
     </div>
 
     <!-- Chapter 31 -->
-    <div id="chapter30" class="page-break">
-        <h1>Chapter 30: JavaScript Immutability and Pure Functions</h1>
+    <div id="chapter31" class="page-break">
+        <h1>Chapter 31: JavaScript Immutability and Pure Functions</h1>
         <h2>Write Predictable, Bug-Free Code</h2>
 
         <p>Immutability means data cannot be changed after creation. Pure functions always return the same output for
@@ -5251,8 +5269,8 @@ function add(a, b) {
 
 
     <!-- Chapter 32 -->
-    <div id="chapter31" class="page-break">
-        <h1>Chapter 31: JavaScript Function Composition and Pipelines</h1>
+    <div id="chapter32" class="page-break">
+        <h1>Chapter 32: JavaScript Function Composition and Pipelines</h1>
         <h2>Build Complex Logic from Simple Functions</h2>
 
         <p>Function composition is the process of combining two or more functions to create a new function. It's one of
@@ -5346,8 +5364,8 @@ greetUser(1).then(console.log); // "Hello, JOHN!"
 
 
     <!-- Chapter 33 -->
-    <div id="chapter30" class="page-break">
-        <h1>Chapter 32: JavaScript Functors and Applicatives</h1>
+    <div id="chapter31" class="page-break">
+        <h1>Chapter 33: JavaScript Functors and Applicatives</h1>
         <h2>Master Functional Patterns</h2>
 
         <p>Functors and Applicatives are fundamental patterns in functional programming that let you work with values in
@@ -5463,8 +5481,8 @@ const user = validateName('John')
 
 
     <!-- Chapter 34 -->
-    <div id="chapter33" class="page-break">
-        <h1>Chapter 33: JavaScript Monads</h1>
+    <div id="chapter34" class="page-break">
+        <h1>Chapter 34: JavaScript Monads</h1>
         <h2>Master Functional Programming Patterns</h2>
 
         <p>Monads sound intimidating, but they're just a design pattern for handling values in a predictable way. They
