@@ -136,6 +136,7 @@ svg:where(.astro-c6vsoqas){color:var(--sl-icon-color);font-size:var(--sl-icon-si
 <li><strong>Per-route rate limiting</strong> — <code dir="auto">PerRouteRateLimit</code> in config-driven mode; <code dir="auto">RateLimitLayer</code> in code</li>
 <li><strong>Per-route Bearer auth</strong> — <code dir="auto">BearerAuthMiddleware</code> in config-driven mode; <code dir="auto">JwtLayer</code> in code</li>
 <li><strong>Route matching</strong> — host, path prefix, exact path, HTTP method, <code dir="auto">Content-Type</code> prefix; first-match wins</li>
+<li><strong>Service discovery</strong> — <code dir="auto">BackendPool</code> with <code dir="auto">Static</code>/<code dir="auto">EnvPrefix</code>/<code dir="auto">File</code>/<code dir="auto">Dns</code>/<code dir="auto">DnsSrv</code> (weighted)/<code dir="auto">Consul</code>/<code dir="auto">Docker</code> (label value as address) sources on a poll loop, plus <code dir="auto">EtcdWatch</code> on a dedicated live watch stream</li>
 </ul>
 <hr>
 <h2 id="security">Security</h2>
