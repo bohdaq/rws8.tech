@@ -1,0 +1,738 @@
+<!DOCTYPE html><html lang="en" dir="ltr" data-theme="dark" data-has-toc data-has-sidebar class="astro-g5ptsecz"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Environment Variables | rust-web-server</title><link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/><meta name="generator" content="Astro v7.4.2"/><meta name="generator" content="Starlight v0.42.7"/><meta property="og:title" content="Environment Variables"/><meta property="og:type" content="article"/><meta property="og:locale" content="en"/><meta property="og:description" content="Complete reference for every RWS_CONFIG_* environment variable, with defaults and descriptions."/><meta property="og:site_name" content="rust-web-server"/><meta name="twitter:card" content="summary_large_image"/><meta name="description" content="Complete reference for every RWS_CONFIG_* environment variable, with defaults and descriptions."/><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"/></svg><svg aria-hidden="true" class="dark astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"/></svg><svg aria-hidden="true" class="auto astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg></template><link rel="stylesheet" href="/_astro/print.ehPL0gv-.css" media="print"><link rel="stylesheet" href="/_astro/common.DjBLR3B9.css"><style>@layer starlight.components{svg:where(.astro-hkc32dio){color:var(--sl-icon-color);font-size:var(--sl-icon-size,1em);width:1em;height:1em;overflow:visible}}
+</style><script type="module" src="/_astro/page.cNngjUgL.js"></script></head><body class="astro-g5ptsecz"><a class="sl-skip-link astro-qb7clj6f" href="#_top">Skip to content</a><div class="page sl-flex astro-yntsjkba"><header class="header astro-yntsjkba"><div class="header astro-by6fddyj"><div class="title-wrapper sl-flex astro-by6fddyj"><a href="/" class="site-title sl-flex astro-6rvad3va"><img class="astro-6rvad3va" alt src="/_astro/logo.BOb8Ukui.svg" width="44" height="32"><span class="astro-6rvad3va" translate="no">rust-web-server</span></a></div><div class="sl-flex print:hidden astro-by6fddyj"><site-search class="astro-by6fddyj astro-b5kgnn7o" data-translations="{&quot;placeholder&quot;:&quot;Search&quot;}"><button data-open-modal disabled aria-label="Search" aria-keyshortcuts="Control+K" class="astro-b5kgnn7o"><svg aria-hidden="true" class="astro-b5kgnn7o astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg><span class="sl-hidden md:sl-block astro-b5kgnn7o" aria-hidden="true">Search</span><kbd class="sl-hidden md:sl-flex astro-b5kgnn7o" style="display: none;"><kbd class="astro-b5kgnn7o">Ctrl</kbd><kbd class="astro-b5kgnn7o">K</kbd></kbd></button><dialog style="padding:0" aria-label="Search" class="astro-b5kgnn7o"><div class="dialog-frame sl-flex astro-b5kgnn7o"><button data-close-modal class="sl-flex md:sl-hidden astro-b5kgnn7o">Cancel</button><div class="search-container astro-b5kgnn7o"><div id="starlight__search" class="astro-b5kgnn7o"></div></div></div></dialog></site-search><script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="/_astro/Search.astro_astro_type_script_index_0_lang.Djc9ZKGJ.js"></script></div><div class="sl-hidden md:sl-flex print:hidden right-group astro-by6fddyj"><div class="sl-flex social-icons astro-by6fddyj"><a href="https://github.com/bohdaq/rust-web-server" rel="me" class="sl-flex astro-n2mnl6yq"><span class="sr-only astro-n2mnl6yq">GitHub</span><svg aria-hidden="true" class="astro-n2mnl6yq astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-2z5xp7gb"><span class="sr-only astro-2z5xp7gb">Select theme</span><svg aria-hidden="true" class="icon label-icon astro-2z5xp7gb astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg><select autocomplete="off" class="astro-2z5xp7gb"><option value="dark" class="astro-2z5xp7gb">Dark</option><option value="light" class="astro-2z5xp7gb">Light</option><option value="auto" selected class="astro-2z5xp7gb">Auto</option></select><svg aria-hidden="true" class="icon caret astro-2z5xp7gb astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script><script type="module">var e=`starlight-theme`,t=e=>e===`auto`||e===`dark`||e===`light`?e:`auto`,n=()=>t(typeof localStorage<`u`&&localStorage.getItem(e));function r(t){typeof localStorage<`u`&&localStorage.setItem(e,t===`light`||t===`dark`?t:``)}var i=()=>matchMedia(`(prefers-color-scheme: light)`).matches?`light`:`dark`;function a(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e===`auto`?i():e,r(e)}matchMedia(`(prefers-color-scheme: light)`).addEventListener(`change`,()=>{n()===`auto`&&a(`auto`)});var o=class extends HTMLElement{constructor(){super(),a(n()),this.querySelector(`select`)?.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&a(t(e.currentTarget.value))})}};customElements.define(`starlight-theme-select`,o);</script><script type="module">var e=class extends HTMLElement{constructor(){super();let e=this.querySelector(`select`);e&&(e.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=e.currentTarget.value)}),window.addEventListener(`pageshow`,t=>{if(!t.persisted)return;let n=e.querySelector(`option[selected]`)?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}};customElements.define(`starlight-lang-select`,e);</script></div></div></header><nav class="sidebar print:hidden astro-yntsjkba" aria-label="Main"><button popovertarget="starlight__sidebar" class="sl-menu-button sl-flex md:sl-hidden print:hidden astro-r2osgdlg"><svg aria-hidden="true" class="open-menu astro-r2osgdlg astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M3 8h18a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2Zm18 8H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Zm0-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"/></svg><svg aria-hidden="true" class="close-menu astro-r2osgdlg astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="m13.41 12 6.3-6.29a1.004 1.004 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1.004 1.004 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 0 1.42.998.998 0 0 0 1.42 0l6.29-6.3 6.29 6.3a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12Z"/></svg><span class="sr-only astro-r2osgdlg">Menu</span></button><script type="module">var e=class extends HTMLElement{constructor(){super();let e=matchMedia(`(min-width: 50em)`),t=()=>{this.popover=e.matches?null:`auto`};t(),e.addEventListener(`change`,()=>t()),this.addEventListener(`toggle`,({newState:e})=>this.trapFocus(e===`open`))}trapFocus(e){document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}};customElements.define(`sl-sidebar-pane`,e);</script><sl-sidebar-pane popover id="starlight__sidebar" class="sidebar-pane astro-yntsjkba"><div class="sidebar-content sl-flex astro-yntsjkba"><sl-sidebar-state-persist data-hash="0wq36l1" class="astro-ipdry5cl"><script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script><ul class="top-level astro-rmhv4bp6"><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Getting Started</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="0"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/getting-started/quick-start/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Quick Start</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/examples/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Examples</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/ai-agents/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">AI Coding Agents</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/installation/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Installation</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/dev-workflow/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Dev Workflow</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/frontend-dev-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Frontend Dev Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/features/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">All Features</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Configuration</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="1"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/configuration/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/configuration/env-vars/" aria-current="page" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Environment Variables</span></a></li><li class="astro-rmhv4bp6"><a href="/configuration/config-file/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Config File</span></a></li><li class="astro-rmhv4bp6"><a href="/configuration/cli-args/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">CLI Args</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Building Apps</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="2"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/building-apps/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/controllers/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Controllers</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/routing/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Routing</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/request-response/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Request &amp; Response</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/state/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Shared State</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/extractors/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Typed Extractors</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/error-handling/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Error Handling</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/middleware/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Middleware</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/validation/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Validation</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/forms-uploads/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Forms &amp; Uploads</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/json/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">JSON</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/cookies/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Cookies</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/async-handlers/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Async Handlers</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/http-client/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTTP Client</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/templates/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTML Templates</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/dependency-injection/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Dependency Injection</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Features</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="3"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/features/cors-security/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">CORS &amp; Security</span></a></li><li class="astro-rmhv4bp6"><a href="/features/static-files/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Static Files &amp; Listing</span></a></li><li class="astro-rmhv4bp6"><a href="/features/rate-limiting/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Rate Limiting</span></a></li><li class="astro-rmhv4bp6"><a href="/features/compression/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Compression</span></a></li><li class="astro-rmhv4bp6"><a href="/features/https-tls/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTTPS / TLS</span></a></li><li class="astro-rmhv4bp6"><a href="/features/acme/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Automatic TLS (ACME)</span></a></li><li class="astro-rmhv4bp6"><a href="/features/mtls/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Mutual TLS (mTLS)</span></a></li><li class="astro-rmhv4bp6"><a href="/features/virtual-hosting/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Virtual Hosting</span></a></li><li class="astro-rmhv4bp6"><a href="/features/http2/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTTP/2</span></a></li><li class="astro-rmhv4bp6"><a href="/features/http3-quic/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTTP/3 / QUIC</span></a></li><li class="astro-rmhv4bp6"><a href="/features/websocket/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">WebSocket</span></a></li><li class="astro-rmhv4bp6"><a href="/features/sse/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Server-Sent Events</span></a></li><li class="astro-rmhv4bp6"><a href="/features/auth/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Auth</span></a></li><li class="astro-rmhv4bp6"><a href="/features/sso/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">OAuth2 / OIDC SSO</span></a></li><li class="astro-rmhv4bp6"><a href="/features/saml/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">SAML 2.0 SSO</span></a></li><li class="astro-rmhv4bp6"><a href="/features/csrf/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">CSRF Protection</span></a></li><li class="astro-rmhv4bp6"><a href="/features/sessions/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Sessions</span></a></li><li class="astro-rmhv4bp6"><a href="/features/email/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Email / SMTP</span></a></li><li class="astro-rmhv4bp6"><a href="/features/storage/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">File / Object Storage</span></a></li><li class="astro-rmhv4bp6"><a href="/features/caching/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Response Caching</span></a></li><li class="astro-rmhv4bp6"><a href="/features/metrics/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Metrics</span></a></li><li class="astro-rmhv4bp6"><a href="/features/tracing/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Distributed Tracing</span></a></li><li class="astro-rmhv4bp6"><a href="/features/hot-reload/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Hot Config Reload</span></a></li><li class="astro-rmhv4bp6"><a href="/features/rewrite/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Rewrite Middleware</span></a></li><li class="astro-rmhv4bp6"><a href="/features/ip-filter/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">IP Filtering</span></a></li><li class="astro-rmhv4bp6"><a href="/features/request-id/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Request ID</span></a></li><li class="astro-rmhv4bp6"><a href="/features/scheduler/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Background Scheduler</span></a></li><li class="astro-rmhv4bp6"><a href="/features/jobs/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Background Job Queue</span></a></li><li class="astro-rmhv4bp6"><a href="/features/openapi/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">OpenAPI / Swagger</span></a></li><li class="astro-rmhv4bp6"><a href="/features/tower/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Tower interop</span></a></li><li class="astro-rmhv4bp6"><a href="/features/timeouts/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Per-Route Timeouts</span></a></li><li class="astro-rmhv4bp6"><a href="/features/config-binding/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Typed Config Binding</span></a></li><li class="astro-rmhv4bp6"><a href="/features/webhooks/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Webhook Verification</span></a></li><li class="astro-rmhv4bp6"><a href="/features/secrets/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Secrets Manager Integration</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Proxy / Gateway</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="4"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/proxy/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/config-driven/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Config-Driven Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/reverse-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Reverse Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/load-balancing/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Load Balancing</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/health-checks/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Health Checks</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/circuit-breaker/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Circuit Breaker</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/canary/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Canary / Traffic Split</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/service-discovery/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Service Discovery</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/tcp-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">TCP Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/udp-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">UDP Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/websocket-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">WebSocket Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/grpc-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">gRPC Proxy</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Database / ORM</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="5"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/database/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/database/model-derive/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">#[derive(Model)]</span></a></li><li class="astro-rmhv4bp6"><a href="/database/repository/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Repository</span></a></li><li class="astro-rmhv4bp6"><a href="/database/query-builder/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Query Builder</span></a></li><li class="astro-rmhv4bp6"><a href="/database/pagination/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Pagination</span></a></li><li class="astro-rmhv4bp6"><a href="/database/raw-sql/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Raw SQL</span></a></li><li class="astro-rmhv4bp6"><a href="/database/transactions/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Transactions</span></a></li><li class="astro-rmhv4bp6"><a href="/database/migrations/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Migrations</span></a></li><li class="astro-rmhv4bp6"><a href="/database/relations/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Relations</span></a></li><li class="astro-rmhv4bp6"><a href="/database/in-memory/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">In-memory SQLite</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">MCP Server</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="6"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/mcp/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/tools/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Tools</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/resources/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Resources</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/prompts/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Prompts</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/auth/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Auth</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/operate/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Operate rws from an AI client</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/agent-tools/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Build agent tools on your app</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/gateway/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Gateway</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Testing</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="7"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/testing/test-client/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Test Client</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Deployment</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="8"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/deployment/docker/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Docker</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/kubernetes/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Kubernetes</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/kubernetes-ingress/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Kubernetes Ingress</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/kubernetes-gateway-api/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Kubernetes Gateway API</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/observability/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Observability</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/systemd/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">systemd</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/windows/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Windows</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/wasm/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">WASM Guest Component</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Reference</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="9"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/reference/api/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">API Reference</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/troubleshooting/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Troubleshooting</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/migrating-18/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Migrating to 18.0</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/architecture/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Architecture</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/benchmarks/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Benchmarks</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/roadmap/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Roadmap</span></a></li></ul></details></li></ul><script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist><div class="md:sl-hidden"><div class="mobile-preferences sl-flex astro-p4azlveh"><div class="social-icons astro-p4azlveh"><a href="https://github.com/bohdaq/rust-web-server" rel="me" class="sl-flex astro-n2mnl6yq"><span class="sr-only astro-n2mnl6yq">GitHub</span><svg aria-hidden="true" class="astro-n2mnl6yq astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-2z5xp7gb"><span class="sr-only astro-2z5xp7gb">Select theme</span><svg aria-hidden="true" class="icon label-icon astro-2z5xp7gb astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg><select autocomplete="off" class="astro-2z5xp7gb"><option value="dark" class="astro-2z5xp7gb">Dark</option><option value="light" class="astro-2z5xp7gb">Light</option><option value="auto" selected class="astro-2z5xp7gb">Auto</option></select><svg aria-hidden="true" class="icon caret astro-2z5xp7gb astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script></div></div></div></sl-sidebar-pane></nav><div class="main-frame astro-yntsjkba"><script type="module">var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()});</script><div class="lg:sl-flex astro-lrzkfocr"><aside class="right-sidebar-container print:hidden astro-lrzkfocr"><div class="right-sidebar astro-lrzkfocr"><div class="lg:sl-hidden astro-qok35upx"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-66cqc7ze"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-66cqc7ze"><details id="starlight__mobile-toc" class="astro-66cqc7ze"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-66cqc7ze"><span class="toggle sl-flex astro-66cqc7ze">On this page<svg aria-hidden="true" class="caret astro-66cqc7ze astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></span><span class="display-current astro-66cqc7ze"></span></summary><div class="dropdown astro-66cqc7ze"><ul class="isMobile astro-jugkfwgx" style="--depth: 0;"><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#_top" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Overview</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#server" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Server</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#tls" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">TLS</span></a><ul class="isMobile astro-jugkfwgx" style="--depth: 1;"><li style="--depth: 1;" class="astro-jugkfwgx"><a href="#virtual-hosts" style="--depth: 1;" class="astro-jugkfwgx"><span style="--depth: 1;" class="astro-jugkfwgx">Virtual hosts</span></a></li><li style="--depth: 1;" class="astro-jugkfwgx"><a href="#acme-automatic-certificate-management" style="--depth: 1;" class="astro-jugkfwgx"><span style="--depth: 1;" class="astro-jugkfwgx">ACME (Automatic Certificate Management)</span></a></li></ul></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#cors" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">CORS</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#rate-limiting" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Rate limiting</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#circuit-breaker" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Circuit breaker</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#logging" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Logging</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#kubernetes-gateway-api" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Kubernetes Gateway API</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#templates" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Templates</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#database" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Database</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#example-production-environment" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Example: production environment</span></a></li></ul></div></details></nav></mobile-starlight-toc><script type="module" src="/_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.C3fM4Kra.js"></script></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-qok35upx"><div class="sl-container astro-qok35upx"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">On this page</h2><ul class="astro-jugkfwgx" style="--depth: 0;"><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#_top" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Overview</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#server" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Server</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#tls" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">TLS</span></a><ul class="astro-jugkfwgx" style="--depth: 1;"><li style="--depth: 1;" class="astro-jugkfwgx"><a href="#virtual-hosts" style="--depth: 1;" class="astro-jugkfwgx"><span style="--depth: 1;" class="astro-jugkfwgx">Virtual hosts</span></a></li><li style="--depth: 1;" class="astro-jugkfwgx"><a href="#acme-automatic-certificate-management" style="--depth: 1;" class="astro-jugkfwgx"><span style="--depth: 1;" class="astro-jugkfwgx">ACME (Automatic Certificate Management)</span></a></li></ul></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#cors" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">CORS</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#rate-limiting" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Rate limiting</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#circuit-breaker" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Circuit breaker</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#logging" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Logging</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#kubernetes-gateway-api" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Kubernetes Gateway API</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#templates" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Templates</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#database" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Database</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#example-production-environment" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Example: production environment</span></a></li></ul></nav></starlight-toc><script type="module" src="/_astro/TableOfContents.astro_astro_type_script_index_0_lang.BpJaGz7G.js"></script></div></div></div></aside><div class="main-pane astro-lrzkfocr"><main data-pagefind-body class="astro-g5ptsecz" lang="en" dir="ltr"><div class="content-panel astro-a7po4psb"><div class="sl-container astro-a7po4psb"><h1 id="_top" class="astro-bebwqqxs">Environment Variables</h1></div></div><div class="content-panel astro-a7po4psb"><div class="sl-container astro-a7po4psb"><div class="sl-markdown-content"><p>All configuration in <code dir="auto">rust-web-server</code> is ultimately stored as process
+environment variables. The variables below can be set before the process starts
+(e.g. in a shell, a <code dir="auto">docker run -e</code> flag, a Kubernetes <code dir="auto">env:</code> block, or a
+<code dir="auto">systemd</code> unit file). Settings in <code dir="auto">rws.config.toml</code> and CLI flags map to the
+same variables and will override anything set in the environment.</p>
+<p>See the <a href="/configuration/overview">Configuration Overview</a> for the full priority
+order.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="server">Server</h2><a class="sl-anchor-link" href="#server"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Server”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_IP</code></td>
+<td><code dir="auto">0.0.0.0</code></td>
+<td>string</td>
+<td>IP address the server binds to. <code dir="auto">0.0.0.0</code> makes the server reachable from any interface, including inside containers and Kubernetes pods. Override to <code dir="auto">127.0.0.1</code> for local-only development.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_PORT</code></td>
+<td><code dir="auto">7878</code></td>
+<td>integer</td>
+<td>TCP port the server listens on.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_THREAD_COUNT</code></td>
+<td><code dir="auto">200</code></td>
+<td>integer</td>
+<td>Size of the worker thread pool (synchronous HTTP/1.1 build only).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_REQUEST_ALLOCATION_SIZE_IN_BYTES</code></td>
+<td><code dir="auto">10000</code></td>
+<td>integer</td>
+<td>Size in bytes of each individual socket read. Bodies larger than this are accumulated across multiple reads automatically (as long as <code dir="auto">Content-Length</code> is present) — this tunes read-syscall chunk size, not the maximum accepted body size.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_SERVE_DOTFILES</code></td>
+<td><code dir="auto">false</code></td>
+<td>boolean</td>
+<td>Serve files and directories whose name starts with <code dir="auto">.</code> (<code dir="auto">.git/</code>, <code dir="auto">.env</code>). Off by default since 17.113.1; <code dir="auto">.well-known/</code> is always served. Read at startup.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_OPEN_FILE_CACHE_SECS</code></td>
+<td><code dir="auto">1</code></td>
+<td>integer</td>
+<td>How long an open static file is reused before its path is checked again (like nginx’s <code dir="auto">open_file_cache</code>). <code dir="auto">0</code> turns the cache off. Edits in place are always served correctly; a replaced or deleted file is noticed within this many seconds. At most 128 files are held open. Read at startup; Unix only.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_OPEN_FILE_CACHE_STRICT</code></td>
+<td><code dir="auto">true</code></td>
+<td>boolean</td>
+<td><code dir="auto">true</code>: every static request checks the cached file’s size and modification time (one <code dir="auto">fstat</code>), so an edit in place is served at once. <code dir="auto">false</code>: that check is reused for <code dir="auto">RWS_CONFIG_OPEN_FILE_CACHE_SECS</code>, like nginx’s <code dir="auto">open_file_cache_valid</code> — about 0.7 µs less per request, but a file edited in place can be served stale (old size or bytes) for up to that long. Read at startup.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_RUNTIME</code></td>
+<td><code dir="auto">per-core</code> (<code dir="auto">rws</code> binary; <code dir="auto">shared</code> for library apps)</td>
+<td>string</td>
+<td>Async builds, Unix only. The <code dir="auto">rws</code> binary runs <code dir="auto">per-core</code> since 18.0.0 (<code dir="auto">shared</code> before); an application built on the library stays <code dir="auto">shared</code> unless it sets this. <code dir="auto">shared</code>: one multi-threaded tokio runtime (<code dir="auto">TOKIO_WORKER_THREADS</code> workers) takes every connection. <code dir="auto">per-core</code>: one single-threaded runtime per worker, each accepting on its own <code dir="auto">SO_REUSEPORT</code> socket on the same port, like nginx’s worker processes — a connection stays on one thread, with no work stealing or cross-thread wake-ups. On fast CPUs that’s more throughput (on the benchmark’s fastest runners +12–16% requests per second, and 4% less CPU per proxied request); on slower ones it costs about 12% more CPU per small request for a few percent more throughput. HTTP/3, the redirect listener and ACME stay on the main runtime; SIGHUP and shutdown work as usual. Read at startup.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_STATIC_CACHE_CONTROL</code></td>
+<td><code dir="auto">no-cache</code></td>
+<td>string</td>
+<td><code dir="auto">Cache-Control</code> sent with static files (since 18.0.0; other responses keep <code dir="auto">no-store, …</code>). The default lets browsers keep a file and revalidate it with <code dir="auto">If-None-Match</code> / <code dir="auto">If-Modified-Since</code>, which costs a <code dir="auto">304</code> instead of the whole file. Set e.g. <code dir="auto">public, max-age=3600</code> for assets with versioned names; an empty value sends the <code dir="auto">no-store</code> default for static files too.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CLIENT_HINTS</code></td>
+<td><code dir="auto">false</code></td>
+<td>boolean</td>
+<td>Send <code dir="auto">Accept-CH</code>, <code dir="auto">Critical-CH</code> and the client hints in <code dir="auto">Vary</code> on every response (always on before 18.0.0). Off by default: they add ~700 bytes to every response, and <code dir="auto">Critical-CH</code> makes Chromium retry a request that arrived without the hints.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_MAX_BODY_SIZE_IN_BYTES</code></td>
+<td><code dir="auto">0</code></td>
+<td>integer</td>
+<td>Maximum accepted request body size in bytes. <code dir="auto">0</code> means unlimited. When set, a request whose <code dir="auto">Content-Length</code> exceeds this is rejected with <code dir="auto">413 Payload Too Large</code> before any body bytes are read, and the connection is closed. Applies to HTTP/1.1, HTTP/2, and HTTP/3.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CSP</code></td>
+<td>unset</td>
+<td>string</td>
+<td><code dir="auto">Content-Security-Policy</code> header value, sent on every response. Unset: <code dir="auto">default-src 'self'</code> with <code dir="auto">RWS_CONFIG_SECURITY_HEADERS=true</code>, otherwise no header (18.0.0; was always <code dir="auto">default-src 'self'</code>). An empty value suppresses the header.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_SECURITY_HEADERS</code></td>
+<td><code dir="auto">false</code></td>
+<td>boolean</td>
+<td>Send <code dir="auto">X-Frame-Options: SAMEORIGIN</code>, <code dir="auto">Referrer-Policy: strict-origin-when-cross-origin</code>, <code dir="auto">Permissions-Policy: geolocation=(), microphone=(), camera=()</code> and the default CSP on every response (always sent before 18.0.0). <code dir="auto">X-Content-Type-Options: nosniff</code> is always sent.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_NANOS_HEADERS</code></td>
+<td><code dir="auto">false</code></td>
+<td>boolean</td>
+<td>Send <code dir="auto">Date-Unix-Epoch-Nanos</code> on every response and <code dir="auto">Last-Modified-Unix-Epoch-Nanos</code> on static files (always sent before 18.0.0).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_SPA_FALLBACK</code></td>
+<td>`` (empty)</td>
+<td>path</td>
+<td>File (e.g. <code dir="auto">index.html</code>) served for a <code dir="auto">GET</code>/<code dir="auto">HEAD</code> that matches no file or directory, instead of <code dir="auto">404</code> — for client-side routers. Paths whose last segment contains a <code dir="auto">.</code> still get <code dir="auto">404</code>. Empty disables it.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_SPA_FALLBACK_EXCLUDE_PREFIXES</code></td>
+<td>`` (empty)</td>
+<td>string</td>
+<td>Comma-separated path prefixes (e.g. <code dir="auto">/api,/healthz</code>) that never get the SPA fallback.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_FILE</code></td>
+<td><code dir="auto">rws.config.toml</code></td>
+<td>path</td>
+<td>Config file to load (settings and proxy routes) instead of <code dir="auto">./rws.config.toml</code>.</td>
+</tr>
+</tbody>
+</table>
+<aside aria-label="Thread count and the async build" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>Thread count and the async build</p><div class="starlight-aside__content"><p><code dir="auto">RWS_CONFIG_THREAD_COUNT</code> only applies to the <code dir="auto">http1</code>-only build, which uses a
+hand-rolled <code dir="auto">ThreadPool</code>. The <code dir="auto">http2</code> / <code dir="auto">http3</code> builds run on tokio and manage
+concurrency differently — this variable is read but ignored at runtime.</p></div></aside>
+<div class="sl-heading-wrapper level-h2"><h2 id="tls">TLS</h2><a class="sl-anchor-link" href="#tls"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “TLS”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_TLS_CERT_FILE</code></td>
+<td>`` (empty)</td>
+<td>path</td>
+<td>Path to the PEM-encoded certificate chain file. When non-empty, enables HTTPS, HTTP/2, and HTTP/3.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_TLS_KEY_FILE</code></td>
+<td>`` (empty)</td>
+<td>path</td>
+<td>Path to the PEM-encoded private key file. Must match <code dir="auto">RWS_CONFIG_TLS_CERT_FILE</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_TLS_CLIENT_CA_FILE</code></td>
+<td>`` (empty)</td>
+<td>path</td>
+<td>Path to a PEM-encoded CA certificate used to verify client certificates (mTLS). When set, the TLS handshake requires a valid client certificate signed by this CA. Connections without a valid cert are rejected before any HTTP processing.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_HTTP_REDIRECT_PORT</code></td>
+<td>`` (empty)</td>
+<td>integer</td>
+<td>When non-empty, a plain-HTTP listener is started on this port that issues <code dir="auto">301 Moved Permanently</code> redirects to HTTPS. Set to <code dir="auto">80</code> when running on standard ports. Requires TLS to be configured.</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="virtual-hosts">Virtual hosts</h3><a class="sl-anchor-link" href="#virtual-hosts"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Virtual hosts”</span></a></div>
+<p>Per-domain TLS is configured through indexed variables. The server reads entries
+sequentially, stopping at the first missing index.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_VIRTUAL_HOST_0_DOMAIN</code></td>
+<td>Domain name for virtual host 0 (e.g. <code dir="auto">example.com</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_VIRTUAL_HOST_0_CERT_FILE</code></td>
+<td>Certificate file for virtual host 0</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_VIRTUAL_HOST_0_KEY_FILE</code></td>
+<td>Private key file for virtual host 0</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_VIRTUAL_HOST_1_DOMAIN</code></td>
+<td>Domain name for virtual host 1</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_VIRTUAL_HOST_1_CERT_FILE</code></td>
+<td>Certificate file for virtual host 1</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_VIRTUAL_HOST_1_KEY_FILE</code></td>
+<td>Private key file for virtual host 1</td>
+</tr>
+</tbody>
+</table>
+<p>Continue the pattern (<code dir="auto">_2_</code>, <code dir="auto">_3_</code>, …) for as many domains as needed. The
+<code dir="auto">SniCertResolver</code> selects the correct certificate at TLS handshake time.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="acme-automatic-certificate-management">ACME (Automatic Certificate Management)</h3><a class="sl-anchor-link" href="#acme-automatic-certificate-management"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “ACME (Automatic Certificate Management)”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DOMAINS</code></td>
+<td>`` (empty)</td>
+<td>Comma-separated list of domain names. Setting this activates ACME at startup. Example: <code dir="auto">example.com,www.example.com</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_EMAIL</code></td>
+<td>`` (empty)</td>
+<td>Contact email sent to the CA. Recommended but not required by all CAs.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_STAGING</code></td>
+<td><code dir="auto">false</code></td>
+<td>Set to <code dir="auto">true</code> to use the Let’s Encrypt staging environment for testing.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DIRECTORY</code></td>
+<td>`` (empty)</td>
+<td>Custom ACME directory URL. Defaults to Let’s Encrypt production when empty.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_CERT_PATH</code></td>
+<td>`` (empty)</td>
+<td>Where to write the provisioned certificate chain (PEM). Defaults to <code dir="auto">RWS_CONFIG_TLS_CERT_FILE</code>, else <code dir="auto">.rws/acme/cert.pem</code> (since 17.113.1; was <code dir="auto">cert.pem</code> in the web root). When TLS paths are unset, ACME also points the TLS listener at this file.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_KEY_PATH</code></td>
+<td>`` (empty)</td>
+<td>Where to write the certificate’s private key (PEM). Defaults to <code dir="auto">RWS_CONFIG_TLS_KEY_FILE</code>, else <code dir="auto">.rws/acme/key.pem</code>; written <code dir="auto">0600</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_CHALLENGE_PORT</code></td>
+<td><code dir="auto">80</code></td>
+<td>Port the CA connects to for HTTP-01. A temporary listener answers at startup; once the redirect listener (<code dir="auto">RWS_CONFIG_HTTP_REDIRECT_PORT</code>) runs on this port it answers renewal challenges. Must be reachable from the internet on port 80.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_RENEW_BEFORE_DAYS</code></td>
+<td>`` (empty)</td>
+<td>Renew this many days before expiry. Empty (the default since 18.0.0; it was <code dir="auto">30</code>): at two-thirds of the certificate’s lifetime, or earlier when the CA’s renewal information (RFC 9773) says so.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_PROFILE</code></td>
+<td>`` (empty)</td>
+<td>Certificate profile to order, e.g. <code dir="auto">shortlived</code> (6-day certificates) or <code dir="auto">tlsserver</code> at Let’s Encrypt. Empty: the CA’s default. A profile the CA doesn’t offer stops provisioning with the list it offers.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_ACCOUNT_KEY_PATH</code></td>
+<td><code dir="auto">.rws/acme/account.key</code></td>
+<td>Path to persist the ACME account key between restarts (written <code dir="auto">0600</code>).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_CA_FILE</code></td>
+<td>`` (empty)</td>
+<td>PEM file of extra root CAs to trust for the ACME directory, on top of the public roots — for private ACME CAs (step-ca, Pebble).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_CHALLENGE</code></td>
+<td><code dir="auto">http-01</code></td>
+<td>How the CA checks you control the domains: <code dir="auto">http-01</code> (port 80), <code dir="auto">tls-alpn-01</code> (on the HTTPS port, RFC 8737), <code dir="auto">dns-01</code> (a TXT record; needed for wildcards) or <code dir="auto">dns-persist-01</code> (a TXT record you publish once). Since 18.4.0. See <a href="/features/acme/#challenge-types">Challenge types</a>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_PROVIDER</code></td>
+<td>`` (empty)</td>
+<td>DNS-01: <code dir="auto">rfc2136</code> (a DNS UPDATE), <code dir="auto">cloudflare</code>, <code dir="auto">route53</code> (credentials from <code dir="auto">AWS_ACCESS_KEY_ID</code> / <code dir="auto">AWS_SECRET_ACCESS_KEY</code> / <code dir="auto">AWS_SESSION_TOKEN</code>) or <code dir="auto">exec</code> (a program).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_API_TOKEN</code></td>
+<td>`` (empty)</td>
+<td>DNS-01 <code dir="auto">cloudflare</code>: the API token (DNS edit). No command-line flag; never printed.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_ZONE_ID</code></td>
+<td>`` (empty)</td>
+<td>DNS-01 <code dir="auto">cloudflare</code> / <code dir="auto">route53</code>: the zone’s id instead of looking it up.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_API_URL</code></td>
+<td>`` (empty)</td>
+<td>DNS-01 <code dir="auto">cloudflare</code> / <code dir="auto">route53</code>: another API base URL (a proxy, a test double).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_SERVER</code></td>
+<td>`` (empty)</td>
+<td>DNS-01: <code dir="auto">rfc2136</code>’s primary server, <code dir="auto">host[:port]</code> (port 53); with <code dir="auto">exec</code>, optional: where to check that the record is visible (else the system resolver).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_ZONE</code></td>
+<td>`` (empty)</td>
+<td>DNS-01: the zone holding <code dir="auto">_acme-challenge</code> records; found by an SOA lookup when empty.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_TSIG_KEY</code></td>
+<td>`` (empty)</td>
+<td>DNS-01 <code dir="auto">rfc2136</code>: the TSIG key name.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_TSIG_SECRET</code></td>
+<td>`` (empty)</td>
+<td>DNS-01 <code dir="auto">rfc2136</code>: the TSIG secret, base64. Set it here or in <code dir="auto">rws.config.toml</code> — there is no command-line flag — and it is never printed.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_TSIG_ALGORITHM</code></td>
+<td><code dir="auto">hmac-sha256</code></td>
+<td>DNS-01 <code dir="auto">rfc2136</code>: <code dir="auto">hmac-sha256</code> or <code dir="auto">hmac-sha512</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_EXEC</code></td>
+<td>`` (empty)</td>
+<td>DNS-01 <code dir="auto">exec</code>: run as <code dir="auto">&lt;program&gt; present &lt;fqdn&gt; &lt;value&gt;</code> and <code dir="auto">&lt;program&gt; cleanup &lt;fqdn&gt; &lt;value&gt;</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_DNS_PROPAGATION_SECS</code></td>
+<td><code dir="auto">120</code></td>
+<td>DNS-01: how long to wait for the record to be visible before the CA checks it.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_ON_DEMAND</code></td>
+<td><code dir="auto">false</code></td>
+<td><code dir="auto">true</code>: order a certificate at the first TLS handshake for a name <code dir="auto">RWS_CONFIG_ACME_ON_DEMAND_ASK</code> allows. Since 18.4.0. See <a href="/features/acme/#on-demand-tls">On-demand TLS</a>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_ON_DEMAND_ASK</code></td>
+<td>`` (empty)</td>
+<td>URL asked <code dir="auto">?domain=&lt;name&gt;</code> before each on-demand order; a 2xx answer allows it. Required with <code dir="auto">RWS_CONFIG_ACME_ON_DEMAND</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_REDIS</code></td>
+<td>`` (empty)</td>
+<td>Redis <code dir="auto">host:port</code> shared by replicas: one orders each certificate, all install it, and any answers the CA’s challenges. Since 18.4.0. See <a href="/features/acme/#several-replicas">Several replicas</a>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_REDIS_PASSWORD</code></td>
+<td>`` (empty)</td>
+<td>Password for <code dir="auto">RWS_CONFIG_ACME_REDIS</code>. No command-line flag; never printed.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_REDIS_PREFIX</code></td>
+<td><code dir="auto">rws:acme</code></td>
+<td>Key prefix in that Redis, for several sites in one.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACME_RENEW_CHECK_INTERVAL_SECS</code></td>
+<td><code dir="auto">43200</code></td>
+<td>Longest time between renewal checks (sooner when renewal is due earlier or the CA’s renewal information asks). After a failed renewal the next attempt comes within an hour.</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="cors">CORS</h2><a class="sl-anchor-link" href="#cors"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “CORS”</span></a></div>
+<p>Off by default (since 18.0.0). When <code dir="auto">RWS_CONFIG_CORS_ALLOW_ALL</code> is <code dir="auto">true</code> the server sets permissive CORS
+headers on every response — any origin, with credentials — and the more specific <code dir="auto">CORS_ALLOW_*</code> variables are
+ignored.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CORS_ALLOW_ALL</code></td>
+<td><code dir="auto">false</code></td>
+<td>When <code dir="auto">true</code>, allows all CORS requests from any origin, with credentials. Was <code dir="auto">true</code> before 18.0.0.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CORS_ALLOW_ORIGINS</code></td>
+<td>`` (empty)</td>
+<td>Comma-separated list of allowed origins. Example: <code dir="auto">https://app.example.com,https://admin.example.com</code>. Ignored when <code dir="auto">CORS_ALLOW_ALL</code> is <code dir="auto">true</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CORS_ALLOW_METHODS</code></td>
+<td>`` (empty)</td>
+<td>Comma-separated list of allowed HTTP methods. Example: <code dir="auto">GET,POST,PUT</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CORS_ALLOW_HEADERS</code></td>
+<td>`` (empty)</td>
+<td>Comma-separated list of allowed request headers (lowercase). Example: <code dir="auto">content-type,x-api-key</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CORS_ALLOW_CREDENTIALS</code></td>
+<td>`` (empty)</td>
+<td>Set to <code dir="auto">true</code> to allow cookies and credentials to be sent with cross-origin requests.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CORS_EXPOSE_HEADERS</code></td>
+<td>`` (empty)</td>
+<td>Comma-separated list of response headers the browser may expose to JavaScript (lowercase).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CORS_MAX_AGE</code></td>
+<td><code dir="auto">86400</code></td>
+<td>How long (in seconds) the browser may cache a preflight response. Default is 24 hours.</td>
+</tr>
+</tbody>
+</table>
+<p>All CORS variables are hot-reloadable. Send <code dir="auto">SIGHUP</code> or <code dir="auto">POST /admin/config/reload</code>
+to apply changes without restarting.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="rate-limiting">Rate limiting</h2><a class="sl-anchor-link" href="#rate-limiting"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Rate limiting”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_RATE_LIMIT_MAX_REQUESTS</code></td>
+<td>`` (unset)</td>
+<td>Maximum number of requests allowed per client IP within the window. The <code dir="auto">rws</code> binary enforces the global limit only when this is set above <code dir="auto">0</code> (decided at startup). <code dir="auto">rate_limit::global()</code> in library code defaults to <code dir="auto">1000</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_RATE_LIMIT_WINDOW_SECS</code></td>
+<td><code dir="auto">60</code></td>
+<td>Sliding window length in seconds.</td>
+</tr>
+</tbody>
+</table>
+<p>Rate-limit values are hot-reloadable. Existing per-IP counters are preserved when
+limits change — only the allowed maximum and window size are updated.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="circuit-breaker">Circuit breaker</h2><a class="sl-anchor-link" href="#circuit-breaker"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Circuit breaker”</span></a></div>
+<p>Read by <code dir="auto">RedisCircuitBreaker::from_env()</code> (with <code dir="auto">RWS_REDIS_HOST</code>/<code dir="auto">_PORT</code>/<code dir="auto">_PASSWORD</code>;
+see <a href="/proxy/circuit-breaker/">Circuit breaker</a>). Config-driven proxy routes
+don’t use them.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CIRCUIT_BREAKER_FAILURE_THRESHOLD</code></td>
+<td><code dir="auto">5</code></td>
+<td>Consecutive failures before the circuit opens.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CIRCUIT_BREAKER_RECOVERY_SECS</code></td>
+<td><code dir="auto">30</code></td>
+<td>Seconds the circuit stays open before a half-open probe.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_CIRCUIT_BREAKER_MAX_HALF_OPEN_PROBES</code></td>
+<td><code dir="auto">1</code></td>
+<td>Probe requests allowed while half-open.</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="logging">Logging</h2><a class="sl-anchor-link" href="#logging"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Logging”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Options</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_PROXY_PROTOCOL</code></td>
+<td><code dir="auto">false</code></td>
+<td>boolean</td>
+<td>Every connection to the main listener starts with a PROXY protocol v1 or v2 header (HAProxy <code dir="auto">send-proxy</code>, AWS NLB, GCP); its source address becomes the client address. Connections without one are closed. Since 18.3.0; read at startup. See <a href="/proxy/overview/#behind-an-l4-load-balancer-proxy-protocol">Behind a load balancer</a>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_WATCH</code></td>
+<td><code dir="auto">false</code></td>
+<td>boolean</td>
+<td>Reload when <code dir="auto">rws.config.toml</code> (or <code dir="auto">RWS_CONFIG_FILE</code>) or a configured TLS certificate or key changes — the same validated reload as <code dir="auto">SIGHUP</code>, checked once a second (since 18.1.0). Read at startup. See <a href="/features/hot-reload/#reloading-when-the-file-changes">Hot reload</a>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACCESS_LOG</code></td>
+<td>(stdout)</td>
+<td>path</td>
+<td>Append access-log lines to this file instead of stdout (since 18.1.0). Opened at the first line; <code dir="auto">SIGUSR1</code> reopens it (for logrotate). Read at startup. See <a href="/deployment/observability/#writing-to-a-file">Logs</a>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACCESS_LOG_MAX_SIZE</code></td>
+<td><code dir="auto">0</code></td>
+<td>bytes (<code dir="auto">K</code>/<code dir="auto">M</code>/<code dir="auto">G</code> suffixes)</td>
+<td>Rotate the access-log file when the next lines would take it past this size: <code dir="auto">access.log</code> → <code dir="auto">access.log.1</code> …. <code dir="auto">0</code> never rotates (leave it to logrotate).</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_ACCESS_LOG_KEEP</code></td>
+<td><code dir="auto">5</code></td>
+<td>integer</td>
+<td>Rotated access-log files to keep; <code dir="auto">0</code> empties the file instead of keeping any.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_LOG_FORMAT</code></td>
+<td><code dir="auto">json</code></td>
+<td><code dir="auto">json</code>, <code dir="auto">combined</code>, <code dir="auto">off</code></td>
+<td>Log format for access logs. <code dir="auto">json</code> writes structured JSON. <code dir="auto">combined</code> writes Combined Log Format (Apache/nginx-compatible). <code dir="auto">off</code> (or <code dir="auto">none</code>) writes no per-request line — e.g. behind a proxy that already logs. Hot-reloadable.</td>
+</tr>
+</tbody>
+</table>
+<p>The log format is hot-reloadable.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="kubernetes-gateway-api">Kubernetes Gateway API</h2><a class="sl-anchor-link" href="#kubernetes-gateway-api"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Kubernetes Gateway API”</span></a></div>
+<p>The <code dir="auto">gateway-api</code> build feature’s controller (in progress, 18.8.0). Read at startup. See <a href="/deployment/kubernetes-gateway-api/">Kubernetes Gateway API</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_ENABLED</code></td>
+<td><code dir="auto">false</code></td>
+<td>boolean</td>
+<td>Watch the cluster’s Gateway API objects, serve the Gateways of this controller’s GatewayClasses and report their status</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_CONTROLLER_NAME</code></td>
+<td><code dir="auto">rws8.tech/gateway-controller</code></td>
+<td>string</td>
+<td>The <code dir="auto">spec.controllerName</code> of the GatewayClasses this instance handles</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_POD_SELECTOR</code></td>
+<td><code dir="auto">app.kubernetes.io/name=rws</code></td>
+<td><code dir="auto">key=value,…</code></td>
+<td>Labels of the rws pods (in the controller’s namespace) that serve Gateways in the shared mode; rws lists them in every Gateway Service’s EndpointSlice</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_PORT_RANGE</code></td>
+<td><code dir="auto">10000-10999</code></td>
+<td><code dir="auto">first-last</code></td>
+<td>Container ports Gateway listeners are served on (each Service maps a listener port to one)</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_SERVICE_TYPE</code></td>
+<td><code dir="auto">LoadBalancer</code></td>
+<td>string</td>
+<td>The type of the Service each Gateway gets</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_LEASE_NAMESPACE</code></td>
+<td>the pod’s namespace</td>
+<td>string</td>
+<td>Where the <code dir="auto">rws-gateway-controller</code> leader-election Lease lives</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_MODE</code></td>
+<td><code dir="auto">shared</code></td>
+<td><code dir="auto">shared</code> or <code dir="auto">provisioned</code></td>
+<td><code dir="auto">shared</code>: the controller’s pods serve every Gateway. <code dir="auto">provisioned</code>: each Gateway gets its own Deployment of rws pods; the controller’s pods serve none</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_IMAGE</code></td>
+<td><code dir="auto">ghcr.io/bohdaq/rws:&lt;this version&gt;</code></td>
+<td>string</td>
+<td>The image provisioned Deployments run</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_SERVICE_ACCOUNT</code></td>
+<td><code dir="auto">POD_SERVICE_ACCOUNT</code>, else <code dir="auto">default</code></td>
+<td>string</td>
+<td>The ServiceAccount provisioned pods run as</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_CONFIG_GATEWAY_API_GATEWAY</code></td>
+<td>—</td>
+<td><code dir="auto">namespace/name</code></td>
+<td>Set by the controller on provisioned pods: serve only this Gateway, and never write status or objects</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="templates">Templates</h2><a class="sl-anchor-link" href="#templates"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Templates”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_CONFIG_TEMPLATE_DIR</code></td>
+<td><code dir="auto">templates</code></td>
+<td>Directory containing Tera HTML templates. Only relevant when the <code dir="auto">tera</code> Cargo feature is enabled.</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="database">Database</h2><a class="sl-anchor-link" href="#database"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Database”</span></a></div>
+<p>Database variables are only used when the <code dir="auto">model-sqlite</code>, <code dir="auto">model-postgres</code>, or
+<code dir="auto">model-mysql</code> Cargo feature is enabled. They are not part of the <code dir="auto">RWS_CONFIG_*</code>
+namespace — they use a shorter <code dir="auto">RWS_DB_*</code> prefix.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RWS_DB_BACKEND</code></td>
+<td>inferred</td>
+<td><code dir="auto">sqlite</code>, <code dir="auto">postgres</code>, or <code dir="auto">mysql</code>. Inferred when exactly one <code dir="auto">model-*</code> feature is compiled in; required otherwise.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_DB_HOST</code></td>
+<td><code dir="auto">localhost</code></td>
+<td>Database server hostname or IP address.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_DB_PORT</code></td>
+<td><code dir="auto">5432</code></td>
+<td>Database server port. The default matches PostgreSQL; MySQL uses <code dir="auto">3306</code>.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_DB_USER</code></td>
+<td>`` (empty)</td>
+<td>Database user name.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_DB_PASSWORD</code></td>
+<td>`` (empty)</td>
+<td>Database password.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_DB_NAME</code></td>
+<td>`` (required)</td>
+<td>Database name. No default — the server will fail to start if this is unset when the model feature is active.</td>
+</tr>
+<tr>
+<td><code dir="auto">RWS_DB_POOL_SIZE</code></td>
+<td><code dir="auto">10</code></td>
+<td>Number of connections to pre-create in the connection pool at startup.</td>
+</tr>
+</tbody>
+</table>
+<aside aria-label="SQLite path" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>SQLite path</p><div class="starlight-aside__content"><p>For <code dir="auto">model-sqlite</code>, <code dir="auto">RWS_DB_NAME</code> is the file path of the SQLite database, for
+example <code dir="auto">RWS_DB_NAME=./data/app.db</code>. Use <code dir="auto">:memory:</code> for an in-memory database
+(useful in tests).</p></div></aside>
+<div class="sl-heading-wrapper level-h2"><h2 id="example-production-environment">Example: production environment</h2><a class="sl-anchor-link" href="#example-production-environment"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Example: production environment”</span></a></div>
+<div class="expressive-code"><link rel="stylesheet" href="/_astro/ec.w36nc.css"><script type="module" src="/_astro/ec.0vx5m.js"></script><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># Server</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_IP</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#F78C6C;--1:#AA0982">0.0.0.0</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_PORT</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#F78C6C;--1:#AA0982">443</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_THREAD_COUNT</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#F78C6C;--1:#AA0982">500</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># TLS</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_TLS_CERT_FILE</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#C5E478;--1:#3B61B0">etc</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#C5E478;--1:#3B61B0">ssl</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#C5E478;--1:#3B61B0">certs</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#C5E478;--1:#3B61B0">server</span><span style="--0:#D6DEEB;--1:#403F53">.</span><span style="--0:#C5E478;--1:#3B61B0">pem</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_TLS_KEY_FILE</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#C5E478;--1:#3B61B0">etc</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#C5E478;--1:#3B61B0">ssl</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#C5E478;--1:#3B61B0">private</span><span style="--0:#D6DEEB;--1:#403F53">/</span><span style="--0:#C5E478;--1:#3B61B0">server</span><span style="--0:#D6DEEB;--1:#403F53">.</span><span style="--0:#C5E478;--1:#3B61B0">key</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_HTTP_REDIRECT_PORT</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#F78C6C;--1:#AA0982">80</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># CORS — restrict to known origins</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_CORS_ALLOW_ALL</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#C5E478;--1:#3B61B0">false</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_CORS_ALLOW_ORIGINS</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#C5E478;--1:#3B61B0">https</span><span style="--0:#D6DEEB;--1:#403F53">://</span><span style="--0:#C5E478;--1:#3B61B0">app</span><span style="--0:#D6DEEB;--1:#403F53">.</span><span style="--0:#C5E478;--1:#3B61B0">example</span><span style="--0:#D6DEEB;--1:#403F53">.</span><span style="--0:#C5E478;--1:#3B61B0">com</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_CORS_ALLOW_METHODS</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#C5E478;--1:#3B61B0">GET</span><span style="--0:#D6DEEB;--1:#403F53">,</span><span style="--0:#C5E478;--1:#3B61B0">POST</span><span style="--0:#D6DEEB;--1:#403F53">,</span><span style="--0:#C5E478;--1:#3B61B0">PUT</span><span style="--0:#D6DEEB;--1:#403F53">,</span><span style="--0:#C5E478;--1:#3B61B0">DELETE</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_CORS_ALLOW_HEADERS</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#C5E478;--1:#3B61B0">content-type</span><span style="--0:#D6DEEB;--1:#403F53">,</span><span style="--0:#C5E478;--1:#3B61B0">authorization</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># Rate limiting</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_RATE_LIMIT_MAX_REQUESTS</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#F78C6C;--1:#AA0982">500</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_RATE_LIMIT_WINDOW_SECS</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#F78C6C;--1:#AA0982">60</span></div></div><div class="ec-line"><div class="code">
+</div></div><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># Logging</span></div></div><div class="ec-line"><div class="code"><span style="--0:#C792EA;--1:#8844AE">export</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#C5E478;--1:#3B61B0">RWS_CONFIG_LOG_FORMAT</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#C5E478;--1:#3B61B0">json</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="export RWS_CONFIG_IP=0.0.0.0export RWS_CONFIG_PORT=443export RWS_CONFIG_THREAD_COUNT=500export RWS_CONFIG_TLS_CERT_FILE=/etc/ssl/certs/server.pemexport RWS_CONFIG_TLS_KEY_FILE=/etc/ssl/private/server.keyexport RWS_CONFIG_HTTP_REDIRECT_PORT=80export RWS_CONFIG_CORS_ALLOW_ALL=falseexport RWS_CONFIG_CORS_ALLOW_ORIGINS=https://app.example.comexport RWS_CONFIG_CORS_ALLOW_METHODS=GET,POST,PUT,DELETEexport RWS_CONFIG_CORS_ALLOW_HEADERS=content-type,authorizationexport RWS_CONFIG_RATE_LIMIT_MAX_REQUESTS=500export RWS_CONFIG_RATE_LIMIT_WINDOW_SECS=60export RWS_CONFIG_LOG_FORMAT=json"><div></div></button></div></figure></div>
+</div><footer class="sl-flex astro-ddtxxk7k"><div class="meta sl-flex astro-ddtxxk7k"></div><div class="pagination-links print:hidden astro-b5raizh3" dir="ltr"><a href="/configuration/overview/" rel="prev" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg><span class="astro-b5raizh3">Previous<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Overview</span></span></a><a href="/configuration/config-file/" rel="next" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg><span class="astro-b5raizh3">Next<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Config File</span></span></a></div></footer></div></div></main></div></div></div></div></body></html>

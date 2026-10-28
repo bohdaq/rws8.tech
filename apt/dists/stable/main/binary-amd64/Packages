@@ -1,0 +1,18 @@
+Package: rws
+Architecture: amd64
+Version: 18.8.2
+Priority: optional
+Section: web
+Maintainer: Bohdan Tsap <bohdan.tsap@tutanota.com>
+Installed-Size: 34879
+Filename: pool/main/rws_18.8.2_amd64.deb
+Size: 12305604
+MD5sum: bca2685b7f44329a7d67b4d28210292e
+SHA1: 50b06f570d16992f114b2b7b0750918fbde3f2cc
+SHA256: 79e930dfbd7c50ea1e3307248362495b4bf2769e56499d5796cb14e7ac156b4c
+SHA512: 6b95c59f7d7a43ef6bc776ddb5051726838db9d6f41c432574e332459f89cdb1178e4a75dfb223d1005d109c6f14c724b94d38bee891dd2fe35682846d5eed16
+Homepage: https://rws8.tech
+Description: Web server and reverse proxy: automatic HTTPS (Let's Encrypt), HTTP/1.1,
+ HTTP/2 and HTTP/3, load balancing, auth and rate limiting, configured in
+ one TOML file. Runs as the systemd service rws.
+

@@ -1,0 +1,1451 @@
+<!DOCTYPE html><html lang="en" dir="ltr" data-theme="dark" data-has-toc data-has-sidebar class="astro-g5ptsecz"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>API Reference | rust-web-server</title><link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/><meta name="generator" content="Astro v7.4.2"/><meta name="generator" content="Starlight v0.42.7"/><meta property="og:title" content="API Reference"/><meta property="og:type" content="article"/><meta property="og:locale" content="en"/><meta property="og:description" content="Quick-reference index of all major public types in rust-web-server, grouped by area."/><meta property="og:site_name" content="rust-web-server"/><meta name="twitter:card" content="summary_large_image"/><meta name="description" content="Quick-reference index of all major public types in rust-web-server, grouped by area."/><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"/></svg><svg aria-hidden="true" class="dark astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"/></svg><svg aria-hidden="true" class="auto astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg></template><link rel="stylesheet" href="/_astro/print.ehPL0gv-.css" media="print"><link rel="stylesheet" href="/_astro/common.DjBLR3B9.css"><style>@layer starlight.components{svg:where(.astro-hkc32dio){color:var(--sl-icon-color);font-size:var(--sl-icon-size,1em);width:1em;height:1em;overflow:visible}}
+</style><script type="module" src="/_astro/page.cNngjUgL.js"></script></head><body class="astro-g5ptsecz"><a class="sl-skip-link astro-qb7clj6f" href="#_top">Skip to content</a><div class="page sl-flex astro-yntsjkba"><header class="header astro-yntsjkba"><div class="header astro-by6fddyj"><div class="title-wrapper sl-flex astro-by6fddyj"><a href="/" class="site-title sl-flex astro-6rvad3va"><img class="astro-6rvad3va" alt src="/_astro/logo.BOb8Ukui.svg" width="44" height="32"><span class="astro-6rvad3va" translate="no">rust-web-server</span></a></div><div class="sl-flex print:hidden astro-by6fddyj"><site-search class="astro-by6fddyj astro-b5kgnn7o" data-translations="{&quot;placeholder&quot;:&quot;Search&quot;}"><button data-open-modal disabled aria-label="Search" aria-keyshortcuts="Control+K" class="astro-b5kgnn7o"><svg aria-hidden="true" class="astro-b5kgnn7o astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg><span class="sl-hidden md:sl-block astro-b5kgnn7o" aria-hidden="true">Search</span><kbd class="sl-hidden md:sl-flex astro-b5kgnn7o" style="display: none;"><kbd class="astro-b5kgnn7o">Ctrl</kbd><kbd class="astro-b5kgnn7o">K</kbd></kbd></button><dialog style="padding:0" aria-label="Search" class="astro-b5kgnn7o"><div class="dialog-frame sl-flex astro-b5kgnn7o"><button data-close-modal class="sl-flex md:sl-hidden astro-b5kgnn7o">Cancel</button><div class="search-container astro-b5kgnn7o"><div id="starlight__search" class="astro-b5kgnn7o"></div></div></div></dialog></site-search><script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="/_astro/Search.astro_astro_type_script_index_0_lang.Djc9ZKGJ.js"></script></div><div class="sl-hidden md:sl-flex print:hidden right-group astro-by6fddyj"><div class="sl-flex social-icons astro-by6fddyj"><a href="https://github.com/bohdaq/rust-web-server" rel="me" class="sl-flex astro-n2mnl6yq"><span class="sr-only astro-n2mnl6yq">GitHub</span><svg aria-hidden="true" class="astro-n2mnl6yq astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-2z5xp7gb"><span class="sr-only astro-2z5xp7gb">Select theme</span><svg aria-hidden="true" class="icon label-icon astro-2z5xp7gb astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg><select autocomplete="off" class="astro-2z5xp7gb"><option value="dark" class="astro-2z5xp7gb">Dark</option><option value="light" class="astro-2z5xp7gb">Light</option><option value="auto" selected class="astro-2z5xp7gb">Auto</option></select><svg aria-hidden="true" class="icon caret astro-2z5xp7gb astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script><script type="module">var e=`starlight-theme`,t=e=>e===`auto`||e===`dark`||e===`light`?e:`auto`,n=()=>t(typeof localStorage<`u`&&localStorage.getItem(e));function r(t){typeof localStorage<`u`&&localStorage.setItem(e,t===`light`||t===`dark`?t:``)}var i=()=>matchMedia(`(prefers-color-scheme: light)`).matches?`light`:`dark`;function a(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e===`auto`?i():e,r(e)}matchMedia(`(prefers-color-scheme: light)`).addEventListener(`change`,()=>{n()===`auto`&&a(`auto`)});var o=class extends HTMLElement{constructor(){super(),a(n()),this.querySelector(`select`)?.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&a(t(e.currentTarget.value))})}};customElements.define(`starlight-theme-select`,o);</script><script type="module">var e=class extends HTMLElement{constructor(){super();let e=this.querySelector(`select`);e&&(e.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=e.currentTarget.value)}),window.addEventListener(`pageshow`,t=>{if(!t.persisted)return;let n=e.querySelector(`option[selected]`)?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}};customElements.define(`starlight-lang-select`,e);</script></div></div></header><nav class="sidebar print:hidden astro-yntsjkba" aria-label="Main"><button popovertarget="starlight__sidebar" class="sl-menu-button sl-flex md:sl-hidden print:hidden astro-r2osgdlg"><svg aria-hidden="true" class="open-menu astro-r2osgdlg astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M3 8h18a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2Zm18 8H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Zm0-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"/></svg><svg aria-hidden="true" class="close-menu astro-r2osgdlg astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="m13.41 12 6.3-6.29a1.004 1.004 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1.004 1.004 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 0 1.42.998.998 0 0 0 1.42 0l6.29-6.3 6.29 6.3a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12Z"/></svg><span class="sr-only astro-r2osgdlg">Menu</span></button><script type="module">var e=class extends HTMLElement{constructor(){super();let e=matchMedia(`(min-width: 50em)`),t=()=>{this.popover=e.matches?null:`auto`};t(),e.addEventListener(`change`,()=>t()),this.addEventListener(`toggle`,({newState:e})=>this.trapFocus(e===`open`))}trapFocus(e){document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}};customElements.define(`sl-sidebar-pane`,e);</script><sl-sidebar-pane popover id="starlight__sidebar" class="sidebar-pane astro-yntsjkba"><div class="sidebar-content sl-flex astro-yntsjkba"><sl-sidebar-state-persist data-hash="0wq36l1" class="astro-ipdry5cl"><script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script><ul class="top-level astro-rmhv4bp6"><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Getting Started</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="0"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/getting-started/quick-start/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Quick Start</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/examples/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Examples</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/ai-agents/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">AI Coding Agents</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/installation/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Installation</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/dev-workflow/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Dev Workflow</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/frontend-dev-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Frontend Dev Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/getting-started/features/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">All Features</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Configuration</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="1"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/configuration/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/configuration/env-vars/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Environment Variables</span></a></li><li class="astro-rmhv4bp6"><a href="/configuration/config-file/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Config File</span></a></li><li class="astro-rmhv4bp6"><a href="/configuration/cli-args/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">CLI Args</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Building Apps</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="2"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/building-apps/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/controllers/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Controllers</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/routing/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Routing</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/request-response/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Request &amp; Response</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/state/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Shared State</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/extractors/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Typed Extractors</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/error-handling/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Error Handling</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/middleware/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Middleware</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/validation/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Validation</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/forms-uploads/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Forms &amp; Uploads</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/json/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">JSON</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/cookies/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Cookies</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/async-handlers/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Async Handlers</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/http-client/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTTP Client</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/templates/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTML Templates</span></a></li><li class="astro-rmhv4bp6"><a href="/building-apps/dependency-injection/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Dependency Injection</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Features</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="3"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/features/cors-security/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">CORS &amp; Security</span></a></li><li class="astro-rmhv4bp6"><a href="/features/static-files/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Static Files &amp; Listing</span></a></li><li class="astro-rmhv4bp6"><a href="/features/rate-limiting/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Rate Limiting</span></a></li><li class="astro-rmhv4bp6"><a href="/features/compression/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Compression</span></a></li><li class="astro-rmhv4bp6"><a href="/features/https-tls/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTTPS / TLS</span></a></li><li class="astro-rmhv4bp6"><a href="/features/acme/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Automatic TLS (ACME)</span></a></li><li class="astro-rmhv4bp6"><a href="/features/mtls/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Mutual TLS (mTLS)</span></a></li><li class="astro-rmhv4bp6"><a href="/features/virtual-hosting/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Virtual Hosting</span></a></li><li class="astro-rmhv4bp6"><a href="/features/http2/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTTP/2</span></a></li><li class="astro-rmhv4bp6"><a href="/features/http3-quic/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">HTTP/3 / QUIC</span></a></li><li class="astro-rmhv4bp6"><a href="/features/websocket/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">WebSocket</span></a></li><li class="astro-rmhv4bp6"><a href="/features/sse/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Server-Sent Events</span></a></li><li class="astro-rmhv4bp6"><a href="/features/auth/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Auth</span></a></li><li class="astro-rmhv4bp6"><a href="/features/sso/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">OAuth2 / OIDC SSO</span></a></li><li class="astro-rmhv4bp6"><a href="/features/saml/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">SAML 2.0 SSO</span></a></li><li class="astro-rmhv4bp6"><a href="/features/csrf/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">CSRF Protection</span></a></li><li class="astro-rmhv4bp6"><a href="/features/sessions/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Sessions</span></a></li><li class="astro-rmhv4bp6"><a href="/features/email/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Email / SMTP</span></a></li><li class="astro-rmhv4bp6"><a href="/features/storage/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">File / Object Storage</span></a></li><li class="astro-rmhv4bp6"><a href="/features/caching/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Response Caching</span></a></li><li class="astro-rmhv4bp6"><a href="/features/metrics/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Metrics</span></a></li><li class="astro-rmhv4bp6"><a href="/features/tracing/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Distributed Tracing</span></a></li><li class="astro-rmhv4bp6"><a href="/features/hot-reload/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Hot Config Reload</span></a></li><li class="astro-rmhv4bp6"><a href="/features/rewrite/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Rewrite Middleware</span></a></li><li class="astro-rmhv4bp6"><a href="/features/ip-filter/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">IP Filtering</span></a></li><li class="astro-rmhv4bp6"><a href="/features/request-id/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Request ID</span></a></li><li class="astro-rmhv4bp6"><a href="/features/scheduler/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Background Scheduler</span></a></li><li class="astro-rmhv4bp6"><a href="/features/jobs/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Background Job Queue</span></a></li><li class="astro-rmhv4bp6"><a href="/features/openapi/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">OpenAPI / Swagger</span></a></li><li class="astro-rmhv4bp6"><a href="/features/tower/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Tower interop</span></a></li><li class="astro-rmhv4bp6"><a href="/features/timeouts/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Per-Route Timeouts</span></a></li><li class="astro-rmhv4bp6"><a href="/features/config-binding/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Typed Config Binding</span></a></li><li class="astro-rmhv4bp6"><a href="/features/webhooks/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Webhook Verification</span></a></li><li class="astro-rmhv4bp6"><a href="/features/secrets/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Secrets Manager Integration</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Proxy / Gateway</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="4"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/proxy/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/config-driven/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Config-Driven Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/reverse-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Reverse Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/load-balancing/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Load Balancing</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/health-checks/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Health Checks</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/circuit-breaker/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Circuit Breaker</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/canary/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Canary / Traffic Split</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/service-discovery/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Service Discovery</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/tcp-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">TCP Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/udp-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">UDP Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/websocket-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">WebSocket Proxy</span></a></li><li class="astro-rmhv4bp6"><a href="/proxy/grpc-proxy/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">gRPC Proxy</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Database / ORM</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="5"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/database/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/database/model-derive/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">#[derive(Model)]</span></a></li><li class="astro-rmhv4bp6"><a href="/database/repository/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Repository</span></a></li><li class="astro-rmhv4bp6"><a href="/database/query-builder/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Query Builder</span></a></li><li class="astro-rmhv4bp6"><a href="/database/pagination/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Pagination</span></a></li><li class="astro-rmhv4bp6"><a href="/database/raw-sql/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Raw SQL</span></a></li><li class="astro-rmhv4bp6"><a href="/database/transactions/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Transactions</span></a></li><li class="astro-rmhv4bp6"><a href="/database/migrations/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Migrations</span></a></li><li class="astro-rmhv4bp6"><a href="/database/relations/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Relations</span></a></li><li class="astro-rmhv4bp6"><a href="/database/in-memory/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">In-memory SQLite</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">MCP Server</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="6"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/mcp/overview/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Overview</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/tools/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Tools</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/resources/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Resources</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/prompts/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Prompts</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/auth/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Auth</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/operate/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Operate rws from an AI client</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/agent-tools/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Build agent tools on your app</span></a></li><li class="astro-rmhv4bp6"><a href="/mcp/gateway/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Gateway</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Testing</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="7"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/testing/test-client/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Test Client</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Deployment</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="8"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/deployment/docker/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Docker</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/kubernetes/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Kubernetes</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/kubernetes-ingress/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Kubernetes Ingress</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/kubernetes-gateway-api/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Kubernetes Gateway API</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/observability/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Observability</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/systemd/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">systemd</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/windows/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Windows</span></a></li><li class="astro-rmhv4bp6"><a href="/deployment/wasm/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">WASM Guest Component</span></a></li></ul></details></li><li class="astro-rmhv4bp6"><details open class="astro-rmhv4bp6"><summary class="astro-rmhv4bp6"><span class="group-label astro-rmhv4bp6"><span class="large astro-rmhv4bp6">Reference</span></span><svg aria-hidden="true" class="caret astro-rmhv4bp6 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="9"></sl-sidebar-restore><ul class="astro-rmhv4bp6"><li class="astro-rmhv4bp6"><a href="/reference/api/" aria-current="page" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">API Reference</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/troubleshooting/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Troubleshooting</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/migrating-18/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Migrating to 18.0</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/architecture/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Architecture</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/benchmarks/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Benchmarks</span></a></li><li class="astro-rmhv4bp6"><a href="/reference/roadmap/" class="astro-rmhv4bp6"><span class="astro-rmhv4bp6">Roadmap</span></a></li></ul></details></li></ul><script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist><div class="md:sl-hidden"><div class="mobile-preferences sl-flex astro-p4azlveh"><div class="social-icons astro-p4azlveh"><a href="https://github.com/bohdaq/rust-web-server" rel="me" class="sl-flex astro-n2mnl6yq"><span class="sr-only astro-n2mnl6yq">GitHub</span><svg aria-hidden="true" class="astro-n2mnl6yq astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-2z5xp7gb"><span class="sr-only astro-2z5xp7gb">Select theme</span><svg aria-hidden="true" class="icon label-icon astro-2z5xp7gb astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg><select autocomplete="off" class="astro-2z5xp7gb"><option value="dark" class="astro-2z5xp7gb">Dark</option><option value="light" class="astro-2z5xp7gb">Light</option><option value="auto" selected class="astro-2z5xp7gb">Auto</option></select><svg aria-hidden="true" class="icon caret astro-2z5xp7gb astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script></div></div></div></sl-sidebar-pane></nav><div class="main-frame astro-yntsjkba"><script type="module">var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()});</script><div class="lg:sl-flex astro-lrzkfocr"><aside class="right-sidebar-container print:hidden astro-lrzkfocr"><div class="right-sidebar astro-lrzkfocr"><div class="lg:sl-hidden astro-qok35upx"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-66cqc7ze"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-66cqc7ze"><details id="starlight__mobile-toc" class="astro-66cqc7ze"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-66cqc7ze"><span class="toggle sl-flex astro-66cqc7ze">On this page<svg aria-hidden="true" class="caret astro-66cqc7ze astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></span><span class="display-current astro-66cqc7ze"></span></summary><div class="dropdown astro-66cqc7ze"><ul class="isMobile astro-jugkfwgx" style="--depth: 0;"><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#_top" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Overview</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#application-layer" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Application layer</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#macros" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Macros</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#http-primitives" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">HTTP primitives</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#routing" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Routing</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#typed-extractors-and-errors" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Typed extractors and errors</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#server-and-configuration" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Server and configuration</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#middleware" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Middleware</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#authentication-and-crypto" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Authentication and crypto</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#sso" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">SSO</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#sessions" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Sessions</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#real-time-protocols" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Real-time protocols</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#mcp" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">MCP</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#proxy" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Proxy</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#http-client" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">HTTP client</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#observability" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Observability</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#database--orm" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Database / ORM</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#background-work" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Background work</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#storage-and-mail" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Storage and mail</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#other" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Other</span></a></li></ul></div></details></nav></mobile-starlight-toc><script type="module" src="/_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.C3fM4Kra.js"></script></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-qok35upx"><div class="sl-container astro-qok35upx"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">On this page</h2><ul class="astro-jugkfwgx" style="--depth: 0;"><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#_top" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Overview</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#application-layer" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Application layer</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#macros" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Macros</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#http-primitives" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">HTTP primitives</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#routing" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Routing</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#typed-extractors-and-errors" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Typed extractors and errors</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#server-and-configuration" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Server and configuration</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#middleware" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Middleware</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#authentication-and-crypto" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Authentication and crypto</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#sso" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">SSO</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#sessions" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Sessions</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#real-time-protocols" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Real-time protocols</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#mcp" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">MCP</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#proxy" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Proxy</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#http-client" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">HTTP client</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#observability" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Observability</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#database--orm" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Database / ORM</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#background-work" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Background work</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#storage-and-mail" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Storage and mail</span></a></li><li style="--depth: 0;" class="astro-jugkfwgx"><a href="#other" style="--depth: 0;" class="astro-jugkfwgx"><span style="--depth: 0;" class="astro-jugkfwgx">Other</span></a></li></ul></nav></starlight-toc><script type="module" src="/_astro/TableOfContents.astro_astro_type_script_index_0_lang.BpJaGz7G.js"></script></div></div></div></aside><div class="main-pane astro-lrzkfocr"><main data-pagefind-body class="astro-g5ptsecz" lang="en" dir="ltr"><div class="content-panel astro-a7po4psb"><div class="sl-container astro-a7po4psb"><h1 id="_top" class="astro-bebwqqxs">API Reference</h1></div></div><div class="content-panel astro-a7po4psb"><div class="sl-container astro-a7po4psb"><div class="sl-markdown-content"><p>Full rustdoc documentation is published at <a href="https://docs.rs/rust-web-server">docs.rs/rust-web-server</a>.</p>
+<p>This page is a quick-reference index — click through to docs.rs for the complete method-level API. Module paths are relative to <code dir="auto">rust_web_server::</code>; a feature in parentheses means the item is compiled only with that Cargo feature.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="application-layer">Application layer</h2><a class="sl-anchor-link" href="#application-layer"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Application layer”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Application</code></td>
+<td><code dir="auto">application</code></td>
+<td>Trait implemented by all app types: <code dir="auto">execute(&amp;Request, &amp;ConnectionInfo) -&gt; Result&lt;Response, String&gt;</code>. <code dir="auto">runs_inline(request, connection)</code> (default <code dir="auto">false</code>) lets the async servers run a request on the event loop instead of the blocking pool — only for work that never waits. See <a href="/building-apps/async-handlers/">Async handlers</a></td>
+</tr>
+<tr>
+<td><code dir="auto">AsyncResponse</code></td>
+<td><code dir="auto">application</code> (<code dir="auto">http2</code>)</td>
+<td>Return type of the optional <code dir="auto">Application::execute_async</code>, awaited on the connection’s task instead of holding a blocking-pool thread</td>
+</tr>
+<tr>
+<td><code dir="auto">Controller</code></td>
+<td><code dir="auto">controller</code></td>
+<td>Trait with <code dir="auto">is_matching(request, connection)</code> and <code dir="auto">process(request, response, connection)</code>. See <a href="/building-apps/controllers/">Controllers</a></td>
+</tr>
+<tr>
+<td><code dir="auto">App</code></td>
+<td><code dir="auto">app</code></td>
+<td>Zero-config application with all built-in controllers. <code dir="auto">App::with_config(ServerConfig)</code> pins it to a fixed config (no env reads per request — the lock-free pattern for parallel tests)</td>
+</tr>
+<tr>
+<td><code dir="auto">AppWithState&lt;S&gt;</code></td>
+<td><code dir="auto">state</code></td>
+<td>State-aware app with <code dir="auto">.get/.post/.put/.patch/.delete</code> route builders; state shared as <code dir="auto">Arc&lt;S&gt;</code>. Entry point <code dir="auto">App::with_state(S)</code>; <code dir="auto">.with_config(ServerConfig)</code> pins the fallback <code dir="auto">App</code>. See <a href="/building-apps/state/">State</a></td>
+</tr>
+<tr>
+<td><code dir="auto">AsyncAppWithState&lt;S&gt;</code></td>
+<td><code dir="auto">async_state</code> (<code dir="auto">http2</code>)</td>
+<td>Same with <code dir="auto">async fn</code> handlers. Entry point <code dir="auto">App::with_async_state(S)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">Middleware</code></td>
+<td><code dir="auto">middleware</code></td>
+<td>Layer trait: <code dir="auto">handle(request, connection, next)</code>. <code dir="auto">runs_inline</code> / <code dir="auto">is_passthrough</code> (default <code dir="auto">false</code>) declare a layer non-blocking or a no-op for a request. See <a href="/building-apps/middleware/">Middleware</a></td>
+</tr>
+<tr>
+<td><code dir="auto">WithMiddleware&lt;A&gt;</code></td>
+<td><code dir="auto">middleware</code></td>
+<td>Wraps any <code dir="auto">Application</code> with a layer stack; <code dir="auto">app.wrap(layer)</code>, first-pushed is outermost</td>
+</tr>
+<tr>
+<td><code dir="auto">Container</code></td>
+<td><code dir="auto">di</code></td>
+<td><code dir="auto">TypeId</code>-keyed dependency injection container: <code dir="auto">register::&lt;T&gt;</code>, <code dir="auto">provide::&lt;dyn Trait&gt;</code>, <code dir="auto">*_named</code>, <code dir="auto">get</code>. Pass it directly to <code dir="auto">App::with_state(container)</code> — not <code dir="auto">into_arc()</code>, which double-wraps. See <a href="/building-apps/dependency-injection/">Dependency injection</a></td>
+</tr>
+<tr>
+<td><code dir="auto">TeraEngine</code></td>
+<td><code dir="auto">template</code> (<code dir="auto">tera</code>)</td>
+<td>Jinja2-style templates: <code dir="auto">from_dir</code>, <code dir="auto">from_raw</code>; global <code dir="auto">template::init(dir)</code> / <code dir="auto">template::render(name, &amp;ctx)</code> / <code dir="auto">template::reload()</code> (also run on <code dir="auto">SIGHUP</code>). See <a href="/building-apps/templates/">Templates</a></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="macros">Macros</h2><a class="sl-anchor-link" href="#macros"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Macros”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">routes!</code></td>
+<td><code dir="auto">macros</code></td>
+<td>Declarative routing table — builds <code dir="auto">AppWithState</code>, <code dir="auto">AsyncAppWithState</code> or <code dir="auto">Router</code> from <code dir="auto">METHOD "path" =&gt; handler</code> lines. See <a href="/building-apps/routing/">Routing</a></td>
+</tr>
+<tr>
+<td><code dir="auto">#[route]</code>, <code dir="auto">#[get]</code>, <code dir="auto">#[post]</code>, <code dir="auto">#[put]</code>, <code dir="auto">#[patch]</code>, <code dir="auto">#[delete]</code></td>
+<td>crate root (<code dir="auto">macros</code>)</td>
+<td>Attribute macros annotating a handler with its method and path</td>
+</tr>
+<tr>
+<td><code dir="auto">#[derive(FromRequest)]</code></td>
+<td>crate root (<code dir="auto">macros</code>)</td>
+<td>Derives <code dir="auto">FromRequest</code> for a named-field struct, extracting fields in order and stopping at the first error</td>
+</tr>
+<tr>
+<td><code dir="auto">#[derive(JsonSchema)]</code></td>
+<td>crate root (<code dir="auto">macros</code>)</td>
+<td>Derives <code dir="auto">schema::JsonSchema</code> for a named-field struct or unit enum, following its <code dir="auto">#[serde]</code> renames (18.0.0). See <a href="/mcp/tools/#typed-tools">Typed tools</a></td>
+</tr>
+<tr>
+<td><code dir="auto">#[derive(Validate)]</code></td>
+<td>crate root (<code dir="auto">macros</code>)</td>
+<td>Derives <code dir="auto">Validate</code> from <code dir="auto">#[validate(length, range, email, required, url)]</code> field annotations</td>
+</tr>
+<tr>
+<td><code dir="auto">#[derive(Config)]</code></td>
+<td>crate root (<code dir="auto">macros</code>)</td>
+<td>Typed env-var binding: generates <code dir="auto">load() -&gt; Result&lt;Self, String&gt;</code>; <code dir="auto">#[config(env, default, prefix)]</code>. See <a href="/features/config-binding/">Config binding</a></td>
+</tr>
+<tr>
+<td><code dir="auto">#[derive(Model)]</code></td>
+<td>crate root (<code dir="auto">macros</code> + a <code dir="auto">model-*</code> feature)</td>
+<td>Maps a struct to a table (<code dir="auto">#[table]</code>, <code dir="auto">#[primary_key(auto_increment)]</code>, <code dir="auto">#[column]</code>, <code dir="auto">#[ignore]</code>) and generates <code dir="auto">T::repository(&amp;pool)</code> / <code dir="auto">T::query(&amp;pool)</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="http-primitives">HTTP primitives</h2><a class="sl-anchor-link" href="#http-primitives"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “HTTP primitives”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Request</code></td>
+<td><code dir="auto">request</code></td>
+<td>Parsed HTTP request: method, URI, version, headers, body bytes. <code dir="auto">request.header(name)</code> is a case-insensitive, allocation-free lookup; <code dir="auto">Request::is_supported_method</code> checks a method token</td>
+</tr>
+<tr>
+<td><code dir="auto">Response</code></td>
+<td><code dir="auto">response</code></td>
+<td>HTTP response: status code, headers, body as <code dir="auto">Vec&lt;ContentRange&gt;</code>. <code dir="auto">Response::json(status, bytes)</code> / <code dir="auto">Response::text(status, &amp;str)</code> are one-line builders; <code dir="auto">response.header(name)</code> looks a header up</td>
+</tr>
+<tr>
+<td><code dir="auto">STATUS_CODE_REASON_PHRASE</code></td>
+<td><code dir="auto">response</code></td>
+<td>Every HTTP status code as a typed constant</td>
+</tr>
+<tr>
+<td><code dir="auto">Header</code></td>
+<td><code dir="auto">header</code></td>
+<td>Name/value pair (<code dir="auto">Cow&lt;'static, str&gt;</code> fields since 18.0.0; build with <code dir="auto">Header::new(name, value)</code>, read via deref); constants for all standard header names. See <a href="/reference/migrating-18/">Migrating to 18.0</a></td>
+</tr>
+<tr>
+<td><code dir="auto">HTTP</code></td>
+<td><code dir="auto">http</code></td>
+<td>Version constants; <code dir="auto">HTTP::is_supported_version</code></td>
+</tr>
+<tr>
+<td><code dir="auto">MimeType</code></td>
+<td><code dir="auto">mime_type</code></td>
+<td>MIME type constants and detection from a file extension</td>
+</tr>
+<tr>
+<td><code dir="auto">Range</code> / <code dir="auto">ContentRange</code></td>
+<td><code dir="auto">range</code></td>
+<td>Byte ranges and the body parts of a <code dir="auto">Response</code> (bytes, files, multipart)</td>
+</tr>
+<tr>
+<td><code dir="auto">URL</code></td>
+<td><code dir="auto">url</code></td>
+<td>Parse and build URLs; percent-encode/decode</td>
+</tr>
+<tr>
+<td><code dir="auto">FormUrlEncoded</code></td>
+<td><code dir="auto">body::form_urlencoded</code></td>
+<td>Parses <code dir="auto">application/x-www-form-urlencoded</code> bodies. See <a href="/building-apps/forms-uploads/">Forms &amp; uploads</a></td>
+</tr>
+<tr>
+<td><code dir="auto">FormMultipartData</code></td>
+<td><code dir="auto">body::multipart_form_data</code></td>
+<td>Parses <code dir="auto">multipart/form-data</code> uploads</td>
+</tr>
+<tr>
+<td><code dir="auto">Json&lt;T&gt;</code></td>
+<td><code dir="auto">json</code> (<code dir="auto">serde</code>)</td>
+<td>Serde JSON extractor and responder. See <a href="/building-apps/json/">JSON</a></td>
+</tr>
+<tr>
+<td><code dir="auto">CookieJar</code></td>
+<td><code dir="auto">cookie</code></td>
+<td>Parses the <code dir="auto">Cookie</code> request header. See <a href="/building-apps/cookies/">Cookies</a></td>
+</tr>
+<tr>
+<td><code dir="auto">SetCookie</code></td>
+<td><code dir="auto">cookie</code></td>
+<td>Builds <code dir="auto">Set-Cookie</code> values with all RFC 6265 attributes</td>
+</tr>
+<tr>
+<td><code dir="auto">signed_cookie</code> / <code dir="auto">verify_signed_cookie</code></td>
+<td><code dir="auto">cookie</code> (<code dir="auto">crypto</code>)</td>
+<td>HMAC-SHA256 tamper-evident cookie value <code dir="auto">"&lt;value&gt;.&lt;hex-signature&gt;"</code>; verification returns <code dir="auto">None</code> on tampering</td>
+</tr>
+<tr>
+<td><code dir="auto">encrypted_cookie</code> / <code dir="auto">decrypt_cookie</code></td>
+<td><code dir="auto">cookie</code> (<code dir="auto">crypto</code>)</td>
+<td>AES-256-GCM confidential cookie value; fresh nonce per call, <code dir="auto">None</code> on tampering or wrong key</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="routing">Routing</h2><a class="sl-anchor-link" href="#routing"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Routing”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Router</code></td>
+<td><code dir="auto">router</code></td>
+<td>Path-pattern router with <code dir="auto">:param</code> and <code dir="auto">*wildcard</code>; <code dir="auto">.with_host(name)</code> restricts it to one virtual host; <code dir="auto">.matches(request, connection)</code> tells whether <code dir="auto">handle()</code> would run a handler</td>
+</tr>
+<tr>
+<td><code dir="auto">PathParams</code></td>
+<td><code dir="auto">router</code></td>
+<td>Extracted path parameters; <code dir="auto">.get(name) -&gt; Option&lt;&amp;str&gt;</code></td>
+</tr>
+<tr>
+<td><code dir="auto">ConnectionInfo</code></td>
+<td><code dir="auto">server</code></td>
+<td>Client/server IP, port, and SNI hostname per connection</td>
+</tr>
+<tr>
+<td><code dir="auto">VirtualHostConfig</code></td>
+<td><code dir="auto">virtual_host</code></td>
+<td>Per-domain certificate config <code dir="auto">{ domain, cert_file, key_file }</code> for SNI. See <a href="/features/virtual-hosting/">Virtual hosting</a></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="typed-extractors-and-errors">Typed extractors and errors</h2><a class="sl-anchor-link" href="#typed-extractors-and-errors"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Typed extractors and errors”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">FromRequest</code></td>
+<td><code dir="auto">extract</code></td>
+<td>Trait for typed extraction from a request, returning a ready error response on failure. See <a href="/building-apps/extractors/">Extractors</a></td>
+</tr>
+<tr>
+<td><code dir="auto">Body</code></td>
+<td><code dir="auto">extract</code></td>
+<td>Raw request body bytes (never fails)</td>
+</tr>
+<tr>
+<td><code dir="auto">Storage::put_stream</code> / <code dir="auto">S3_PART_SIZE</code></td>
+<td><code dir="auto">storage</code></td>
+<td>Store a <code dir="auto">Read</code> stream: S3 multipart upload (8 MiB parts), local temp file + rename; default buffers (18.0.0)</td>
+</tr>
+<tr>
+<td><code dir="auto">request::Body</code></td>
+<td><code dir="auto">request</code></td>
+<td><code dir="auto">Request.body</code> (18.0.0): bytes, or a stream (<code dir="auto">Body::stream</code>, <code dir="auto">body_bytes()</code>, <code dir="auto">into_reader()</code>); derefs to <code dir="auto">&amp;[u8]</code>. Not the <code dir="auto">extract::Body</code> extractor</td>
+</tr>
+<tr>
+<td><code dir="auto">BodyText</code></td>
+<td><code dir="auto">extract</code></td>
+<td>UTF-8 request body (returns 400 on invalid UTF-8)</td>
+</tr>
+<tr>
+<td><code dir="auto">Query</code></td>
+<td><code dir="auto">extract</code></td>
+<td>Parsed query string as <code dir="auto">HashMap&lt;String, String&gt;</code></td>
+</tr>
+<tr>
+<td><code dir="auto">RequestHeaders</code></td>
+<td><code dir="auto">extract</code></td>
+<td>All request headers with case-insensitive <code dir="auto">.get(name)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">RequestId</code></td>
+<td><code dir="auto">extract</code> / <code dir="auto">request_id</code></td>
+<td>The ID <code dir="auto">RequestIdLayer</code> put on the request; empty string without it (never fails)</td>
+</tr>
+<tr>
+<td><code dir="auto">IntoResponse</code></td>
+<td><code dir="auto">error</code></td>
+<td>Trait for mapping error enums to <code dir="auto">Response</code> values. See <a href="/building-apps/error-handling/">Error handling</a></td>
+</tr>
+<tr>
+<td><code dir="auto">AppError</code></td>
+<td><code dir="auto">error</code></td>
+<td>Built-in error variants: <code dir="auto">BadRequest</code>, <code dir="auto">NotFound</code>, <code dir="auto">Internal</code>, etc.</td>
+</tr>
+<tr>
+<td><code dir="auto">Validate</code></td>
+<td><code dir="auto">validate</code></td>
+<td>Field-level validation trait. See <a href="/building-apps/validation/">Validation</a></td>
+</tr>
+<tr>
+<td><code dir="auto">ValidationErrors</code></td>
+<td><code dir="auto">validate</code></td>
+<td>Collects every validation failure before returning</td>
+</tr>
+<tr>
+<td><code dir="auto">Validated&lt;T&gt;</code></td>
+<td><code dir="auto">validate</code></td>
+<td>Extractor that extracts then validates: 400 on extraction failure, 422 with a JSON error body on validation failure</td>
+</tr>
+<tr>
+<td><code dir="auto">is_email</code> / <code dir="auto">is_url</code></td>
+<td><code dir="auto">validate</code></td>
+<td>Format checks used by the derive; callable directly</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="server-and-configuration">Server and configuration</h2><a class="sl-anchor-link" href="#server-and-configuration"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Server and configuration”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Server</code></td>
+<td><code dir="auto">server</code></td>
+<td>TCP listener, thread pool, TLS acceptor, and request loop. <code dir="auto">Server::continue_response</code> / <code dir="auto">expectation_failed_response</code> implement <code dir="auto">Expect: 100-continue</code> / 417 on HTTP/1.1</td>
+</tr>
+<tr>
+<td><code dir="auto">server::REQUEST_HEAD_TIMEOUT</code></td>
+<td><code dir="auto">server</code></td>
+<td>30 s: a request head must complete within this of its first byte, else <code dir="auto">408</code></td>
+</tr>
+<tr>
+<td><code dir="auto">ServerConfig</code></td>
+<td><code dir="auto">server_config</code></td>
+<td>Typed snapshot of per-instance config (CORS, CSP, <code dir="auto">client_hints</code>, <code dir="auto">static_cache_control</code>, log format). <code dir="auto">ServerConfig::current()</code> is the shared per-request snapshot; call <code dir="auto">server_config::invalidate()</code> after a direct <code dir="auto">std::env::set_var</code></td>
+</tr>
+<tr>
+<td><code dir="auto">ConfigSnapshot</code></td>
+<td><code dir="auto">config_reload</code></td>
+<td>Hot-reloadable values, read with <code dir="auto">config_reload::current()</code>. See <a href="/features/hot-reload/">Hot reload</a></td>
+</tr>
+<tr>
+<td><code dir="auto">config_reload::reload</code> / <code dir="auto">config_reload::on_reload</code></td>
+<td><code dir="auto">config_reload</code></td>
+<td>Re-read <code dir="auto">rws.config.toml</code> (also on <code dir="auto">SIGHUP</code> and <code dir="auto">POST /admin/config/reload</code>); register a closure run after every reload</td>
+</tr>
+<tr>
+<td><code dir="auto">ConfigReport</code></td>
+<td><code dir="auto">config_check</code></td>
+<td>Result of <code dir="auto">config_check::check_file</code> / <code dir="auto">check_str</code> (what <code dir="auto">rws --check</code> runs): <code dir="auto">errors</code>, <code dir="auto">warnings</code>, <code dir="auto">.is_ok()</code>, <code dir="auto">.render(path)</code>, <code dir="auto">.render_json(path)</code>. See <a href="/configuration/config-file/">Config file</a></td>
+</tr>
+<tr>
+<td><code dir="auto">get_max_body_size</code></td>
+<td><code dir="auto">entry_point</code></td>
+<td>Reads <code dir="auto">RWS_CONFIG_MAX_BODY_SIZE_IN_BYTES</code> (default <code dir="auto">0</code>, unlimited); larger requests get <code dir="auto">413</code> before buffering</td>
+</tr>
+<tr>
+<td><code dir="auto">get_spa_fallback</code> / <code dir="auto">get_spa_fallback_exclude_prefixes</code></td>
+<td><code dir="auto">entry_point</code></td>
+<td>Read <code dir="auto">RWS_CONFIG_SPA_FALLBACK*</code>. See <a href="/features/static-files/">Static files</a></td>
+</tr>
+<tr>
+<td><code dir="auto">FromEnvStr</code></td>
+<td><code dir="auto">config_binding</code></td>
+<td>Implement for custom field types used with <code dir="auto">#[derive(Config)]</code></td>
+</tr>
+<tr>
+<td><code dir="auto">secrets::resolve</code> / <code dir="auto">resolve_env_vars</code></td>
+<td><code dir="auto">secrets</code> (<code dir="auto">secrets</code>)</td>
+<td>Resolve <code dir="auto">vault://</code>, <code dir="auto">aws-sm://</code> and <code dir="auto">azkv://</code> references; <code dir="auto">Server::setup()</code> rewrites matching <code dir="auto">RWS_*</code> env vars at startup and fails hard on errors. See <a href="/features/secrets/">Secrets</a></td>
+</tr>
+<tr>
+<td><code dir="auto">SecretsError</code></td>
+<td><code dir="auto">secrets</code> (<code dir="auto">secrets</code>)</td>
+<td>Error type for secret resolution</td>
+</tr>
+<tr>
+<td><code dir="auto">StaticResourceController::STREAM_THRESHOLD</code></td>
+<td><code dir="auto">app::controller::static_resource</code></td>
+<td>256 KiB: larger static files are streamed from disk instead of read into memory</td>
+</tr>
+<tr>
+<td><code dir="auto">StaticResourceController::render_directory_listing</code></td>
+<td><code dir="auto">app::controller::static_resource</code></td>
+<td>Renders the listing <code dir="auto">App</code> serves for a directory without <code dir="auto">index.html</code></td>
+</tr>
+<tr>
+<td><code dir="auto">DirectoryListingAssetsController</code></td>
+<td><code dir="auto">app::controller::directory_listing</code></td>
+<td>Serves the listing’s CSS/JS at <code dir="auto">/rws-directory-listing.{css,js}</code> (same-origin, so the default CSP allows them); a file on disk overrides the built-in</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="middleware">Middleware</h2><a class="sl-anchor-link" href="#middleware"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Middleware”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">RateLimiter</code></td>
+<td><code dir="auto">rate_limit</code></td>
+<td>Sliding-window per-key limiter; <code dir="auto">rate_limit::global()</code> for the singleton; <code dir="auto">.retry_after()</code> / <code dir="auto">.limits()</code>. See <a href="/features/rate-limiting/">Rate limiting</a></td>
+</tr>
+<tr>
+<td><code dir="auto">RedisRateLimiter</code></td>
+<td><code dir="auto">rate_limit</code></td>
+<td>Fixed-window limiter shared across instances through Redis; <code dir="auto">from_env()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">RateLimitLayer</code></td>
+<td><code dir="auto">middleware</code></td>
+<td>Enforces the global rate limiter per client IP; <code dir="auto">429</code> with <code dir="auto">Retry-After</code></td>
+</tr>
+<tr>
+<td><code dir="auto">CacheLayer</code></td>
+<td><code dir="auto">cache</code></td>
+<td>In-memory TTL response cache for GET (<code dir="auto">CacheLayer::memory(n).ttl(s).vary_by_header(h)</code>); skips <code dir="auto">no-store</code>/<code dir="auto">private</code>/<code dir="auto">no-cache</code>, <code dir="auto">Range</code> and out-of-key <code dir="auto">Vary</code> responses. See <a href="/features/caching/">Caching</a></td>
+</tr>
+<tr>
+<td><code dir="auto">MetricsLayer</code></td>
+<td><code dir="auto">metrics</code></td>
+<td>Per-route Prometheus counters and latency histograms. See <a href="/features/metrics/">Metrics</a></td>
+</tr>
+<tr>
+<td><code dir="auto">RewriteLayer</code></td>
+<td><code dir="auto">rewrite</code></td>
+<td>Request/response header, URI, body, and status rewriting; <code dir="auto">.request_uri_regex_rewrite</code> needs <code dir="auto">rewrite-regex</code>. See <a href="/features/rewrite/">Rewrite</a></td>
+</tr>
+<tr>
+<td><code dir="auto">BasicAuthLayer</code></td>
+<td><code dir="auto">auth</code> (<code dir="auto">auth</code>)</td>
+<td>HTTP Basic authentication via a closure or <code dir="auto">from_htpasswd_file</code> (plain or rws’s <code dir="auto">{SHA256}</code> scheme — not Apache <code dir="auto">{SHA}</code>/<code dir="auto">$apr1$</code>/bcrypt). See <a href="/features/auth/">Auth</a></td>
+</tr>
+<tr>
+<td><code dir="auto">JwtLayer</code></td>
+<td><code dir="auto">auth</code> (<code dir="auto">auth</code>)</td>
+<td>HS256 Bearer JWT validation; <code dir="auto">::rs256</code>/<code dir="auto">::es256</code> verify against a static public key (<code dir="auto">auth-asymmetric</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">ForwardAuthLayer</code></td>
+<td><code dir="auto">auth::forward</code> (<code dir="auto">auth</code>)</td>
+<td>Delegates allow/deny to an external HTTP service; verbatim pass-through on non-2xx, 502 if unreachable</td>
+</tr>
+<tr>
+<td><code dir="auto">IpFilter</code></td>
+<td><code dir="auto">ip_filter</code></td>
+<td>IPv4/IPv6 address or CIDR allowlist/denylist; <code dir="auto">ip_filter::is_valid_entry</code> checks an entry. See <a href="/features/ip-filter/">IP filter</a></td>
+</tr>
+<tr>
+<td><code dir="auto">Blocklist</code></td>
+<td><code dir="auto">blocklist</code></td>
+<td>Runtime IP blocklist: <code dir="auto">blocklist::global().block(ip)</code> / <code dir="auto">.unblock</code> / <code dir="auto">.is_blocked</code> / <code dir="auto">.list</code> / <code dir="auto">.clear</code></td>
+</tr>
+<tr>
+<td><code dir="auto">BlocklistLayer</code></td>
+<td><code dir="auto">blocklist</code></td>
+<td>Answers <code dir="auto">403</code> for blocked client IPs</td>
+</tr>
+<tr>
+<td><code dir="auto">MaintenanceLayer</code> / <code dir="auto">MAINTENANCE_MODE</code></td>
+<td><code dir="auto">maintenance</code></td>
+<td>While the <code dir="auto">AtomicBool</code> is <code dir="auto">true</code>, answers <code dir="auto">503</code> for everything but <code dir="auto">/healthz</code> and <code dir="auto">/readyz</code></td>
+</tr>
+<tr>
+<td><code dir="auto">RequestLog</code></td>
+<td><code dir="auto">request_log</code></td>
+<td>In-memory buffer of recent requests (<code dir="auto">request_log::global()</code>, capacity 1000); <code dir="auto">.recent(n)</code> / <code dir="auto">.recent_errors(n)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">LogLayer</code></td>
+<td><code dir="auto">request_log</code></td>
+<td>Records each request into <code dir="auto">RequestLog</code></td>
+</tr>
+<tr>
+<td><code dir="auto">RequestIdLayer</code></td>
+<td><code dir="auto">request_id</code></td>
+<td>Correlation-ID middleware — echoes or generates <code dir="auto">X-Request-Id</code> (<code dir="auto">generate_request_id()</code>, UUID-v4-shaped, not crypto-random). See <a href="/features/request-id/">Request ID</a></td>
+</tr>
+<tr>
+<td><code dir="auto">CsrfLayer</code></td>
+<td><code dir="auto">csrf</code> (<code dir="auto">csrf</code>)</td>
+<td>Double-submit cookie CSRF protection; 403 on mismatch. See <a href="/features/csrf/">CSRF</a></td>
+</tr>
+<tr>
+<td><code dir="auto">CsrfToken</code></td>
+<td><code dir="auto">csrf</code> (<code dir="auto">csrf</code>)</td>
+<td>Extractor for the current token in a GET handler; implements <code dir="auto">Display</code></td>
+</tr>
+<tr>
+<td><code dir="auto">TimeoutLayer</code></td>
+<td><code dir="auto">timeout</code></td>
+<td>Wraps a whole <code dir="auto">Application</code> with a deadline (<code dir="auto">504</code>). See <a href="/features/timeouts/">Timeouts</a></td>
+</tr>
+<tr>
+<td><code dir="auto">with_timeout</code> / <code dir="auto">with_timeout_state</code> / <code dir="auto">with_timeout_async</code></td>
+<td><code dir="auto">timeout</code></td>
+<td>Per-handler timeouts. The sync ones bound the client’s wait but can’t cancel the work; <code dir="auto">with_timeout_async</code> (<code dir="auto">http2</code>) cancels the future</td>
+</tr>
+<tr>
+<td><code dir="auto">FeatureStore</code></td>
+<td><code dir="auto">feature</code></td>
+<td>Runtime feature toggles: <code dir="auto">feature::global().set(name, bool)</code> / <code dir="auto">.is_enabled</code> / <code dir="auto">.list</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="authentication-and-crypto">Authentication and crypto</h2><a class="sl-anchor-link" href="#authentication-and-crypto"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Authentication and crypto”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">build_jwt</code> / <code dir="auto">verify_jwt</code></td>
+<td><code dir="auto">auth</code> (<code dir="auto">auth</code>)</td>
+<td>Sign and verify HS256 JWTs</td>
+</tr>
+<tr>
+<td><code dir="auto">Claims</code></td>
+<td><code dir="auto">auth</code> (<code dir="auto">auth</code>)</td>
+<td>Decoded JWT claims: <code dir="auto">sub</code>, <code dir="auto">exp</code>, raw JSON payload</td>
+</tr>
+<tr>
+<td><code dir="auto">verify_jwt_rs256</code> / <code dir="auto">verify_jwt_es256</code></td>
+<td><code dir="auto">auth</code> (<code dir="auto">auth-asymmetric</code>)</td>
+<td>Standalone RS256/ES256 verification backing <code dir="auto">JwtLayer::rs256</code>/<code dir="auto">::es256</code></td>
+</tr>
+<tr>
+<td><code dir="auto">RsaPublicKey</code></td>
+<td><code dir="auto">rsa_key</code> (<code dir="auto">auth-asymmetric</code> / <code dir="auto">sso</code>)</td>
+<td>In-crate RSA public key (PEM, SPKI/PKCS#1 DER or components; 2048–8192 bits); <code dir="auto">.verify_pkcs1v15_sha256(message, signature)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">hash_password</code> / <code dir="auto">verify_password</code></td>
+<td><code dir="auto">crypto</code> (<code dir="auto">crypto</code>)</td>
+<td>Argon2id hashing (PHC string, salt embedded) and constant-time verification</td>
+</tr>
+<tr>
+<td><code dir="auto">generate_token</code></td>
+<td><code dir="auto">crypto</code> (<code dir="auto">crypto</code>)</td>
+<td>CSPRNG hex token for reset links and API keys</td>
+</tr>
+<tr>
+<td><code dir="auto">CryptoError</code></td>
+<td><code dir="auto">crypto</code> (<code dir="auto">crypto</code>)</td>
+<td>Error type for password hashing</td>
+</tr>
+<tr>
+<td><code dir="auto">verify_webhook_signature</code></td>
+<td><code dir="auto">webhook</code> (<code dir="auto">webhook</code>)</td>
+<td>Verifies an inbound webhook HMAC for a <code dir="auto">WebhookProvider</code>. See <a href="/features/webhooks/">Webhooks</a></td>
+</tr>
+<tr>
+<td><code dir="auto">WebhookProvider</code></td>
+<td><code dir="auto">webhook</code> (<code dir="auto">webhook</code>)</td>
+<td><code dir="auto">GitHub</code>, <code dir="auto">Shopify</code>, <code dir="auto">Stripe</code> (300 s default replay tolerance)</td>
+</tr>
+<tr>
+<td><code dir="auto">verify_github_signature</code> / <code dir="auto">verify_shopify_signature</code> / <code dir="auto">verify_stripe_signature</code> / <code dir="auto">verify_stripe_signature_with_tolerance</code></td>
+<td><code dir="auto">webhook</code> (<code dir="auto">webhook</code>)</td>
+<td>Per-provider functions when the provider is known at the call site</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="sso">SSO</h2><a class="sl-anchor-link" href="#sso"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “SSO”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">OidcAuth</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td>OAuth2/OIDC middleware: intercepts <code dir="auto">/auth/login</code>, <code dir="auto">/auth/callback</code>, <code dir="auto">/auth/logout</code>; <code dir="auto">OidcAuth::claims(req)</code> reads the claims. See <a href="/features/sso/">SSO</a></td>
+</tr>
+<tr>
+<td><code dir="auto">OidcConfig</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td>Client configuration; presets <code dir="auto">google</code>, <code dir="auto">microsoft</code>, <code dir="auto">github</code>, <code dir="auto">okta</code>, <code dir="auto">auth0</code>, <code dir="auto">keycloak</code>, and <code dir="auto">from_env()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">OidcProvider</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td>Provider endpoints; same presets plus <code dir="auto">OidcProvider::discover(issuer)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">OidcClaims</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td>Standard OIDC claims from a verified <code dir="auto">id_token</code> or UserInfo response (no <code dir="auto">groups</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">JwksCache</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td>JWKS key cache; <code dir="auto">verify_jwt(token, &amp;VerifyOptions)</code> checks RS256/ES256 signature, <code dir="auto">exp</code>, <code dir="auto">iss</code>, <code dir="auto">aud</code>; refetches once on a key miss</td>
+</tr>
+<tr>
+<td><code dir="auto">VerifyOptions</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td><code dir="auto">audience</code>, <code dir="auto">issuer</code>, <code dir="auto">leeway_secs</code> for <code dir="auto">JwksCache::verify_jwt</code></td>
+</tr>
+<tr>
+<td><code dir="auto">OidcClient</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td><code dir="auto">authorization_url</code>, <code dir="auto">exchange_code</code>, <code dir="auto">fetch_user_info</code></td>
+</tr>
+<tr>
+<td><code dir="auto">TokenResponse</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td>Token endpoint response returned by <code dir="auto">exchange_code</code></td>
+</tr>
+<tr>
+<td><code dir="auto">PkceVerifier</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td>RFC 7636 code verifier; <code dir="auto">.challenge()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">PkceChallenge</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso</code>)</td>
+<td>S256 code challenge for the authorization URL</td>
+</tr>
+<tr>
+<td><code dir="auto">AuthServer</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso-server</code>)</td>
+<td>rws as an OAuth 2.0 Authorization Server (<code dir="auto">/oauth/token</code>, <code dir="auto">/oauth/authorize</code>, discovery). Tokens are HS256, so <code dir="auto">jwks.json</code> is always empty; <code dir="auto">/oauth/authorize</code> trusts an existing app session, with no built-in login page</td>
+</tr>
+<tr>
+<td><code dir="auto">AuthServerConfig</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso-server</code>)</td>
+<td><code dir="auto">issuer</code>, <code dir="auto">signing_secret</code>, access/refresh token lifetimes, <code dir="auto">clients</code></td>
+</tr>
+<tr>
+<td><code dir="auto">ClientStore</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso-server</code>)</td>
+<td>Registry of OAuth clients: <code dir="auto">ClientStore::new().add(client).get(id)</code> (no <code dir="auto">from_env</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">OAuthClient</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso-server</code>)</td>
+<td>One client; <code dir="auto">client_secret: None</code> is a public PKCE-only client</td>
+</tr>
+<tr>
+<td><code dir="auto">GrantType</code></td>
+<td><code dir="auto">sso</code> (<code dir="auto">sso-server</code>)</td>
+<td><code dir="auto">ClientCredentials</code>, <code dir="auto">AuthorizationCode</code>, <code dir="auto">RefreshToken</code></td>
+</tr>
+<tr>
+<td><code dir="auto">SamlSp</code></td>
+<td><code dir="auto">sso::saml</code> (<code dir="auto">sso-saml</code>)</td>
+<td>SAML 2.0 Service Provider middleware (<code dir="auto">/saml/metadata</code>, <code dir="auto">/saml/login</code>, <code dir="auto">/saml/acs</code>, <code dir="auto">/saml/logout</code>). Verifies RSA-SHA256 signatures byte-exact against the transmitted XML (not full C14N — fails closed), requires exactly one <code dir="auto">Assertion</code>, rejects <code dir="auto">EncryptedAssertion</code>; unsigned HTTP-POST <code dir="auto">AuthnRequest</code>s; local-only logout. See <a href="/features/saml/">SAML</a></td>
+</tr>
+<tr>
+<td><code dir="auto">SamlConfig</code></td>
+<td><code dir="auto">sso::saml</code> (<code dir="auto">sso-saml</code>)</td>
+<td><code dir="auto">sp_entity_id</code>, <code dir="auto">sp_acs_url</code>, <code dir="auto">idp_metadata</code>, <code dir="auto">sessions</code></td>
+</tr>
+<tr>
+<td><code dir="auto">SamlIdpMetadata</code></td>
+<td><code dir="auto">sso::saml</code> (<code dir="auto">sso-saml</code>)</td>
+<td>Parsed IdP metadata (<code dir="auto">entity_id</code>, <code dir="auto">sso_url</code>, <code dir="auto">signing_key</code>); <code dir="auto">from_file</code> / <code dir="auto">from_url</code> / <code dir="auto">from_str</code></td>
+</tr>
+<tr>
+<td><code dir="auto">AttributeMap</code></td>
+<td><code dir="auto">sso::saml</code> (<code dir="auto">sso-saml</code>)</td>
+<td>Maps IdP attribute names to claim fields</td>
+</tr>
+<tr>
+<td><code dir="auto">SamlClaims</code></td>
+<td><code dir="auto">sso::saml</code> (<code dir="auto">sso-saml</code>)</td>
+<td><code dir="auto">name_id</code> plus <code dir="auto">attributes: HashMap&lt;String, String&gt;</code>; read with <code dir="auto">SamlSp::claims</code> / <code dir="auto">name_id</code> / <code dir="auto">attr</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="sessions">Sessions</h2><a class="sl-anchor-link" href="#sessions"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Sessions”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">SessionStore</code></td>
+<td><code dir="auto">session</code></td>
+<td>In-memory TTL session store; helpers <code dir="auto">session_id_from_request</code>, <code dir="auto">session_cookie</code>, <code dir="auto">destroy_cookie</code>. See <a href="/features/sessions/">Sessions</a></td>
+</tr>
+<tr>
+<td><code dir="auto">Session</code></td>
+<td><code dir="auto">session</code></td>
+<td>One session’s data</td>
+</tr>
+<tr>
+<td><code dir="auto">DbSessionStore</code></td>
+<td><code dir="auto">session</code> (a <code dir="auto">model-*</code> feature)</td>
+<td>Persistent store on the model-layer <code dir="auto">DbPool</code> (<code dir="auto">rws_sessions</code> table); async methods</td>
+</tr>
+<tr>
+<td><code dir="auto">RedisSessionStore</code></td>
+<td><code dir="auto">session</code></td>
+<td>Persistent store on Redis; <code dir="auto">new(addr, password, ttl)</code> or <code dir="auto">from_env()</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="real-time-protocols">Real-time protocols</h2><a class="sl-anchor-link" href="#real-time-protocols"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Real-time protocols”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Sse</code></td>
+<td><code dir="auto">sse</code></td>
+<td><code dir="auto">Sse::stream()</code> → a streaming response and its <code dir="auto">SseSender</code>; <code dir="auto">Sse::new()</code> builds a buffered <code dir="auto">text/event-stream</code> body. See <a href="/features/sse/">SSE</a></td>
+</tr>
+<tr>
+<td><code dir="auto">SseStream</code></td>
+<td><code dir="auto">sse</code></td>
+<td>Options for a streaming response: <code dir="auto">.buffer(events)</code>, <code dir="auto">.keep_alive(interval)</code>, <code dir="auto">.start()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">SseSender</code> / <code dir="auto">SseClosed</code></td>
+<td><code dir="auto">sse</code></td>
+<td>Feeds a streaming response: <code dir="auto">send</code> (waits for room), <code dir="auto">try_send</code>, <code dir="auto">send_async</code> (<code dir="auto">http2</code>), <code dir="auto">data</code>, <code dir="auto">comment</code>; <code dir="auto">Err(SseClosed)</code> once the client is gone</td>
+</tr>
+<tr>
+<td><code dir="auto">SseEvent</code></td>
+<td><code dir="auto">sse</code></td>
+<td>One event: data plus optional <code dir="auto">event</code>, <code dir="auto">id</code>, <code dir="auto">retry</code></td>
+</tr>
+<tr>
+<td><code dir="auto">WebSocket</code></td>
+<td><code dir="auto">websocket</code></td>
+<td>RFC 6455: <code dir="auto">WebSocket::upgrade(request, handler)</code> for a route, plus the handshake and frame read/write. See <a href="/features/websocket/">WebSocket</a></td>
+</tr>
+<tr>
+<td><code dir="auto">WebSocketConnection</code> / <code dir="auto">WebSocketSender</code> / <code dir="auto">Message</code></td>
+<td><code dir="auto">websocket</code></td>
+<td>An upgraded connection: <code dir="auto">recv()</code> → whole <code dir="auto">Message::Text</code>/<code dir="auto">Binary</code> (pings, fragments and the close handshake handled); <code dir="auto">sender()</code> for other threads</td>
+</tr>
+<tr>
+<td><code dir="auto">Frame</code></td>
+<td><code dir="auto">websocket</code></td>
+<td>A WebSocket frame: <code dir="auto">Text</code>, <code dir="auto">Binary</code>, <code dir="auto">Ping</code>, <code dir="auto">Pong</code>, <code dir="auto">Close</code>, <code dir="auto">Continuation</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="mcp">MCP</h2><a class="sl-anchor-link" href="#mcp"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “MCP”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Encoding</code> / <code dir="auto">Level</code></td>
+<td><code dir="auto">compression</code></td>
+<td>Content codings (<code dir="auto">gzip</code>, <code dir="auto">br</code>, <code dir="auto">zstd</code>) and levels; <code dir="auto">negotiate(request, preference)</code>, <code dir="auto">encode</code>, <code dir="auto">apply_compression</code> (18.1.0). See <a href="/features/compression/">Compression</a></td>
+</tr>
+<tr>
+<td><code dir="auto">JsonSchema</code> / <code dir="auto">ObjectSchema</code></td>
+<td><code dir="auto">schema</code></td>
+<td>A type’s JSON Schema as text (primitives, <code dir="auto">Option</code>, collections, smart pointers built in); <code dir="auto">ObjectSchema</code> builds an object schema (18.0.0)</td>
+</tr>
+<tr>
+<td><code dir="auto">McpGateway</code> / <code dir="auto">Upstream</code></td>
+<td><code dir="auto">mcp::gateway</code></td>
+<td>One MCP endpoint federating upstream MCP servers: <code dir="auto">prefix__tool</code> names, per-caller <code dir="auto">allow</code> rules, upstream credentials kept server-side (18.0.0). See <a href="/mcp/gateway/">MCP gateway</a></td>
+</tr>
+<tr>
+<td><code dir="auto">InputRequired</code> / <code dir="auto">PromptReply</code></td>
+<td><code dir="auto">mcp</code></td>
+<td>MCP 2026-07-28 multi round-trip requests: what a tool (<code dir="auto">McpContent::input_required</code>) or prompt (<code dir="auto">.prompt_with_context</code>) needs from the client — <code dir="auto">.elicit</code>, <code dir="auto">.sample</code>, <code dir="auto">.list_roots</code>, <code dir="auto">.state</code> (signed). See <a href="/mcp/tools/#asking-the-client-for-input-mcp-2026-07-28">Asking the client for input</a></td>
+</tr>
+<tr>
+<td><code dir="auto">TaskContext</code> / <code dir="auto">TaskError</code></td>
+<td><code dir="auto">mcp</code></td>
+<td>The MCP Tasks extension: what <code dir="auto">McpContext::start_task</code>’s work runs with (<code dir="auto">input</code>, <code dir="auto">is_cancelled</code>, <code dir="auto">status_message</code>) and how it ends. See <a href="/mcp/tools/#long-running-work-tasks-mcp-tasks-extension">Long-running work: tasks</a></td>
+</tr>
+<tr>
+<td><code dir="auto">McpServer</code> / <code dir="auto">McpIcon</code></td>
+<td><code dir="auto">mcp</code></td>
+<td>MCP Streamable HTTP server (<code dir="auto">POST /mcp</code>, JSON-RPC 2.0, plus <code dir="auto">GET /mcp</code> SSE); <code dir="auto">.tool</code> / <code dir="auto">.typed_tool</code> (<code dir="auto">serde</code>) / <code dir="auto">.resource</code> / <code dir="auto">.prompt</code>, <code dir="auto">.require_bearer</code>, <code dir="auto">.require_bearer_tokens</code>, <code dir="auto">.require_oauth</code> (<code dir="auto">sso</code>), <code dir="auto">.tool_filter</code>, <code dir="auto">.session_ttl</code> / <code dir="auto">.max_sessions</code> / <code dir="auto">.max_sse_clients</code>. Entry point <code dir="auto">McpServer::new(name, version)</code> or <code dir="auto">app.mcp(name, version)</code>. See <a href="/mcp/overview/">MCP</a></td>
+</tr>
+<tr>
+<td><code dir="auto">McpContent</code></td>
+<td><code dir="auto">mcp</code></td>
+<td>Tool result content: <code dir="auto">text</code>, <code dir="auto">json</code>, <code dir="auto">image</code>, <code dir="auto">embedded</code></td>
+</tr>
+<tr>
+<td><code dir="auto">McpContext</code></td>
+<td><code dir="auto">mcp</code></td>
+<td>Per-session context for <code dir="auto">.tool_with_context</code> handlers: client info, <code dir="auto">auth_claims</code>, progress, cancellation, <code dir="auto">sample</code>, <code dir="auto">list_roots</code></td>
+</tr>
+<tr>
+<td><code dir="auto">ToolAnnotations</code></td>
+<td><code dir="auto">mcp</code></td>
+<td><code dir="auto">read_only_hint</code>, <code dir="auto">destructive_hint</code>, <code dir="auto">idempotent_hint</code>, <code dir="auto">open_world_hint</code> for <code dir="auto">.tool_annotated</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="proxy">Proxy</h2><a class="sl-anchor-link" href="#proxy"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Proxy”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">ReverseProxy</code></td>
+<td><code dir="auto">proxy</code></td>
+<td>HTTP/1.1 reverse proxy middleware: round-robin with failover (502 when all fail), pooled connections, unbuffered streaming of SSE/chunked/large bodies; <code dir="auto">.with_circuit_breaker(Arc&lt;dyn Breaker&gt;)</code>. See <a href="/proxy/reverse-proxy/">Reverse proxy</a></td>
+</tr>
+<tr>
+<td><code dir="auto">LoadBalancing</code></td>
+<td><code dir="auto">proxy</code></td>
+<td>Strategy enum passed to <code dir="auto">ReverseProxy::strategy()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">ConnPool</code> / <code dir="auto">Pool&lt;S&gt;</code></td>
+<td><code dir="auto">proxy</code></td>
+<td>Per-backend idle-connection pool (<code dir="auto">ConnPool = Pool&lt;TcpStream&gt;</code>); <code dir="auto">ConnPool::new(max_idle, idle_timeout)</code>, share with <code dir="auto">ReverseProxy::with_pool</code>. A stale pooled connection is retried once only for idempotent methods</td>
+</tr>
+<tr>
+<td><code dir="auto">UpstreamTls</code></td>
+<td><code dir="auto">proxy</code></td>
+<td>TLS settings for upstreams: a PEM CA file instead of WebPKI and/or a client certificate (<code dir="auto">UpstreamTls::new(ca, client)</code>; <code dir="auto">tls_ca_file</code>, <code dir="auto">tls_client_cert</code> on <code dir="auto">ReverseProxy</code>/<code dir="auto">H2ReverseProxy</code>/<code dir="auto">GrpcProxy</code>, <code dir="auto">[[upstream]] tls_ca_file</code>/<code dir="auto">tls_client_cert_file</code>/<code dir="auto">tls_client_key_file</code>); unloadable → 502</td>
+</tr>
+<tr>
+<td><code dir="auto">H2ReverseProxy</code></td>
+<td><code dir="auto">proxy</code> (<code dir="auto">http2</code>)</td>
+<td>HTTP/2 upstream proxy: <code dir="auto">h2://</code> plain, <code dir="auto">h2s://</code>/<code dir="auto">https://</code> TLS; pooled connections, bodies streamed both ways, trailers kept (18.3.0)</td>
+</tr>
+<tr>
+<td><code dir="auto">Trailers</code></td>
+<td><code dir="auto">response</code></td>
+<td>Trailer fields sent after a body (<code dir="auto">Response::trailers</code>, HTTP/2 and HTTP/3): a shared slot a streamed body’s producer fills before it ends (18.3.0)</td>
+</tr>
+<tr>
+<td><code dir="auto">GrpcWebLayer</code></td>
+<td><code dir="auto">proxy</code> (<code dir="auto">http2</code>)</td>
+<td>Translates gRPC-web (<code dir="auto">application/grpc-web[-text]</code>) to gRPC for the layers after it and the response back, trailers as the body’s last frame (18.3.0). See <a href="/proxy/grpc-proxy/#grpc-web-from-browsers">gRPC-web</a></td>
+</tr>
+<tr>
+<td><code dir="auto">GrpcProxy</code></td>
+<td><code dir="auto">proxy</code> (<code dir="auto">http2</code>)</td>
+<td>gRPC proxy (wraps <code dir="auto">H2ReverseProxy</code>, filters on <code dir="auto">application/grpc*</code>). See <a href="/proxy/grpc-proxy/">gRPC proxy</a></td>
+</tr>
+<tr>
+<td><code dir="auto">TcpProxy</code></td>
+<td><code dir="auto">tcp_proxy</code></td>
+<td>Standalone L4 TCP proxy with round-robin backends. See <a href="/proxy/tcp-proxy/">TCP proxy</a></td>
+</tr>
+<tr>
+<td><code dir="auto">UdpProxy</code></td>
+<td><code dir="auto">udp_proxy</code></td>
+<td>Standalone request-reply UDP proxy. See <a href="/proxy/udp-proxy/">UDP proxy</a></td>
+</tr>
+<tr>
+<td><code dir="auto">WsProxy</code></td>
+<td><code dir="auto">ws_proxy</code></td>
+<td>WebSocket proxy, <code dir="auto">ws://</code> and <code dir="auto">wss://</code> (<code dir="auto">http-client</code> or <code dir="auto">http2</code>); <code dir="auto">with_live_backends</code> for health-aware selection (503 when empty). See <a href="/proxy/websocket-proxy/">WebSocket proxy</a></td>
+</tr>
+<tr>
+<td><code dir="auto">CanaryLayer</code></td>
+<td><code dir="auto">canary</code></td>
+<td>Weighted traffic splitting (smooth weighted round-robin); <code dir="auto">Clone</code> shares state, <code dir="auto">.update()</code> changes weights live. See <a href="/proxy/canary/">Canary</a></td>
+</tr>
+<tr>
+<td><code dir="auto">WeightedBackend</code></td>
+<td><code dir="auto">canary</code></td>
+<td>One weighted backend URL</td>
+</tr>
+<tr>
+<td><code dir="auto">WeightedPool</code></td>
+<td><code dir="auto">canary</code></td>
+<td>A weighted group whose members come from a <code dir="auto">BackendPool</code></td>
+</tr>
+<tr>
+<td><code dir="auto">CircuitBreaker</code></td>
+<td><code dir="auto">circuit_breaker</code></td>
+<td>Per-backend Closed/Open/HalfOpen breaker in memory; <code dir="auto">circuit_breaker::global()</code>. See <a href="/proxy/circuit-breaker/">Circuit breaker</a></td>
+</tr>
+<tr>
+<td><code dir="auto">RedisCircuitBreaker</code></td>
+<td><code dir="auto">circuit_breaker</code></td>
+<td>Same state machine shared through Redis; methods return <code dir="auto">Result</code>; <code dir="auto">from_env()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">Breaker</code></td>
+<td><code dir="auto">circuit_breaker</code></td>
+<td>Object-safe trait over both breakers, taken by <code dir="auto">ReverseProxy::with_circuit_breaker</code></td>
+</tr>
+<tr>
+<td><code dir="auto">RetryLayer</code></td>
+<td><code dir="auto">circuit_breaker</code></td>
+<td>Re-dispatches a request whose status is retryable (default 502/503/504); push it before the proxy</td>
+</tr>
+<tr>
+<td><code dir="auto">BackendPool</code></td>
+<td><code dir="auto">service_discovery</code></td>
+<td>Backend list refreshed by a background thread. See <a href="/proxy/service-discovery/">Service discovery</a></td>
+</tr>
+<tr>
+<td><code dir="auto">DiscoverySource</code></td>
+<td><code dir="auto">service_discovery</code></td>
+<td><code dir="auto">Static</code>, <code dir="auto">EnvPrefix</code>, <code dir="auto">File</code>, <code dir="auto">Dns</code>, <code dir="auto">DnsSrv</code>, <code dir="auto">Consul</code>, <code dir="auto">Docker</code>, <code dir="auto">EtcdWatch</code></td>
+</tr>
+<tr>
+<td><code dir="auto">KubernetesIngressWatcher</code></td>
+<td><code dir="auto">ingress</code></td>
+<td>Resyncs and watches Ingress resources; <code dir="auto">.from_service_account()</code> connects in-cluster (<code dir="auto">http-client</code>/<code dir="auto">http2</code>). See <a href="/deployment/kubernetes-ingress/">Kubernetes Ingress</a></td>
+</tr>
+<tr>
+<td><code dir="auto">IngressRouter</code></td>
+<td><code dir="auto">ingress</code></td>
+<td><code dir="auto">Application</code> routing requests by the watched Ingress rules</td>
+</tr>
+<tr>
+<td><code dir="auto">IngressRule</code></td>
+<td><code dir="auto">ingress</code></td>
+<td>One parsed Ingress rule</td>
+</tr>
+<tr>
+<td><code dir="auto">PathType</code></td>
+<td><code dir="auto">ingress</code></td>
+<td><code dir="auto">Exact</code>, <code dir="auto">Prefix</code>, <code dir="auto">ImplementationSpecific</code></td>
+</tr>
+<tr>
+<td><code dir="auto">ProxyConfig</code></td>
+<td><code dir="auto">proxy_config</code></td>
+<td>Parsed <code dir="auto">[[route]]</code>/<code dir="auto">[[upstream]]</code> config; <code dir="auto">ProxyConfig::is_proxy_mode()</code>, <code dir="auto">.validate(&amp;mut ConfigReport)</code>. See <a href="/proxy/config-driven/">Config-driven proxy</a></td>
+</tr>
+<tr>
+<td><code dir="auto">ConfigDrivenApp</code></td>
+<td><code dir="auto">proxy_config</code></td>
+<td>The app <code dir="auto">proxy_config::build_from_file()</code> returns: first-match router with per-route middleware and per-upstream <code dir="auto">strategy</code> (<code dir="auto">round_robin</code>, <code dir="auto">random</code>, <code dir="auto">ip_hash</code>, <code dir="auto">least_connections</code>); <code dir="auto">.with_config(ServerConfig)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">StickyConfig</code>, <code dir="auto">BreakerConfig</code>, <code dir="auto">RetryConfig</code></td>
+<td><code dir="auto">proxy_config</code></td>
+<td>An <code dir="auto">[[upstream]]</code>’s <code dir="auto">[upstream.sticky]</code>, <code dir="auto">[upstream.circuit_breaker]</code> and <code dir="auto">[upstream.retry]</code> (fields of <code dir="auto">UpstreamConfig</code>, beside <code dir="auto">weights</code>). See <a href="/proxy/config-driven/#weights-stickiness-retries-and-the-circuit-breaker">Weights, stickiness, retries and the circuit breaker</a></td>
+</tr>
+<tr>
+<td><code dir="auto">ReloadOutcome</code></td>
+<td><code dir="auto">proxy_config</code></td>
+<td>Result of <code dir="auto">ConfigDrivenApp::reload_from_str</code> / <code dir="auto">reload_from_file</code> (validated first; the running routes stay on errors)</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="http-client">HTTP client</h2><a class="sl-anchor-link" href="#http-client"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “HTTP client”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Client</code></td>
+<td><code dir="auto">http_client</code></td>
+<td>Synchronous HTTP/1.1 client; follows redirects, 30 s default timeout. HTTPS needs <code dir="auto">http-client</code> or <code dir="auto">http2</code>. See <a href="/building-apps/http-client/">HTTP client</a></td>
+</tr>
+<tr>
+<td><code dir="auto">RequestBuilder</code></td>
+<td><code dir="auto">http_client</code></td>
+<td><code dir="auto">.header</code>, <code dir="auto">.body</code>, <code dir="auto">.body_text</code>, <code dir="auto">.body_json</code>, <code dir="auto">.form</code>, <code dir="auto">.timeout_ms</code>, <code dir="auto">.send()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">Response</code></td>
+<td><code dir="auto">http_client</code></td>
+<td><code dir="auto">.status()</code>, <code dir="auto">.is_success()</code>, <code dir="auto">.header(name)</code>, <code dir="auto">.bytes()</code>, <code dir="auto">.text()</code>, <code dir="auto">.json::&lt;T&gt;()</code> (<code dir="auto">serde</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">AsyncClient</code></td>
+<td><code dir="auto">http_client</code> (<code dir="auto">http2</code>)</td>
+<td>Async client with <code dir="auto">.send().await</code></td>
+</tr>
+<tr>
+<td><code dir="auto">AsyncRequestBuilder</code></td>
+<td><code dir="auto">http_client</code> (<code dir="auto">http2</code>)</td>
+<td>Async request builder (same methods, including <code dir="auto">.form</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">HttpClientError</code></td>
+<td><code dir="auto">http_client</code></td>
+<td>Error type; implements <code dir="auto">std::error::Error</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="observability">Observability</h2><a class="sl-anchor-link" href="#observability"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Observability”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Log</code></td>
+<td><code dir="auto">log</code></td>
+<td>Access log lines: <code dir="auto">Log::json</code> / <code dir="auto">Log::combined</code> return one line; <code dir="auto">Log::log_access</code> buffers per thread; <code dir="auto">Log::flush_access_log()</code> writes now. See <a href="/deployment/observability/">Observability</a></td>
+</tr>
+<tr>
+<td><code dir="auto">OtelLayer</code></td>
+<td><code dir="auto">otel</code></td>
+<td>HTTP server root span, W3C <code dir="auto">traceparent</code> propagation, stdout or OTLP export. See <a href="/features/tracing/">Tracing</a></td>
+</tr>
+<tr>
+<td><code dir="auto">otel::setup</code> / <code dir="auto">setup_from_env</code> / <code dir="auto">setup_with_exporter</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Initialize the global tracer once at startup (<code dir="auto">OTEL_SERVICE_NAME</code>, <code dir="auto">OTEL_EXPORTER_OTLP_ENDPOINT</code>, <code dir="auto">OTEL_TRACES_SAMPLER_ARG</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">otel::shutdown</code> / <code dir="auto">otel::flush</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Flush buffered spans; call <code dir="auto">shutdown()</code> before exit</td>
+</tr>
+<tr>
+<td><code dir="auto">otel::span</code> / <code dir="auto">otel::client_span</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Start an Internal / Client child span under the active span</td>
+</tr>
+<tr>
+<td><code dir="auto">otel::current_traceparent</code></td>
+<td><code dir="auto">otel</code></td>
+<td><code dir="auto">traceparent</code> of the innermost active span, for outbound calls</td>
+</tr>
+<tr>
+<td><code dir="auto">Baggage</code>, <code dir="auto">otel::current_baggage</code> / <code dir="auto">set_baggage</code></td>
+<td><code dir="auto">otel</code></td>
+<td>W3C Baggage: parse/format the header; read and extend the current request’s. See <a href="/features/tracing/#baggage">Baggage</a></td>
+</tr>
+<tr>
+<td><code dir="auto">otel::propagation_headers</code>, <code dir="auto">otel::is_tracing</code></td>
+<td><code dir="auto">otel</code></td>
+<td><code dir="auto">traceparent</code> + <code dir="auto">baggage</code> for the current span; whether a traced request is current</td>
+</tr>
+<tr>
+<td><code dir="auto">Context</code>, <code dir="auto">ContextGuard</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Capture the current span and baggage; <code dir="auto">attach()</code> it on another thread</td>
+</tr>
+<tr>
+<td><code dir="auto">DetachedSpan</code>, <code dir="auto">otel::detached_span</code></td>
+<td><code dir="auto">otel</code></td>
+<td>A <code dir="auto">Send</code> span for async work, parented where it starts; <code dir="auto">.enter(f)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">Span</code></td>
+<td><code dir="auto">otel</code></td>
+<td>RAII child span: <code dir="auto">.set_attribute</code>, <code dir="auto">.set_error</code>, <code dir="auto">.record_error</code>, ends on drop</td>
+</tr>
+<tr>
+<td><code dir="auto">SpanKind</code></td>
+<td><code dir="auto">otel</code></td>
+<td><code dir="auto">Internal</code>, <code dir="auto">Server</code>, <code dir="auto">Client</code></td>
+</tr>
+<tr>
+<td><code dir="auto">AttributeValue</code></td>
+<td><code dir="auto">otel</code></td>
+<td><code dir="auto">String</code>, <code dir="auto">Int</code>, <code dir="auto">Float</code>, <code dir="auto">Bool</code>, with <code dir="auto">From</code> impls</td>
+</tr>
+<tr>
+<td><code dir="auto">TracingConfig</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Service name, exporter, sample rate, batch size</td>
+</tr>
+<tr>
+<td><code dir="auto">ExporterConfig</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Built-in exporter choice</td>
+</tr>
+<tr>
+<td><code dir="auto">otel::metrics::MetricsExportConfig</code>, <code dir="auto">otel::metrics::start</code> / <code dir="auto">start_from_env</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Push <code dir="auto">http.server.request.duration</code> over OTLP/HTTP every interval. See <a href="/deployment/observability/#otlp-metrics-export">OTLP metrics export</a></td>
+</tr>
+<tr>
+<td><code dir="auto">otel::parse_headers</code>, <code dir="auto">otel::traces_configured</code></td>
+<td><code dir="auto">otel</code></td>
+<td><code dir="auto">OTEL_EXPORTER_OTLP_HEADERS</code> syntax; whether the environment asks for trace export</td>
+</tr>
+<tr>
+<td><code dir="auto">metrics::http::observe</code></td>
+<td><code dir="auto">metrics</code></td>
+<td>Record a request in <code dir="auto">http_server_request_duration_seconds</code> (the server core does it for every request)</td>
+</tr>
+<tr>
+<td><code dir="auto">metrics::exposition::protobuf</code> / <code dir="auto">accepts_protobuf</code></td>
+<td><code dir="auto">metrics</code></td>
+<td>Prometheus protobuf exposition (native histograms) and its <code dir="auto">Accept</code> negotiation</td>
+</tr>
+<tr>
+<td><code dir="auto">Exporter</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Trait for span exporters, accepted by <code dir="auto">setup_with_exporter</code></td>
+</tr>
+<tr>
+<td><code dir="auto">StdoutExporter</code> / <code dir="auto">OtlpHttpExporter</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Built-in exporters; <code dir="auto">OtlpHttpExporter::new(endpoint, service_name, service_version)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">TraceContext</code></td>
+<td><code dir="auto">otel</code></td>
+<td>Parsed <code dir="auto">traceparent</code>: <code dir="auto">TraceContext::parse</code>, <code dir="auto">.as_header(span_id)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">SpanData</code></td>
+<td><code dir="auto">otel</code></td>
+<td>A finished span ready for export</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="database--orm">Database / ORM</h2><a class="sl-anchor-link" href="#database--orm"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Database / ORM”</span></a></div>
+<p>All model-layer types need <code dir="auto">model-sqlite</code>, <code dir="auto">model-postgres</code> or <code dir="auto">model-mysql</code> (each implies <code dir="auto">http2</code>; they combine).</p>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">DbPool</code></td>
+<td><code dir="auto">model</code></td>
+<td>Async <code dir="auto">sqlx</code> pool, one variant per compiled-in backend: <code dir="auto">new(DbConfig)</code>, <code dir="auto">from_env()</code>, <code dir="auto">memory()</code> (SQLite <code dir="auto">:memory:</code>); <code dir="auto">execute</code>, <code dir="auto">query</code>, <code dir="auto">begin</code>, <code dir="auto">transaction</code>, <code dir="auto">migrate</code>. See <a href="/database/overview/">Database</a></td>
+</tr>
+<tr>
+<td><code dir="auto">DbTransaction</code></td>
+<td><code dir="auto">model</code></td>
+<td>Open transaction from <code dir="auto">DbPool::begin</code>; <code dir="auto">commit</code> / <code dir="auto">rollback</code></td>
+</tr>
+<tr>
+<td><code dir="auto">DbConfig</code></td>
+<td><code dir="auto">model</code></td>
+<td>Connection settings; <code dir="auto">from_env()</code> reads <code dir="auto">RWS_DB_*</code></td>
+</tr>
+<tr>
+<td><code dir="auto">Backend</code></td>
+<td><code dir="auto">model</code></td>
+<td><code dir="auto">Sqlite</code>, <code dir="auto">Postgres</code>, <code dir="auto">MySql</code> (compiled-in only); <code dir="auto">Backend::parse</code>; pick it explicitly only with several backends compiled in</td>
+</tr>
+<tr>
+<td><code dir="auto">Repository&lt;T, ID&gt;</code></td>
+<td><code dir="auto">model</code></td>
+<td>Async CRUD trait (<code dir="auto">find_by_id</code>, <code dir="auto">find_all</code>, <code dir="auto">save</code>, <code dir="auto">delete_by_id</code>, <code dir="auto">count</code>, …). See <a href="/database/repository/">Repository</a></td>
+</tr>
+<tr>
+<td><code dir="auto">ModelRepository&lt;T, ID&gt;</code></td>
+<td><code dir="auto">model</code></td>
+<td><code dir="auto">Repository</code> implementation from <code dir="auto">T::repository(&amp;pool)</code>; <code dir="auto">save</code> inserts when the key is 0, else updates</td>
+</tr>
+<tr>
+<td><code dir="auto">QueryBuilder&lt;T&gt;</code></td>
+<td><code dir="auto">model</code></td>
+<td>Fluent query builder: <code dir="auto">where_eq</code>, <code dir="auto">filter</code>, <code dir="auto">order_by</code>, <code dir="auto">limit</code>, <code dir="auto">fetch_all</code>, <code dir="auto">count</code>, <code dir="auto">paginate</code>, <code dir="auto">paginate_after</code>. See <a href="/database/query-builder/">Query builder</a></td>
+</tr>
+<tr>
+<td><code dir="auto">HasMany&lt;T&gt;</code> / <code dir="auto">HasOne&lt;T&gt;</code> / <code dir="auto">BelongsTo&lt;O&gt;</code></td>
+<td><code dir="auto">model</code></td>
+<td>Explicit-load relations with <code dir="auto">.load(&amp;pool).await</code> — no hidden N+1. See <a href="/database/relations/">Relations</a></td>
+</tr>
+<tr>
+<td><code dir="auto">MigrationStatus</code></td>
+<td><code dir="auto">model</code></td>
+<td>Applied/pending state from <code dir="auto">DbPool::migration_status</code>. See <a href="/database/migrations/">Migrations</a></td>
+</tr>
+<tr>
+<td><code dir="auto">Page&lt;T&gt;</code></td>
+<td><code dir="auto">pagination</code> (re-exported from <code dir="auto">model</code>)</td>
+<td>Offset page: totals, <code dir="auto">has_next</code>/<code dir="auto">has_prev</code>, <code dir="auto">.map(f)</code>, <code dir="auto">.link_header(base_url)</code>; usable without the model layer. See <a href="/database/pagination/">Pagination</a></td>
+</tr>
+<tr>
+<td><code dir="auto">CursorPage&lt;T&gt;</code></td>
+<td><code dir="auto">pagination</code> (re-exported from <code dir="auto">model</code>)</td>
+<td>Keyset page with <code dir="auto">next_cursor</code>, <code dir="auto">.link_header(base_url, cursor_param)</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="background-work">Background work</h2><a class="sl-anchor-link" href="#background-work"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Background work”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Scheduler</code></td>
+<td><code dir="auto">scheduler</code></td>
+<td>Recurring tasks: <code dir="auto">.every(d, f)</code>, <code dir="auto">.after(d, f)</code>, <code dir="auto">.cron(expr, f)</code>. See <a href="/features/scheduler/">Scheduler</a></td>
+</tr>
+<tr>
+<td><code dir="auto">CronSchedule</code></td>
+<td><code dir="auto">scheduler</code></td>
+<td>Parsed six-field cron expression (<code dir="auto">sec min hour day month weekday</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">Job</code></td>
+<td><code dir="auto">jobs</code> (<code dir="auto">jobs</code>)</td>
+<td>Job trait, implemented for <code dir="auto">Fn() -&gt; Result&lt;(), String&gt; + Send</code> closures. See <a href="/features/jobs/">Jobs</a></td>
+</tr>
+<tr>
+<td><code dir="auto">JobQueue</code></td>
+<td><code dir="auto">jobs</code> (<code dir="auto">jobs</code>)</td>
+<td>In-memory worker pool with retry and exponential backoff; not crash-safe</td>
+</tr>
+<tr>
+<td><code dir="auto">PersistentJobQueue</code></td>
+<td><code dir="auto">jobs</code> (<code dir="auto">jobs</code> + a <code dir="auto">model-*</code> feature)</td>
+<td>Crash-safe queue in a <code dir="auto">rws_jobs</code> table; <code dir="auto">(job_type, payload)</code> jobs dispatched to registered handlers</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="storage-and-mail">Storage and mail</h2><a class="sl-anchor-link" href="#storage-and-mail"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Storage and mail”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">Storage</code></td>
+<td><code dir="auto">storage</code></td>
+<td>Trait: <code dir="auto">put</code>, <code dir="auto">get</code>, <code dir="auto">delete</code>, <code dir="auto">url</code>. See <a href="/features/storage/">Storage</a></td>
+</tr>
+<tr>
+<td><code dir="auto">StorageError</code></td>
+<td><code dir="auto">storage</code></td>
+<td>Error type for storage backends</td>
+</tr>
+<tr>
+<td><code dir="auto">LocalStorage</code></td>
+<td><code dir="auto">storage</code> (<code dir="auto">storage-local</code>)</td>
+<td>Files under a root directory; rejects <code dir="auto">..</code>; <code dir="auto">.with_base_url(prefix)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">S3Storage</code></td>
+<td><code dir="auto">storage</code> (<code dir="auto">storage-s3</code>)</td>
+<td>S3-compatible storage with SigV4, no AWS SDK; static keys or IRSA / ECS / IMDSv2 credentials</td>
+</tr>
+<tr>
+<td><code dir="auto">S3Config</code></td>
+<td><code dir="auto">storage</code> (<code dir="auto">storage-s3</code>)</td>
+<td>Bucket, region, endpoint, credentials; <code dir="auto">from_env()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">AzureBlobStorage</code></td>
+<td><code dir="auto">storage</code> (<code dir="auto">storage-azure</code>)</td>
+<td>Azure Blob Storage with Shared Key signing or Managed Identity, no Azure SDK</td>
+</tr>
+<tr>
+<td><code dir="auto">AzureBlobConfig</code></td>
+<td><code dir="auto">storage</code> (<code dir="auto">storage-azure</code>)</td>
+<td>Account, container, endpoint, credentials; <code dir="auto">from_env()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">Mailer</code></td>
+<td><code dir="auto">mailer</code> (<code dir="auto">mailer</code>; STARTTLS/SMTPS also need <code dir="auto">http-client</code> or <code dir="auto">http2</code>)</td>
+<td>SMTP client; <code dir="auto">Mailer::from_env()</code> reads <code dir="auto">RWS_SMTP_*</code>; <code dir="auto">.send(&amp;email)</code>. See <a href="/features/email/">Email</a></td>
+</tr>
+<tr>
+<td><code dir="auto">Email</code></td>
+<td><code dir="auto">mailer</code> (<code dir="auto">mailer</code>)</td>
+<td>An RFC 5322 message; <code dir="auto">Email::builder()</code></td>
+</tr>
+<tr>
+<td><code dir="auto">EmailBuilder</code></td>
+<td><code dir="auto">mailer</code> (<code dir="auto">mailer</code>)</td>
+<td><code dir="auto">.to</code>, <code dir="auto">.cc</code>, <code dir="auto">.bcc</code>, <code dir="auto">.reply_to</code>, <code dir="auto">.subject</code>, <code dir="auto">.text</code>, <code dir="auto">.html</code>, <code dir="auto">.build()</code> (<code dir="auto">multipart/alternative</code> when both bodies are set)</td>
+</tr>
+<tr>
+<td><code dir="auto">SmtpTls</code></td>
+<td><code dir="auto">mailer</code> (<code dir="auto">mailer</code>)</td>
+<td><code dir="auto">None</code> (25), <code dir="auto">Starttls</code> (587, default), <code dir="auto">Smtps</code> (465)</td>
+</tr>
+<tr>
+<td><code dir="auto">MailerError</code></td>
+<td><code dir="auto">mailer</code> (<code dir="auto">mailer</code>)</td>
+<td><code dir="auto">MissingConfig</code>, <code dir="auto">Io</code>, <code dir="auto">Smtp</code>, <code dir="auto">Build</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="other">Other</h2><a class="sl-anchor-link" href="#other"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Other”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>Type / Trait</th>
+<th>Module</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">TestClient</code></td>
+<td><code dir="auto">test_client</code></td>
+<td>In-process test client — dispatches requests without a TCP socket. See <a href="/testing/test-client/">TestClient</a></td>
+</tr>
+<tr>
+<td><code dir="auto">OpenApiConfig</code> / <code dir="auto">build_spec</code></td>
+<td><code dir="auto">openapi</code> (<code dir="auto">openapi</code>)</td>
+<td>OpenAPI 3.1 from registered routes; <code dir="auto">AppWithState::openapi(config)</code> adds <code dir="auto">/openapi.json</code> and <code dir="auto">/docs</code>; <code dir="auto">.operation(method, pattern, Operation)</code> adds bodies, responses and parameters. See <a href="/features/openapi/">OpenAPI</a></td>
+</tr>
+<tr>
+<td><code dir="auto">tower::mount</code>, <code dir="auto">TowerApp</code></td>
+<td><code dir="auto">tower</code> (<code dir="auto">tower</code>)</td>
+<td>A Tower service (tonic, tower-http, axum) as an rws <code dir="auto">Application</code>, under a path prefix or alone. See <a href="/features/tower/">Tower interop</a></td>
+</tr>
+<tr>
+<td><code dir="auto">TowerLayer</code>, <code dir="auto">tower::Next</code></td>
+<td><code dir="auto">tower</code> (<code dir="auto">tower</code>)</td>
+<td>A Tower layer as rws middleware; <code dir="auto">Next</code> is the rest of the stack it wraps</td>
+</tr>
+<tr>
+<td><code dir="auto">TowerService</code></td>
+<td><code dir="auto">tower</code> (<code dir="auto">tower</code>)</td>
+<td>An rws app as a Tower <code dir="auto">Service&lt;http::Request&lt;B&gt;&gt;</code>; <code dir="auto">.connection(...)</code></td>
+</tr>
+<tr>
+<td><code dir="auto">tower::Body</code>, <code dir="auto">to_http_request</code> / <code dir="auto">from_http_request</code> / <code dir="auto">to_http_response</code> / <code dir="auto">from_http_response</code></td>
+<td><code dir="auto">tower</code> (<code dir="auto">tower</code>)</td>
+<td>The <code dir="auto">http_body::Body</code> both ways, and the conversions</td>
+</tr>
+<tr>
+<td><code dir="auto">Operation</code></td>
+<td><code dir="auto">openapi</code> (<code dir="auto">openapi</code>)</td>
+<td>One operation’s summary, request body, responses, query and path parameters, with schemas from <code dir="auto">JsonSchema</code> types</td>
+</tr>
+<tr>
+<td><code dir="auto">AcmeConfig</code></td>
+<td><code dir="auto">acme</code> (<code dir="auto">acme</code>)</td>
+<td>ACME / Let’s Encrypt settings; <code dir="auto">AcmeConfig::from_env()</code> reads <code dir="auto">RWS_CONFIG_ACME_*</code>. See <a href="/features/acme/">ACME</a></td>
+</tr>
+<tr>
+<td><code dir="auto">AcmeManager</code></td>
+<td><code dir="auto">acme</code> (<code dir="auto">acme</code>)</td>
+<td>HTTP-01 provisioning and renewal: <code dir="auto">.provision_until_ready().await</code>, <code dir="auto">.run_renewal_loop()</code></td>
+</tr>
+</tbody>
+</table>
+<aside aria-label="Feature flags" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>Feature flags</p><div class="starlight-aside__content"><p>Items marked with a feature in parentheses compile only with that Cargo feature. See <a href="/getting-started/features/">Features</a> and <code dir="auto">Cargo.toml</code> for the full list.</p></div></aside>
+</div><footer class="sl-flex astro-ddtxxk7k"><div class="meta sl-flex astro-ddtxxk7k"></div><div class="pagination-links print:hidden astro-b5raizh3" dir="ltr"><a href="/deployment/wasm/" rel="prev" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg><span class="astro-b5raizh3">Previous<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">WASM Guest Component</span></span></a><a href="/reference/troubleshooting/" rel="next" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg><span class="astro-b5raizh3">Next<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Troubleshooting</span></span></a></div></footer></div></div></main></div></div></div></div></body></html>
